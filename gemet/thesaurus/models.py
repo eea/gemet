@@ -9,12 +9,18 @@ class Namespace(Model):
     version = CharField(max_length=255)
     type_url = CharField(max_length=255)
 
+    def __unicode__(self):
+        return self.heading
+
 
 class Concept(Model):
     namespace = ForeignKey(Namespace)
     concept_code = CharField(max_length=10)
     date_entered = DateTimeField(blank=True, null=True)
     date_changed = DateTimeField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.concept_code
 
 
 class Language(Model):
@@ -23,6 +29,9 @@ class Language(Model):
     charset = CharField(max_length=100)
     code_alt = CharField(max_length=3)
     direction = CharField(max_length=1, choices=(('0', 'ltr'), ('1', 'rtl')))
+
+    def __unicode__(self):
+        return self.name
 
 
 class Property(Model):
