@@ -11,10 +11,10 @@ class Namespace(Model):
 
 
 class Concept(Model):
+    namespace = ForeignKey(Namespace)
     concept_code = CharField(max_length=10)
-    ns = ForeignKey(Namespace)
-    date_entered = DateTimeField(blank=True)
-    date_changed = DateTimeField(blank=True)
+    date_entered = DateTimeField(blank=True, null=True)
+    date_changed = DateTimeField(blank=True, null=True)
 
 
 class Language(Model):
@@ -22,7 +22,7 @@ class Language(Model):
     name = CharField(max_length=255)
     charset = CharField(max_length=100)
     code_alt = CharField(max_length=3)
-    direction = CharField(max_length=1, choices=((0, 'ltr'), (1, 'rtl')))
+    direction = CharField(max_length=1, choices=(('0', 'ltr'), ('1', 'rtl')))
 
 
 class Property(Model):

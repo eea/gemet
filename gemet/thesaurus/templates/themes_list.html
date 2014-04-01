@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h1>Themes</h1>
+
+  <ul>
+    {% for t in themes %}
+    <li>{{ t.value }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
