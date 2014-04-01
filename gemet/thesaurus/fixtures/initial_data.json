@@ -1,0 +1,372 @@
+[
+{
+ "pk": 1, 
+ "model": "thesaurus.namespace", 
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/concept/", 
+  "type_url": "http://www.w3.org/2004/02/skos/core#Concept", 
+  "version": "GEMET - Concepts, version 3.1, 2012-07-20", 
+  "heading": "Concepts"
+ }
+},
+{
+ "pk": 2, 
+ "model": "thesaurus.namespace", 
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/supergroup/", 
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#SuperGroup", 
+  "version": "GEMET - Super groups, version 2.4, 2010-01-13", 
+  "heading": "Super groups"
+ }
+},
+{
+ "pk": 3, 
+ "model": "thesaurus.namespace", 
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/group/", 
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#Group", 
+  "version": "GEMET - Groups, version 2.4, 2010-01-13", 
+  "heading": "Groups"
+ }
+},
+{
+ "pk": 4, 
+ "model": "thesaurus.namespace", 
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/theme/", 
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#Theme", 
+  "version": "GEMET - Themes, version 2.4, 2010-01-13", 
+  "heading": "Themes"
+ }
+},
+{
+ "pk": "ar", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "1", 
+  "charset": "utf8_general_ci", 
+  "name": "Arabic", 
+  "code_alt": "ARA"
+ }
+},
+{
+ "pk": "bg", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Bulgarian", 
+  "code_alt": "BUL"
+ }
+},
+{
+ "pk": "ca", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_spanish_ci", 
+  "name": "Catalan", 
+  "code_alt": "CAT"
+ }
+},
+{
+ "pk": "cs", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_czech_ci", 
+  "name": "Czech", 
+  "code_alt": "CZE"
+ }
+},
+{
+ "pk": "da", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_danish_ci", 
+  "name": "Danish", 
+  "code_alt": "DAN"
+ }
+},
+{
+ "pk": "de", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "German", 
+  "code_alt": "GER"
+ }
+},
+{
+ "pk": "el", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Greek", 
+  "code_alt": "GRE"
+ }
+},
+{
+ "pk": "en", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "English", 
+  "code_alt": "ENG"
+ }
+},
+{
+ "pk": "en-US", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "English (US)", 
+  "code_alt": "USA"
+ }
+},
+{
+ "pk": "es", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_spanish_ci", 
+  "name": "Spanish", 
+  "code_alt": "SPA"
+ }
+},
+{
+ "pk": "et", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_estonian_ci", 
+  "name": "Estonian", 
+  "code_alt": "EST"
+ }
+},
+{
+ "pk": "eu", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Basque", 
+  "code_alt": "BAQ"
+ }
+},
+{
+ "pk": "fi", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Finnish", 
+  "code_alt": "FIN"
+ }
+},
+{
+ "pk": "fr", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "French", 
+  "code_alt": "FRE"
+ }
+},
+{
+ "pk": "ga", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Irish", 
+  "code_alt": "GLE"
+ }
+},
+{
+ "pk": "hr", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Croatian", 
+  "code_alt": "HRV"
+ }
+},
+{
+ "pk": "hu", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Hungarian", 
+  "code_alt": "HUN"
+ }
+},
+{
+ "pk": "it", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Italian", 
+  "code_alt": "ITA"
+ }
+},
+{
+ "pk": "lt", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Lithuanian", 
+  "code_alt": "LIT"
+ }
+},
+{
+ "pk": "lv", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Latvian", 
+  "code_alt": "LAV"
+ }
+},
+{
+ "pk": "mt", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Maltese", 
+  "code_alt": "MLT"
+ }
+},
+{
+ "pk": "nl", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Dutch", 
+  "code_alt": "DUT"
+ }
+},
+{
+ "pk": "no", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Norwegian", 
+  "code_alt": "NOR"
+ }
+},
+{
+ "pk": "pl", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_polish_ci", 
+  "name": "Polish", 
+  "code_alt": "POL"
+ }
+},
+{
+ "pk": "pt", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Portuguese", 
+  "code_alt": "POR"
+ }
+},
+{
+ "pk": "ro", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Romanian", 
+  "code_alt": "RUM"
+ }
+},
+{
+ "pk": "ru", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Russian", 
+  "code_alt": "RUS"
+ }
+},
+{
+ "pk": "sk", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Slovak", 
+  "code_alt": "SLO"
+ }
+},
+{
+ "pk": "sl", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_slovenian_ci", 
+  "name": "Slovenian", 
+  "code_alt": "SLV"
+ }
+},
+{
+ "pk": "sv", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_swedish_ci", 
+  "name": "Swedish", 
+  "code_alt": "SVE"
+ }
+},
+{
+ "pk": "tr", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Turkish", 
+  "code_alt": "TUR"
+ }
+},
+{
+ "pk": "uk", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_unicode_ci", 
+  "name": "Ukrainian", 
+  "code_alt": "UKR"
+ }
+},
+{
+ "pk": "zh-CN", 
+ "model": "thesaurus.language", 
+ "fields": {
+  "direction": "0", 
+  "charset": "utf8_general_ci", 
+  "name": "Chinese", 
+  "code_alt": "ZHO"
+ }
+}
+]
