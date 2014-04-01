@@ -30,7 +30,7 @@ Run these commands::
 
     curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python2.7 -
     pip2.7 install virtualenv
-    yum install mysql-server mysql git openldap-devel mysql-devel
+    yum install mysql-server mysql git mysql-devel
 
 
 Product directory
@@ -46,8 +46,8 @@ be run as an unprivileged user in the product directory::
 
 1. Clone the repository::
 
-    git clone https://github.com/eaudeweb/gemet -o origin flask
-    cd flask
+    git clone https://github.com/eaudeweb/gemet -o origin gemet
+    cd gemet
 
 2.1. Create & activate a virtual environment::
 
@@ -72,13 +72,9 @@ be run as an unprivileged user in the product directory::
 
     TODO
 
-7. Import sql data dump in your art17 database, see "data import" below::
+7. Create initial database:
 
-    TODO
-
-8. Create your user and assign admin role to it::
-
-    TODO
+    ./manage.py syncdb
 
 
 Build production
@@ -142,7 +138,7 @@ The project owner is SÃ¸ren Roug (soren.roug at eaa.europa.eu)
 
 Other people involved in this project are:
 
-* Cornel NiÈ›u (cornel.nitu at eaudeweb.ro)
+* Cornel Nițu (cornel.nitu at eaudeweb.ro)
 * Alex Eftimie (alex.eftimie at eaudeweb.ro)
 * Mihai Tabără (mihai.tabara at eaudeweb.ro)
 * Iulia Chiriac (iulia.chiriac at eaudeweb.ro)
