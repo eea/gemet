@@ -65,10 +65,8 @@ be run as an unprivileged user in the product directory::
 
 4. Create a configuration file::
 
-    mkdir -p instance
-    cp settings.py.example instance/settings.py
-
-    # Follow instructions in instance/settings.py to adapt it to your needs.
+    cd gemet
+    cp settings.py.example settings.py
 
 6. Set up the MySQL database::
 

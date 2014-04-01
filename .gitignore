@@ -1,5 +1,4 @@
-instance/
 sandbox
 *~
 *.pyc
-
+settings.py
