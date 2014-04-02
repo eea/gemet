@@ -141,11 +141,11 @@ WebService API methods
         ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
         ...        ]
         ...        for relation in good_relations:
-        ...            result = apiTester.doXmlRpc('hasRelation', relation)
+        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
         ...            print result
         ...
         ...        for relation in bad_relations:
-        ...            result = apiTester.doXmlRpc('hasRelation', relation)
+        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
         ...                print result
         >>> test_hasRelation()
         True
@@ -158,7 +158,7 @@ WebService API methods
 
 .. function:: getAllTranslationsForConcept(concept_uri, property_uri)
 
-   Given a valid *concept_uri* and a valid *property_uri* the :func:`getAllTranslationsForConcept` retrieves all available translations for that concept's property within GEMET information database.
+   Given a valid *concept_uri* and a valid *property_uri* the :func:`getAllTranslationsForConcept` retrieves all available translations for that concept's property within GEMET information database::
 
         >>> def test_getAllTranslationsForConcept():
         ...        concepts = [
@@ -196,12 +196,49 @@ WebService API methods
         Пътуване в космоса
         zh-CN
         太空旅行
-        ....
+        [...]
 
 
 .. function:: getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri, language)
 
-   :func:`getConceptsMatchingKeyword` is a primary API method.
+   :func:`getConceptsMatchingKeyword` is a powerful API method. For a term defined by *keyword*, the function searches the GEMET content looking for matches. The *search_mode* argument indicates the type of term expansion to try when looking for a match as follows:
+    - 0 no wildcarding of any type; match 'clothes' exactly
+    - 1 suffix regex ('accident' becomes 'accident.+$')
+    - 2 prefix regex ('accident' becomes '^.+accident')
+    - 3 prefix/suffix combined ('accident' becomes '^.+accident.+$')
+    - 4 auto search: each of the previous four expansions is tried in ascending order until a match is found
+
+   Moreover, *thesaurus_uri* represents the GEMET resource in which to look up for, while *lang* is a string that indicates the language code::
+
+        >>> def test_getConceptsMatchingKeyword():
+        ...
+        ...       def search(keyword, mode):
+        ...           result = apiTester.doXmlRpc('getConceptsMatchingKeyword', keyword, mode,
+        ...                   'http://www.eionet.europa.eu/gemet/concept/', 'en')
+        ...           print set(concept['preferredLabel']['string'] for concept in result)
+        ...
+        ...       result = search('air', 0) # no wildcard
+        ...       result = search('air', 1) # suffix
+        ...       result = search('air', 2) # preffix
+        ...       result = search('air', 3) # preffix/suffix
+        ...       result = search('travel', 4) # should match exact term
+        ...       result = search('trave', 4) # should match prefix terms
+        ...       result = search('ravel', 4) # should match suffix terms
+        ...       result = search('xyzasdf', 4) # should match nothing
+        ...       result = search('^air', 0) # should match nothing (regex chars are escaped)
+        ...       result = search("'", 3)
+        ...
+        >>> test_getConceptsMatchingKeyword()
+        set(['air'])
+        set(['air traffic law', 'aircraft engine emission', 'air quality monitoring', [...]])
+        set(['waste air', 'emission to air', 'respiratory air', 'soil air', 'air'])
+        set(['air traffic law', 'military air traffic', 'respiratory air', 'aircraft engine emission', [...]])
+        set(['travel'])
+        set(['travel cost', 'travel'])
+        set(['travel', 'gravel', 'space travel'])
+        set([])
+        set([])
+        set(["earth's crust", "woman's status", "Chagas' disease", "public prosecutor's office"])
 
 .. function:: getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri, language)
 
