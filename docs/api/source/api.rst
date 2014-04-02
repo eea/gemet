@@ -215,17 +215,74 @@ WebService API methods
 
    :func:`getSupportedLanguages` is a primary API method.
 
-.. function:: getAvailableThesauri(self)
+.. function:: getAvailableThesauri()
 
-   :func:`getAvailableThesauri` is a primary API method.
+   This function is used to fetch a list of all the possible namespaces a
+   concept can be classified in. For each namespace a series of more detailed
+   information is provided: its name, its URI and its current version. ::
 
-.. function:: fetchThemes(language)
+        >>> def test_getAvailableThesauri():
+        ...     result = apiTester.doXmlRpc('getAvailableThesauri')
+        ...     pp.pprint(result)
+        ...
+        >>> test_getAvailableThesauri()
+        [   {   'name': 'Concepts',
+                'uri': 'http://www.eionet.europa.eu/gemet/concept/',
+                'version': 'GEMET - Concepts, version 3.1, 2012-07-20'},
+            {   'name': 'Super groups',
+                'uri': 'http://www.eionet.europa.eu/gemet/supergroup/',
+                'version': 'GEMET - Super groups, version 2.4, 2010-01-13'},
+            {   'name': 'Groups',
+                'uri': 'http://www.eionet.europa.eu/gemet/group/',
+                'version': 'GEMET - Groups, version 2.4, 2010-01-13'},
+            {   'name': 'Themes',
+                'uri': 'http://www.eionet.europa.eu/gemet/theme/',
+                'version': 'GEMET - Themes, version 2.4, 2010-01-13'},
+            {   'name': 'Inspire Themes',
+                'uri': 'http://inspire.ec.europa.eu/theme/',
+                'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'}]
 
-   :func:`fetchThemes` is a primary API method.
+.. function:: fetchThemes(lang)
 
-.. function:: fetchGroups(language)
+   For the given language, :func:`fetchThemes` function returns the list of
+   themes found in the GEMET database. Its only parameter, *lang* represents
+   the language code. ::
 
-   :func:`fetchGroups` is a primary API method.
+        >>> def test_fetchThemes():
+        ...     lang = 'en'
+        ...     result = apiTester.doXmlRpc('fetchThemes', lang)
+        ...     pp.pprint(result)
+        ...
+        >>> test_fetchThemes()
+        [   {   'preferredLabel': {   'language': 'en', 'string': 'administration'},
+                'thesaurus': 'http://www.eionet.europa.eu/gemet/theme/',
+                        'uri': 'http://www.eionet.europa.eu/gemet/theme/1'},
+            [...]
+            {   'preferredLabel': {   'language': 'en', 'string': 'water'},
+                'thesaurus': 'http://www.eionet.europa.eu/gemet/theme/',
+                'uri': 'http://www.eionet.europa.eu/gemet/theme/40'}]
+
+.. function:: fetchGroups(lang)
+
+   :func:`fetchGroups` is a primary API method. It retrieves the list of groups
+   from the GEMET database for a given language. It takes *lang* as a
+   parameter indicating the language code. ::
+
+        >>> def test_fetchGroups():
+        ...     lang = 'en'
+        ...     result = apiTester.doXmlRpc('fetchGroups', lang)
+        ...     pp.pprint(result)
+        ...
+        >>> test_fetchGroups()
+        [   {   'preferredLabel': {   'language': 'en',
+                                      'string': 'ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING'},
+                'thesaurus': 'http://www.eionet.europa.eu/gemet/group/',
+                'uri': 'http://www.eionet.europa.eu/gemet/group/96'},
+            [...]
+            {   'preferredLabel': {   'language': 'en',
+                                      'string': 'WASTES, POLLUTANTS, POLLUTION'},
+                'thesaurus': 'http://www.eionet.europa.eu/gemet/group/',
+                'uri': 'http://www.eionet.europa.eu/gemet/group/9117'}]
 
 
 Indices and tables
@@ -234,5 +291,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
