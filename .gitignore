@@ -2,3 +2,4 @@ sandbox
 *~
 *.pyc
 settings.py
+docs/api/build/*
