@@ -124,20 +124,12 @@ WebService API methods
         ...              'http://www.eionet.europa.eu/gemet/concept/51'),
         ...
         ...            ('http://www.eionet.europa.eu/gemet/concept/100',
-        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group',
-        ...             'http://www.eionet.europa.eu/gemet/group/96'),
-        ...
-        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
         ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme',
         ...             'http://www.eionet.europa.eu/gemet/theme/1'),
         ...
         ...            ('http://www.eionet.europa.eu/gemet/group/96',
         ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember',
         ...             'http://www.eionet.europa.eu/gemet/concept/21'),
-        ...
-        ...            ('http://www.eionet.europa.eu/gemet/theme/1',
-        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#themeMember',
-        ...             'http://www.eionet.europa.eu/gemet/concept/13293'),
         ...        ]
         ...        bad_relations = [
         ...            ('http://www.eionet.europa.eu/gemet/concept/999999999999',
@@ -147,21 +139,13 @@ WebService API methods
         ...            ('http://www.eionet.europa.eu/gemet/concept/100',
         ...             'badrelation',
         ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
-        ...
-        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
-        ...             'http://www.w3.org/2004/02/skos/core#broader',
-        ...             'badtarget'),
-        ...
-        ...            ('badsource',
-        ...             'http://www.w3.org/2004/02/skos/core#broader',
-        ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
         ...        ]
         ...        for relation in good_relations:
-        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
+        ...            result = apiTester.doXmlRpc('hasRelation', relation)
         ...            print result
         ...
         ...        for relation in bad_relations:
-        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
+        ...            result = apiTester.doXmlRpc('hasRelation', relation)
         ...                print result
         >>> test_hasRelation()
         True
@@ -169,16 +153,51 @@ WebService API methods
         True
         True
         True
-        True
-        True
-        False
-        False
         False
         False
 
 .. function:: getAllTranslationsForConcept(concept_uri, property_uri)
 
-   :func:`getAllTranslationsForConcept` is a primary API method.
+   Given a valid *concept_uri* and a valid *property_uri* the :func:`getAllTranslationsForConcept` retrieves all available translations for that concept's property within GEMET information database.
+
+        >>> def test_getAllTranslationsForConcept():
+        ...        concepts = [
+        ...            {
+        ...                'uri': 'http://www.eionet.europa.eu/gemet/concept/7970',
+        ...                'properties': {
+        ...                    'http://www.w3.org/2004/02/skos/core#prefLabel': {},
+        ...                    'http://www.w3.org/2004/02/skos/core#definition': {},
+        ...                }
+        ...            }
+        ...        ]
+        ...
+        ...        for concept in concepts:
+        ...            for prop_uri, prop_values in concept['properties'].iteritems():
+        ...                result = apiTester.doXmlRpc('getAllTranslationsForConcept', concept['uri'], prop_uri)
+        ...                for value in result:
+        ...                    print value['language']
+        ...                    print unicode(value['string'])
+        ...
+        ...
+        >>> test_getAllTranslationsForConcept()
+        bg
+        Пътуване в пространството отвъд земната атмосфера, проведено за научни цели.
+        zh-CN
+        为了科学研究，在地球大气层以外的空间旅游。
+        hr
+        Putovanje u prostor izvan Zemljine atmosfere u svrhu znanstvenog istraživanja.
+        en
+        Travel in the space beyond the earth's atmosphere performed for scientific research purposes.
+        pl
+        podróż w przestrzeni poza atmosferą ziemską odbywana w celach naukowych
+        ru
+        Путешествие в космосе за пределами земной атмосферы, выполняемое в научных целях.
+        bg
+        Пътуване в космоса
+        zh-CN
+        太空旅行
+        ....
+
 
 .. function:: getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri, language)
 
