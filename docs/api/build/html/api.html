@@ -46,12 +46,14 @@
 <p>GEMET&#8217;s data is exposed through the Web for remote applications using XML
 (RDF/SKOS), HTTP and XML/RPC. The XML output is available at
 <a class="reference external" href="http://www.eionet.europa.eu/gemet/rdf">http://www.eionet.europa.eu/gemet/rdf</a>.</p>
-<div class="section" id="api-for-xml-rpc-and-http">
-<h2>API for XML/RPC and HTTP<a class="headerlink" href="#api-for-xml-rpc-and-http" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="common-rpc-methods-for-gemet-api">
+<h2>Common RPC methods for GEMET API<a class="headerlink" href="#common-rpc-methods-for-gemet-api" title="Permalink to this headline">¶</a></h2>
 <p>The following set of functions can be called by a Web application or Web page
 using either HTTP, where the parameters are specified in the query string or via
 XML/RPC. A combination of such function calls ensure the full retrieval of
 GEMET&#8217;s content.</p>
+<div class="section" id="overview-general-python-class-tester-sample">
+<h3>Overview - general Python class tester sample<a class="headerlink" href="#overview-general-python-class-tester-sample" title="Permalink to this headline">¶</a></h3>
 <p>To prove the functionality of the XML/RPC API the following Python piece of code will be used:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">xmlrpclib</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pprint</span>
@@ -73,6 +75,12 @@ GEMET&#8217;s content.</p>
 </pre></div>
 </div>
 <p>The <em>test_specificApiFunction</em> in the end will be stated in all the following API primary methods to show the use of parameters and the returning result within a sample Python script.</p>
+</div>
+<div class="section" id="webservice-api-methods">
+<h3>WebService API methods<a class="headerlink" href="#webservice-api-methods" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.</span></p>
+</div>
 <dl class="function">
 <dt id="getTopmostConcepts">
 <tt class="descname">getTopmostConcepts</tt><big>(</big><em>thesaurus_uri</em>, <em>language='en'</em><big>)</big><a class="headerlink" href="#getTopmostConcepts" title="Permalink to this definition">¶</a></dt>
@@ -173,6 +181,7 @@ GEMET&#8217;s content.</p>
 </dd></dl>
 
 </div>
+</div>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -192,7 +201,11 @@ GEMET&#8217;s content.</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">GEMET API&#8217;s documentation</a><ul>
-<li><a class="reference internal" href="#api-for-xml-rpc-and-http">API for XML/RPC and HTTP</a></li>
+<li><a class="reference internal" href="#common-rpc-methods-for-gemet-api">Common RPC methods for GEMET API</a><ul>
+<li><a class="reference internal" href="#overview-general-python-class-tester-sample">Overview - general Python class tester sample</a></li>
+<li><a class="reference internal" href="#webservice-api-methods">WebService API methods</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>

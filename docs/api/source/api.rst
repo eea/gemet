@@ -10,12 +10,16 @@ GEMET's data is exposed through the Web for remote applications using XML
 (RDF/SKOS), HTTP and XML/RPC. The XML output is available at
 http://www.eionet.europa.eu/gemet/rdf.
 
-API for XML/RPC and HTTP
-=======================
+Common RPC methods for GEMET API
+================================
 The following set of functions can be called by a Web application or Web page
 using either HTTP, where the parameters are specified in the query string or via
 XML/RPC. A combination of such function calls ensure the full retrieval of
 GEMET's content.
+
+
+Overview - general Python class tester sample
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To prove the functionality of the XML/RPC API the following Python piece of code will be used::
 
@@ -38,6 +42,12 @@ To prove the functionality of the XML/RPC API the following Python piece of code
     >>>     TODO
 
 The *test_specificApiFunction* in the end will be stated in all the following API primary methods to show the use of parameters and the returning result within a sample Python script.
+
+
+WebService API methods
+~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 2.0
 
 
 .. function:: getTopmostConcepts(thesaurus_uri, language='en')
