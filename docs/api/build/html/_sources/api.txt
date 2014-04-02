@@ -83,7 +83,27 @@ WebService API methods
 
 .. function:: hasConcept(concept_uri)
 
-   :func:`hasConcept` is a primary API method.
+   :func:`hasConcept` is a primary method that returns a boolean that states whether the *concept_uri* is a valid resource API or not::
+
+        >>> def test_hasConcept():
+        ...        good_uris = ['http://www.eionet.europa.eu/gemet/concept/7970',
+        ...                     'http://www.eionet.europa.eu/gemet/theme/33']
+        ...        bad_uris = ['http://www.eionet.europa.eu/gemet/concept/99999999',
+        ...                     'sdfughkdjfng BAD URI! dduidbnJsdfsj']
+        ...
+        ...        for uri in good_uris:
+        ...            result = apiTester.doXmlRpc('hasConcept', uri)
+        ...            print result
+        ...
+        ...        for uri in bad_uris:
+        ...            result = apiTester.doXmlRpc('hasConcept', uri)
+        ...            print result
+        ...
+        >>> test_hasConcept()
+        True
+        True
+        False
+        False
 
 .. function:: hasRelation(concept_uri, relation_uri, object_uri)
 

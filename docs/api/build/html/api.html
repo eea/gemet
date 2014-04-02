@@ -123,7 +123,28 @@ GEMET&#8217;s content.</p>
 <dl class="function">
 <dt id="hasConcept">
 <tt class="descname">hasConcept</tt><big>(</big><em>concept_uri</em><big>)</big><a class="headerlink" href="#hasConcept" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#hasConcept" title="hasConcept"><tt class="xref py py-func docutils literal"><span class="pre">hasConcept()</span></tt></a> is a primary API method.</p>
+<dd><p><a class="reference internal" href="#hasConcept" title="hasConcept"><tt class="xref py py-func docutils literal"><span class="pre">hasConcept()</span></tt></a> is a primary method that returns a boolean that states whether the <em>concept_uri</em> is a valid resource API or not:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">test_hasConcept</span><span class="p">():</span>
+<span class="gp">... </span>       <span class="n">good_uris</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;http://www.eionet.europa.eu/gemet/concept/7970&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="s">&#39;http://www.eionet.europa.eu/gemet/theme/33&#39;</span><span class="p">]</span>
+<span class="gp">... </span>       <span class="n">bad_uris</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;http://www.eionet.europa.eu/gemet/concept/99999999&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="s">&#39;sdfughkdjfng BAD URI! dduidbnJsdfsj&#39;</span><span class="p">]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>       <span class="k">for</span> <span class="n">uri</span> <span class="ow">in</span> <span class="n">good_uris</span><span class="p">:</span>
+<span class="gp">... </span>           <span class="n">result</span> <span class="o">=</span> <span class="n">apiTester</span><span class="o">.</span><span class="n">doXmlRpc</span><span class="p">(</span><span class="s">&#39;hasConcept&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+<span class="gp">... </span>           <span class="k">print</span> <span class="n">result</span>
+<span class="gp">...</span>
+<span class="gp">... </span>       <span class="k">for</span> <span class="n">uri</span> <span class="ow">in</span> <span class="n">bad_uris</span><span class="p">:</span>
+<span class="gp">... </span>           <span class="n">result</span> <span class="o">=</span> <span class="n">apiTester</span><span class="o">.</span><span class="n">doXmlRpc</span><span class="p">(</span><span class="s">&#39;hasConcept&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+<span class="gp">... </span>           <span class="k">print</span> <span class="n">result</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_hasConcept</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="go">True</span>
+<span class="go">False</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
