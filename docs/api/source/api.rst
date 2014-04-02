@@ -19,7 +19,7 @@ GEMET's content.
 
 
 Overview - general Python class tester sample
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To prove the functionality of the XML/RPC API the following Python piece of code will be used::
 
@@ -45,7 +45,7 @@ The *test_specificApiFunction* in the end will be stated in all the following AP
 
 
 WebService API methods
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2.0
 
