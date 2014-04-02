@@ -246,15 +246,45 @@ WebService API methods
 
 .. function:: getAvailableLanguages(concept_uri)
 
-   :func:`getAvailableLanguages` is a primary API method.
+   Given an URI that uniquely identifies a concept, the
+   :func:`getAvailableLanguages` primary API method returns a list of
+   languages available for translation. It takes the *concept_uri* parameters
+   which defines a valid URI for a concept. ::
+
+        >>> def test_getAvailableLanguages():
+        ...     concept_uri = 'http://www.eionet.europa.eu/gemet/concept/7970'
+        ...     result = apiTester.doXmlRpc('getAvailableLanguages', concept_uri)
+        ...     pp.pprint(result)
+        ...
+        >>> test_getAvailableLanguages()
+        [   'ar',
+            'bg',
+            'ca',
+            [...]
+            'zh-CN']
 
 .. function:: getSupportedLanguages(thesaurus_uri)
 
-   :func:`getSupportedLanguages` is a primary API method.
+   The :func:`getSupportedLanguages` method retrieves a list containing the
+   language codes for all the languages supported by a certain namespace
+   (concept, group, theme, etc.). Its parameter, *thesaurus_uri*, specifies the
+   URI for the wanted namespace. ::
+
+        >>> def test_getSupportedLanguages():
+        ...     thesaurus_uri = 'http://www.eionet.europa.eu/gemet/concept/'
+        ...     result = apiTester.doXmlRpc('getSupportedLanguages', thesaurus_uri)
+        ...     pp.pprint(result)
+        ...
+        >>> test_getSupportedLanguages()
+        [   'ar',
+            'bg',
+            'ca',
+            [...]
+            'zh']
 
 .. function:: getAvailableThesauri()
 
-   This function is used to fetch a list of all the possible namespaces a
+   This API method is used to fetch a list of all the possible namespaces a
    concept can be classified in. For each namespace a series of more detailed
    information is provided: its name, its URI and its current version. ::
 
@@ -281,7 +311,7 @@ WebService API methods
 
 .. function:: fetchThemes(lang)
 
-   For the given language, :func:`fetchThemes` function returns the list of
+   For the given language, :func:`fetchThemes` method returns the list of
    themes found in the GEMET database. Its only parameter, *lang* represents
    the language code. ::
 
