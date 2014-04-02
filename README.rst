@@ -5,8 +5,8 @@ GEMET
 
 Project Name
 ------------
-http://www.eionet.europa.eu/gemet
 The Project Name is GEMET - GEneral Multilingual Environmental Thesaurus
+http://www.eionet.europa.eu/gemet
 
 Prerequisites - System packages
 -------------------------------
@@ -134,7 +134,7 @@ Running unit tests
 Contacts
 ========
 
-The project owner is SÃ¸ren Roug (soren.roug at eaa.europa.eu)
+The project owner is Søren Roug (soren.roug at eaa.europa.eu)
 
 Other people involved in this project are:
 
