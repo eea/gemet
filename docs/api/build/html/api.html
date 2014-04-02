@@ -52,6 +52,27 @@
 using either HTTP, where the parameters are specified in the query string or via
 XML/RPC. A combination of such function calls ensure the full retrieval of
 GEMET&#8217;s content.</p>
+<p>To prove the functionality of the XML/RPC API the following Python piece of code will be used:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">xmlrpclib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pprint</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ApiTester</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">xmlrpc_url</span> <span class="o">=</span> <span class="s">&#39;http://www.eionet.europa.eu/gemet&#39;</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">doXmlRpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">server</span> <span class="o">=</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">ServerProxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlrpc_url</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">... </span><span class="n">apiTester</span> <span class="o">=</span> <span class="n">ApiTester</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">test_specificApiFunction</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">TODO</span>
+</pre></div>
+</div>
+<p>The <em>test_specificApiFunction</em> in the end will be stated in all the following API primary methods to show the use of parameters and the returning result within a sample Python script.</p>
 <dl class="function">
 <dt id="getTopmostConcepts">
 <tt class="descname">getTopmostConcepts</tt><big>(</big><em>thesaurus_uri</em>, <em>language='en'</em><big>)</big><a class="headerlink" href="#getTopmostConcepts" title="Permalink to this definition">¶</a></dt>
@@ -73,7 +94,22 @@ GEMET&#8217;s content.</p>
 <dl class="function">
 <dt id="getConcept">
 <tt class="descname">getConcept</tt><big>(</big><em>concept_uri</em>, <em>lang</em><big>)</big><a class="headerlink" href="#getConcept" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#getConcept" title="getConcept"><tt class="xref py py-func docutils literal"><span class="pre">getConcept()</span></tt></a> is a primary API method. It gets all the available information about a specific concept. It takes <em>concept_uri</em> as a valid resource GEMET URI and <em>lang</em> as a string indicating the language code.</p>
+<dd><p>Retrieve all the available information about a specific concept. It takes <em>concept_uri</em> as a valid resource URI and <em>lang</em> as a string indicating the language cod, shown in the follow examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">test_getConcept</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">concept_uri</span> <span class="o">=</span> <span class="s">&#39;http://www.eionet.europa.eu/gemet/concept/7970&#39;</span>
+<span class="gp">... </span>    <span class="n">lang</span> <span class="o">=</span> <span class="s">&#39;en&#39;</span>
+<span class="gp">... </span>    <span class="n">result</span> <span class="o">=</span> <span class="n">apiTester</span><span class="o">.</span><span class="n">doXmlRpc</span><span class="p">(</span><span class="s">&#39;getConcept&#39;</span><span class="p">,</span> <span class="n">concept_uri</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_getConcept</span><span class="p">()</span>
+<span class="go">{   &#39;definition&#39;: {   &#39;language&#39;: &#39;en&#39;,</span>
+<span class="go">                      &#39;string&#39;: &quot;Travel in the space beyond the earth&#39;s atmosphere performed for scientific research purposes.&quot;},</span>
+<span class="go">    &#39;preferredLabel&#39;: {   &#39;language&#39;: &#39;en&#39;, &#39;string&#39;: &#39;space travel&#39;},</span>
+<span class="go">    &#39;thesaurus&#39;: &#39;http://www.eionet.europa.eu/gemet/concept/&#39;,</span>
+<span class="go">    &#39;uri&#39;: &#39;http://www.eionet.europa.eu/gemet/concept/7970&#39;}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">

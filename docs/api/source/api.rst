@@ -17,6 +17,28 @@ using either HTTP, where the parameters are specified in the query string or via
 XML/RPC. A combination of such function calls ensure the full retrieval of
 GEMET's content.
 
+To prove the functionality of the XML/RPC API the following Python piece of code will be used::
+
+    >>> import xmlrpclib
+    >>> import pprint
+    >>>
+    >>> class ApiTester(object):
+    ...
+    ...     xmlrpc_url = 'http://www.eionet.europa.eu/gemet'
+    ...
+    ...     def doXmlRpc(self, method, *args):
+    ...         server = xmlrpclib.ServerProxy(self.xmlrpc_url, allow_none=True)
+    ...         return getattr(server, method)(*args)
+    ...
+    ...
+    ... pp = pprint.PrettyPrinter(indent=4)
+    ... apiTester = ApiTester()
+    ...
+    >>> def test_specificApiFunction(*args, **kwargs)
+    >>>     TODO
+
+The *test_specificApiFunction* in the end will be stated in all the following API primary methods to show the use of parameters and the returning result within a sample Python script.
+
 
 .. function:: getTopmostConcepts(thesaurus_uri, language='en')
 
@@ -32,7 +54,22 @@ GEMET's content.
 
 .. function:: getConcept(concept_uri, lang)
 
-    :func:`getConcept` is a primary API method. It gets all the available information about a specific concept. It takes *concept_uri* as a valid resource GEMET URI and *lang* as a string indicating the language code.
+    Retrieve all the available information about a specific concept. It takes *concept_uri* as a valid resource URI and *lang* as a string indicating the language cod, shown in the follow examples::
+
+        >>> def test_getConcept():
+        ...     concept_uri = 'http://www.eionet.europa.eu/gemet/concept/7970'
+        ...     lang = 'en'
+        ...     result = apiTester.doXmlRpc('getConcept', concept_uri, lang)
+        ...     pp.pprint(result)
+        ...
+        >>> test_getConcept()
+        {   'definition': {   'language': 'en',
+                              'string': "Travel in the space beyond the earth's atmosphere performed for scientific research purposes."},
+            'preferredLabel': {   'language': 'en', 'string': 'space travel'},
+            'thesaurus': 'http://www.eionet.europa.eu/gemet/concept/',
+            'uri': 'http://www.eionet.europa.eu/gemet/concept/7970'}
+        >>>
+
 
 .. function:: hasConcept(concept_uri)
 
