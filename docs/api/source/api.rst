@@ -107,7 +107,74 @@ WebService API methods
 
 .. function:: hasRelation(concept_uri, relation_uri, object_uri)
 
-   :func:`hasRelation` is a primary API method.
+   By using :func:`hasRelation` API primary method, the relationships between concepts can be checked. It takes *concept_uri* and *object_uri* and returns a boolean whether *relation_uri* maps or not as a relationship between them. Please note in the follow examples that the *relation_uri* may be defined from multiple RDF schemas across the web, including the standard `http://www.w3.org/` or GEMET own schema `http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf/` ::
+
+        >>> def test_hasRelation():
+        ...         good_relations = [
+        ...             ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...              'http://www.w3.org/2004/02/skos/core#broader',
+        ...              'http://www.eionet.europa.eu/gemet/concept/13292'),
+        ...
+        ...             ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...              'http://www.w3.org/2004/02/skos/core#narrower',
+        ...              'http://www.eionet.europa.eu/gemet/concept/661'),
+        ...
+        ...             ('http://www.eionet.europa.eu/gemet/concept/42',
+        ...              'http://www.w3.org/2004/02/skos/core#related',
+        ...              'http://www.eionet.europa.eu/gemet/concept/51'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group',
+        ...             'http://www.eionet.europa.eu/gemet/group/96'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme',
+        ...             'http://www.eionet.europa.eu/gemet/theme/1'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/group/96',
+        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember',
+        ...             'http://www.eionet.europa.eu/gemet/concept/21'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/theme/1',
+        ...             'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#themeMember',
+        ...             'http://www.eionet.europa.eu/gemet/concept/13293'),
+        ...        ]
+        ...        bad_relations = [
+        ...            ('http://www.eionet.europa.eu/gemet/concept/999999999999',
+        ...             'http://www.w3.org/2004/02/skos/core#broader',
+        ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...             'badrelation',
+        ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
+        ...
+        ...            ('http://www.eionet.europa.eu/gemet/concept/100',
+        ...             'http://www.w3.org/2004/02/skos/core#broader',
+        ...             'badtarget'),
+        ...
+        ...            ('badsource',
+        ...             'http://www.w3.org/2004/02/skos/core#broader',
+        ...             'http://www.eionet.europa.eu/gemet/concept/13292'),
+        ...        ]
+        ...        for relation in good_relations:
+        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
+        ...            print result
+        ...
+        ...        for relation in bad_relations:
+        ...            result = apiTester.doXmlRpc('hasRelation', *relation)
+        ...                print result
+        >>> test_hasRelation()
+        True
+        True
+        True
+        True
+        True
+        True
+        True
+        False
+        False
+        False
+        False
 
 .. function:: getAllTranslationsForConcept(concept_uri, property_uri)
 
