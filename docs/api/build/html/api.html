@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>GEMET API’s documentation &mdash; Gemet API 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Gemet API 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">Gemet API 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gemet-api-s-documentation">
+<h1>GEMET API&#8217;s documentation<a class="headerlink" href="#gemet-api-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>GEMET&#8217;s data is exposed through the Web for remote applications using XML
+(RDF/SKOS), HTTP and XML/RPC. The XML output is available at
+<a class="reference external" href="http://www.eionet.europa.eu/gemet/rdf">http://www.eionet.europa.eu/gemet/rdf</a>.</p>
+<div class="section" id="api-for-xml-rpc-and-http">
+<h2>API for XML/RPC and HTTP<a class="headerlink" href="#api-for-xml-rpc-and-http" title="Permalink to this headline">¶</a></h2>
+<p>The following set of functions can be called by a Web application or Web page
+using either HTTP, where the parameters are specified in the query string or via
+XML/RPC. A combination of such function calls ensure the full retrieval of
+GEMET&#8217;s content.</p>
+<dl class="function">
+<dt id="getTopmostConcepts">
+<tt class="descname">getTopmostConcepts</tt><big>(</big><em>thesaurus_uri</em>, <em>language='en'</em><big>)</big><a class="headerlink" href="#getTopmostConcepts" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getTopmostConcepts" title="getTopmostConcepts"><tt class="xref py py-func docutils literal"><span class="pre">getTopmostConcepts()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getAllConceptRelatives">
+<tt class="descname">getAllConceptRelatives</tt><big>(</big><em>concept_uri</em>, <em>target_thesaurus_uri=None</em>, <em>relation_uri=None</em><big>)</big><a class="headerlink" href="#getAllConceptRelatives" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getAllConceptRelatives" title="getAllConceptRelatives"><tt class="xref py py-func docutils literal"><span class="pre">getAllConceptRelatives()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getRelatedConcepts">
+<tt class="descname">getRelatedConcepts</tt><big>(</big><em>concept_uri</em>, <em>relation_uri</em>, <em>language='en'</em><big>)</big><a class="headerlink" href="#getRelatedConcepts" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getRelatedConcepts" title="getRelatedConcepts"><tt class="xref py py-func docutils literal"><span class="pre">getRelatedConcepts()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getConcept">
+<tt class="descname">getConcept</tt><big>(</big><em>concept_uri</em>, <em>lang</em><big>)</big><a class="headerlink" href="#getConcept" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getConcept" title="getConcept"><tt class="xref py py-func docutils literal"><span class="pre">getConcept()</span></tt></a> is a primary API method. It gets all the available information about a specific concept. It takes <em>concept_uri</em> as a valid resource GEMET URI and <em>lang</em> as a string indicating the language code.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hasConcept">
+<tt class="descname">hasConcept</tt><big>(</big><em>concept_uri</em><big>)</big><a class="headerlink" href="#hasConcept" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#hasConcept" title="hasConcept"><tt class="xref py py-func docutils literal"><span class="pre">hasConcept()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hasRelation">
+<tt class="descname">hasRelation</tt><big>(</big><em>concept_uri</em>, <em>relation_uri</em>, <em>object_uri</em><big>)</big><a class="headerlink" href="#hasRelation" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#hasRelation" title="hasRelation"><tt class="xref py py-func docutils literal"><span class="pre">hasRelation()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getAllTranslationsForConcept">
+<tt class="descname">getAllTranslationsForConcept</tt><big>(</big><em>concept_uri</em>, <em>property_uri</em><big>)</big><a class="headerlink" href="#getAllTranslationsForConcept" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getAllTranslationsForConcept" title="getAllTranslationsForConcept"><tt class="xref py py-func docutils literal"><span class="pre">getAllTranslationsForConcept()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getConceptsMatchingKeyword">
+<tt class="descname">getConceptsMatchingKeyword</tt><big>(</big><em>keyword</em>, <em>search_mode</em>, <em>thesaurus_uri</em>, <em>language</em><big>)</big><a class="headerlink" href="#getConceptsMatchingKeyword" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getConceptsMatchingKeyword" title="getConceptsMatchingKeyword"><tt class="xref py py-func docutils literal"><span class="pre">getConceptsMatchingKeyword()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getConceptsMatchingRegexByThesaurus">
+<tt class="descname">getConceptsMatchingRegexByThesaurus</tt><big>(</big><em>regex</em>, <em>thesaurus_uri</em>, <em>language</em><big>)</big><a class="headerlink" href="#getConceptsMatchingRegexByThesaurus" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getConceptsMatchingRegexByThesaurus" title="getConceptsMatchingRegexByThesaurus"><tt class="xref py py-func docutils literal"><span class="pre">getConceptsMatchingRegexByThesaurus()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getAvailableLanguages">
+<tt class="descname">getAvailableLanguages</tt><big>(</big><em>concept_uri</em><big>)</big><a class="headerlink" href="#getAvailableLanguages" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getAvailableLanguages" title="getAvailableLanguages"><tt class="xref py py-func docutils literal"><span class="pre">getAvailableLanguages()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getSupportedLanguages">
+<tt class="descname">getSupportedLanguages</tt><big>(</big><em>thesaurus_uri</em><big>)</big><a class="headerlink" href="#getSupportedLanguages" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getSupportedLanguages" title="getSupportedLanguages"><tt class="xref py py-func docutils literal"><span class="pre">getSupportedLanguages()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="getAvailableThesauri">
+<tt class="descname">getAvailableThesauri</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#getAvailableThesauri" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#getAvailableThesauri" title="getAvailableThesauri"><tt class="xref py py-func docutils literal"><span class="pre">getAvailableThesauri()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fetchThemes">
+<tt class="descname">fetchThemes</tt><big>(</big><em>language</em><big>)</big><a class="headerlink" href="#fetchThemes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#fetchThemes" title="fetchThemes"><tt class="xref py py-func docutils literal"><span class="pre">fetchThemes()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fetchGroups">
+<tt class="descname">fetchGroups</tt><big>(</big><em>language</em><big>)</big><a class="headerlink" href="#fetchGroups" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#fetchGroups" title="fetchGroups"><tt class="xref py py-func docutils literal"><span class="pre">fetchGroups()</span></tt></a> is a primary API method.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GEMET API&#8217;s documentation</a><ul>
+<li><a class="reference internal" href="#api-for-xml-rpc-and-http">API for XML/RPC and HTTP</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">Gemet API 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Eau de web.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
