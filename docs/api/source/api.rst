@@ -242,7 +242,57 @@ WebService API methods
 
 .. function:: getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri, language)
 
-   :func:`getConceptsMatchingRegexByThesaurus` is a primary API method.
+   This function refines and extends the behaviour of :func:`getConceptsMatchingKeyword` such that one can lookp up in the GEMET content by *regex*. Instead of using any of the conventional aforementioned *search_mode*, a full *regex* expression can be send to refine granularity from the API. *thesaurus_uri* represents the GEMET resource in which to look up for, while *lang* is a string that indicates the language code::
+
+        >>> def test_getConceptsMatchingRegexByThesaurus():
+        ...
+        ...       reference = [
+        ...           {
+        ...               'regexp': '^space t',
+        ...               'namespace': 'http://www.eionet.europa.eu/gemet/concept/',
+        ...               'language': 'en',
+        ...           },
+        ...           {
+        ...               'regexp': '^air.+pol.+$',
+        ...               'namespace': 'http://www.eionet.europa.eu/gemet/concept/',
+        ...               'language': 'en',
+        ...           },
+        ...           {
+        ...               'regexp': 'so',
+        ...               'namespace': 'http://www.eionet.europa.eu/gemet/theme/',
+        ...               'language': 'en',
+        ...           },
+        ...           {
+        ...               'regexp': u'гия$',
+        ...               'namespace': 'http://www.eionet.europa.eu/gemet/theme/',
+        ...               'language': 'ru',
+        ...           },
+        ...       ]
+        ...
+        ...       def get_match_names(match):
+        ...          names = []
+        ...          for concept in match:
+        ...              names.append(concept['preferredLabel']['string'])
+        ...          return names
+        ...
+        ...      for query in reference:
+        ...          match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
+        ...                  query['regexp'], query['namespace'], query['language'])
+        ...          names = get_match_names(match)
+        ...         for name in names:
+        ...               print unicode(name)
+        ...
+        >>> test_getConceptsMatchingRegexByThesaurus()
+        space transportation
+        space travel
+        air pollutant
+        air pollution
+        resources
+        social aspects, population
+        soil
+        энергия
+        биология
+
 
 .. function:: getAvailableLanguages(concept_uri)
 
