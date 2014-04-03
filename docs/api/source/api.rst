@@ -52,19 +52,107 @@ WebService API methods
 
 .. function:: getTopmostConcepts(thesaurus_uri, language='en')
 
-    :func:`getTopmostConcepts` is a primary API method.
+    :func:`getTopmostConcepts` is a primary API method with which all top concepts of a specified *thesaurus_uri* can be obtained::
+
+        >>> def test_getTopmostConcepts():
+        ...       some_top_concepts = {
+        ...           'http://www.eionet.europa.eu/gemet/concept/': [],
+        ...           'http://www.eionet.europa.eu/gemet/group/': [],
+        ...           'http://www.eionet.europa.eu/gemet/theme/': [],
+        ...       }
+        ...
+        ...       for thesaurus_uri in some_top_concepts.keys():
+        ...           top_concepts = apiTester.doXmlRpc('getTopmostConcepts', thesaurus_uri, 'en')
+        ...           for top_concept in top_concepts:
+        ...               print top_concept['preferredLabel']['string']
+        >>> test_getTopmostConcepts()
+        administration
+        agriculture
+        air
+        animal husbandry
+        biology
+        building
+        chemistry
+        climate
+        disasters, accidents, risk
+        economics
+        energy
+        environmental policy
+        fishery
+        food, drinking water
+        forestry
+        [...]
 
 .. function:: getAllConceptRelatives(concept_uri, target_thesaurus_uri=None, relation_uri=None)
 
-   :func:`getAllConceptRelatives` is a primary API method.
+   :func:`getAllConceptRelatives` is a primary API method that can be used to get all GEMET related resources. For a given *concept_uri* only, all other resources are extracted from within the database. By using a specific *target_thesaurus_uri* or *relation_uri* the search for 'relatives' can be narrowed.
+
+        >>> def test_getAllConceptRelatives():
+        ...        gemet_uri = 'http://www.eionet.europa.eu/gemet/'
+        ...        skos_uri = 'http://www.w3.org/2004/02/skos/core#'
+        ...        gemet_schema_uri = 'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#'
+        ...        relations = {
+        ...           'narrower': skos_uri + 'narrower',
+        ...           'broader': skos_uri + 'broader',
+        ...           'related': skos_uri + 'related',
+        ...           'groupMember': gemet_schema_uri + 'groupMember',
+        ...           'group': gemet_schema_uri + 'group',
+        ...           'theme': gemet_schema_uri + 'theme',
+        ...           'themeMember': gemet_schema_uri + 'themeMember',
+        ...       }
+        ...       some_relatives = {
+        ...           'http://www.eionet.europa.eu/gemet/group/96': [],
+        ...
+        ...           'http://www.eionet.europa.eu/gemet/theme/1': [],
+        ...
+        ...           'http://www.eionet.europa.eu/gemet/concept/100': [],
+        ...
+        ...           'http://www.eionet.europa.eu/gemet/concept/42': [],
+        ...           'http://www.eionet.europa.eu/gemet/group/8603': [],
+        ...           'http://www.eionet.europa.eu/gemet/supergroup/4044': [],
+        ...        }
+        ...
+        ...       for concept_uri in some_relatives.keys():
+        ...           relatives = apiTester.doXmlRpc('getAllConceptRelatives', concept_uri)
+        ...           received_relations = []
+        ...           for relative in relatives:
+        ...               received_relations.append('%s %s' % (relative['relation'], relative['target']))
+        ...
+        ...           pp.pprint(received_relations)
+        ...           break
+        ...
+        >>> test_getAllConceptRelatives()
+        [ ...
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13135',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13142',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13143',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13292',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13293',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13294',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13295',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13296',
+        'http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember http://www.eionet.europa.eu/gemet/concept/13297'
+        ....]
+
 
 .. function:: getRelatedConcepts(concept_uri, relation_uri, language='en')
 
-   :func:`getRelatedConcepts` is a primary API method.
+   :func:`getRelatedConcepts` is a primary API method. For a given *concept_uri* it retrieves any other GEMET content resource if a valid relationship, defined by *relation_uri*, exists. *lang* is a string indicating the language code::
+
+        >>> def test_getRelatedConcepts():
+        ...       relatives = apiTester.doXmlRpc('getRelatedConcepts',
+        ...                       'http://www.eionet.europa.eu/gemet/concept/42', # acid deposition
+        ...                       'http://www.w3.org/2004/02/skos/core#related')
+        ...       for relative in relatives:
+        ...           print relative['preferredLabel']['string']
+        ...
+        >>> test_getRelatedConcepts()
+        acid rain
+        soil acidification
 
 .. function:: getConcept(concept_uri, lang)
 
-    Retrieve all the available information about a specific concept. It takes *concept_uri* as a valid resource URI and *lang* as a string indicating the language cod, shown in the follow examples::
+   Retrieve all the available information about a specific concept. It takes *concept_uri* as a valid resource URI and *lang* as a string indicating the language code, shown in the follow examples::
 
         >>> def test_getConcept():
         ...     concept_uri = 'http://www.eionet.europa.eu/gemet/concept/7970'
@@ -79,7 +167,6 @@ WebService API methods
             'thesaurus': 'http://www.eionet.europa.eu/gemet/concept/',
             'uri': 'http://www.eionet.europa.eu/gemet/concept/7970'}
         >>>
-
 
 .. function:: hasConcept(concept_uri)
 
@@ -198,7 +285,6 @@ WebService API methods
         太空旅行
         [...]
 
-
 .. function:: getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri, language)
 
    :func:`getConceptsMatchingKeyword` is a powerful API method. For a term defined by *keyword*, the function searches the GEMET content looking for matches. The *search_mode* argument indicates the type of term expansion to try when looking for a match as follows:
@@ -292,7 +378,6 @@ WebService API methods
         soil
         энергия
         биология
-
 
 .. function:: getAvailableLanguages(concept_uri)
 
