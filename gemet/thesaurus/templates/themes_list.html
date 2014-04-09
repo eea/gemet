@@ -1,11 +1,19 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+  
+  <h2>Select Language:</h2>
+  {% for lang in langs %}
+      <a href='/?langcode={{ lang.code }}'>{{ lang.code }}</a>
+      &nbsp|&nbsp
+  {% endfor %}
+  
+  
   <h1>Themes</h1>
-
   <ul>
     {% for t in themes %}
     <li>{{ t.value }}</li>
     {% endfor %}
   </ul>
+
 {% endblock %}
