@@ -40,6 +40,9 @@ class Property(Model):
     name = CharField(max_length=50)
     value = CharField(max_length=65000)
     is_resource = BooleanField(default=False)
+    
+    def __unicode__(self):
+        return self.value
 
 
 class PropertyType(Model):
