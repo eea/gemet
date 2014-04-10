@@ -6,20 +6,12 @@
     <a href="{% url 'concept' concept.id %}?langcode={{ lang.code }}">{{ lang.code }}</a>
   {% endfor %}
 
-  <h3>{{ concept.prefLabel.value }}</h3>
+  <h3>{{ concept.prefLabel }}</h3>
     <h4>Definiton:</h4>
-      {% if concept.definition %}
-        {{ concept.definition.value }}
-      {% else %}
-        definition is not available
-      {% endif %}
+      {{ concept.definition|default:"definition is not available" }}
 
     <h4>Scope note:</h4>
-      {% if concept.scopeNote %}
-        {{ concept.scopeNote.value }}
-      {% else %}
-        scope note is not available
-      {% endif %}
+      {{ concept.scopeNote|default:"scope note is not available" }}
 
     {% if concept.groups %}
       <h4>Groups:</h4>

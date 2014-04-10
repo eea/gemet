@@ -35,7 +35,7 @@ class Language(Model):
 
 
 class Property(Model):
-    concept = ForeignKey(Concept)
+    concept = ForeignKey(Concept, related_name='properties')
     language = ForeignKey(Language)
     name = CharField(max_length=50)
     value = CharField(max_length=65000)
@@ -65,7 +65,7 @@ class Relation(Model):
 
 
 class ForeignRelation(Model):
-    concept = ForeignKey(Concept)
+    concept = ForeignKey(Concept, related_name='foreign_relations')
     uri = CharField(max_length=512)
     property_type = ForeignKey(PropertyType)
     label = CharField(max_length=100)

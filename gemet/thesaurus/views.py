@@ -1,10 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from gemet.thesaurus.models import (
     Namespace,
     Property,
     Language,
-    Relation,
-    ForeignRelation,
+    Concept,
 )
 
 
@@ -47,20 +46,26 @@ def groups_list(request):
 def concept(request, concept_id):
     languages = Language.objects.all()
     langcode = request.GET.get('langcode', 'en')
-    concept_query = Property.objects.only('value').filter(
-        concept__id=concept_id,
-        language__code=langcode,
-    )
+
+    concept = get_object_or_404(Concept, pk=concept_id)
+
     data_dict = {'id': concept_id}
-    property_names = ['prefLabel', 'definition', 'scopeNote']
-    data_dict.update(
-        {p: concept_query.filter(name=p).first() for p in property_names})
+
+    properties = dict(
+        concept.properties
+        .filter(
+            language__code=langcode,
+            name__in=['prefLabel', 'definition', 'scopeNote'],
+        )
+        .values_list('name', 'value')
+    )
+    data_dict.update(properties)
 
     broader_concept_names = ['theme', 'group']
     broader_concepts = {c + 's': Property.objects.filter(
-        concept__in=[r.target for r in Relation.objects.filter(
-            source__id=concept_id,
-            property_type__name=c)],
+        concept__in=concept.source_relations
+        .filter(property_type__name=c)
+        .values_list('target'),
         name='prefLabel',
         language__code=langcode,
     )
@@ -68,14 +73,8 @@ def concept(request, concept_id):
     }
     data_dict.update(broader_concepts)
 
-    foreign_relations = ForeignRelation.objects.filter(
-        concept__id=concept_id,
-        show_in_html=True,
-    )
-    translations = Property.objects.filter(
-        concept__id=concept_id,
-        name='prefLabel',
-    )
+    foreign_relations = concept.foreign_relations.filter(show_in_html=True)
+    translations = concept.properties.filter(name='prefLabel')
     data_dict.update({
         'foreign_relations': foreign_relations,
         'translations': translations,
