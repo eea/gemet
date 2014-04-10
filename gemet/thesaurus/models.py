@@ -41,10 +41,17 @@ class Property(Model):
     value = CharField(max_length=65000)
     is_resource = BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = "properties"
+
 
 class PropertyType(Model):
+    name = CharField(max_length=40)
     label = CharField(max_length=100)
     uri = CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Relation(Model):
