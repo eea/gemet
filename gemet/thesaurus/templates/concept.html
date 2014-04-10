@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  Select language:
+  {% for lang in languages %}
+    <a href="{% url 'concept' concept.id %}?langcode={{ lang.code }}">{{ lang.code }}</a>
+  {% endfor %}
+
+  <h3>{{ concept.prefLabel.value }}</h3>
+    <h4>Definiton:</h4>
+      {% if concept.definition %}
+        {{ concept.definition.value }}
+      {% else %}
+        definition is not available
+      {% endif %}
+
+    <h4>Scope note:</h4>
+      {% if concept.scopeNote %}
+        {{ concept.scopeNote.value }}
+      {% else %}
+        scope note is not available
+      {% endif %}
+
+    {% if concept.groups %}
+      <h4>Groups:</h4>
+      {% for group in concept.groups %}
+        {{ group.value }}
+      {% endfor %}
+    {% endif %}
+
+    {% if concept.themes %}
+      <h4>Themes:</h4>
+      {% for theme in concept.themes %}
+        {{ theme.value }}
+      {% endfor %}
+    {% endif %}
+
+    <h4>Other relations:</h4>
+      <ul>
+        {% for relation in concept.foreign_relations %}
+          <li>
+            {{ relation.property_type.label }}:
+            <a href="{{ relation.uri }}">{{ relation.label }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+    <h4>Translations:</h4>
+      <ul>
+        {% for translation in concept.translations %}
+          <li>{{ translation.language.name }}: {{ translation.value }}</li>
+        {% endfor %}
+      </ul>
+
+{% endblock %}

@@ -15,12 +15,12 @@ class Namespace(Model):
 
 class Concept(Model):
     namespace = ForeignKey(Namespace)
-    concept_code = CharField(max_length=10)
+    code = CharField(max_length=10)
     date_entered = DateTimeField(blank=True, null=True)
     date_changed = DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
-        return self.concept_code
+        return self.code
 
 
 class Language(Model):
@@ -41,6 +41,10 @@ class Property(Model):
     value = CharField(max_length=65000)
     is_resource = BooleanField(default=False)
 
+    def __unicode__(self):
+        return "{0} - {1} ({2})".format(
+            self.concept.code, self.name, self.language.code)
+
     class Meta:
         verbose_name_plural = "properties"
 
@@ -55,12 +59,12 @@ class PropertyType(Model):
 
 
 class Relation(Model):
-    source = ForeignKey(Concept, related_name='relation_sources')
-    target = ForeignKey(Concept, related_name='relation_targets')
+    source = ForeignKey(Concept, related_name='source_relations')
+    target = ForeignKey(Concept, related_name='target_relations')
     property_type = ForeignKey(PropertyType)
 
 
-class ForeignRelations(Model):
+class ForeignRelation(Model):
     concept = ForeignKey(Concept)
     uri = CharField(max_length=512)
     property_type = ForeignKey(PropertyType)
