@@ -370,3 +370,248 @@
  }
 }
 ]
+[
+{
+ "pk": 28, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#broader", 
+  "name": "broader", 
+  "label": "broader term"
+ }
+},
+{
+ "pk": 29, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#narrower", 
+  "name": "narrower", 
+  "label": "narrower term"
+ }
+},
+{
+ "pk": 30, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#related", 
+  "name": "related", 
+  "label": "related"
+ }
+},
+{
+ "pk": 31, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#definition", 
+  "name": "definition", 
+  "label": "Definition"
+ }
+},
+{
+ "pk": 32, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#prefLabel", 
+  "name": "prefLabel", 
+  "label": "Preferred label"
+ }
+},
+{
+ "pk": 33, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#scopeNote", 
+  "name": "scopeNote", 
+  "label": "Scope note"
+ }
+},
+{
+ "pk": 34, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#altLabel", 
+  "name": "altLabel", 
+  "label": "Alternative label"
+ }
+},
+{
+ "pk": 35, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#example", 
+  "name": "example", 
+  "label": "Example"
+ }
+},
+{
+ "pk": 36, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroupOf", 
+  "name": "subGroupOf", 
+  "label": "Sub-group of"
+ }
+},
+{
+ "pk": 37, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#acronymLabel", 
+  "name": "acronymLabel", 
+  "label": "Acronym"
+ }
+},
+{
+ "pk": 38, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme", 
+  "name": "theme", 
+  "label": "Theme"
+ }
+},
+{
+ "pk": 39, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group", 
+  "name": "group", 
+  "label": "Group"
+ }
+},
+{
+ "pk": 40, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#topConceptOf", 
+  "name": "topConceptOf", 
+  "label": "is top concept in scheme"
+ }
+},
+{
+ "pk": 41, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#hasTopConcept", 
+  "name": "hasTopConcept", 
+  "label": "has top concept"
+ }
+},
+{
+ "pk": 42, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#themeMember", 
+  "name": "themeMember", 
+  "label": "Theme member"
+ }
+},
+{
+ "pk": 43, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember", 
+  "name": "groupMember", 
+  "label": "Group member"
+ }
+},
+{
+ "pk": 44, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroup", 
+  "name": "subGroup", 
+  "label": "Sub-group"
+ }
+},
+{
+ "pk": 45, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#exactMatch", 
+  "name": "exactMatch", 
+  "label": "Has exact match"
+ }
+},
+{
+ "pk": 46, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#broadMatch", 
+  "name": "broadMatch", 
+  "label": "Has broader match"
+ }
+},
+{
+ "pk": 47, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#closeMatch", 
+  "name": "closeMatch", 
+  "label": "Has close match"
+ }
+},
+{
+ "pk": 48, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#narrowMatch", 
+  "name": "narrowMatch", 
+  "label": "Has narrower match"
+ }
+},
+{
+ "pk": 49, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#relatedMatch", 
+  "name": "relatedMatch", 
+  "label": "Has related match"
+ }
+},
+{
+ "pk": 50, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#hasWikipediaArticle", 
+  "name": "hasWikipediaArticle", 
+  "label": "Wikipedia article"
+ }
+},
+{
+ "pk": 51, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#sameEEAGlossary", 
+  "name": "sameEEAGlossary", 
+  "label": "EEA Glossary"
+ }
+},
+{
+ "pk": 52, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2000/01/rdf-schema#seeAlso", 
+  "name": "seeAlso", 
+  "label": "See also"
+ }
+},
+{
+ "pk": 53, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#hiddenLabel", 
+  "name": "hiddenLabel", 
+  "label": "Hidden label"
+ }
+},
+{
+ "pk": 54, 
+ "model": "thesaurus.propertytype", 
+ "fields": {
+  "uri": "http://www.w3.org/2004/02/skos/core#notation", 
+  "name": "notation", 
+  "label": "Notation"
+ }
+}
+]
