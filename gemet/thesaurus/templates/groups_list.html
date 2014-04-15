@@ -2,15 +2,16 @@
 
 {% block content %}
   Select language:
-  {% for lang in languages %}
-  <a href="{% url 'groups_list' %}?langcode={{ lang.code }}">{{ lang.code }}</a>
+  {% for langcode in languages %}
+  <a href="{% url 'groups_list' langcode %}">{{ langcode }}</a>
   {% endfor %}
+
   <h1>Groups list</h1>
-  </br>
-  {% for supergroup, groups_list in groups.items %}
-    <h2>{{ supergroup }}</h2>
-      {% for group in groups_list %}
-        {{ group.value }}
+
+  {% for supergroup in supergroups %}
+    <h2>{{ supergroup.prefLabel }}</h2>
+      {% for group in supergroup.children %}
+        <a href="{% url 'relations' langcode group.id %}">{{ group.prefLabel }}</a>
         </br>
       {% endfor %}
   {% endfor %}

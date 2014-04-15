@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <a href="{% url 'themes_list' %}">Themes</a>
-    <a href="{% url 'groups_list' %}">Groups</a>
+    <a href="{% url 'themes_list' 'en' %}">Themes</a>
+    <a href="{% url 'groups_list' 'en' %}">Groups</a>
 {% endblock %}

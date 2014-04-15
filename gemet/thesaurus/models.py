@@ -1,6 +1,7 @@
 from django.db.models import (
     Model, CharField, ForeignKey, DateTimeField, BooleanField,
 )
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Namespace(Model):
@@ -21,6 +22,58 @@ class Concept(Model):
 
     def __unicode__(self):
         return self.code
+
+    def get_property_value(self, property_name, langcode):
+        try:
+            property_value = self.properties.get(
+                name=property_name,
+                language__code=langcode,
+            ).value
+        except ObjectDoesNotExist:
+            property_value = None
+
+        return property_value
+
+    def set_attribute(self, property_name, langcode):
+        setattr(
+            self,
+            property_name,
+            self.get_property_value(property_name, langcode)
+        )
+
+    def set_parent(self, parent_type, langcode):
+        parent_name = parent_type + 's'
+        setattr(
+            self,
+            parent_name,
+            [r.target.get_property_value('prefLabel', langcode)
+             for r in self.source_relations
+             .filter(property_type__name=parent_type)]
+        )
+
+    def set_children(self):
+        if self.namespace.heading in ['Concepts', 'Super groups']:
+            self.children = [r.target for r in self.source_relations
+                             .filter(property_type__name='narrower')]
+        elif self.namespace.heading == 'Groups':
+            group_concepts = [r.target for r in self.source_relations
+                              .filter(property_type__name='groupMember')]
+            self.children = [c for c in group_concepts
+                             if not c.source_relations
+                             .filter(property_type__name='broader')]
+        else:
+            self.children = []
+
+    def set_expand(self, expand):
+        str_id = str(self.id)
+        expand_copy = expand[:]
+        if str_id in expand:
+            self.expanded = True
+            expand_copy.remove(str_id)
+        else:
+            self.expanded = False
+            expand_copy.append(str_id)
+        self.expand_param = '-'.join(expand_copy)
 
 
 class Language(Model):
@@ -62,6 +115,10 @@ class Relation(Model):
     source = ForeignKey(Concept, related_name='source_relations')
     target = ForeignKey(Concept, related_name='target_relations')
     property_type = ForeignKey(PropertyType)
+
+    def __unicode__(self):
+        return 's: {0}, t: {1}, rel: {2}'.format(
+            self.source.code, self.target.code, self.property_type.name)
 
 
 class ForeignRelation(Model):

@@ -2,8 +2,8 @@
 
 {% block content %}
   Select language:
-  {% for lang in languages %}
-    <a href="{% url 'concept' concept.id %}?langcode={{ lang.code }}">{{ lang.code }}</a>
+  {% for langcode in languages %}
+    <a href="{% url 'concept' langcode concept.id %}">{{ langcode }}</a>
   {% endfor %}
 
   <h3>{{ concept.prefLabel }}</h3>
@@ -16,20 +16,20 @@
     {% if concept.groups %}
       <h4>Groups:</h4>
       {% for group in concept.groups %}
-        {{ group.value }}
+        {{ group }}
       {% endfor %}
     {% endif %}
 
     {% if concept.themes %}
       <h4>Themes:</h4>
       {% for theme in concept.themes %}
-        {{ theme.value }}
+        {{ theme }}
       {% endfor %}
     {% endif %}
 
     <h4>Other relations:</h4>
       <ul>
-        {% for relation in concept.foreign_relations %}
+        {% for relation in concept.f_relations %}
           <li>
             {{ relation.property_type.label }}:
             <a href="{{ relation.uri }}">{{ relation.label }}</a>

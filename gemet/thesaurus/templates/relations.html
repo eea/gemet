@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  Select language:
+  {% for langcode in languages %}
+    <a href="{% url 'relations' langcode group.id %}">{{ langcode }}</a>
+  {% endfor %}
+
+  <h1>Relations</h1>
+
+  <h3>{{ group.prefLabel }}</h3>
+  {% for concept in group.children %}
+    {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=langcode %}
+  {% endfor %}
+
+{% endblock %}

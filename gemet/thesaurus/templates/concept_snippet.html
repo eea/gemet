@@ -1,0 +1,19 @@
+<li>
+  <a href="{% url 'relations' langcode group_id %}?exp={{ concept.expand_param }}">
+    {% if concept.expanded %}
+    -
+    {% else %}
+    +
+    {% endif %}
+  </a>
+  <a href="{% url 'concept' langcode concept.id %}">{{ concept.prefLabel }}</a>
+  <ul>
+    {% if concept.expanded %}
+      {% for concept in concept.children %}
+        {% with concept=concept group_id=group_id langcode=langcode template_name='concept_snippet.html'%}
+          {% include template_name %}
+        {% endwith %}
+      {% endfor %}
+    {% endif %}
+  </ul>
+</li>

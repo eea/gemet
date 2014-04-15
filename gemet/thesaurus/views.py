@@ -7,80 +7,72 @@ from gemet.thesaurus.models import (
 )
 
 
+def _attach_attributes(concept, langcode, expand=None):
+    concept.set_attribute('prefLabel', langcode)
+    concept.set_children()
+    if expand is not None:
+        concept.set_expand(expand)
+    for child in concept.children:
+        _attach_attributes(child, langcode, expand)
+
+
 def index(request):
     return render(request, 'index.html', {})
 
 
-def themes_list(request):
+def themes_list(request, langcode):
     ns = Namespace.objects.get(heading='Themes')
     themes = Property.objects.filter(concept__namespace=ns, name='prefLabel')
 
     return render(request, 'themes_list.html', {'themes': themes})
 
 
-def groups_list(request):
-    languages = Language.objects.all()
-    langcode = request.GET.get('langcode', 'en')
-    ns = Namespace.objects.get(heading='Super Groups')
-    supergroups = Property.objects.filter(
-        concept__namespace=ns,
-        language__code=langcode,
-        name='prefLabel',
-    )
-    groups = {s.value: Property.objects.only('value').filter(
-        concept__in=s.concept.target_relations.filter(
-            property_type__name='broader',
-        ),
-        language__code=langcode,
-        name='prefLabel',
-    )
-        for s in supergroups
-    }
+def groups_list(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+
+    supergroups = Concept.objects.filter(namespace__heading='Super Groups')
+    for supergroup in supergroups:
+        _attach_attributes(supergroup, langcode)
 
     return render(request, 'groups_list.html', {
         'languages': languages,
-        'groups': groups,
+        'langcode': langcode,
+        'supergroups': supergroups,
     })
 
 
-def concept(request, concept_id):
-    languages = Language.objects.all()
-    langcode = request.GET.get('langcode', 'en')
+def concept(request, concept_id, langcode):
+    languages = Language.objects.values_list('code', flat=True)
 
     concept = get_object_or_404(Concept, pk=concept_id)
 
-    data_dict = {'id': concept_id}
+    for property_name in ['prefLabel', 'definition', 'scopeNote']:
+        concept.set_attribute(property_name, langcode)
 
-    properties = dict(
-        concept.properties
-        .filter(
-            language__code=langcode,
-            name__in=['prefLabel', 'definition', 'scopeNote'],
-        )
-        .values_list('name', 'value')
-    )
-    data_dict.update(properties)
+    for parent in ['group', 'theme']:
+        concept.set_parent(parent, langcode)
 
-    broader_concept_names = ['theme', 'group']
-    broader_concepts = {c + 's': Property.objects.filter(
-        concept__in=concept.source_relations
-        .filter(property_type__name=c)
-        .values_list('target'),
-        name='prefLabel',
-        language__code=langcode,
-    )
-        for c in broader_concept_names
-    }
-    data_dict.update(broader_concepts)
-
-    foreign_relations = concept.foreign_relations.filter(show_in_html=True)
-    translations = concept.properties.filter(name='prefLabel')
-    data_dict.update({
-        'foreign_relations': foreign_relations,
-        'translations': translations,
-    })
+    concept.f_relations = concept.foreign_relations.filter(show_in_html=True)
+    concept.translations = concept.properties.filter(name='prefLabel')
 
     return render(request, 'concept.html', {
         'languages': languages,
-        'concept': data_dict,
+        'langcode': langcode,
+        'concept': concept,
+    })
+
+
+def relations(request, group_id, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+
+    expand_text = request.GET.get('exp')
+    expand = expand_text.split('-') if expand_text else []
+
+    group = get_object_or_404(Concept, pk=group_id)
+    _attach_attributes(group, langcode, expand)
+
+    return render(request, 'relations.html', {
+        'group': group,
+        'languages': languages,
+        'langcode': langcode,
     })
