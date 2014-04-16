@@ -23,6 +23,10 @@ class Concept(Model):
     def __unicode__(self):
         return self.code
 
+    @property
+    def visible_foreign_relations(self):
+        return self.foreign_relations.filter(show_in_html=True)
+
     def get_property_value(self, property_name, langcode):
         try:
             property_value = self.properties.get(

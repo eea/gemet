@@ -52,7 +52,6 @@ def concept(request, concept_id, langcode):
     for parent in ['group', 'theme']:
         concept.set_parent(parent, langcode)
 
-    concept.f_relations = concept.foreign_relations.filter(show_in_html=True)
     concept.translations = concept.properties.filter(name='prefLabel')
 
     return render(request, 'concept.html', {

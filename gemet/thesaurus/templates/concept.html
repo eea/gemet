@@ -29,7 +29,7 @@
 
     <h4>Other relations:</h4>
       <ul>
-        {% for relation in concept.f_relations %}
+        {% for relation in concept.visible_foreign_relations %}
           <li>
             {{ relation.property_type.label }}:
             <a href="{{ relation.uri }}">{{ relation.label }}</a>
