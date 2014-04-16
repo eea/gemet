@@ -1,11 +1,15 @@
 <!doctype html>
 <html>
-<head>
-  <title>GEMET</title>
-</head>
+  <head>
+    <title>GEMET</title>
+  </head>
 <body>
-{% block content %}
+  <p>
+    <a href="{% url 'themes_list' langcode|default:'en' %}">Thematic Listings</a>
+    <a href="{% url 'groups_list' langcode|default:'en' %}">Hierarchical Listings</a>
+  </p>
 
-{% endblock %}
+  {% block content %}
+  {% endblock %}
 </body>
 </html>
