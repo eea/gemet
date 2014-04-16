@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from gemet.thesaurus.models import (
     Language,
     Concept,
@@ -15,7 +15,7 @@ def _attach_attributes(concept, langcode, expand=None):
 
 
 def index(request):
-    return render(request, 'index.html', {})
+    return redirect('themes_list', langcode='en')
 
 
 def themes_list(request, langcode):
