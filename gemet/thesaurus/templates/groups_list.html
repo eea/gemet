@@ -8,12 +8,20 @@
 
   <h1>Groups list</h1>
 
-  {% for supergroup in supergroups %}
-    <h2>{{ supergroup.prefLabel }}</h2>
-      {% for group in supergroup.children %}
-        <a href="{% url 'relations' langcode group.id %}">{{ group.prefLabel }}</a>
-        </br>
-      {% endfor %}
-  {% endfor %}
+  <ul>
+    {% for supergroup in supergroups %}
+      <li>
+        <h2>{{ supergroup.prefLabel }}</h2>
+
+        <ul>
+          {% for group in supergroup.children %}
+            <li>
+              <a href="{% url 'relations' langcode group.id %}">{{ group.prefLabel }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}
