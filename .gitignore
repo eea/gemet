@@ -1,5 +1,5 @@
 sandbox
 *~
 *.pyc
-settings.py
+local_settings.py
 docs/api/build/*
