@@ -1,11 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+  Select language:
+  {% for langcode in languages %}
+  <a href="{% url 'themes_list' langcode %}">{{ langcode }}</a>
+  {% endfor %}
+
   <h1>Themes</h1>
 
   <ul>
-    {% for t in themes %}
-    <li>{{ t.value }}</li>
+    {% for theme in themes %}
+      <li>{{ theme.prefLabel }}</li>
     {% endfor %}
   </ul>
 {% endblock %}

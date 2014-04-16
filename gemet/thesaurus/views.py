@@ -1,7 +1,5 @@
 from django.shortcuts import render, get_object_or_404
 from gemet.thesaurus.models import (
-    Namespace,
-    Property,
     Language,
     Concept,
 )
@@ -21,10 +19,17 @@ def index(request):
 
 
 def themes_list(request, langcode):
-    ns = Namespace.objects.get(heading='Themes')
-    themes = Property.objects.filter(concept__namespace=ns, name='prefLabel')
+    languages = Language.objects.values_list('code', flat=True)
 
-    return render(request, 'themes_list.html', {'themes': themes})
+    themes = Concept.objects.filter(namespace__heading='Themes')
+    for theme in themes:
+        theme.set_attribute('prefLabel', langcode)
+
+    return render(request, 'themes_list.html', {
+        'languages': languages,
+        'langcode': langcode,
+        'themes': themes,
+    })
 
 
 def groups_list(request, langcode):
