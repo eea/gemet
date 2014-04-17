@@ -15,20 +15,13 @@ def _attach_attributes(concept, langcode, expand=None):
         _attach_attributes(child, langcode, expand)
 
 
-def redirect_old(request, view_name, id):
-    get_params = request.GET.dict()
-    kargs = {'langcode': get_params.pop('langcode', 'en')}
-    if id:
-        views_args = {'concept': 'concept_id', 'relations': 'group_id'}
-        kargs.update({views_args[view_name]: id})
-    response = redirect(view_name, **kargs)
-    if get_params:
-        response['Location'] += '?' + '&'.join([
-            '{0}={1}'.format(k, v) for k, v in get_params.iteritems()])
-    return response
+def redirect_old_urls(request, view_name):
+    langcode = request.GET.get('langcode', 'en')
+    old_new_views = {'index_html': 'themes', 'groups': 'groups'}
+    return redirect(old_new_views[view_name], langcode=langcode)
 
 
-def themes(request, langcode):
+def themes(request, langcode='en'):
     languages = Language.objects.values_list('code', flat=True)
 
     themes = Concept.objects.filter(namespace__heading='Themes')
