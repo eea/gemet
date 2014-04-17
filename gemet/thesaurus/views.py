@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 
 from gemet.thesaurus.models import (
@@ -18,7 +19,10 @@ def _attach_attributes(concept, langcode, expand=None):
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', 'en')
     old_new_views = {'index_html': 'themes', 'groups': 'groups'}
-    return redirect(old_new_views[view_name], langcode=langcode)
+    view = old_new_views.get(view_name)
+    if not view:
+        raise Http404()
+    return redirect(view, langcode=langcode)
 
 
 def themes(request, langcode='en'):
