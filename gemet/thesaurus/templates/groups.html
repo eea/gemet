@@ -3,7 +3,7 @@
 {% block content %}
   Select language:
   {% for langcode in languages %}
-  <a href="{% url 'groups_list' langcode %}">{{ langcode }}</a>
+  <a href="{% url 'groups' langcode %}">{{ langcode }}</a>
   {% endfor %}
 
   <h1>Groups list</h1>

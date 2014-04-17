@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+
 from gemet.thesaurus.models import (
     Language,
     Concept,
@@ -14,32 +15,41 @@ def _attach_attributes(concept, langcode, expand=None):
         _attach_attributes(child, langcode, expand)
 
 
-def index(request):
-    return redirect('themes_list', langcode='en')
+def redirect_old(request, view_name, id):
+    get_params = request.GET.dict()
+    kargs = {'langcode': get_params.pop('langcode', 'en')}
+    if id:
+        views_args = {'concept': 'concept_id', 'relations': 'group_id'}
+        kargs.update({views_args[view_name]: id})
+    response = redirect(view_name, **kargs)
+    if get_params:
+        response['Location'] += '?' + '&'.join([
+            '{0}={1}'.format(k, v) for k, v in get_params.iteritems()])
+    return response
 
 
-def themes_list(request, langcode):
+def themes(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
 
     themes = Concept.objects.filter(namespace__heading='Themes')
     for theme in themes:
         theme.set_attribute('prefLabel', langcode)
 
-    return render(request, 'themes_list.html', {
+    return render(request, 'themes.html', {
         'languages': languages,
         'langcode': langcode,
         'themes': themes,
     })
 
 
-def groups_list(request, langcode):
+def groups(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
 
     supergroups = Concept.objects.filter(namespace__heading='Super Groups')
     for supergroup in supergroups:
         _attach_attributes(supergroup, langcode)
 
-    return render(request, 'groups_list.html', {
+    return render(request, 'groups.html', {
         'languages': languages,
         'langcode': langcode,
         'supergroups': supergroups,
