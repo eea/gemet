@@ -65,6 +65,9 @@ class Concept(Model):
             self.children = [c for c in group_concepts
                              if not c.source_relations
                              .filter(property_type__name='broader')]
+        elif self.namespace.heading == 'Themes':
+            self.children = [r.target for r in self.source_relations
+                             .filter(property_type__name='themeMember')]
         else:
             self.children = []
 

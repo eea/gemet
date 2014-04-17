@@ -5,8 +5,8 @@
   </head>
 <body>
   <p>
-    <a href="{% url 'themes' langcode|default:'en' %}">Thematic Listings</a>
-    <a href="{% url 'groups' langcode|default:'en' %}">Hierarchical Listings</a>
+    <a href="{% url 'themes' langcode %}">Thematic Listings</a>
+    <a href="{% url 'groups' langcode %}">Hierarchical Listings</a>
   </p>
 
   {% block content %}

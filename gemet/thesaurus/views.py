@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from gemet.thesaurus.models import (
     Language,
@@ -83,7 +84,34 @@ def relations(request, group_id, langcode):
     _attach_attributes(group, langcode, expand)
 
     return render(request, 'relations.html', {
-        'group': group,
         'languages': languages,
         'langcode': langcode,
+        'group': group,
+    })
+
+
+def theme_concepts(request, theme_id, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+
+    theme = get_object_or_404(Concept, pk=theme_id)
+    theme.set_attribute('prefLabel', langcode)
+    theme.set_children()
+
+    paginator = Paginator(theme.children, 1)
+    page = request.GET.get('page')
+    try:
+        concepts = paginator.page(page)
+    except PageNotAnInteger:
+        concepts = paginator.page(1)
+    except EmptyPage:
+        concepts = paginator.page(paginator.num_pages)
+
+    for concept in concepts:
+        concept.set_attribute('prefLabel', langcode)
+
+    return render(request, 'theme_concepts.html', {
+        'languages': languages,
+        'langcode': langcode,
+        'theme': theme,
+        'concepts': concepts,
     })

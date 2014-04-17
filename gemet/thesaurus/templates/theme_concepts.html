@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  Select language:
+  {% for langcode in languages %}
+    <a href="{% url 'theme_concepts' langcode theme.id %}">{{ langcode }}</a>
+  {% endfor %}
+
+  <h1>Concepts list for {{ theme.prefLabel }}</h1>
+  <ul>
+    {% for concept in concepts %}
+      <li>{{ concept.prefLabel }}</li>
+    {% endfor %}
+  </ul>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if concepts.has_previous %}
+        <a href="?page={{ concepts.previous_page_number }}">previous</a>
+      {% endif %}
+
+      {% for page_number in concepts.paginator.page_range %}
+        {% if page_number == concepts.number %}
+          {{ page_number }}
+        {% else %}
+          <a href="?page={{ page_number }}">{{ page_number }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if concepts.has_next %}
+        <a href="?page={{ concepts.next_page_number }}">next</a>
+      {% endif %}
+    </span>
+  </div>
+
+{% endblock %}

@@ -10,7 +10,9 @@
 
   <ul>
     {% for theme in themes %}
-      <li>{{ theme.prefLabel }}</li>
+      <li>
+        <a href="{% url 'theme_concepts' langcode theme.id %}">{{ theme.prefLabel }}</a>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}
