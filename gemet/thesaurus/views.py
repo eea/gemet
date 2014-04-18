@@ -1,11 +1,13 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from itertools import chain
 
 from gemet.thesaurus.models import (
     Language,
     Concept,
 )
+from collation_charts import unicode_character_map
 
 
 def _attach_attributes(concept, langcode, expand=None):
@@ -92,12 +94,32 @@ def relations(request, group_id, langcode):
 
 def theme_concepts(request, theme_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
+    letters = unicode_character_map[langcode]
 
     theme = get_object_or_404(Concept, pk=theme_id)
     theme.set_attribute('prefLabel', langcode)
     theme.set_children()
 
-    paginator = Paginator(theme.children, 1)
+    for concept in theme.children:
+        concept.set_attribute('prefLabel', langcode)
+
+    try:
+        letter_index = int(request.GET.get('letter', '0'))
+    except ValueError:
+        raise Http404
+
+    if letter_index == 0:
+        concepts = theme.children
+    elif 0 < letter_index <= len(letters):
+        concepts = [c for c in theme.children if c.prefLabel
+                    and c.prefLabel[0] in letters[letter_index - 1]]
+    elif letter_index == 99:
+        concepts = [c for c in theme.children if c.prefLabel and
+                    c.prefLabel[0] not in list(chain.from_iterable(letters))]
+    else:
+        raise Http404
+
+    paginator = Paginator(concepts, 1)
     page = request.GET.get('page')
     try:
         concepts = paginator.page(page)
@@ -106,12 +128,10 @@ def theme_concepts(request, theme_id, langcode):
     except EmptyPage:
         concepts = paginator.page(paginator.num_pages)
 
-    for concept in concepts:
-        concept.set_attribute('prefLabel', langcode)
-
     return render(request, 'theme_concepts.html', {
         'languages': languages,
         'langcode': langcode,
         'theme': theme,
         'concepts': concepts,
+        'letters': [l[0] for l in letters],
     })

@@ -2,8 +2,12 @@
 
 {% block content %}
   Select language:
-  {% for langcode in languages %}
-    <a href="{% url 'theme_concepts' langcode theme.id %}">{{ langcode }}</a>
+  {% for lang in languages %}
+    {% if lang == langcode %}
+      {{ lang }}
+    {% else %}
+      <a href="{% url 'theme_concepts' lang theme.id %}{% if request.GET.letter %}?letter={{ request.GET.letter }}{% endif %}">{{ lang }}</a>
+    {% endif %}
   {% endfor %}
 
   <h1>Concepts list for {{ theme.prefLabel }}</h1>
@@ -32,5 +36,11 @@
       {% endif %}
     </span>
   </div>
+
+  <a href="{% url 'theme_concepts' langcode theme.id %}?letter=0">all</a>
+  {% for letter in letters %}
+    <a href="{% url 'theme_concepts' langcode theme.id %}?letter={{ forloop.counter }}">{{ letter }}</a>
+  {% endfor %}
+  <a href="{% url 'theme_concepts' langcode theme.id %}?letter=99">other</a>
 
 {% endblock %}
