@@ -1,10 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  Select language:
-  {% for langcode in languages %}
-    <a href="{% url 'relations' langcode group.id %}?exp={{ request.GET.exp }}">{{ langcode }}</a>
-  {% endfor %}
+  {% include 'select_language.html' with languages=languages langcode=langcode view='relations' id=group.id %}
 
   <h1>Relations</h1>
 

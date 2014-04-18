@@ -1,14 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  Select language:
-  {% for lang in languages %}
-    {% if lang == langcode %}
-      {{ lang }}
-    {% else %}
-      <a href="{% url 'theme_concepts' lang theme.id %}{% if request.GET.letter %}?letter={{ request.GET.letter }}{% endif %}">{{ lang }}</a>
-    {% endif %}
-  {% endfor %}
+  {% include 'select_language.html' with languages=languages langcode=langcode view='theme_concepts' id=theme.id %}
 
   <h1>Concepts list for {{ theme.prefLabel }}</h1>
   <ul>

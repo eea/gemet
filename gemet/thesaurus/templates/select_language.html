@@ -1,0 +1,8 @@
+Select language:
+{% for lang in languages %}
+  {% if lang == langcode %}
+    {{ lang }}
+  {% else %}
+  <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}">{{ lang }}</a>
+  {% endif %}
+{% endfor %}
