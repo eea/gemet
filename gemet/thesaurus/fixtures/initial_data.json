@@ -368,9 +368,7 @@
   "name": "Chinese", 
   "code_alt": "ZHO"
  }
-}
-]
-[
+},
 {
  "pk": 28, 
  "model": "thesaurus.propertytype", 
