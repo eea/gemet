@@ -3,6 +3,6 @@ Select language:
   {% if lang == langcode %}
     {{ lang }}
   {% else %}
-  <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}">{{ lang }}</a>
+  <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}?{{ get_params }}">{{ lang }}</a>
   {% endif %}
 {% endfor %}

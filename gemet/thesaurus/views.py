@@ -89,12 +89,13 @@ def relations(request, group_id, langcode):
         'languages': languages,
         'langcode': langcode,
         'group': group,
+        'get_params': request.GET.urlencode(),
     })
 
 
 def theme_concepts(request, theme_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
-    letters = unicode_character_map[langcode]
+    letters = unicode_character_map.get(langcode, [])
 
     theme = get_object_or_404(Concept, pk=theme_id)
     theme.set_attribute('prefLabel', langcode)
@@ -134,4 +135,5 @@ def theme_concepts(request, theme_id, langcode):
         'theme': theme,
         'concepts': concepts,
         'letters': [l[0] for l in letters],
+        'get_params': request.GET.urlencode(),
     })
