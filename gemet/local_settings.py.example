@@ -14,5 +14,13 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'db_host',
         'PORT': 'db_port',
+    },
+    'import': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'import_db_name',
+        'USER': 'username',
+        'PASSWORD': 'password',
+        'HOST': 'db_host',
+        'PORT': 'db_port',
     }
 }

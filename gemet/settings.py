@@ -7,9 +7,10 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
+import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -77,3 +78,9 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+if 'test' in sys.argv:
+    try:
+        from test_settings import *
+    except ImportError:
+        pass
