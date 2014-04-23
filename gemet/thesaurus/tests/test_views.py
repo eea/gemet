@@ -4,10 +4,16 @@ from django.core.urlresolvers import reverse
 from .factories import (
     ConceptFactory,
     PropertyFactory,
+    LanguageFactory,
+    NamespaceFactory,
 )
 
 
 class TestThemesView(WebTest):
+
+    def setUp(self):
+        LanguageFactory()
+        NamespaceFactory()
 
     def test_one_theme(self):
         ConceptFactory()
