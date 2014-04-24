@@ -1,6 +1,8 @@
 import factory
 
-from gemet.thesaurus.models import Concept, Property, Language, Namespace
+from gemet.thesaurus.models import (
+    Concept, Property, Language, Namespace, Relation, PropertyType
+)
 
 
 class NamespaceFactory(factory.django.DjangoModelFactory):
@@ -32,3 +34,19 @@ class PropertyFactory(factory.django.DjangoModelFactory):
     language_id = 'en'
     name = 'prefLabel'
     value = 'administration'
+
+
+class RelationFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Relation
+
+    source_id = 1
+    target_id = 2
+    property_type_id = 1
+
+
+class PropertyTypeFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = PropertyType
+
+    id = 1
+    name = "themeMember"
+    label = "Theme member"

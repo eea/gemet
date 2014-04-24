@@ -4,7 +4,7 @@
   {% include 'select_language.html' with languages=languages langcode=langcode view='theme_concepts' id=theme.id %}
 
   <h1>Concepts list for {{ theme.prefLabel }}</h1>
-  <ul>
+  <ul class="concepts">
     {% for concept in concepts %}
       <li>{{ concept.prefLabel }}</li>
     {% endfor %}

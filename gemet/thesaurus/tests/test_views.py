@@ -6,7 +6,10 @@ from .factories import (
     PropertyFactory,
     LanguageFactory,
     NamespaceFactory,
+    RelationFactory,
+    PropertyTypeFactory,
 )
+
 
 class TestThemesView(WebTest):
 
@@ -48,7 +51,7 @@ class TestThemesView(WebTest):
         PropertyFactory()
         ConceptFactory(id=2,
                        code="2",
-                       namespace_id = 4
+                       namespace_id=4
                        )
         PropertyFactory(concept_id=2,
                         value="agriculture",
@@ -59,7 +62,7 @@ class TestThemesView(WebTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-      
+
         self.assertEqual(resp.html.find_all('ul', {'class': 'themes'})[0]
                          .find_all('li')[0].a.get('href'),
                          u'{url}'.format(url=reverse('theme_concepts',
@@ -84,10 +87,46 @@ class TestThemesView(WebTest):
 
 class TestThemeConceptsView(WebTest):
 
-    def test_no_theme_concept(self):
+    def setUp(self):
+        LanguageFactory()
+        NamespaceFactory()
+
+    def test_one_theme_concept(self):
+        NamespaceFactory(id=1, heading="Concepts")
+
         ConceptFactory()
         PropertyFactory()
+        ConceptFactory(id=2,
+                       code="2",
+                       namespace_id=1
+                       )
+        PropertyFactory(concept_id=2,
+                        value="access to administrative documents"
+                        )
+        PropertyTypeFactory(id=1)
+        RelationFactory(property_type_id=1,
+                        source_id=1,
+                        target_id=2
+                        )
 
-        url = reverse('theme_concepts', kwargs={'langcode': 'en',
-                                        'theme_id': 1})
+        url = reverse('theme_concepts',
+                      kwargs={'langcode': 'en', 'theme_id': 1})
         resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'en')
+
+        """
+        self.assertEqual(resp.html.find_all('ul', {'class': 'concepts'})[0]
+                         .find_all('li')[0].a.get('href'),
+                         u'{url}'.format(url=reverse('theme_concepts',
+                                                     kwargs={'langcode': 'en',
+                                                             'theme_id': 1}))
+                         )
+        """
+        import pdb
+        pdb.set_trace()
+
+        self.assertEqual(resp.html.find_all('ul', {'class': 'concepts'})[0]
+                         .li.text,
+                         u'administration')
