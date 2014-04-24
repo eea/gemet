@@ -20,6 +20,9 @@ Install these before setting up an environment::
     apt-get install python-setuptools python-dev libmysqlclient-dev \
     libldap2-dev python-virtualenv mysql-server git
 
+Development setup::
+
+    apt-get install libxml2-dev libxslt1-dev
 
 
 RHEL based systems
