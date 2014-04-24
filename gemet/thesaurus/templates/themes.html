@@ -5,7 +5,7 @@
 
   <h1>Themes</h1>
 
-  <ul>
+  <ul class="themes">
     {% for theme in themes %}
       <li>
         <a href="{% url 'theme_concepts' langcode theme.id %}">{{ theme.prefLabel }}</a>
