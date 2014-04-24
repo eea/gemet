@@ -5,12 +5,12 @@
 
   <h1>Groups list</h1>
 
-  <ul>
+  <ul class="supergroups">
     {% for supergroup in supergroups %}
       <li>
         <h2>{{ supergroup.prefLabel }}</h2>
 
-        <ul>
+        <ul class="groups">
           {% for group in supergroup.children %}
             <li>
               <a href="{% url 'relations' langcode group.id %}">{{ group.prefLabel }}</a>
