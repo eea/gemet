@@ -217,7 +217,7 @@ class TestHierarchicalListings(WebTest):
 
     def test_more_supergroups_no_group(self):
         ConceptFactory(id=2, code="2", namespace_id=2)
-        PropertyFactory(value="SUPER_GROUP2")
+        PropertyFactory(concept_id=2, value="SUPER_GROUP2")
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -226,4 +226,7 @@ class TestHierarchicalListings(WebTest):
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.supergroups li').length, 2)
         self.assertEqual(resp.pyquery('.groups li').length, 0)
-        self.assertEqual(resp.pyquery('.supergroups h2').text(), 'SUPER_GROUP2')
+        self.assertEqual(resp.pyquery('.supergroups li:eq(0) h2').text(),
+                         'SUPER_GROUP')
+        self.assertEqual(resp.pyquery('.supergroups li:eq(1) h2').text(),
+                         'SUPER_GROUP2')
