@@ -29,10 +29,11 @@ class Concept(Model):
 
     def get_property_value(self, property_name, langcode):
         try:
-            property_value = self.properties.get(
-                name=property_name,
-                language__code=langcode,
-            ).value
+            property_value = (
+                self.properties
+                .values_list('value', flat=True)
+                .get(name=property_name, language__code=langcode)
+            )
         except ObjectDoesNotExist:
             property_value = None
 
@@ -58,16 +59,19 @@ class Concept(Model):
     def set_children(self):
         if self.namespace.heading in ['Concepts', 'Super groups']:
             self.children = [r.target for r in self.source_relations
-                             .filter(property_type__name='narrower')]
+                             .filter(property_type__name='narrower')
+                             .prefetch_related('target')]
         elif self.namespace.heading == 'Groups':
             group_concepts = [r.target for r in self.source_relations
-                              .filter(property_type__name='groupMember')]
+                              .filter(property_type__name='groupMember')
+                              .prefetch_related('target')]
             self.children = [c for c in group_concepts
                              if not c.source_relations
                              .filter(property_type__name='broader')]
         elif self.namespace.heading == 'Themes':
             self.children = [r.target for r in self.source_relations
-                             .filter(property_type__name='themeMember')]
+                             .filter(property_type__name='themeMember')
+                             .prefetch_related('target')]
         else:
             self.children = []
 

@@ -10,13 +10,16 @@ from gemet.thesaurus.models import (
 from collation_charts import unicode_character_map
 
 
-def _attach_attributes(concept, langcode, expand=None):
+NR_CONCEPTS_ON_PAGE = 20
+
+
+def _attach_attributes(concept, langcode, expand):
     concept.set_attribute('prefLabel', langcode)
-    concept.set_children()
-    if expand is not None:
-        concept.set_expand(expand)
-    for child in concept.children:
-        _attach_attributes(child, langcode, expand)
+    concept.set_expand(expand)
+    if concept.namespace.heading == 'Groups' or str(concept.id) in expand:
+        concept.set_children()
+        for child in concept.children:
+            _attach_attributes(child, langcode, expand)
 
 
 def redirect_old_urls(request, view_name):
@@ -46,8 +49,12 @@ def groups(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
 
     supergroups = Concept.objects.filter(namespace__heading='Super Groups')
+
     for supergroup in supergroups:
-        _attach_attributes(supergroup, langcode)
+        supergroup.set_attribute('prefLabel', langcode)
+        supergroup.set_children()
+        for concept in supergroup.children:
+            concept.set_attribute('prefLabel', langcode)
 
     return render(request, 'groups.html', {
         'languages': languages,
@@ -120,7 +127,7 @@ def theme_concepts(request, theme_id, langcode):
     else:
         raise Http404
 
-    paginator = Paginator(concepts, 1)
+    paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
     page = request.GET.get('page')
     try:
         concepts = paginator.page(page)
