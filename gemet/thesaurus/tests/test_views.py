@@ -13,8 +13,18 @@ from .factories import (
 )
 
 
-class TestThemesView(WebTest):
+class TestThemesViewLanguageSelection(WebTest):
+    def test_other_than_default_english(self):
+        LanguageFactory(code='es', name='Spanish')
 
+        url = reverse('themes', kwargs={'langcode': 'es'})
+        resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'es')
+
+
+class TestThemesView(WebTest):
     def setUp(self):
         LanguageFactory()
         NamespaceFactory()
@@ -80,7 +90,6 @@ class TestThemesView(WebTest):
 
 
 class TestThemeConceptsView(WebTest):
-
     def setUp(self):
         LanguageFactory()
         NamespaceFactory()
@@ -174,7 +183,6 @@ class TestThemeConceptsView(WebTest):
 
 
 class TestHierarchicalListings(WebTest):
-
     def setUp(self):
         NamespaceFactory(id=2, heading="Super groups")
         ConceptFactory(namespace_id=2)
@@ -195,6 +203,7 @@ class TestHierarchicalListings(WebTest):
         NamespaceFactory(id=3, heading="Groups")
         ConceptFactory(id=2, code="2", namespace_id=3)
         PropertyFactory(concept_id=2, value="GROUP")
+
         PropertyTypeFactory(id=1, name="broader", label="broader term")
         RelationFactory(property_type_id=1, source_id=2, target_id=1)
         PropertyTypeFactory(id=2, name="narrower", label="narrower term")
@@ -230,3 +239,89 @@ class TestHierarchicalListings(WebTest):
                          'SUPER_GROUP')
         self.assertEqual(resp.pyquery('.supergroups li:eq(1) h2').text(),
                          'SUPER_GROUP2')
+
+    def test_more_supergroups_one_group(self):
+        ConceptFactory(id=2, code="2", namespace_id=2)
+        PropertyFactory(concept_id=2, value="SUPER_GROUP2")
+
+        NamespaceFactory(id=3, heading="Groups")
+        ConceptFactory(id=3, code="3", namespace_id=3)
+        PropertyFactory(concept_id=3, value="GROUP")
+
+        PropertyTypeFactory(id=1, name="broader", label="broader term")
+        RelationFactory(property_type_id=1, source_id=3, target_id=1)
+        PropertyTypeFactory(id=2, name="narrower", label="narrower term")
+        RelationFactory(property_type_id=2, source_id=1, target_id=3)
+
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.pyquery('.supergroups > li').length, 2)
+        self.assertEqual(resp.pyquery('.groups li').length, 1)
+        self.assertEqual(resp.pyquery('.supergroups li:eq(0) h2').text(),
+                         'SUPER_GROUP')
+        self.assertEqual(resp.pyquery('.supergroups li:eq(1) h2').text(),
+                         'SUPER_GROUP2')
+
+        self.assertEqual(resp.pyquery('.groups li:eq(0)').text(), 'GROUP')
+        self.assertEqual(resp.pyquery('.groups li:eq(0) a').attr('href'),
+                         u'{url}'.format(url=reverse('relations',
+                                                     kwargs={'langcode': 'en',
+                                                             'group_id': 3}))
+                         )
+        self.assertEqual(resp.pyquery('.groups li:eq(1)').text(), '')
+
+
+class TestRelations(WebTest):
+    def setUp(self):
+        NamespaceFactory(id=3, heading="Groups")
+        ConceptFactory(namespace_id=3)
+        LanguageFactory()
+        PropertyFactory(value="THIS IS THE GROUP")
+
+    def test_group_with_no_member(self):
+        url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
+        resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'en')
+
+        self.assertEqual(resp.pyquery('h3').text(), 'THIS IS THE GROUP')
+        self.assertEqual(resp.pyquery('.groupMembers > li').length, 0)
+
+    def test_group_with_one_member(self):
+        NamespaceFactory(id=1, heading="Concept")
+        ConceptFactory(id=2, code="2", namespace_id=1)
+
+        PropertyTypeFactory(id=1, name="groupMember", label="Group member")
+        RelationFactory(property_type_id=1, source_id=2, target_id=1)
+        PropertyTypeFactory(id=2, name="group", label="Group")
+        RelationFactory(property_type_id=1, source_id=1, target_id=2)
+        PropertyFactory(concept_id=2, value="THIS IS THE CONCEPT")
+
+        url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
+        resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'en')
+
+        self.assertEqual(resp.pyquery('h3').text(), 'THIS IS THE GROUP')
+        self.assertEqual(resp.pyquery('.groupMembers > li').length, 1)
+        self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)')
+                         .attr('href'),
+                         u'{url}?exp=2'.format(
+                             url=reverse('relations', kwargs={'langcode': 'en',
+                                                              'group_id': 1}))
+                         )
+        self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)').text(),
+                         "+")
+        self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)')
+                         .attr('href'),
+                         u'{url}'.format(url=reverse('concept',
+                                                     kwargs={'langcode': 'en',
+                                                             'concept_id': 2}))
+                         )
+        self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
+                         "THIS IS THE CONCEPT")
