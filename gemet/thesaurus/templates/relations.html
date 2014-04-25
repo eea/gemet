@@ -6,8 +6,10 @@
   <h1>Relations</h1>
 
   <h3>{{ group.prefLabel }}</h3>
-  {% for concept in group.children %}
-    {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=langcode %}
-  {% endfor %}
+  <ul class="groupMembers">
+    {% for concept in group.children %}
+      {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=langcode %}
+    {% endfor %}
+  </ul>
 
 {% endblock %}
