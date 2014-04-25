@@ -97,11 +97,13 @@ class TestThemeConceptsView(WebTest):
 
     def test_one_theme_concept(self):
         NamespaceFactory(id=1, heading="Concepts")
-
         ConceptFactory(id=2, code="2", namespace_id=1)
         PropertyFactory(concept_id=2, value="CONCEPT")
-        PropertyTypeFactory(id=1)
+
+        PropertyTypeFactory(id=1, name="themeMember", label="Theme member")
         RelationFactory(property_type_id=1, source_id=1, target_id=2)
+        PropertyTypeFactory(id=2, name="theme", label="Theme")
+        RelationFactory(property_type_id=2, source_id=2, target_id=1)
 
         url = reverse('theme_concepts',
                       kwargs={'langcode': 'en', 'theme_id': 1})
@@ -125,16 +127,20 @@ class TestThemeConceptsView(WebTest):
 
     def test_more_theme_concepts(self):
         NamespaceFactory(id=1, heading="Concepts")
-        PropertyTypeFactory(id=1)
+        PropertyTypeFactory(id=1, name="themeMember", label="Theme member")
+        PropertyTypeFactory(id=2, name="theme", label="Theme")
 
         ConceptFactory(id=2, code="2", namespace_id=1)
         PropertyFactory(concept_id=2,
                         value="access to administrative documents")
+
         RelationFactory(property_type_id=1, source_id=1, target_id=2)
+        RelationFactory(property_type_id=2, source_id=2, target_id=1)
 
         ConceptFactory(id=3, code="3", namespace_id=1)
         PropertyFactory(concept_id=3, value="access to the sea")
         RelationFactory(property_type_id=1, source_id=1, target_id=3)
+        RelationFactory(property_type_id=2, source_id=3, target_id=1)
 
         url = reverse('theme_concepts',
                       kwargs={'langcode': 'en', 'theme_id': 1})
@@ -351,6 +357,7 @@ class TestRelationsView(WebTest):
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
                          "THIS IS THE CONCEPT")
+
 
 class TestConceptView(WebTest):
     def setUp(self):
