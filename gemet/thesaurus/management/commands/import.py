@@ -8,6 +8,8 @@ from gemet.thesaurus.models import (
     Language,
     PropertyType,
     Relation,
+    ForeignRelation,
+    DefinitionSource,
 )
 
 
@@ -88,6 +90,29 @@ class Command(BaseCommand):
         rows = filter(update_values, rows)
 
         self.import_rows(rows, 'thesaurus_relation', Relation)
+
+        query_str = (
+            "SELECT concat(source_ns, id_concept) AS concept_id, "
+            "relation_uri AS uri, "
+            "id_type AS property_type_id, "
+            "label, "
+            "show_in_html "
+            "FROM foreign_relation "
+            "WHERE source_ns IN ({0}) "
+            .format(ns_str)
+        )
+        rows = dictfetchall(cursor, query_str)
+
+        for row in rows:
+            row['concept_id'] = concept_ids[row['concept_id']]
+            row['property_type_id'] = property_ids[row['property_type_id']]
+
+        self.import_rows(rows, 'thesaurus_foreignrelation', ForeignRelation)
+
+        query_str = "SELECT * FROM definition_sources;"
+        rows = dictfetchall(cursor, query_str)
+
+        self.import_rows(rows, 'thesaurus_definitionsource', DefinitionSource)
 
     def import_rows(self, rows, table_name, model_cls):
         if rows:
