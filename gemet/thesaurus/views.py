@@ -135,5 +135,6 @@ def theme_concepts(request, theme_id, langcode):
         'theme': theme,
         'concepts': concepts,
         'letters': [l[0] for l in letters],
+        'letter': letter_index,
         'get_params': request.GET.urlencode(),
     })
