@@ -6,7 +6,9 @@
   <h1>Concepts list for {{ theme.prefLabel }}</h1>
   <ul class="concepts">
     {% for concept in concepts %}
-      <li>{{ concept.prefLabel }}</li>
+      <li>
+        <a href="{% url 'concept' langcode concept.id %}">{{ concept.prefLabel }}</a>
+      </li>
     {% endfor %}
   </ul>
 
