@@ -1,7 +1,14 @@
 from django.core.management.base import BaseCommand
 from django.db import connections
 
-from gemet.thesaurus.models import Concept, Namespace, Property, Language
+from gemet.thesaurus.models import (
+    Concept,
+    Namespace,
+    Property,
+    Language,
+    PropertyType,
+    Relation,
+)
 
 
 def dictfetchall(cursor, query_str):
@@ -43,7 +50,7 @@ class Command(BaseCommand):
             "value, "
             "is_resource "
             "FROM property "
-            "WHERE ns IN ({0})"
+            "WHERE ns IN ({0}) "
             "AND langcode IN ({1})"
             .format(ns_str, langcodes_str)
         )
@@ -51,11 +58,36 @@ class Command(BaseCommand):
 
         concept_ids = {'{0}{1}'.format(c.namespace.id, c.code): c.id
                        for c in Concept.objects.all()}
-
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
 
         self.import_rows(rows, 'thesaurus_property', Property)
+
+        query_str = (
+            "SELECT concat(source_ns, id_concept) AS source_id, "
+            "concat(target_ns, id_relation) AS target_id, "
+            "id_type AS property_type_id "
+            "FROM relation "
+            "WHERE source_ns IN ({0}) "
+            "AND target_ns IN ({0}) "
+            .format(ns_str)
+        )
+        rows = dictfetchall(cursor, query_str)
+
+        property_ids = {p.name: p.id for p in PropertyType.objects.all()}
+
+        def update_values(row):
+            try:
+                row['source_id'] = concept_ids[row['source_id']]
+                row['target_id'] = concept_ids[row['target_id']]
+                row['property_type_id'] = property_ids[row['property_type_id']]
+            except KeyError:
+                return False
+            return True
+
+        rows = filter(update_values, rows)
+
+        self.import_rows(rows, 'thesaurus_relation', Relation)
 
     def import_rows(self, rows, table_name, model_cls):
         if rows:
