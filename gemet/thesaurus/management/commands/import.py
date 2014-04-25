@@ -15,21 +15,6 @@ def dictfetchall(cursor, query_str):
 class Command(BaseCommand):
     help = 'Import a set of terms into the database'
 
-    def import_rows(self, rows, table_name, model_cls):
-        if rows:
-            self.stdout.write('Truncating `{0}` ...'.format(table_name))
-            model_cls.objects.all().delete()
-
-            cursor = connections['default'].cursor()
-            reset_index = "ALTER TABLE {0} AUTO_INCREMENT=1".format(table_name)
-            cursor.execute(reset_index)
-
-            self.stdout.write('Inserting {0} new rows ...'.format(len(rows)))
-            new_rows = [model_cls(**row) for row in rows]
-            model_cls.objects.bulk_create(new_rows, batch_size=100000)
-        else:
-            self.stderr.write('0 rows found in the import table. Aborting ...')
-
     def handle(self, *args, **options):
         ns_ids = Namespace.objects.values_list('id', flat=True)
         ns_str = ', '.join([str(id) for id in ns_ids])
@@ -71,3 +56,18 @@ class Command(BaseCommand):
             row['concept_id'] = concept_ids[row['concept_id']]
 
         self.import_rows(rows, 'thesaurus_property', Property)
+
+    def import_rows(self, rows, table_name, model_cls):
+        if rows:
+            self.stdout.write('Truncating `{0}` ...'.format(table_name))
+            model_cls.objects.all().delete()
+
+            cursor = connections['default'].cursor()
+            reset_index = "ALTER TABLE {0} AUTO_INCREMENT=1".format(table_name)
+            cursor.execute(reset_index)
+
+            self.stdout.write('Inserting {0} new rows ...'.format(len(rows)))
+            new_rows = [model_cls(**row) for row in rows]
+            model_cls.objects.bulk_create(new_rows, batch_size=100000)
+        else:
+            self.stderr.write('0 rows found in the import table. Aborting ...')
