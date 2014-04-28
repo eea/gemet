@@ -1,5 +1,3 @@
-import pyquery
-
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
@@ -59,7 +57,7 @@ class TestConceptView(WebTest):
         self.assertEqual(resp.pyquery('.infotext:eq(3)').text(),
                          "Theme Parent")
 
-    def test_one_theme_concept(self):
+    def test_two_themes_concept(self):
         ns_group = NamespaceFactory(id=2, heading="Group")
         ns_theme = NamespaceFactory(id=4, heading="Themes")
         group = ConceptFactory(id=2, code="2", namespace=ns_group)
@@ -98,7 +96,7 @@ class TestConceptView(WebTest):
                          "some scope note")
         self.assertEqual(resp.pyquery('.infotext:eq(2)').text(),
                          "Group Parent")
-        themes = resp.pyquery('.infotext:eq(3)').text().split(' ')
+        themes = resp.pyquery('.infotext:eq(3)').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
