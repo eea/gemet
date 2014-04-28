@@ -6,6 +6,7 @@ from .views import (
     relations,
     theme_concepts,
     redirect_old_urls,
+    concept_redirect,
 )
 
 
@@ -21,4 +22,6 @@ urlpatterns = patterns(
             name='theme_concepts')
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
+    url(r'^concept/(?P<concept_code>\d+)$', concept_redirect,
+        name='concept_redirect'),
 )
