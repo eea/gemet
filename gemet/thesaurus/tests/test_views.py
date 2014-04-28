@@ -13,22 +13,7 @@ from .factories import (
 )
 
 
-class TestThemesViewLanguageSelection(WebTest):
-    def test_other_than_the_default_english(self):
-        LanguageFactory(code='es', name='Spanish')
-
-        url = reverse('themes', kwargs={'langcode': 'es'})
-        resp = self.app.get(url)
-
-        self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'es')
-
-
 class TestThemesView(WebTest):
-    def setUp(self):
-        LanguageFactory()
-        NamespaceFactory()
-
     def test_no_theme(self):
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -39,8 +24,8 @@ class TestThemesView(WebTest):
         self.assertEqual(resp.pyquery('.themes li').length, 0)
 
     def test_one_theme(self):
-        ConceptFactory()
-        PropertyFactory()
+        theme = ConceptFactory()
+        PropertyFactory(concept = theme)
 
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -58,10 +43,10 @@ class TestThemesView(WebTest):
                          u'administration')
 
     def test_contains_more_themes(self):
-        ConceptFactory()
-        PropertyFactory()
-        ConceptFactory(id=2, code="2", namespace_id=4)
-        PropertyFactory(concept_id=2, value="agriculture")
+        theme1 = ConceptFactory(id=1, code="1")
+        PropertyFactory(concept=theme1, value="Theme 1")
+        theme2 = ConceptFactory(id=2, code="2")
+        PropertyFactory(concept=theme2, value="Theme 2")
 
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -76,7 +61,7 @@ class TestThemesView(WebTest):
                                                              'theme_id': 1}))
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(0) a').text(),
-                         u'administration'
+                         u'Theme 1'
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(1) a').attr('href'),
                          u'{url}'.format(url=reverse('theme_concepts',
@@ -84,26 +69,28 @@ class TestThemesView(WebTest):
                                                              'theme_id': 2}))
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(1) a').text(),
-                         u'agriculture'
+                         u'Theme 2'
                          )
 
 
 class TestThemeConceptsView(WebTest):
     def setUp(self):
-        LanguageFactory()
-        NamespaceFactory()
-        ConceptFactory()
-        PropertyFactory()
+        self.ns_concept = NamespaceFactory(id=2, heading="Concepts")
+        self.theme = ConceptFactory()
+
+        PropertyFactory(concept=self.theme)
+        self.pt1 = PropertyTypeFactory(id=1, name="themeMember",
+                                  label="Theme member")
+        self.pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
 
     def test_one_theme_concept(self):
-        NamespaceFactory(id=1, heading="Concepts")
-        ConceptFactory(id=2, code="2", namespace_id=1)
-        PropertyFactory(concept_id=2, value="CONCEPT")
+        concept = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
+        PropertyFactory(concept=concept, value="Concept value")
 
-        PropertyTypeFactory(id=1, name="themeMember", label="Theme member")
-        RelationFactory(property_type_id=1, source_id=1, target_id=2)
-        PropertyTypeFactory(id=2, name="theme", label="Theme")
-        RelationFactory(property_type_id=2, source_id=2, target_id=1)
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept)
+        RelationFactory(property_type=self.pt2, source=concept,
+                        target=self.theme)
 
         url = reverse('theme_concepts',
                       kwargs={'langcode': 'en', 'theme_id': 1})
@@ -123,24 +110,24 @@ class TestThemeConceptsView(WebTest):
                          )
         """
         self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
-                         u'CONCEPT')
+                         u'Concept value')
 
     def test_more_theme_concepts(self):
-        NamespaceFactory(id=1, heading="Concepts")
-        PropertyTypeFactory(id=1, name="themeMember", label="Theme member")
-        PropertyTypeFactory(id=2, name="theme", label="Theme")
+        concept1 = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
+        PropertyFactory(concept=concept1, value="Concept 1")
+        RelationFactory(property_type = self.pt1,
+                        source = self.theme,
+                        target = concept1)
+        RelationFactory(property_type = self.pt2,
+                        source= concept1,
+                        target = self.theme)
 
-        ConceptFactory(id=2, code="2", namespace_id=1)
-        PropertyFactory(concept_id=2,
-                        value="access to administrative documents")
-
-        RelationFactory(property_type_id=1, source_id=1, target_id=2)
-        RelationFactory(property_type_id=2, source_id=2, target_id=1)
-
-        ConceptFactory(id=3, code="3", namespace_id=1)
-        PropertyFactory(concept_id=3, value="access to the sea")
-        RelationFactory(property_type_id=1, source_id=1, target_id=3)
-        RelationFactory(property_type_id=2, source_id=3, target_id=1)
+        concept2 = ConceptFactory(id=3, code="3", namespace=self.ns_concept)
+        PropertyFactory(concept=concept2, value="Concept 2")
+        RelationFactory(property_type = self.pt1, source=self.theme,
+                        target=concept2)
+        RelationFactory(property_type = self.pt2, source=concept2,
+                        target=self.theme)
 
         url = reverse('theme_concepts',
                       kwargs={'langcode': 'en', 'theme_id': 1})
@@ -149,9 +136,8 @@ class TestThemeConceptsView(WebTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
 
+        #after TO_DO list. An a href needed
         """
-        after TO_DO list
-
         self.assertEqual(resp.pyquery('.concepts li:eq(0) a').attr('href'),
                          u'{url}'
                          .format(url=reverse('theme_concepts',
@@ -160,7 +146,7 @@ class TestThemeConceptsView(WebTest):
                          )
         """
         self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
-                         u'access to administrative documents')
+                         u'Concept 1')
 
         #after TO_DO list. An a href needed
         """
@@ -171,26 +157,25 @@ class TestThemeConceptsView(WebTest):
                                                      'theme_id': 1}))
                          )
         """
-        #invalid test for the moment. The entry goes on the second page.
-        """
+
         self.assertEqual(resp.pyquery('.concepts li:eq(1)').text(),
-                         u'access to the sea')
-        """
+                         u'Concept 2')
+
 
     def test_letter_selected(self):
-        NamespaceFactory(id=1, heading="Concepts")
-        PropertyTypeFactory(id=1, name="themeMember", label="Theme member")
-        PropertyTypeFactory(id=2, name="theme", label="Theme")
+        concept2 = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
+        PropertyFactory(concept=concept2, value="A_CONCEPT")
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept2)
+        RelationFactory(property_type=self.pt2, source=concept2,
+                        target=self.theme)
 
-        ConceptFactory(id=2, code="2", namespace_id=1)
-        PropertyFactory(concept_id=2, value="A_CONCEPT")
-        RelationFactory(property_type_id=1, source_id=1, target_id=2)
-        RelationFactory(property_type_id=2, source_id=2, target_id=1)
-
-        ConceptFactory(id=3, code="3", namespace_id=1)
-        PropertyFactory(concept_id=3, value="B_CONCEPT")
-        RelationFactory(property_type_id=1, source_id=1, target_id=3)
-        RelationFactory(property_type_id=2, source_id=3, target_id=1)
+        concept3 = ConceptFactory(id=3, code="3", namespace=self.ns_concept)
+        PropertyFactory(concept=concept3, value="B_CONCEPT")
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept3)
+        RelationFactory(property_type=self.pt2, source=concept3,
+                        target=self.theme)
 
         url = reverse('theme_concepts',
                       kwargs={'langcode': 'en', 'theme_id': 1})
@@ -216,10 +201,9 @@ class TestGroupsView(WebTest):
     ### Actually, this tests the HierarchicalListings link
 
     def setUp(self):
-        NamespaceFactory(id=2, heading="Super groups")
-        ConceptFactory(namespace_id=2)
-        LanguageFactory()
-        PropertyFactory(value="SUPER_GROUP")
+        self.ns_superGroup = NamespaceFactory(id=2, heading="Super groups")
+        self.superGroup = ConceptFactory(namespace=self.ns_superGroup)
+        PropertyFactory(concept=self.superGroup, value="Super Group")
 
     def test_one_supergroup_no_group(self):
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -229,17 +213,20 @@ class TestGroupsView(WebTest):
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.supergroups li').length, 1)
         self.assertEqual(resp.pyquery('.groups li').length, 0)
-        self.assertEqual(resp.pyquery('.supergroups h2').text(), 'SUPER_GROUP')
+        self.assertEqual(resp.pyquery('.supergroups h2').text(),
+                         'Super Group')
 
     def test_one_supergroup_one_group(self):
-        NamespaceFactory(id=3, heading="Groups")
-        ConceptFactory(id=2, code="2", namespace_id=3)
-        PropertyFactory(concept_id=2, value="GROUP")
+        ns_group = NamespaceFactory(id=3, heading="Groups")
+        group = ConceptFactory(id=2, code="2", namespace=ns_group)
+        PropertyFactory(concept=group, value="Group")
 
-        PropertyTypeFactory(id=1, name="broader", label="broader term")
-        RelationFactory(property_type_id=1, source_id=2, target_id=1)
-        PropertyTypeFactory(id=2, name="narrower", label="narrower term")
-        RelationFactory(property_type_id=2, source_id=1, target_id=2)
+        pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup,
+                        target=group)
+        RelationFactory(property_type=pt2, source=group,
+                        target=self.superGroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -248,17 +235,18 @@ class TestGroupsView(WebTest):
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.supergroups > li').length, 1)
         self.assertEqual(resp.pyquery('.groups li').length, 1)
-        self.assertEqual(resp.pyquery('.supergroups h2').text(), 'SUPER_GROUP')
+        self.assertEqual(resp.pyquery('.supergroups h2').text(), 'Super Group')
         self.assertEqual(resp.pyquery('.groups li a').attr('href'),
                          u'{url}'.format(url=reverse('relations',
                                                      kwargs={'langcode': 'en',
                                                              'group_id': 2}))
                          )
-        self.assertEqual(resp.pyquery('.groups li a').text(), 'GROUP')
+        self.assertEqual(resp.pyquery('.groups li a').text(), 'Group')
 
     def test_more_supergroups_no_group(self):
-        ConceptFactory(id=2, code="2", namespace_id=2)
-        PropertyFactory(concept_id=2, value="SUPER_GROUP2")
+        superGroup = ConceptFactory(id=2, code="2",
+                                    namespace=self.ns_superGroup)
+        PropertyFactory(concept=superGroup, value="Super Group 2")
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -268,22 +256,25 @@ class TestGroupsView(WebTest):
         self.assertEqual(resp.pyquery('.supergroups li').length, 2)
         self.assertEqual(resp.pyquery('.groups li').length, 0)
         self.assertEqual(resp.pyquery('.supergroups li:eq(0) h2').text(),
-                         'SUPER_GROUP')
+                         'Super Group')
         self.assertEqual(resp.pyquery('.supergroups li:eq(1) h2').text(),
-                         'SUPER_GROUP2')
+                         'Super Group 2')
 
     def test_more_supergroups_one_group(self):
-        ConceptFactory(id=2, code="2", namespace_id=2)
-        PropertyFactory(concept_id=2, value="SUPER_GROUP2")
+        superGroup = ConceptFactory(id=2, code="2",
+                                    namespace=self.ns_superGroup)
+        PropertyFactory(concept=superGroup, value="Super Group 2")
 
-        NamespaceFactory(id=3, heading="Groups")
-        ConceptFactory(id=3, code="3", namespace_id=3)
-        PropertyFactory(concept_id=3, value="GROUP")
+        ns_group = NamespaceFactory(id=3, heading="Groups")
+        group = ConceptFactory(id=3, code="3", namespace=ns_group)
+        PropertyFactory(concept = group, value="Group")
 
-        PropertyTypeFactory(id=1, name="broader", label="broader term")
-        RelationFactory(property_type_id=1, source_id=3, target_id=1)
-        PropertyTypeFactory(id=2, name="narrower", label="narrower term")
-        RelationFactory(property_type_id=2, source_id=1, target_id=3)
+        pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup,
+                        target=group)
+        RelationFactory(property_type=pt2, source=group,
+                        target=self.superGroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -293,11 +284,11 @@ class TestGroupsView(WebTest):
         self.assertEqual(resp.pyquery('.supergroups > li').length, 2)
         self.assertEqual(resp.pyquery('.groups li').length, 1)
         self.assertEqual(resp.pyquery('.supergroups li:eq(0) h2').text(),
-                         'SUPER_GROUP')
+                         'Super Group')
         self.assertEqual(resp.pyquery('.supergroups li:eq(1) h2').text(),
-                         'SUPER_GROUP2')
+                         'Super Group 2')
 
-        self.assertEqual(resp.pyquery('.groups li:eq(0)').text(), 'GROUP')
+        self.assertEqual(resp.pyquery('.groups li:eq(0)').text(), 'Group')
         self.assertEqual(resp.pyquery('.groups li:eq(0) a').attr('href'),
                          u'{url}'.format(url=reverse('relations',
                                                      kwargs={'langcode': 'en',
@@ -308,10 +299,9 @@ class TestGroupsView(WebTest):
 
 class TestRelationsView(WebTest):
     def setUp(self):
-        NamespaceFactory(id=3, heading="Groups")
-        ConceptFactory(namespace_id=3)
-        LanguageFactory()
-        PropertyFactory(value="THIS IS THE GROUP")
+        self.ns_group = NamespaceFactory(id=3, heading="Groups")
+        self.group = ConceptFactory(namespace=self.ns_group)
+        PropertyFactory(concept=self.group, value="Group")
 
     def test_group_with_no_member(self):
         url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
@@ -320,18 +310,18 @@ class TestRelationsView(WebTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
 
-        self.assertEqual(resp.pyquery('h3').text(), 'THIS IS THE GROUP')
+        self.assertEqual(resp.pyquery('h3').text(), 'Group')
         self.assertEqual(resp.pyquery('.groupMembers > li').length, 0)
 
     def test_group_with_one_member(self):
-        NamespaceFactory(id=1, heading="Concept")
-        ConceptFactory(id=2, code="2", namespace_id=1)
+        ns_concept = NamespaceFactory(id=1, heading="Concept")
+        concept = ConceptFactory(id=2, code="2", namespace=ns_concept)
+        PropertyFactory(concept=concept, value="Concept")
 
-        PropertyTypeFactory(id=1, name="groupMember", label="Group member")
-        RelationFactory(property_type_id=1, source_id=2, target_id=1)
-        PropertyTypeFactory(id=2, name="group", label="Group")
-        RelationFactory(property_type_id=1, source_id=1, target_id=2)
-        PropertyFactory(concept_id=2, value="THIS IS THE CONCEPT")
+        pt1=PropertyTypeFactory(id=1, name="groupMember", label="Group member")
+        pt2=PropertyTypeFactory(id=2, name="group", label="Group")
+        RelationFactory(property_type=pt1, source=self.group, target=concept)
+        RelationFactory(property_type=pt2, source=concept, target=self.group)
 
         url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
         resp = self.app.get(url)
@@ -339,7 +329,7 @@ class TestRelationsView(WebTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
 
-        self.assertEqual(resp.pyquery('h3').text(), 'THIS IS THE GROUP')
+        self.assertEqual(resp.pyquery('h3').text(), 'Group')
         self.assertEqual(resp.pyquery('.groupMembers > li').length, 1)
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)')
                          .attr('href'),
@@ -356,17 +346,38 @@ class TestRelationsView(WebTest):
                                                              'concept_id': 2}))
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
-                         "THIS IS THE CONCEPT")
+                         "Concept")
 
 
 class TestConceptView(WebTest):
     def setUp(self):
-        NamespaceFactory(id=1, heading="Concept")
-        ConceptFactory(namespace_id=1)
-        LanguageFactory()
-        PropertyFactory()
+        self.ns_concept = NamespaceFactory(id=1, heading="Concept")
+        self.concept = ConceptFactory(namespace=self.ns_concept)
+        PropertyFactory(concept=self.concept, name="prefLabel", value="some prefLabel")
+        PropertyFactory(concept=self.concept, name="definition", value="some definition")
+        PropertyFactory(concept=self.concept, name="scopeNote", value="some scope note")
 
     def test_ceva(self):
+        ns_group = NamespaceFactory(id=2, heading="Group")
+        ns_theme = NamespaceFactory(id=4, heading="Themes")
+        group = ConceptFactory(id=2, code="2", namespace=ns_group)
+        theme = ConceptFactory(id=3, code="3", namespace=ns_theme)
+        PropertyFactory(concept=group, name="prefLabel", value="Group Parent")
+        PropertyFactory(concept=theme, name="prefLabel", value="Theme Parent")
+
+        pt1 = PropertyTypeFactory(id=1, name="groupMember",
+                                  label="Group member")
+        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        RelationFactory(property_type=pt2, source=self.concept, target=group)
+        RelationFactory(property_type=pt1, source=group, target=self.concept)
+
+        pt3 = PropertyTypeFactory(id=3, name="themeMember",
+                                  label="Theme member")
+        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        RelationFactory(property_type=pt4, source=self.concept,
+                        target=theme)
+        RelationFactory(property_type=pt3, source=theme, target=self.concept)
+
         url = reverse('concept', kwargs={'concept_id': 1, 'langcode': 'en'})
         resp = self.app.get(url)
 

@@ -7,6 +7,7 @@ from gemet.thesaurus.models import (
 
 class NamespaceFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Namespace
+    FACTORY_DJANGO_GET_OR_CREATE = ('heading',)
 
     id = 4
     heading = 'Themes'
@@ -14,6 +15,7 @@ class NamespaceFactory(factory.django.DjangoModelFactory):
 
 class LanguageFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Language
+    FACTORY_DJANGO_GET_OR_CREATE = ('code',)
 
     code = 'en'
     name = 'English'
@@ -24,24 +26,16 @@ class ConceptFactory(factory.django.DjangoModelFactory):
 
     id = 1
     code = '1'
-    namespace_id = 4
+    namespace = factory.SubFactory(NamespaceFactory)
 
 
 class PropertyFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Property
 
-    concept_id = 1
-    language_id = 'en'
+    concept = factory.SubFactory(ConceptFactory)
+    language = factory.SubFactory(LanguageFactory)
     name = 'prefLabel'
     value = 'administration'
-
-
-class RelationFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Relation
-
-    source_id = 1
-    target_id = 2
-    property_type_id = 1
 
 
 class PropertyTypeFactory(factory.django.DjangoModelFactory):
@@ -50,3 +44,11 @@ class PropertyTypeFactory(factory.django.DjangoModelFactory):
     id = 1
     name = "themeMember"
     label = "Theme member"
+
+
+class RelationFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Relation
+
+    property_type = factory.SubFactory(PropertyTypeFactory)
+    source = factory.SubFactory(ConceptFactory)
+    target = factory.SubFactory(ConceptFactory)
