@@ -25,7 +25,7 @@ class TestThemesView(WebTest):
 
     def test_one_theme(self):
         theme = ConceptFactory()
-        PropertyFactory(concept = theme)
+        PropertyFactory(concept=theme)
 
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -80,7 +80,7 @@ class TestThemeConceptsView(WebTest):
 
         PropertyFactory(concept=self.theme)
         self.pt1 = PropertyTypeFactory(id=1, name="themeMember",
-                                  label="Theme member")
+                                       label="Theme member")
         self.pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
 
     def test_one_theme_concept(self):
@@ -115,18 +115,16 @@ class TestThemeConceptsView(WebTest):
     def test_more_theme_concepts(self):
         concept1 = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
         PropertyFactory(concept=concept1, value="Concept 1")
-        RelationFactory(property_type = self.pt1,
-                        source = self.theme,
-                        target = concept1)
-        RelationFactory(property_type = self.pt2,
-                        source= concept1,
-                        target = self.theme)
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept1)
+        RelationFactory(property_type=self.pt2, source=concept1,
+                        target=self.theme)
 
         concept2 = ConceptFactory(id=3, code="3", namespace=self.ns_concept)
         PropertyFactory(concept=concept2, value="Concept 2")
-        RelationFactory(property_type = self.pt1, source=self.theme,
+        RelationFactory(property_type=self.pt1, source=self.theme,
                         target=concept2)
-        RelationFactory(property_type = self.pt2, source=concept2,
+        RelationFactory(property_type=self.pt2, source=concept2,
                         target=self.theme)
 
         url = reverse('theme_concepts',
@@ -160,7 +158,6 @@ class TestThemeConceptsView(WebTest):
 
         self.assertEqual(resp.pyquery('.concepts li:eq(1)').text(),
                          u'Concept 2')
-
 
     def test_letter_selected(self):
         concept2 = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
@@ -267,7 +264,7 @@ class TestGroupsView(WebTest):
 
         ns_group = NamespaceFactory(id=3, heading="Groups")
         group = ConceptFactory(id=3, code="3", namespace=ns_group)
-        PropertyFactory(concept = group, value="Group")
+        PropertyFactory(concept=group, value="Group")
 
         pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
@@ -347,39 +344,3 @@ class TestRelationsView(WebTest):
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
                          "Concept")
-
-
-class TestConceptView(WebTest):
-    def setUp(self):
-        self.ns_concept = NamespaceFactory(id=1, heading="Concept")
-        self.concept = ConceptFactory(namespace=self.ns_concept)
-        PropertyFactory(concept=self.concept, name="prefLabel", value="some prefLabel")
-        PropertyFactory(concept=self.concept, name="definition", value="some definition")
-        PropertyFactory(concept=self.concept, name="scopeNote", value="some scope note")
-
-    def test_ceva(self):
-        ns_group = NamespaceFactory(id=2, heading="Group")
-        ns_theme = NamespaceFactory(id=4, heading="Themes")
-        group = ConceptFactory(id=2, code="2", namespace=ns_group)
-        theme = ConceptFactory(id=3, code="3", namespace=ns_theme)
-        PropertyFactory(concept=group, name="prefLabel", value="Group Parent")
-        PropertyFactory(concept=theme, name="prefLabel", value="Theme Parent")
-
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
-        RelationFactory(property_type=pt2, source=self.concept, target=group)
-        RelationFactory(property_type=pt1, source=group, target=self.concept)
-
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
-                                  label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
-        RelationFactory(property_type=pt4, source=self.concept,
-                        target=theme)
-        RelationFactory(property_type=pt3, source=theme, target=self.concept)
-
-        url = reverse('concept', kwargs={'concept_id': 1, 'langcode': 'en'})
-        resp = self.app.get(url)
-
-        self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')

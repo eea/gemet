@@ -5,23 +5,31 @@
 
   <h3>{{ concept.prefLabel }}</h3>
     <h4>Definiton:</h4>
-      {{ concept.definition|default:"definition is not available" }}
+      <span class="infotext">
+        {{ concept.definition|default:"definition is not available" }}
+      </span>
 
     <h4>Scope note:</h4>
-      {{ concept.scopeNote|default:"scope note is not available" }}
+      <span class="infotext">
+        {{ concept.scopeNote|default:"scope note is not available" }}
+      </span>
 
     {% if concept.groups %}
       <h4>Groups:</h4>
       {% for group in concept.groups %}
-        {{ group }}
+        <span class="infotext">
+          {{ group }}
+        </span>
       {% endfor %}
     {% endif %}
 
     {% if concept.themes %}
       <h4>Themes:</h4>
-      {% for theme in concept.themes %}
-        {{ theme }}
-      {% endfor %}
+        <span class="infotext">
+          {% for theme in concept.themes %}
+            {{ theme }} <br/>
+          {% endfor %}
+        </span>
     {% endif %}
 
     <h4>Other relations:</h4>
