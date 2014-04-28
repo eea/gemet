@@ -4,9 +4,14 @@
   {% include 'select_language.html' with languages=languages langcode=langcode view='concept' id=concept.id %}
 
   <h3>{{ concept.prefLabel }}</h3>
-  <h4>Definiton:</h4>
+  <h4>Definiton:{% if not concept.definition %} * {% endif %}</h4>
   <span class="infotext">
-    {{ concept.definition|default:"definition is not available" }}
+    {% if not concept.definition %}
+      <span>*Note: </span>
+      <span>Definition is not available for the current language</span>
+    {% else %}
+      {{concept.definition }}
+    {% endif %}
   </span>
 
   {% if concept.broader_concepts %}
