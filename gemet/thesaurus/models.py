@@ -56,6 +56,11 @@ class Concept(Model):
              .filter(property_type__name=parent_type)]
         )
 
+    def set_broader(self):
+        self.broader_concepts = [r.target for r in self.source_relations
+                                 .filter(property_type__name='broader')
+                                 .prefetch_related('target')]
+
     def set_children(self):
         if self.namespace.heading in ['Concepts', 'Super groups']:
             self.children = [r.target for r in self.source_relations

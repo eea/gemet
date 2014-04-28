@@ -76,6 +76,12 @@ def concept(request, concept_id, langcode):
 
     concept.translations = concept.properties.filter(name='prefLabel')
 
+    concept.set_children()
+    concept.set_broader()
+
+    for cp in concept.children + concept.broader_concepts:
+        cp.set_attribute('prefLabel', langcode)
+
     return render(request, 'concept.html', {
         'languages': languages,
         'langcode': langcode,

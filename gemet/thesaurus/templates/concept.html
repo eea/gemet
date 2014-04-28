@@ -4,49 +4,71 @@
   {% include 'select_language.html' with languages=languages langcode=langcode view='concept' id=concept.id %}
 
   <h3>{{ concept.prefLabel }}</h3>
-    <h4>Definiton:</h4>
-      <span class="infotext">
-        {{ concept.definition|default:"definition is not available" }}
-      </span>
+  <h4>Definiton:</h4>
+  <span class="infotext">
+    {{ concept.definition|default:"definition is not available" }}
+  </span>
 
-    <h4>Scope note:</h4>
-      <span class="infotext">
-        {{ concept.scopeNote|default:"scope note is not available" }}
-      </span>
-
-    {% if concept.groups %}
-      <h4>Groups:</h4>
-      {% for group in concept.groups %}
-        <span class="infotext">
-          {{ group }}
-        </span>
+  {% if concept.broader_concepts %}
+    <h4>broader terms</h4>
+    <ul>
+      {% for cp in concept.broader_concepts %}
+        <li>
+          <a href="{% url 'concept' langcode cp.id %}">{{ cp.prefLabel }}</a>
+        </li>
       {% endfor %}
-    {% endif %}
+    </ul>
+  {% endif %}
 
-    {% if concept.themes %}
-      <h4>Themes:</h4>
-        <span class="infotext">
-          {% for theme in concept.themes %}
-            {{ theme }} <br/>
-          {% endfor %}
-        </span>
-    {% endif %}
+  {% if concept.children %}
+    <h4>narrower terms</h4>
+    <ul>
+      {% for cp in concept.children %}
+        <li>
+          <a href="{% url 'concept' langcode cp.id %}">{{ cp.prefLabel }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-    <h4>Other relations:</h4>
-      <ul>
-        {% for relation in concept.visible_foreign_relations %}
-          <li>
-            {{ relation.property_type.label }}:
-            <a href="{{ relation.uri }}">{{ relation.label }}</a>
-          </li>
-        {% endfor %}
-      </ul>
+  <h4>Scope note:</h4>
+  <span class="infotext">
+    {{ concept.scopeNote|default:"scope note is not available" }}
+  </span>
 
-    <h4>Translations:</h4>
-      <ul>
-        {% for translation in concept.translations %}
-          <li>{{ translation.language.name }}: {{ translation.value }}</li>
-        {% endfor %}
-      </ul>
+  {% if concept.groups %}
+    <h4>Groups:</h4>
+    <span class="infotext">
+      {% for group in concept.groups %}
+        {{ group }}
+      {% endfor %}
+    </span>
+  {% endif %}
+
+  {% if concept.themes %}
+    <h4>Themes:</h4>
+    <span class="infotext">
+      {% for theme in concept.themes %}
+        {{ theme }}
+      {% endfor %}
+    </span>
+  {% endif %}
+
+  <h4>Other relations:</h4>
+  <ul>
+    {% for relation in concept.visible_foreign_relations %}
+      <li>
+        {{ relation.property_type.label }}:
+        <a href="{{ relation.uri }}">{{ relation.label }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h4>Translations:</h4>
+  <ul>
+    {% for translation in concept.translations %}
+      <li>{{ translation.language.name }}: {{ translation.value }}</li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}
