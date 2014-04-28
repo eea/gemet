@@ -43,7 +43,7 @@ class Command(BaseCommand):
         )
         rows = dictfetchall(cursor, query_str)
 
-        self.import_rows(rows, 'thesaurus_concept', Concept)
+        self.import_rows(rows, Concept)
 
         query_str = (
             "SELECT concat(ns, id_concept) AS concept_id, "
@@ -63,7 +63,7 @@ class Command(BaseCommand):
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
 
-        self.import_rows(rows, 'thesaurus_property', Property)
+        self.import_rows(rows, Property)
 
         query_str = (
             "SELECT concat(source_ns, id_concept) AS source_id, "
@@ -89,7 +89,7 @@ class Command(BaseCommand):
 
         rows = filter(update_values, rows)
 
-        self.import_rows(rows, 'thesaurus_relation', Relation)
+        self.import_rows(rows, Relation)
 
         query_str = (
             "SELECT concat(source_ns, id_concept) AS concept_id, "
@@ -107,15 +107,17 @@ class Command(BaseCommand):
             row['concept_id'] = concept_ids[row['concept_id']]
             row['property_type_id'] = property_ids[row['property_type_id']]
 
-        self.import_rows(rows, 'thesaurus_foreignrelation', ForeignRelation)
+        self.import_rows(rows, ForeignRelation)
 
         query_str = "SELECT * FROM definition_sources;"
         rows = dictfetchall(cursor, query_str)
 
-        self.import_rows(rows, 'thesaurus_definitionsource', DefinitionSource)
+        self.import_rows(rows, DefinitionSource)
 
-    def import_rows(self, rows, table_name, model_cls):
+    def import_rows(self, rows, model_cls):
         if rows:
+            table_name = model_cls._meta.db_table
+
             self.stdout.write('Truncating `{0}` ...'.format(table_name))
             model_cls.objects.all().delete()
 
