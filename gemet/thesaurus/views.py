@@ -165,3 +165,46 @@ def theme_concepts(request, theme_id, langcode):
         'letter': letter_index,
         'get_params': request.GET.urlencode(),
     })
+
+def alphabetic_listing(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    letters = unicode_character_map.get(langcode, [])
+
+    concepts = Concept.objects.filter(namespace__heading = 'Concepts')
+    for concept in concepts:
+        concept.set_attribute('prefLabel', langcode)
+    concepts = sorted(concepts, key=lambda t: t.prefLabel)
+
+    try:
+        letter_index = int(request.GET.get('letter', '0'))
+    except ValueError:
+        raise Http404
+
+    if letter_index == 0:
+        pass
+    elif 0 < letter_index <= len(letters):
+        concepts = [c for c in concepts if c.prefLabel[0] in
+                    letters[letter_index - 1]]
+    elif letter_index == 99:
+        concepts = [c for c in concepts if c.prefLabel[0] not in
+                    list(chain.from_iterable(letters))]
+    else:
+        raise Http404
+
+    paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
+    page = request.GET.get('page')
+    try:
+        concepts = paginator.page(page)
+    except PageNotAnInteger:
+        concepts = paginator.page(1)
+    except EmptyPage:
+        concepts = paginator.page(paginator.num_pages)
+
+    return render(request, 'alphabetic_listings.html', {
+        'languages': languages,
+        'langcode': langcode,
+        'concepts': concepts,
+        'letters': [l[0] for l in letters],
+        'letter': letter_index,
+        'get_params': request.GET.urlencode(),
+    })

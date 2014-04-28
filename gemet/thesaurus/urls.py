@@ -7,6 +7,7 @@ from .views import (
     theme_concepts,
     redirect_old_urls,
     concept_redirect,
+    alphabetic_listing,
 )
 
 
@@ -19,7 +20,8 @@ urlpatterns = patterns(
         url(r'^concept/(?P<concept_id>\d+)/$', concept, name='concept'),
         url(r'^relations/(?P<group_id>\d+)/$', relations, name='relations'),
         url(r'^theme/(?P<theme_id>\d+)/$', theme_concepts,
-            name='theme_concepts')
+            name='theme_concepts'),
+        url(r'^alphabetic/$', alphabetic_listing, name='alphabetic'),
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^concept/(?P<concept_code>\d+)$', concept_redirect,

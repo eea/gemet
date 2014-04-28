@@ -1,0 +1,11 @@
+{% extends 'concept_listings.html' %}
+
+{% block language_selector %}
+  {% include 'select_language.html' with languages=languages langcode=langcode view='alphabetic' %}
+{% endblock %}
+
+{% block header %}
+  <h1>Alphabetic listing of terms</h1>
+{% endblock %}
+
+{% include 'pagination_footer.html' with langcode=langcode letters=letters view='alphabetic' %}

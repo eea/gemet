@@ -1,0 +1,17 @@
+<a href="{% if id %}
+           {% url view langcode id%}
+         {% else %}
+           {% url view langcode%}
+         {% endif %}?letter=0">all</a>
+{% for letter in letters %}
+  <a href="{% if id %}
+             {% url view langcode id%}
+           {% else %}
+             {% url view langcode%}
+           {% endif %}?letter={{ forloop.counter }}">{{ letter }}</a>
+{% endfor %}
+<a href="{% if id %}
+           {% url view langcode id%}
+         {% else %}
+           {% url view langcode%}
+         {% endif %}?letter=99">other</a>

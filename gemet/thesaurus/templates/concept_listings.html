@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% block language_selector %}
+  {% endblock %}
+
+  {% block header %}
+  {% endblock %}
+
+  <ul class="concepts">
+    {% for concept in concepts %}
+      <li>
+        <a href="{% url 'concept' langcode concept.id %}">{{ concept.prefLabel }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if concepts.has_previous %}
+        <a href="?page={{ concepts.previous_page_number }}&letter={{ letter }}">previous</a>
+      {% endif %}
+
+      {% for page_number in concepts.paginator.page_range %}
+        {% if page_number == concepts.number %}
+          {{ page_number }}
+        {% else %}
+          <a href="?page={{ page_number }}&letter={{ letter }}">{{ page_number }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if concepts.has_next %}
+        <a href="?page={{ concepts.next_page_number }}&letter={{ letter }}">next</a>
+      {% endif %}
+    </span>
+  </div>
+
+  <a href="{% url 'alphabetic' langcode%}?letter=0">all</a>
+  {% for letter in letters %}
+    <a href="{% url 'alphabetic' langcode%}?letter={{ forloop.counter }}">{{ letter }}</a>
+  {% endfor %}
+  <a href="{% url 'alphabetic' langcode%}?letter=99">other</a>
+
+{% endblock %}
