@@ -35,10 +35,7 @@
     </span>
   </div>
 
-  <a href="{% url 'alphabetic' langcode%}?letter=0">all</a>
-  {% for letter in letters %}
-    <a href="{% url 'alphabetic' langcode%}?letter={{ forloop.counter }}">{{ letter }}</a>
-  {% endfor %}
-  <a href="{% url 'alphabetic' langcode%}?letter=99">other</a>
+  {% block pagination %}
+  {% endblock %}
 
 {% endblock %}

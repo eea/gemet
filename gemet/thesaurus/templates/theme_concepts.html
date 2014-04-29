@@ -8,4 +8,10 @@
   <h1>Concepts list for {{ theme.prefLabel }}</h1>
 {% endblock %}
 
-{% include 'pagination_footer.html' with langcode=langcode letters=letters view='theme_concepts' id=theme.id %}
+{% block pagination %}
+  <a href="{% url 'theme_concepts' langcode theme.id %}?letter=0">all</a>
+  {% for letter in letters %}
+    <a href="{% url 'theme_concepts' langcode theme.id %}?letter={{ forloop.counter }}">{{ letter }}</a>
+  {% endfor %}
+  <a href="{% url 'theme_concepts' langcode theme.id %}?letter=99">other</a>
+{% endblock %}

@@ -8,4 +8,10 @@
   <h1>Alphabetic listing of terms</h1>
 {% endblock %}
 
-{% include 'pagination_footer.html' with langcode=langcode letters=letters view='alphabetic' %}
+{% block pagination %}
+  <a href="{% url 'alphabetic' langcode %}?letter=0">all</a>
+  {% for letter in letters %}
+    <a href="{% url 'alphabetic' langcode %}?letter={{ forloop.counter }}">{{ letter }}</a>
+  {% endfor %}
+  <a href="{% url 'alphabetic' langcode %}?letter=99">other</a>
+{% endblock %}
