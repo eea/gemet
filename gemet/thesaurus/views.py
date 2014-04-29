@@ -41,6 +41,8 @@ def themes(request, langcode='en'):
     for theme in themes:
         theme.set_attribute('prefLabel', langcode)
 
+    themes = sorted(themes, key=lambda t: t.prefLabel.lower())
+
     return render(request, 'themes.html', {
         'languages': languages,
         'langcode': langcode,
@@ -121,9 +123,11 @@ def relations(request, group_id, langcode):
     })
 
 
-def _get_concept_params(list_of_concepts, request, langcode):
+def _get_concept_params(all_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     letters = unicode_character_map.get(langcode, [])
+
+    all_concepts = sorted(all_concepts, key=lambda t: t.prefLabel.lower())
 
     try:
         letter_index = int(request.GET.get('letter', '0'))
@@ -131,12 +135,12 @@ def _get_concept_params(list_of_concepts, request, langcode):
         raise Http404
 
     if letter_index == 0:
-        concepts = list_of_concepts
+        concepts = all_concepts
     elif 0 < letter_index <= len(letters):
-        concepts = [c for c in list_of_concepts if c.prefLabel and
+        concepts = [c for c in all_concepts if c.prefLabel and
                     c.prefLabel[0] in letters[letter_index - 1]]
     elif letter_index == 99:
-        concepts = [c for c in list_of_concepts if c.prefLabel and
+        concepts = [c for c in all_concepts if c.prefLabel and
                     c.prefLabel[0] not in list(chain.from_iterable(letters))]
     else:
         raise Http404
@@ -178,8 +182,6 @@ def alphabetic(request, langcode):
     concepts = Concept.objects.filter(namespace__heading='Concepts')
     for concept in concepts:
         concept.set_attribute('prefLabel', langcode)
-    concepts = sorted(concepts, key=lambda t: t.prefLabel.lower())
 
     return render(request, 'alphabetic_listings.html',
-        _get_concept_params(concepts, request, langcode)
-    )
+                  _get_concept_params(concepts, request, langcode))

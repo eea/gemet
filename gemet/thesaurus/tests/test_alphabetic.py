@@ -36,7 +36,7 @@ class TestAlphabeticView(WebTest):
                          u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 1}))
-                        )
+                         )
 
     def test_more_concepts(self):
         ns = NamespaceFactory(heading="Concepts")
@@ -58,14 +58,14 @@ class TestAlphabeticView(WebTest):
                          u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 1}))
-                        )
+                         )
         self.assertEqual(resp.pyquery(".concepts li:eq(1) a").text(),
                          'Concept2')
         self.assertEqual(resp.pyquery(".concepts li:eq(1) a").attr('href'),
                          u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 2}))
-                        )
+                         )
 
     def test_letter_selected(self):
         ns = NamespaceFactory(heading="Concepts")
@@ -90,7 +90,7 @@ class TestAlphabeticView(WebTest):
                          u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 1}))
-                        )
+                         )
 
         resp = self.app.get('{_url}?letter={letter}'
                             .format(_url=url, letter=2))
@@ -102,4 +102,4 @@ class TestAlphabeticView(WebTest):
                          u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 2}))
-                        )
+                         )
