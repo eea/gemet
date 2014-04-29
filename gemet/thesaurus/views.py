@@ -166,11 +166,11 @@ def theme_concepts(request, theme_id, langcode):
         'get_params': request.GET.urlencode(),
     })
 
-def alphabetic_listing(request, langcode):
+def alphabetic(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     letters = unicode_character_map.get(langcode, [])
 
-    concepts = Concept.objects.filter(namespace__heading = 'Concepts')
+    concepts = Concept.objects.filter(namespace__heading='Concepts')
     for concept in concepts:
         concept.set_attribute('prefLabel', langcode)
     concepts = sorted(concepts, key=lambda t: t.prefLabel)

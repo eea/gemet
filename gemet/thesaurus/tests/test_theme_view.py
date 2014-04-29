@@ -17,7 +17,7 @@ class TestThemesView(WebTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
 
-        self.assertEqual(resp.pyquery('.themes li').length, 0)
+        self.assertEqual(resp.pyquery('.themes').children(), [])
 
     def test_one_theme(self):
         theme = ConceptFactory()
