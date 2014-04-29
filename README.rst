@@ -39,7 +39,18 @@ Run these commands::
 Product directory
 -----------------
 
-    TODO
+Create the product directory::
+
+    mkdir -p /var/local/gemet
+    mkdir /var/local/gemet/logs
+
+Create a new user::
+
+    adduser edw
+
+Change the product directory's owner::
+
+    chown edw:edw /var/local/gemet -R
 
 
 Install dependencies
@@ -66,19 +77,22 @@ be run as an unprivileged user in the product directory::
 
     pip install -r requirements.txt
 
-4. Create a configuration file::
+4. Create a local configuration file::
 
     cd gemet
-    cp settings.py.example settings.py
+    cp local_settings.py.example local_settings.py
 
 6. Set up the MySQL database::
 
     TODO
 
-7. Create initial database:
+7. Create initial database::
 
     ./manage.py syncdb
 
+8. Load fixtures data into the database::
+
+   ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
 Build production
 ----------------
@@ -91,7 +105,7 @@ Configure supervisord and set the WSGI server port (by default it is 5000)::
 
     TODO
 
-At this stage, the application is up and running. You should also configure:
+At this stage, the application is up and running. You should also configure::
 
     TODO
 
@@ -99,8 +113,21 @@ At this stage, the application is up and running. You should also configure:
 Build staging
 -------------
 
-    TODO
+Setup staging environment using an unprivileged user::
 
+    cd /var/local/gemet
+    source sandbox/bin/activate
+
+Change the local_settings.py file by setting debug mode off::
+
+    DEBUG = False
+    ALLOWED_HOSTS = ['localhost']  # Add allowed hosts to the list as needed
+
+Configure supervisord and set the WSGI server port (a different one from the
+production, for example 8010)::
+
+    cp gemet/supervisord.conf.example supervisord.conf
+    supervisorctl reload 1>/dev/null || ./bin/supervisord
 
 Configuration
 -------------
@@ -165,8 +192,7 @@ Recommended:
 
 Software
 --------
-Any recent Linux version.
-apache2, local MySQL server
+Any recent Linux version, apache2, MySQL server, Python 2.7
 
 
 Copyright and license

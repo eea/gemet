@@ -97,7 +97,7 @@ def concept(request, concept_id, langcode):
 def concept_redirect(request, concept_code):
     cp = get_object_or_404(
         Concept,
-        lcode=concept_code,
+        code=concept_code,
         namespace__heading='Concepts',
     )
     return redirect('concept', langcode=DEFAULT_LANGCODE, concept_id=cp.id)
