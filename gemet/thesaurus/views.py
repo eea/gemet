@@ -1,8 +1,9 @@
+from itertools import chain
+
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from itertools import chain
 
 from gemet.thesaurus.models import (
     Language,
@@ -120,16 +121,9 @@ def relations(request, group_id, langcode):
     })
 
 
-def theme_concepts(request, theme_id, langcode):
+def _get_concept_params(list_of_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     letters = unicode_character_map.get(langcode, [])
-
-    theme = get_object_or_404(Concept, pk=theme_id)
-    theme.set_attribute('prefLabel', langcode)
-    theme.set_children()
-
-    for concept in theme.children:
-        concept.set_attribute('prefLabel', langcode)
 
     try:
         letter_index = int(request.GET.get('letter', '0'))
@@ -137,12 +131,12 @@ def theme_concepts(request, theme_id, langcode):
         raise Http404
 
     if letter_index == 0:
-        concepts = theme.children
+        concepts = list_of_concepts
     elif 0 < letter_index <= len(letters):
-        concepts = [c for c in theme.children if c.prefLabel
-                    and c.prefLabel[0] in letters[letter_index - 1]]
+        concepts = [c for c in list_of_concepts if c.prefLabel and
+                    c.prefLabel[0] in letters[letter_index - 1]]
     elif letter_index == 99:
-        concepts = [c for c in theme.children if c.prefLabel and
+        concepts = [c for c in list_of_concepts if c.prefLabel and
                     c.prefLabel[0] not in list(chain.from_iterable(letters))]
     else:
         raise Http404
@@ -156,55 +150,36 @@ def theme_concepts(request, theme_id, langcode):
     except EmptyPage:
         concepts = paginator.page(paginator.num_pages)
 
-    return render(request, 'theme_concepts.html', {
-        'languages': languages,
+    return {
         'langcode': langcode,
-        'theme': theme,
+        'languages': languages,
         'concepts': concepts,
         'letters': [l[0] for l in letters],
         'letter': letter_index,
-        'get_params': request.GET.urlencode(),
-    })
+        'get_params': request.GET.urlencode()
+    }
+
+
+def theme_concepts(request, theme_id, langcode):
+    theme = get_object_or_404(Concept, pk=theme_id)
+    theme.set_attribute('prefLabel', langcode)
+    theme.set_children()
+
+    for concept in theme.children:
+        concept.set_attribute('prefLabel', langcode)
+
+    params = _get_concept_params(theme.children, request, langcode)
+    params.update({'theme': theme})
+
+    return render(request, 'theme_concepts.html', params)
+
 
 def alphabetic(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    letters = unicode_character_map.get(langcode, [])
-
     concepts = Concept.objects.filter(namespace__heading='Concepts')
     for concept in concepts:
         concept.set_attribute('prefLabel', langcode)
-    concepts = sorted(concepts, key=lambda t: t.prefLabel)
+    concepts = sorted(concepts, key=lambda t: t.prefLabel.lower())
 
-    try:
-        letter_index = int(request.GET.get('letter', '0'))
-    except ValueError:
-        raise Http404
-
-    if letter_index == 0:
-        pass
-    elif 0 < letter_index <= len(letters):
-        concepts = [c for c in concepts if c.prefLabel[0] in
-                    letters[letter_index - 1]]
-    elif letter_index == 99:
-        concepts = [c for c in concepts if c.prefLabel[0] not in
-                    list(chain.from_iterable(letters))]
-    else:
-        raise Http404
-
-    paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
-    page = request.GET.get('page')
-    try:
-        concepts = paginator.page(page)
-    except PageNotAnInteger:
-        concepts = paginator.page(1)
-    except EmptyPage:
-        concepts = paginator.page(paginator.num_pages)
-
-    return render(request, 'alphabetic_listings.html', {
-        'languages': languages,
-        'langcode': langcode,
-        'concepts': concepts,
-        'letters': [l[0] for l in letters],
-        'letter': letter_index,
-        'get_params': request.GET.urlencode(),
-    })
+    return render(request, 'alphabetic_listings.html',
+        _get_concept_params(concepts, request, langcode)
+    )
