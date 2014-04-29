@@ -3,6 +3,10 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+LOCAL_INSTALLED_APPS = (
+    'debug_toolbar',
+)
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 

@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gemet.thesaurus',
-    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -74,8 +73,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOCAL_INSTALLED_APPS = ()
 try:
     from local_settings import *
+    INSTALLED_APPS += LOCAL_INSTALLED_APPS
 except ImportError:
     pass
 
