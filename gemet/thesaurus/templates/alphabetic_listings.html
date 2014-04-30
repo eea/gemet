@@ -11,7 +11,11 @@
 {% block pagination %}
   <a href="{% url 'alphabetic' langcode %}?letter=0">all</a>
   {% for letter in letters %}
-    <a href="{% url 'alphabetic' langcode %}?letter={{ forloop.counter }}">{{ letter }}</a>
+    {% if letter.1 %}
+      <a href="{% url 'alphabetic' langcode %}?letter={{ forloop.counter }}">{{ letter.0 }}</a>
+    {% else %}
+      {{ letter.0 }}
+    {% endif %}
   {% endfor %}
   <a href="{% url 'alphabetic' langcode %}?letter=99">other</a>
 {% endblock %}

@@ -123,6 +123,14 @@ def relations(request, group_id, langcode):
     })
 
 
+def _letter_exists(letter, all_concepts):
+    for l in letter:
+        for concept in all_concepts:
+            if l == concept.prefLabel[0]:
+                return True
+    return None
+
+
 def _get_concept_params(all_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     letters = unicode_character_map.get(langcode, [])
@@ -158,7 +166,7 @@ def _get_concept_params(all_concepts, request, langcode):
         'langcode': langcode,
         'languages': languages,
         'concepts': concepts,
-        'letters': [l[0] for l in letters],
+        'letters': [(l[0], _letter_exists(l, all_concepts)) for l in letters],
         'letter': letter_index,
         'get_params': request.GET.urlencode()
     }

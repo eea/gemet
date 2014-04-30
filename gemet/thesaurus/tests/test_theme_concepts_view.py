@@ -38,16 +38,11 @@ class TestThemeConceptsView(WebTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.concepts li').length, 1)
-
-        """
-        after TO_DO list
-
         self.assertEqual(resp.pyquery('.concepts li:eq(0) a').attr('href'),
-                         u'{url}'.format(url=reverse('theme_concepts',
+                         u'{url}'.format(url=reverse('concept',
                                                      kwargs={'langcode': 'en',
-                                                             'theme_id': 1}))
+                                                             'concept_id': 2}))
                          )
-        """
         self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
                          u'Concept value')
 
@@ -72,29 +67,20 @@ class TestThemeConceptsView(WebTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-
-        #after TO_DO list. An a href needed
-        """
         self.assertEqual(resp.pyquery('.concepts li:eq(0) a').attr('href'),
                          u'{url}'
-                         .format(url=reverse('theme_concepts',
+                         .format(url=reverse('concept',
                                              kwargs={'langcode': 'en',
-                                                     'theme_id': 1}))
+                                                     'concept_id': 2}))
                          )
-        """
         self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
                          u'Concept 1')
-
-        #after TO_DO list. An a href needed
-        """
         self.assertEqual(resp.pyquery('.concepts li:eq(1) a').attr('href'),
                          u'{url}'
-                         .format(url=reverse('theme_concepts',
+                         .format(url=reverse('concept',
                                              kwargs={'langcode': 'en',
-                                                     'theme_id': 1}))
+                                                     'concept_id': 3}))
                          )
-        """
-
         self.assertEqual(resp.pyquery('.concepts li:eq(1)').text(),
                          u'Concept 2')
 
