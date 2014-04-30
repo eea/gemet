@@ -155,14 +155,15 @@ def _get_concept_params(all_concepts, request, langcode):
     else:
         raise Http404
 
-    paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
-    page = request.GET.get('page')
-    try:
-        concepts = paginator.page(page)
-    except PageNotAnInteger:
-        concepts = paginator.page(1)
-    except EmptyPage:
-        concepts = paginator.page(paginator.num_pages)
+    if concepts != []:
+        paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
+        page = request.GET.get('page')
+        try:
+            concepts = paginator.page(page)
+        except PageNotAnInteger:
+            concepts = paginator.page(1)
+        except EmptyPage:
+            concepts = paginator.page(paginator.num_pages)
 
     return {
         'langcode': langcode,
