@@ -3,3 +3,4 @@ sandbox
 *.pyc
 local_settings.py
 docs/api/build/*
+fabfile/env.ini
