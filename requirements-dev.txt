@@ -10,6 +10,7 @@ ecdsa==0.11
 factory-boy==2.3.1
 lxml==3.3.5
 paramiko==1.12.3
+path.py==5.1
 pycrypto==2.6.1
 pyquery==1.2.8
 six==1.6.1
