@@ -1,14 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=langcode view='themes' %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
 
   <h1>Themes</h1>
 
-  <ul class="themes">
+  <ul class="themes {% if language.rtl %}direction-rtl{% endif %}">
     {% for theme in themes %}
       <li>
-        <a href="{% url 'theme_concepts' langcode theme.id %}">{{ theme.prefLabel }}</a>
+        <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.prefLabel }}</a>
       </li>
     {% endfor %}
   </ul>

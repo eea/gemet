@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=langcode view='concept' id=concept.id %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='concept' id=concept.id %}
 
   <h3>{{ concept.prefLabel }}</h3>
   <h4>Definiton:{% if not concept.definition %} * {% endif %}</h4>
@@ -19,7 +19,7 @@
     <ul>
       {% for cp in concept.broader_concepts %}
         <li>
-          <a href="{% url 'concept' langcode cp.id %}">{{ cp.prefLabel }}</a>
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.prefLabel }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -30,7 +30,7 @@
     <ul>
       {% for cp in concept.children %}
         <li>
-          <a href="{% url 'concept' langcode cp.id %}">{{ cp.prefLabel }}</a>
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.prefLabel }}</a>
         </li>
       {% endfor %}
     </ul>

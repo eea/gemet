@@ -99,6 +99,10 @@ class Language(Model):
     code_alt = CharField(max_length=3)
     direction = CharField(max_length=1, choices=(('0', 'ltr'), ('1', 'rtl')))
 
+    @property
+    def rtl(self):
+        return self.direction == '1'
+
     def __unicode__(self):
         return self.name
 

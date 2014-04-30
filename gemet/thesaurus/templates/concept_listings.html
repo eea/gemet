@@ -7,10 +7,10 @@
   {% block header %}
   {% endblock %}
 
-  <ul class="concepts">
+  <ul class="concepts {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}
       <li>
-        <a href="{% url 'concept' langcode concept.id %}">{{ concept.prefLabel }}</a>
+        <a href="{% url 'concept' language.code concept.id %}">{{ concept.prefLabel }}</a>
       </li>
     {% endfor %}
   </ul>

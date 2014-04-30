@@ -1,15 +1,17 @@
-import pyquery
-
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
     ConceptFactory,
     PropertyFactory,
+    LanguageFactory,
 )
 
 
 class TestThemesView(WebTest):
+    def setUp(self):
+        LanguageFactory()
+
     def test_no_theme(self):
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)

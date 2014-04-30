@@ -6,12 +6,13 @@ from .factories import (
     LanguageFactory,
     PropertyFactory,
     NamespaceFactory,
-    RelationFactory,
-    PropertyTypeFactory,
 )
 
 
 class TestAlphabeticView(WebTest):
+    def setUp(self):
+        LanguageFactory()
+
     def test_no_concepts(self):
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
         resp = self.app.get(url)

@@ -1,16 +1,18 @@
+{% load staticfiles %}
 <!doctype html>
 <html>
   <head>
     <title>GEMET</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/style.css' %}" />
   </head>
 <body>
   <p>
-    <a href="{% url 'themes' langcode %}">Thematic Listings</a>
-    <a href="{% url 'groups' langcode %}">Hierarchical Listings</a>
-    <a href="{% url 'alphabetic' langcode %}">Alphabetic Listings</a>
+    <a href="{% url 'themes' language.code %}">Thematic Listings</a>
+    <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
+    <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
   </p>
 
-  {% block content %}
-  {% endblock %}
-</body>
+    {% block content %}
+    {% endblock %}
+  </body>
 </html>

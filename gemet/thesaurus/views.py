@@ -36,6 +36,7 @@ def redirect_old_urls(request, view_name):
 
 def themes(request, langcode='en'):
     languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
 
     themes = Concept.objects.filter(namespace__heading='Themes')
     for theme in themes:
@@ -45,13 +46,14 @@ def themes(request, langcode='en'):
 
     return render(request, 'themes.html', {
         'languages': languages,
-        'langcode': langcode,
+        'language': language,
         'themes': themes,
     })
 
 
 def groups(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
 
     supergroups = Concept.objects.filter(namespace__heading='Super Groups')
 
@@ -63,13 +65,14 @@ def groups(request, langcode):
 
     return render(request, 'groups.html', {
         'languages': languages,
-        'langcode': langcode,
+        'language': language,
         'supergroups': supergroups,
     })
 
 
 def concept(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
 
     concept = get_object_or_404(Concept, pk=concept_id)
 
@@ -92,7 +95,7 @@ def concept(request, concept_id, langcode):
 
     return render(request, 'concept.html', {
         'languages': languages,
-        'langcode': langcode,
+        'language': language,
         'concept': concept,
     })
 
@@ -108,6 +111,7 @@ def concept_redirect(request, concept_code):
 
 def relations(request, group_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
 
     expand_text = request.GET.get('exp')
     expand = expand_text.split('-') if expand_text else []
@@ -118,7 +122,7 @@ def relations(request, group_id, langcode):
 
     return render(request, 'relations.html', {
         'languages': languages,
-        'langcode': langcode,
+        'language': language,
         'group': group,
         'get_params': request.GET.urlencode(),
     })
@@ -134,6 +138,8 @@ def _letter_exists(letter, all_concepts):
 
 def _get_concept_params(all_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
     letters = unicode_character_map.get(langcode, [])
 
     all_concepts = sorted([c for c in all_concepts if c.prefLabel],
@@ -166,8 +172,8 @@ def _get_concept_params(all_concepts, request, langcode):
             concepts = paginator.page(paginator.num_pages)
 
     return {
-        'langcode': langcode,
         'languages': languages,
+        'language': language,
         'concepts': concepts,
         'letters': [(l[0], _letter_exists(l, all_concepts)) for l in letters],
         'letter': letter_index,

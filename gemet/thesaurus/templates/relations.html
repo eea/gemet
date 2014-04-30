@@ -1,14 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=langcode view='relations' id=group.id %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='relations' id=group.id %}
 
   <h1>Relations</h1>
 
-  <h3>{{ group.prefLabel }}</h3>
-  <ul class="groupMembers">
+  <h3 {% if language.rtl %}class="direction-rtl"{% endif %}>{{ group.prefLabel }}</h3>
+  <ul class="groupMembers {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in group.children %}
-      {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=langcode %}
+      {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=language.code %}
     {% endfor %}
   </ul>
 

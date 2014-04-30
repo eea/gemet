@@ -1,19 +1,15 @@
-import pyquery
-
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
-from django.test.utils import ContextList
 
 from .factories import (
-    ConceptFactory,
-    PropertyFactory,
-    NamespaceFactory,
-    RelationFactory,
-    PropertyTypeFactory,
+    LanguageFactory,
 )
 
 
 class TestRedirectsView(WebTest):
+    def setUp(self):
+        LanguageFactory()
+
     def test_index_html(self):
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get('/index_html')
