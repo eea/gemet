@@ -33,8 +33,9 @@ class TestRelationsView(WebTest):
         concept = ConceptFactory(id=2, code="2", namespace=ns_concept)
         PropertyFactory(concept=concept, value="Concept")
 
-        pt1=PropertyTypeFactory(id=1, name="groupMember", label="Group member")
-        pt2=PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(id=1, name="groupMember",
+                                  label="Group member")
+        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 
@@ -62,3 +63,9 @@ class TestRelationsView(WebTest):
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
                          "Concept")
+
+    def test_404_error(self):
+        url = reverse('relations', kwargs={'group_id': 2, 'langcode': 'en'})
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(404, resp.status_int)

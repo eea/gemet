@@ -139,3 +139,10 @@ class TestAlphabeticView(WebTest):
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 1}))
                          )
+
+    def test_404_error_letter_out_of_range(self):
+        url = "{url}?letter={letter}"\
+              .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
+                      letter=100)
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(404, resp.status_int)

@@ -26,8 +26,8 @@ class TestConceptView(WebTest):
         ns_theme = NamespaceFactory(id=4, heading="Themes")
         group = ConceptFactory(id=2, code="2", namespace=ns_group)
         theme = ConceptFactory(id=3, code="3", namespace=ns_theme)
-        PropertyFactory(concept=group, name="prefLabel", value="Group Parent")
-        PropertyFactory(concept=theme, name="prefLabel", value="Theme Parent")
+        PropertyFactory(concept=group, value="Group Parent")
+        PropertyFactory(concept=theme, value="Theme Parent")
 
         pt1 = PropertyTypeFactory(id=1, name="groupMember",
                                   label="Group member")
@@ -64,9 +64,9 @@ class TestConceptView(WebTest):
         theme1 = ConceptFactory(id=3, code="3", namespace=ns_theme)
         theme2 = ConceptFactory(id=4, code="4", namespace=ns_theme)
 
-        PropertyFactory(concept=group, name="prefLabel", value="Group Parent")
-        PropertyFactory(concept=theme1, name="prefLabel", value="ThemeP1")
-        PropertyFactory(concept=theme2, name="prefLabel", value="ThemeP2")
+        PropertyFactory(concept=group, value="Group Parent")
+        PropertyFactory(concept=theme1, value="ThemeP1")
+        PropertyFactory(concept=theme2, value="ThemeP2")
 
         pt1 = PropertyTypeFactory(id=1, name="groupMember",
                                   label="Group member")
@@ -100,3 +100,9 @@ class TestConceptView(WebTest):
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
+
+    def test_404_error(self):
+        url = reverse('concept', kwargs={'concept_id': 2, 'langcode': 'en'})
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(404, resp.status_int)

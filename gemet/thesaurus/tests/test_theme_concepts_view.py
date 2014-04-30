@@ -23,7 +23,7 @@ class TestThemeConceptsView(WebTest):
                                        label="Theme member")
         self.pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
 
-    def test_one_theme_concept(self):
+    def test_one_theme_one_concept(self):
         concept = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
         PropertyFactory(concept=concept, value="Concept value")
 
@@ -47,7 +47,7 @@ class TestThemeConceptsView(WebTest):
         self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
                          u'Concept value')
 
-    def test_more_theme_concepts(self):
+    def test_one_theme_two_concepts(self):
         concept1 = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
         PropertyFactory(concept=concept1, value="Concept 1")
         RelationFactory(property_type=self.pt1, source=self.theme,
@@ -174,3 +174,33 @@ class TestThemeConceptsView(WebTest):
                                                      kwargs={'langcode': 'en',
                                                              'concept_id': 2}))
                          )
+
+    def test_404_error_letter_out_of_range(self):
+        concept = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
+        PropertyFactory(concept=concept, value="Concept value")
+
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept)
+        RelationFactory(property_type=self.pt2, source=concept,
+                        target=self.theme)
+
+        url = "{url}?letter={letter}"\
+              .format(url=reverse('theme_concepts', kwargs={'langcode': 'en',
+                                                            'theme_id': 1}),
+                      letter=100)
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(404, resp.status_int)
+
+    def test_404_error_concept_id(self):
+        concept = ConceptFactory(id=2, code="2", namespace=self.ns_concept)
+        PropertyFactory(concept=concept, value="Concept value")
+
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept)
+        RelationFactory(property_type=self.pt2, source=concept,
+                        target=self.theme)
+
+        url = reverse('theme_concepts', kwargs={'langcode': 'en',
+                                                'theme_id': 2})
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(404, resp.status_int)
