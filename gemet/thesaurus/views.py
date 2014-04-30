@@ -112,7 +112,8 @@ def relations(request, group_id, langcode):
     expand_text = request.GET.get('exp')
     expand = expand_text.split('-') if expand_text else []
 
-    group = get_object_or_404(Concept, pk=group_id)
+    group = get_object_or_404(Concept, pk=group_id,
+                              namespace__heading="Groups")
     _attach_attributes(group, langcode, expand)
 
     return render(request, 'relations.html', {
@@ -136,7 +137,7 @@ def _get_concept_params(all_concepts, request, langcode):
     letters = unicode_character_map.get(langcode, [])
 
     all_concepts = sorted([c for c in all_concepts if c.prefLabel],
-                           key=lambda t: t.prefLabel.lower())
+                          key=lambda t: t.prefLabel.lower())
 
     try:
         letter_index = int(request.GET.get('letter', '0'))
@@ -174,7 +175,8 @@ def _get_concept_params(all_concepts, request, langcode):
 
 
 def theme_concepts(request, theme_id, langcode):
-    theme = get_object_or_404(Concept, pk=theme_id)
+    theme = get_object_or_404(Concept, pk=theme_id,
+                              namespace__heading='Themes')
     theme.set_attribute('prefLabel', langcode)
     theme.set_children()
 
