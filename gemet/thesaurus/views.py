@@ -135,7 +135,8 @@ def _get_concept_params(all_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     letters = unicode_character_map.get(langcode, [])
 
-    all_concepts = sorted(all_concepts, key=lambda t: t.prefLabel.lower())
+    all_concepts = sorted([c for c in all_concepts if c.prefLabel],
+                           key=lambda t: t.prefLabel.lower())
 
     try:
         letter_index = int(request.GET.get('letter', '0'))
