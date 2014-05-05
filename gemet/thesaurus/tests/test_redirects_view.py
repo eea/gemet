@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 
 from .factories import (
     LanguageFactory,
+    NamespaceFactory,
 )
 
 
@@ -11,6 +12,7 @@ class TestRedirectsView(WebTest):
         LanguageFactory()
 
     def test_index_html(self):
+        NamespaceFactory(heading='Themes')
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get('/index_html')
 
