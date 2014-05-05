@@ -203,3 +203,15 @@ def alphabetic(request, langcode):
 
     return render(request, 'alphabetic_listings.html',
                   _get_concept_params(concepts, request, langcode))
+
+def alphabets(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
+    letters = unicode_character_map.get(langcode, [])
+
+    return render(request, 'alphabets.html', {
+        'languages': languages,
+        'language': language,
+        'letters': letters
+    })
