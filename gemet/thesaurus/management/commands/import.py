@@ -44,6 +44,8 @@ class Command(BaseCommand):
         rows = dictfetchall(cursor, query_str)
 
         self.import_rows(rows, Concept)
+        self.warn_ignored_rows(cursor, 'concept', len(rows))
+        self.stdout.write('\n')
 
         query_str = (
             "SELECT concat(ns, id_concept) AS concept_id, "
@@ -64,6 +66,8 @@ class Command(BaseCommand):
             row['concept_id'] = concept_ids[row['concept_id']]
 
         self.import_rows(rows, Property)
+        self.warn_ignored_rows(cursor, 'property', len(rows))
+        self.stdout.write('\n')
 
         query_str = (
             "SELECT concat(source_ns, id_concept) AS source_id, "
@@ -90,6 +94,8 @@ class Command(BaseCommand):
         rows = filter(update_values, rows)
 
         self.import_rows(rows, Relation)
+        self.warn_ignored_rows(cursor, 'relation', len(rows))
+        self.stdout.write('\n')
 
         query_str = (
             "SELECT concat(source_ns, id_concept) AS concept_id, "
@@ -108,11 +114,14 @@ class Command(BaseCommand):
             row['property_type_id'] = property_ids[row['property_type_id']]
 
         self.import_rows(rows, ForeignRelation)
+        self.warn_ignored_rows(cursor, 'foreign_relation', len(rows))
+        self.stdout.write('\n')
 
         query_str = "SELECT * FROM definition_sources;"
         rows = dictfetchall(cursor, query_str)
 
         self.import_rows(rows, DefinitionSource)
+        self.stdout.write('\n')
 
     def import_rows(self, rows, model_cls):
         if rows:
@@ -130,3 +139,9 @@ class Command(BaseCommand):
             model_cls.objects.bulk_create(new_rows, batch_size=100000)
         else:
             self.stderr.write('0 rows found in the import table. Aborting ...')
+
+    def warn_ignored_rows(self, cursor, table_name, inserted_rows_cnt):
+        cursor.execute("SELECT count(*) FROM {0}".format(table_name))
+        total_rows_cnt = cursor.fetchone()[0]
+        ignored_rows_cnt = total_rows_cnt - inserted_rows_cnt
+        self.stdout.write('{0} rows ignored.'.format(ignored_rows_cnt))
