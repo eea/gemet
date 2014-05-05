@@ -12,6 +12,7 @@ from .factories import (
 class TestAlphabeticView(WebTest):
     def setUp(self):
         LanguageFactory()
+        self.ns = NamespaceFactory(heading="Concepts")
 
     def test_no_concepts(self):
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -22,8 +23,7 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts").children(), [])
 
     def test_one_concept(self):
-        ns = NamespaceFactory(heading="Concepts")
-        concept = ConceptFactory(namespace=ns)
+        concept = ConceptFactory(namespace=self.ns)
         PropertyFactory(concept=concept)
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -41,10 +41,9 @@ class TestAlphabeticView(WebTest):
                          )
 
     def test_more_concepts(self):
-        ns = NamespaceFactory(heading="Concepts")
-        concept1 = ConceptFactory(id=1, code="1", namespace=ns)
+        concept1 = ConceptFactory(id=1, code="1", namespace=self.ns)
         PropertyFactory(concept=concept1, value="Concept1")
-        concept2 = ConceptFactory(id=2, code="2", namespace=ns)
+        concept2 = ConceptFactory(id=2, code="2", namespace=self.ns)
         PropertyFactory(concept=concept2, value="Concept2")
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -70,10 +69,9 @@ class TestAlphabeticView(WebTest):
                          )
 
     def test_letter_selected_filter_one_language(self):
-        ns = NamespaceFactory(heading="Concepts")
-        concept1 = ConceptFactory(id=1, code="1", namespace=ns)
+        concept1 = ConceptFactory(id=1, code="1", namespace=self.ns)
         PropertyFactory(concept=concept1, value="A_Concept")
-        concept2 = ConceptFactory(id=2, code="2", namespace=ns)
+        concept2 = ConceptFactory(id=2, code="2", namespace=self.ns)
         PropertyFactory(concept=concept2, value="B_Concept")
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -92,13 +90,12 @@ class TestAlphabeticView(WebTest):
                          )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
-        ns_concept = NamespaceFactory(id=2, heading="Concepts")
         spanish = LanguageFactory(code='es', name='Spanish')
 
-        english_concept = ConceptFactory(id=1, code="1", namespace=ns_concept)
+        english_concept = ConceptFactory(id=1, code="1", namespace=self.ns)
         PropertyFactory(concept=english_concept, value="A_EN_Concept")
 
-        spanish_concept = ConceptFactory(id=2, code="2", namespace=ns_concept)
+        spanish_concept = ConceptFactory(id=2, code="2", namespace=self.ns)
         PropertyFactory(concept=spanish_concept, language=spanish,
                         name="prefLabel", value="A_ES_Concept")
 
@@ -118,10 +115,9 @@ class TestAlphabeticView(WebTest):
                          )
 
     def test_letter_selected_filter_one_concept_two_languages(self):
-        ns_concept = NamespaceFactory(id=2, heading="Concepts")
         spanish = LanguageFactory(code='es', name='Spanish')
 
-        concept = ConceptFactory(id=1, code="1", namespace=ns_concept)
+        concept = ConceptFactory(id=1, code="1", namespace=self.ns)
         PropertyFactory(concept=concept, value="A_EN_Concept")
         PropertyFactory(concept=concept, language=spanish,
                         name="prefLabel", value="A_ES_Concept")
