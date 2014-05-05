@@ -78,7 +78,7 @@ def concept(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    concept = get_object_or_404(Concept, pk=concept_id)  #heading = concept?
+    concept = get_object_or_404(Term, pk=concept_id)
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
         concept.set_attribute(property_name, langcode)
@@ -113,8 +113,7 @@ def theme(request, theme_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    theme = get_object_or_404(Concept, pk=theme_id,
-                              namespace__heading='Themes')
+    theme = get_object_or_404(Theme, pk=theme_id)
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
         theme.set_attribute(property_name, langcode)
@@ -142,8 +141,7 @@ def theme(request, theme_id, langcode):
 
 
 def theme_redirect(request, theme_code):
-    tp = get_object_or_404(Concept, code=theme_code,
-                           namespace__heading='Themes')
+    tp = get_object_or_404(Theme, code=theme_code)
     return redirect('theme', langcode=DEFAULT_LANGCODE, concept_id=tp.id)
 
 
@@ -198,7 +196,7 @@ def _get_concept_params(all_concepts, request, langcode):
     else:
         raise Http404
 
-    if concepts != []:
+    if concepts:
         paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
         page = request.GET.get('page')
         try:
