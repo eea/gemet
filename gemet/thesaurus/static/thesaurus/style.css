@@ -1,0 +1,4 @@
+.direction-rtl {
+    direction: rtl;
+    text-align: right !important;
+}
