@@ -8,6 +8,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from gemet.thesaurus.models import (
     Language,
     Concept,
+    Theme,
+    SuperGroup,
+    Term,
+    Group,
 )
 from collation_charts import unicode_character_map
 
@@ -38,7 +42,7 @@ def themes(request, langcode='en'):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    themes = Concept.objects.filter(namespace__heading='Themes')
+    themes = Theme.objects.all()
     for theme in themes:
         theme.set_attribute('prefLabel', langcode)
 
@@ -55,7 +59,7 @@ def groups(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    supergroups = Concept.objects.filter(namespace__heading='Super Groups')
+    supergroups = SuperGroup.objects.all()
 
     for supergroup in supergroups:
         supergroup.set_attribute('prefLabel', langcode)
@@ -101,11 +105,7 @@ def concept(request, concept_id, langcode):
 
 
 def concept_redirect(request, concept_code):
-    cp = get_object_or_404(
-        Concept,
-        code=concept_code,
-        namespace__heading='Concepts',
-    )
+    cp = get_object_or_404(Term, code=concept_code)
     return redirect('concept', langcode=DEFAULT_LANGCODE, concept_id=cp.id)
 
 
@@ -116,8 +116,7 @@ def relations(request, group_id, langcode):
     expand_text = request.GET.get('exp')
     expand = expand_text.split('-') if expand_text else []
 
-    group = get_object_or_404(Concept, pk=group_id,
-                              namespace__heading="Groups")
+    group = get_object_or_404(Group, pk=group_id)
     _attach_attributes(group, langcode, expand)
 
     return render(request, 'relations.html', {
@@ -182,8 +181,7 @@ def _get_concept_params(all_concepts, request, langcode):
 
 
 def theme_concepts(request, theme_id, langcode):
-    theme = get_object_or_404(Concept, pk=theme_id,
-                              namespace__heading='Themes')
+    theme = get_object_or_404(Theme, pk=theme_id)
     theme.set_attribute('prefLabel', langcode)
     theme.set_children()
 
@@ -197,7 +195,7 @@ def theme_concepts(request, theme_id, langcode):
 
 
 def alphabetic(request, langcode):
-    concepts = Concept.objects.filter(namespace__heading='Concepts')
+    concepts = Term.objects.all()
     for concept in concepts:
         concept.set_attribute('prefLabel', langcode)
 
