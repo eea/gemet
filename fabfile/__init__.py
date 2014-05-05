@@ -20,6 +20,12 @@ def environment(location):
     env.deployment_location = location
 
 
+def require_variables():
+    require('deployment_location', used_for=LOCATION_WARNING)
+    require('project_root', provided_by=[environment])
+    require('fixture', provided_by=[environment])
+
+
 @task
 def staging():
     environment('staging')
@@ -27,14 +33,19 @@ def staging():
 
 @task
 def deploy():
-    require('deployment_location', used_for=LOCATION_WARNING)
-    require('project_root', provided_by=[environment])
-    require('fixture', provided_by=[environment])
+    require_variables()
 
     with cd(env.project_root), prefix(env.sandbox_activate):
         run('git pull --rebase')
         run('pip install -r requirements-dep.txt')
         run('./manage.py syncdb')
+        run('supervisorctl -c {0} restart django'.format(env.supervisord_conf))
+
+
+@task
+def loaddata():
+    require_variables()
+
+    with cd(env.project_root), prefix(env.sandbox_activate):
         run('./manage.py loaddata {0}'.format(
             path(env.project_root) / env.fixture))
-        run('supervisorctl -c {0} restart django'.format(env.supervisord_conf))
