@@ -1,6 +1,6 @@
 from django.db.models import (
     Model, CharField, ForeignKey, DateTimeField, BooleanField,
-)
+    Manager)
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -157,3 +157,46 @@ class DefinitionSource(Model):
     publication = CharField(max_length=255, null=True)
     place = CharField(max_length=255, null=True)
     year = CharField(max_length=10, null=True)
+
+
+class ConceptManager(Manager):
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+        self.ns = None
+        super(ConceptManager, self).__init__()
+
+    def _get_ns(self):
+        if self.ns is None:
+            self.ns = Namespace.objects.get(heading=self.namespace)
+        return self.ns
+
+    def get_queryset(self):
+        ns = self._get_ns()
+        return Concept.objects.filter(namespace=ns)
+
+    def create(self, **kwargs):
+        ns = self._get_ns()
+        kwargs.setdefault('namespace', ns)
+        return super(ConceptManager, self).create(**kwargs)
+
+
+class Term(Concept):
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Concepts')
+
+
+class Group(Concept):
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Groups')
+
+
+class Theme(Concept):
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Themes')
