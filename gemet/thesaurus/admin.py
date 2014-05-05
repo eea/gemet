@@ -9,6 +9,7 @@ from .models import (
     Theme,
     Group,
     Term,
+    SuperGroup,
 )
 
 admin.site.register(Namespace)
@@ -19,4 +20,5 @@ admin.site.register(Relation)
 admin.site.register(ForeignRelation)
 admin.site.register(Theme)
 admin.site.register(Group)
+admin.site.register(SuperGroup)
 admin.site.register(Term)

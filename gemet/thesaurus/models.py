@@ -195,6 +195,13 @@ class Group(Concept):
     objects = ConceptManager('Groups')
 
 
+class SuperGroup(Concept):
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Super groups')
+
+
 class Theme(Concept):
     class Meta:
         proxy = True
