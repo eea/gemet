@@ -9,6 +9,8 @@ from .views import (
     concept_redirect,
     alphabetic,
     alphabets,
+    theme,
+    theme_redirect,
 )
 
 
@@ -19,8 +21,9 @@ urlpatterns = patterns(
         url(r'^themes/$', themes, name='themes'),
         url(r'^groups/$', groups, name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', concept, name='concept'),
+        url(r'^theme/(?P<theme_id>\d+)/$', theme, name='theme'),
         url(r'^relations/(?P<group_id>\d+)/$', relations, name='relations'),
-        url(r'^theme/(?P<theme_id>\d+)/$', theme_concepts,
+        url(r'^theme/(?P<theme_id>\d+)/concepts/$', theme_concepts,
             name='theme_concepts'),
         url(r'^alphabetic/$', alphabetic, name='alphabetic'),
         url(r'^alphabets/$', alphabets, name='alphabets'),
@@ -28,4 +31,6 @@ urlpatterns = patterns(
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^concept/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
+    url(r'^theme/(?P<theme_code>\d+)$', theme_redirect,
+        name='theme_redirect'),
 )

@@ -78,7 +78,7 @@ def concept(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    concept = get_object_or_404(Concept, pk=concept_id)
+    concept = get_object_or_404(Concept, pk=concept_id)  #heading = concept?
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
         concept.set_attribute(property_name, langcode)
@@ -107,6 +107,44 @@ def concept(request, concept_id, langcode):
 def concept_redirect(request, concept_code):
     cp = get_object_or_404(Term, code=concept_code)
     return redirect('concept', langcode=DEFAULT_LANGCODE, concept_id=cp.id)
+
+
+def theme(request, theme_id, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
+    theme = get_object_or_404(Concept, pk=theme_id,
+                              namespace__heading='Themes')
+
+    for property_name in ['prefLabel', 'definition', 'scopeNote']:
+        theme.set_attribute(property_name, langcode)
+
+    theme.translations = theme.properties.filter(name='prefLabel')
+    theme.set_children()
+
+    for cp in theme.children:
+        cp.set_attribute('prefLabel', langcode)
+
+    theme.children = sorted([c for c in theme.children if c.prefLabel],
+                            key=lambda t: t.prefLabel.lower())
+    theme.translations = sorted([c for c in theme.translations
+                                 if c.language.name],
+                                key=lambda t: t.language.name.lower())
+
+    theme.url = request.build_absolute_uri(
+        reverse('theme_redirect', args=[theme.code]))
+
+    return render(request, 'theme.html', {
+        'languages': languages,
+        'language': language,
+        'theme': theme,
+    })
+
+
+def theme_redirect(request, theme_code):
+    tp = get_object_or_404(Concept, code=theme_code,
+                           namespace__heading='Themes')
+    return redirect('theme', langcode=DEFAULT_LANGCODE, concept_id=tp.id)
 
 
 def relations(request, group_id, langcode):
