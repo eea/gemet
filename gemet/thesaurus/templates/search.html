@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
+
+  <h1>Search thesaurus</h1>
+
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p>Selected language: {{ language.name }}</p>
+    <input type="submit" value="Search"/>
+  </form>
+
+{% endblock %}

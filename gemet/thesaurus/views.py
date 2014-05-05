@@ -14,6 +14,7 @@ from gemet.thesaurus.models import (
     Group,
 )
 from collation_charts import unicode_character_map
+from forms import SearchForm
 
 
 NR_CONCEPTS_ON_PAGE = 20
@@ -315,4 +316,24 @@ def alphabets(request, langcode):
         'languages': languages,
         'language': language,
         'letters': letters
+    })
+
+
+def search(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+    else:
+        form = SearchForm(
+            initial={'langcode': language.code}
+        )
+
+    return render(request, 'search.html', {
+        'languages': languages,
+        'language': language,
+        'form': form,
     })

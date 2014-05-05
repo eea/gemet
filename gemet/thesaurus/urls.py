@@ -10,7 +10,8 @@ from .views import (
     concept, concept_redirect,
     theme, theme_redirect,
     group, group_redirect,
-    superGroup, superGroup_redirect
+    superGroup, superGroup_redirect,
+    search,
 )
 
 
@@ -29,6 +30,7 @@ urlpatterns = patterns('',
             name='theme_concepts'),
         url(r'^alphabetic/$', alphabetic, name='alphabetic'),
         url(r'^alphabets/$', alphabets, name='alphabets'),
+        url(r'^search/$', search, name='search'),
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^concept/(?P<concept_code>\d+)$', concept_redirect,
