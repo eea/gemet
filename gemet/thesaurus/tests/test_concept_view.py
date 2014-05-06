@@ -23,7 +23,7 @@ class TestConceptView(GemetTest):
         PropertyFactory(concept=self.concept, name="scopeNote",
                         value="some scope note")
 
-    def test_one_theme_concept(self):
+    def test_concept_one_theme(self):
         group = GroupFactory()
         theme = SuperGroupFactory()
         PropertyFactory(concept=group, value="Group Parent")
@@ -58,7 +58,7 @@ class TestConceptView(GemetTest):
         self.assertEqual(resp.pyquery('.infotext:eq(3)').text(),
                          "Theme Parent")
 
-    def test_two_themes_concept(self):
+    def test_concept_two_themes(self):
         group = GroupFactory()
         theme1 = ThemeFactory(id=4, code="4")
         theme2 = ThemeFactory(id=5, code="5")
