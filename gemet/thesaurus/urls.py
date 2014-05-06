@@ -11,17 +11,19 @@ from .views import (
     alphabets,
     theme,
     theme_redirect,
+    group,
+    group_redirect,
 )
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = patterns('',
     url(r'^$', themes),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^themes/$', themes, name='themes'),
         url(r'^groups/$', groups, name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', concept, name='concept'),
         url(r'^theme/(?P<theme_id>\d+)/$', theme, name='theme'),
+        url(r'^group/(?P<group_id>\d+)/$', group, name='group'),
         url(r'^relations/(?P<group_id>\d+)/$', relations, name='relations'),
         url(r'^theme/(?P<theme_id>\d+)/concepts/$', theme_concepts,
             name='theme_concepts'),
@@ -33,4 +35,6 @@ urlpatterns = patterns(
         name='concept_redirect'),
     url(r'^theme/(?P<theme_code>\d+)$', theme_redirect,
         name='theme_redirect'),
+    url(r'^group/(?P<group_code>\d+)$', group_redirect,
+        name='group_redirect'),
 )

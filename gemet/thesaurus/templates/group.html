@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='group' id=group.id %}
+
+  <h3>{{ group.prefLabel }}</h3>
+  <h4>Definiton:</h4>
+  <span class="infotext">
+    {% if not group.definition %}
+      <span>Definition is not available</span>
+    {% else %}
+      {{group.definition }}
+    {% endif %}
+  </span>
+
+  {% if group_concepts %}
+    <h4>Concepts:</h4>
+    <ul>
+      {% for gp in group_concepts %}
+        <li>
+          {{ gp.prefLabel }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if group.broader_concepts %}
+    <h4>Super groups:</h4>
+    <ul>
+      {% for gp in group.broader_concepts %}
+        <li>
+          {{ gp.prefLabel }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h4>Translations:</h4>
+  <ul>
+    {% for translation in group.translations %}
+      <li>{{ translation.language.name }}: {{ translation.value }}</li>
+    {% endfor %}
+  </ul>
+
+  <h4>Concept URL: &lt;{{ group.url }}&gt;</h4>
+
+{% endblock %}

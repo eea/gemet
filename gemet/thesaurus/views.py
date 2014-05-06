@@ -20,7 +20,7 @@ NR_CONCEPTS_ON_PAGE = 20
 DEFAULT_LANGCODE = 'en'
 
 
-def _attach_attributes(concept, langcode, expand):
+def _attach_attributes(concept, langcode, expand=[]):
     concept.set_attribute('prefLabel', langcode)
     concept.set_expand(expand)
     if concept.namespace.heading == 'Groups' or str(concept.id) in expand:
@@ -121,8 +121,8 @@ def theme(request, theme_id, langcode):
     theme.translations = theme.properties.filter(name='prefLabel')
     theme.set_children()
 
-    for cp in theme.children:
-        cp.set_attribute('prefLabel', langcode)
+    for tp in theme.children:
+        tp.set_attribute('prefLabel', langcode)
 
     theme.children = sorted([c for c in theme.children if c.prefLabel],
                             key=lambda t: t.prefLabel.lower())
@@ -143,6 +143,41 @@ def theme(request, theme_id, langcode):
 def theme_redirect(request, theme_code):
     tp = get_object_or_404(Theme, code=theme_code)
     return redirect('theme', langcode=DEFAULT_LANGCODE, concept_id=tp.id)
+
+
+def group(request, group_id, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
+    group = get_object_or_404(Group, pk=group_id)
+
+    for property_name in ['prefLabel', 'definition', 'scopeNote']:
+        group.set_attribute(property_name, langcode)
+
+    group.translations = group.properties.filter(name='prefLabel')
+
+    group.set_broader()
+    group_concepts = [r.target for r in group.source_relations
+                      .filter(property_type__name='groupMember')
+                      .prefetch_related('target')]
+
+    for gp in group.broader_concepts + group_concepts:
+        gp.set_attribute('prefLabel', langcode)
+
+    group.url = request.build_absolute_uri(
+        reverse('group_redirect', args=[group.code]))
+
+    return render(request, 'group.html', {
+        'languages': languages,
+        'language': language,
+        'group': group,
+        'group_concepts': group_concepts,
+    })
+
+
+def group_redirect(request, group_code):
+    gp = get_object_or_404(Group, code=group_code)
+    return redirect('group', langcode=DEFAULT_LANGCODE, concept_id=gp.id)
 
 
 def relations(request, group_id, langcode):
@@ -168,7 +203,7 @@ def _letter_exists(letter, all_concepts):
         for concept in all_concepts:
             if l == concept.prefLabel[0]:
                 return True
-    return None
+    return False
 
 
 def _get_concept_params(all_concepts, request, langcode):
