@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='search' %}
 
   <h1>Search thesaurus</h1>
 
@@ -10,5 +10,22 @@
     <p>Selected language: {{ language.name }}</p>
     <input type="submit" value="Search"/>
   </form>
+
+  {% if concepts %}
+    <div>
+      <span style="float: right;">{{ concepts|length }} results found.</span>
+      <span>Searched for '<b>{{ query }}</b>'</span>
+    </div>
+
+    <ul>
+      {% for concept in concepts %}
+        <li>
+            <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
+            <br/>
+            <b>broader context:</b> {{ concept.broader_context }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
 {% endblock %}

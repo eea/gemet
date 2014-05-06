@@ -12,6 +12,7 @@ from gemet.thesaurus.models import (
     SuperGroup,
     Term,
     Group,
+    Property,
 )
 from collation_charts import unicode_character_map
 from forms import SearchForm
@@ -323,17 +324,50 @@ def search(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
+    concepts = []
+    query = ''
+
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
+            concepts = [
+                (p.concept, p.value) for p in
+                Property.objects
+                .filter(
+                    name='prefLabel',
+                    language__code=langcode,
+                    concept__namespace__heading='Concepts',
+                )
+                .extra(
+                    where=['value like convert(_utf8%s using utf8)'],
+                    params=[query + '%%'],
+                )
+                .extra(
+                    select={'value_coll': 'value COLLATE {0}'.format(
+                        language.charset)},
+                )
+                .extra(
+                    order_by=['value_coll']
+                )
+                .prefetch_related('concept')
+            ]
+            for concept, concept_name in concepts:
+                concept.name = concept_name
+                concept.broader_context = '; '.join([
+                    r.target.get_property_value('prefLabel', langcode)
+                    for r in concept.source_relations
+                    .filter(property_type__name='broader')
+                    .prefetch_related('target')])
     else:
         form = SearchForm(
-            initial={'langcode': language.code}
+            initial={'langcode': langcode}
         )
 
     return render(request, 'search.html', {
         'languages': languages,
         'language': language,
         'form': form,
+        'concepts': [c[0] for c in concepts],
+        'query': query,
     })
