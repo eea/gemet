@@ -2,17 +2,17 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
-    ConceptFactory,
     LanguageFactory,
     PropertyFactory,
     NamespaceFactory,
+    TermFactory,
 )
+from . import GemetTest
 
 
-class TestAlphabeticView(WebTest):
+class TestAlphabeticView(GemetTest):
     def setUp(self):
         LanguageFactory()
-        self.ns = NamespaceFactory(heading="Concepts")
 
     def test_no_concepts(self):
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -23,7 +23,7 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts").children(), [])
 
     def test_one_concept(self):
-        concept = ConceptFactory(namespace=self.ns)
+        concept = TermFactory()
         PropertyFactory(concept=concept)
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -35,15 +35,14 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts li a").text(),
                          'administration')
         self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 1}))
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': concept.id})
                          )
 
     def test_more_concepts(self):
-        concept1 = ConceptFactory(id=1, code="1", namespace=self.ns)
+        concept1 = TermFactory(id=1, code="1")
         PropertyFactory(concept=concept1, value="Concept1")
-        concept2 = ConceptFactory(id=2, code="2", namespace=self.ns)
+        concept2 = TermFactory(id=2, code="2")
         PropertyFactory(concept=concept2, value="Concept2")
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -56,27 +55,26 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts li:eq(0) a").text(),
                          'Concept1')
         self.assertEqual(resp.pyquery(".concepts li:eq(0) a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 1}))
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': concept1.id})
                          )
         self.assertEqual(resp.pyquery(".concepts li:eq(1) a").text(),
                          'Concept2')
         self.assertEqual(resp.pyquery(".concepts li:eq(1) a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 2}))
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': concept2.id})
                          )
 
     def test_letter_selected_filter_one_language(self):
-        concept1 = ConceptFactory(id=1, code="1", namespace=self.ns)
+        concept1 = TermFactory(id=1, code="1")
         PropertyFactory(concept=concept1, value="A_Concept")
-        concept2 = ConceptFactory(id=2, code="2", namespace=self.ns)
+        concept2 = TermFactory(id=2, code="2")
         PropertyFactory(concept=concept2, value="B_Concept")
 
-        url = reverse('alphabetic', kwargs={'langcode': 'en'})
-        resp = self.app.get('{_url}?letter={letter}'
-                            .format(_url=url, letter=1))
+        url = '{url}?letter={letter}'\
+              .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
+                      letter=1)
+        resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
@@ -84,24 +82,24 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts li a").text(),
                          'A_Concept')
         self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 1}))
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': concept1.id})
                          )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
 
-        english_concept = ConceptFactory(id=1, code="1", namespace=self.ns)
+        english_concept = TermFactory(id=1, code="1")
         PropertyFactory(concept=english_concept, value="A_EN_Concept")
 
-        spanish_concept = ConceptFactory(id=2, code="2", namespace=self.ns)
+        spanish_concept = TermFactory(id=2, code="2")
         PropertyFactory(concept=spanish_concept, language=spanish,
                         name="prefLabel", value="A_ES_Concept")
 
-        url = reverse('alphabetic', kwargs={'langcode': 'en'})
-        resp = self.app.get('{_url}?letter={letter}'
-                            .format(_url=url, letter=1))
+        url = '{url}?letter={letter}'\
+              .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
+                      letter=1)
+        resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
@@ -117,14 +115,15 @@ class TestAlphabeticView(WebTest):
     def test_letter_selected_filter_one_concept_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
 
-        concept = ConceptFactory(id=1, code="1", namespace=self.ns)
+        concept = TermFactory()
         PropertyFactory(concept=concept, value="A_EN_Concept")
         PropertyFactory(concept=concept, language=spanish,
                         name="prefLabel", value="A_ES_Concept")
 
-        url = reverse('alphabetic', kwargs={'langcode': 'en'})
-        resp = self.app.get('{_url}?letter={letter}'
-                            .format(_url=url, letter=1))
+        url = '{url}?letter={letter}'\
+              .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
+                      letter=1)
+        resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
@@ -132,13 +131,12 @@ class TestAlphabeticView(WebTest):
         self.assertEqual(resp.pyquery(".concepts li a").text(),
                          'A_EN_Concept')
         self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 1}))
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': concept.id})
                          )
 
     def test_404_error_letter_out_of_range(self):
-        url = "{url}?letter={letter}"\
+        url = '{url}?letter={letter}'\
               .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
                       letter=100)
         resp = self.app.get(url, expect_errors=True)

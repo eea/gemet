@@ -2,13 +2,14 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
-    ConceptFactory,
+    ThemeFactory,
     PropertyFactory,
     LanguageFactory,
 )
+from . import GemetTest
 
 
-class TestThemesView(WebTest):
+class TestThemesView(GemetTest):
     def setUp(self):
         LanguageFactory()
 
@@ -22,7 +23,7 @@ class TestThemesView(WebTest):
         self.assertEqual(resp.pyquery('.themes').children(), [])
 
     def test_one_theme(self):
-        theme = ConceptFactory()
+        theme = ThemeFactory()
         PropertyFactory(concept=theme)
 
         url = reverse('themes', kwargs={'langcode': 'en'})
@@ -33,17 +34,17 @@ class TestThemesView(WebTest):
         self.assertEqual(resp.pyquery('.themes li').length, 1)
 
         self.assertEqual(resp.pyquery('.themes li a').attr('href'),
-                         u'{url}'.format(url=reverse('theme_concepts',
-                                                     kwargs={'langcode': 'en',
-                                                             'theme_id': 1}))
+                         reverse('theme_concepts',
+                                 kwargs={'langcode': 'en',
+                                         'theme_id': theme.id})
                          )
         self.assertEqual(resp.pyquery('.themes li a').text(),
                          u'administration')
 
     def test_contains_more_themes(self):
-        theme1 = ConceptFactory(id=1, code="1")
+        theme1 = ThemeFactory(id=1, code="1")
         PropertyFactory(concept=theme1, value="Theme 1")
-        theme2 = ConceptFactory(id=2, code="2")
+        theme2 = ThemeFactory(id=2, code="2")
         PropertyFactory(concept=theme2, value="Theme 2")
 
         url = reverse('themes', kwargs={'langcode': 'en'})
@@ -54,17 +55,17 @@ class TestThemesView(WebTest):
         self.assertEqual(resp.pyquery('.themes li').length, 2)
 
         self.assertEqual(resp.pyquery('.themes li:eq(0) a').attr('href'),
-                         u'{url}'.format(url=reverse('theme_concepts',
-                                                     kwargs={'langcode': 'en',
-                                                             'theme_id': 1}))
+                         reverse('theme_concepts',
+                                 kwargs={'langcode': 'en',
+                                         'theme_id': theme1.id})
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(0) a').text(),
                          u'Theme 1'
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(1) a').attr('href'),
-                         u'{url}'.format(url=reverse('theme_concepts',
-                                                     kwargs={'langcode': 'en',
-                                                             'theme_id': 2}))
+                         reverse('theme_concepts',
+                                 kwargs={'langcode': 'en',
+                                         'theme_id': theme2.id})
                          )
         self.assertEqual(resp.pyquery('.themes li:eq(1) a').text(),
                          u'Theme 2'

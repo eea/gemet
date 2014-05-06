@@ -3,16 +3,14 @@ from django.core.urlresolvers import reverse
 
 from .factories import (
     LanguageFactory,
-    NamespaceFactory,
 )
+from . import GemetTest
 
-
-class TestRedirectsView(WebTest):
+class TestRedirectsView(GemetTest):
     def setUp(self):
         LanguageFactory()
 
     def test_index_html(self):
-        NamespaceFactory(heading='Themes')
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get('/index_html')
 

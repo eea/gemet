@@ -1,0 +1,42 @@
+[
+{
+ "pk": 1,
+ "model": "thesaurus.namespace",
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/concept/",
+  "type_url": "http://www.w3.org/2004/02/skos/core#Concept",
+  "version": "GEMET - Concepts, version 3.1, 2012-07-20",
+  "heading": "Concepts"
+ }
+},
+{
+ "pk": 2,
+ "model": "thesaurus.namespace",
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/supergroup/",
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#SuperGroup",
+  "version": "GEMET - Super groups, version 2.4, 2010-01-13",
+  "heading": "Super groups"
+ }
+},
+{
+ "pk": 3,
+ "model": "thesaurus.namespace",
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/group/",
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#Group",
+  "version": "GEMET - Groups, version 2.4, 2010-01-13",
+  "heading": "Groups"
+ }
+},
+{
+ "pk": 4,
+ "model": "thesaurus.namespace",
+ "fields": {
+  "url": "http://www.eionet.europa.eu/gemet/theme/",
+  "type_url": "http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#Theme",
+  "version": "GEMET - Themes, version 2.4, 2010-01-13",
+  "heading": "Themes"
+ }
+}
+]

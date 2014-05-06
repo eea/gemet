@@ -4,22 +4,23 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
-    ConceptFactory,
     PropertyFactory,
-    NamespaceFactory,
     RelationFactory,
     PropertyTypeFactory,
+    TermFactory,
+    GroupFactory,
 )
+from . import GemetTest
 
 
-class TestRelationsView(WebTest):
+class TestRelationsView(GemetTest):
     def setUp(self):
-        self.ns_group = NamespaceFactory(id=3, heading="Groups")
-        self.group = ConceptFactory(namespace=self.ns_group)
+        self.group = GroupFactory()
         PropertyFactory(concept=self.group, value="Group")
 
     def test_group_with_no_member(self):
-        url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
+        url = reverse('relations', kwargs={'group_id': self.group.id,
+                                           'langcode': 'en'})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -29,8 +30,7 @@ class TestRelationsView(WebTest):
         self.assertEqual(resp.pyquery('.groupMembers > li').length, 0)
 
     def test_group_with_one_member(self):
-        ns_concept = NamespaceFactory(id=1, heading="Concept")
-        concept = ConceptFactory(id=2, code="2", namespace=ns_concept)
+        concept = TermFactory()
         PropertyFactory(concept=concept, value="Concept")
 
         pt1 = PropertyTypeFactory(id=1, name="groupMember",
@@ -39,7 +39,8 @@ class TestRelationsView(WebTest):
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 
-        url = reverse('relations', kwargs={'group_id': 1, 'langcode': 'en'})
+        url = reverse('relations', kwargs={'group_id': self.group.id,
+                                           'langcode': 'en'})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -49,24 +50,24 @@ class TestRelationsView(WebTest):
         self.assertEqual(resp.pyquery('.groupMembers > li').length, 1)
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)')
                          .attr('href'),
-                         u'{url}?exp=2'.format(
-                             url=reverse('relations', kwargs={'langcode': 'en',
-                                                              'group_id': 1}))
+                         u'{url}?exp=1'.
+                         format(url=reverse('relations',
+                                            kwargs={'langcode': 'en',
+                                                    'group_id': self.group.id})
+                                )
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)').text(),
                          "+")
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)')
                          .attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 2}))
-                         )
+                         reverse('concept',
+                                 kwargs={'langcode': 'en',
+                                         'concept_id': concept.id}))
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(1)').text(),
                          "Concept")
 
     def test_404_error(self):
-        ns_concept = NamespaceFactory(id=1, heading="Concept")
-        concept = ConceptFactory(id=2, code="2", namespace=ns_concept)
+        concept = TermFactory()
         PropertyFactory(concept=concept, value="Concept")
 
         pt1 = PropertyTypeFactory(id=1, name="groupMember",
@@ -75,7 +76,8 @@ class TestRelationsView(WebTest):
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 
-        url = reverse('relations', kwargs={'group_id': 2, 'langcode': 'en'})
+        url = reverse('relations', kwargs={'group_id': concept.id,
+                                           'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

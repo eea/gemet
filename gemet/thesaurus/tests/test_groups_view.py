@@ -4,20 +4,21 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
-    ConceptFactory,
     PropertyFactory,
     NamespaceFactory,
     RelationFactory,
     PropertyTypeFactory,
+    GroupFactory,
+    SuperGroupFactory,
 )
+from . import GemetTest
 
 
-class TestGroupsView(WebTest):
+class TestGroupsView(GemetTest):
     ### Actually, this tests the HierarchicalListings link
 
     def setUp(self):
-        self.ns_superGroup = NamespaceFactory(id=2, heading="Super groups")
-        self.superGroup = ConceptFactory(namespace=self.ns_superGroup)
+        self.superGroup = SuperGroupFactory()
         PropertyFactory(concept=self.superGroup, value="Super Group")
 
     def test_one_supergroup_no_group(self):
@@ -32,8 +33,7 @@ class TestGroupsView(WebTest):
                          'Super Group')
 
     def test_one_supergroup_one_group(self):
-        ns_group = NamespaceFactory(id=3, heading="Groups")
-        group = ConceptFactory(id=2, code="2", namespace=ns_group)
+        group = GroupFactory()
         PropertyFactory(concept=group, value="Group")
 
         pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
@@ -52,15 +52,13 @@ class TestGroupsView(WebTest):
         self.assertEqual(resp.pyquery('.groups li').length, 1)
         self.assertEqual(resp.pyquery('.supergroups h2').text(), 'Super Group')
         self.assertEqual(resp.pyquery('.groups li a').attr('href'),
-                         u'{url}'.format(url=reverse('relations',
-                                                     kwargs={'langcode': 'en',
-                                                             'group_id': 2}))
+                         reverse('relations', kwargs={'langcode': 'en',
+                                                      'group_id': group.id})
                          )
         self.assertEqual(resp.pyquery('.groups li a').text(), 'Group')
 
     def test_more_supergroups_no_group(self):
-        superGroup = ConceptFactory(id=2, code="2",
-                                    namespace=self.ns_superGroup)
+        superGroup = SuperGroupFactory(id=5, code="5")
         PropertyFactory(concept=superGroup, value="Super Group 2")
 
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -76,12 +74,10 @@ class TestGroupsView(WebTest):
                          'Super Group 2')
 
     def test_more_supergroups_one_group(self):
-        superGroup = ConceptFactory(id=2, code="2",
-                                    namespace=self.ns_superGroup)
+        superGroup = SuperGroupFactory(id=5, code="5")
         PropertyFactory(concept=superGroup, value="Super Group 2")
 
-        ns_group = NamespaceFactory(id=3, heading="Groups")
-        group = ConceptFactory(id=3, code="3", namespace=ns_group)
+        group = GroupFactory()
         PropertyFactory(concept=group, value="Group")
 
         pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
@@ -105,8 +101,7 @@ class TestGroupsView(WebTest):
 
         self.assertEqual(resp.pyquery('.groups li:eq(0)').text(), 'Group')
         self.assertEqual(resp.pyquery('.groups li:eq(0) a').attr('href'),
-                         u'{url}'.format(url=reverse('relations',
-                                                     kwargs={'langcode': 'en',
-                                                             'group_id': 3}))
+                         reverse('relations', kwargs={'langcode': 'en',
+                                                      'group_id': group.id})
                          )
         self.assertEqual(resp.pyquery('.groups li:eq(1)').text(), '')

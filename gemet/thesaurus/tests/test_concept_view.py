@@ -2,18 +2,20 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
-    ConceptFactory,
     PropertyFactory,
-    NamespaceFactory,
     RelationFactory,
     PropertyTypeFactory,
+    TermFactory,
+    ThemeFactory,
+    GroupFactory,
+    SuperGroupFactory,
 )
+from . import GemetTest
 
 
-class TestConceptView(WebTest):
+class TestConceptView(GemetTest):
     def setUp(self):
-        self.ns_concept = NamespaceFactory(id=1, heading="Concept")
-        self.concept = ConceptFactory(namespace=self.ns_concept)
+        self.concept = TermFactory()
         PropertyFactory(concept=self.concept, name="prefLabel",
                         value="some prefLabel")
         PropertyFactory(concept=self.concept, name="definition",
@@ -22,10 +24,8 @@ class TestConceptView(WebTest):
                         value="some scope note")
 
     def test_one_theme_concept(self):
-        ns_group = NamespaceFactory(id=2, heading="Group")
-        ns_theme = NamespaceFactory(id=4, heading="Themes")
-        group = ConceptFactory(id=2, code="2", namespace=ns_group)
-        theme = ConceptFactory(id=3, code="3", namespace=ns_theme)
+        group = GroupFactory()
+        theme = SuperGroupFactory()
         PropertyFactory(concept=group, value="Group Parent")
         PropertyFactory(concept=theme, value="Theme Parent")
 
@@ -42,7 +42,8 @@ class TestConceptView(WebTest):
                         target=theme)
         RelationFactory(property_type=pt3, source=theme, target=self.concept)
 
-        url = reverse('concept', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+                                         'langcode': 'en'})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -58,11 +59,9 @@ class TestConceptView(WebTest):
                          "Theme Parent")
 
     def test_two_themes_concept(self):
-        ns_group = NamespaceFactory(id=2, heading="Group")
-        ns_theme = NamespaceFactory(id=4, heading="Themes")
-        group = ConceptFactory(id=2, code="2", namespace=ns_group)
-        theme1 = ConceptFactory(id=3, code="3", namespace=ns_theme)
-        theme2 = ConceptFactory(id=4, code="4", namespace=ns_theme)
+        group = GroupFactory()
+        theme1 = ThemeFactory(id=4, code="4")
+        theme2 = ThemeFactory(id=5, code="5")
 
         PropertyFactory(concept=group, value="Group Parent")
         PropertyFactory(concept=theme1, value="ThemeP1")
@@ -84,7 +83,8 @@ class TestConceptView(WebTest):
                         target=theme2)
         RelationFactory(property_type=pt3, source=theme2, target=self.concept)
 
-        url = reverse('concept', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+                                         'langcode': 'en'})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)

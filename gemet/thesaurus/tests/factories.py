@@ -1,7 +1,8 @@
 import factory
 
 from gemet.thesaurus.models import (
-    Concept, Property, Language, Namespace, Relation, PropertyType
+    Concept, Property, Language, Namespace, Relation, PropertyType, Term,
+    Group, SuperGroup, Theme,
 )
 
 
@@ -27,6 +28,34 @@ class ConceptFactory(factory.django.DjangoModelFactory):
     id = 1
     code = '1'
     namespace = factory.SubFactory(NamespaceFactory)
+
+
+class TermFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Term
+
+    id = 1
+    code = '1'
+
+
+class GroupFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Group
+
+    id = 2
+    code = '2'
+
+
+class SuperGroupFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = SuperGroup
+
+    id = 3
+    code = '3'
+
+
+class ThemeFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Theme
+
+    id = 4
+    code = '4'
 
 
 class PropertyFactory(factory.django.DjangoModelFactory):
