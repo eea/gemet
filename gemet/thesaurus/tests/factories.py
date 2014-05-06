@@ -25,10 +25,6 @@ class LanguageFactory(factory.django.DjangoModelFactory):
 class ConceptFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Concept
 
-    id = 1
-    code = '1'
-    namespace = factory.SubFactory(NamespaceFactory)
-
 
 class TermFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Term
