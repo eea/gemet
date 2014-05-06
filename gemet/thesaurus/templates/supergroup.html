@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='supergroup' id=supergroup.id %}
+
+  <h3>{{ supergroup.prefLabel }}</h3>
+  <h4>Definiton:</h4>
+  <span class="infotext">
+    {% if not supergroup.definition %}
+      <span>Definition is not available</span>
+    {% else %}
+      {{supergroup.definition }}
+    {% endif %}
+  </span>
+
+  <h4>Scope note:</h4>
+  <span class="infotext">
+    {{ supergroup.scopeNote|default:"scope note is not available" }}
+  </span>
+
+  {% if supergroup.children %}
+    <h4>Groups</h4>
+    <ul>
+      {% for cp in supergroup.children %}
+        <li>
+          {{ cp.prefLabel }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h4>Translations:</h4>
+  <ul>
+    {% for translation in supergroup.translations %}
+      <li>{{ translation.language.name }}: {{ translation.value }}</li>
+    {% endfor %}
+  </ul>
+
+  <h4>Concept URL: &lt;{{ supergroup.url }}&gt;</h4>
+
+{% endblock %}

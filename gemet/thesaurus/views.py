@@ -97,7 +97,8 @@ def concept(request, concept_id, langcode):
         cp.set_attribute('prefLabel', langcode)
 
     concept.url = request.build_absolute_uri(
-        reverse('concept_redirect', args=[concept.code]))
+        reverse('concept_redirect', kwargs={'concept_type': 'concept',
+                                            'concept_code': concept.code}))
 
     return render(request, 'concept.html', {
         'languages': languages,
@@ -106,16 +107,27 @@ def concept(request, concept_id, langcode):
     })
 
 
-def concept_redirect(request, concept_code):
-    cp = get_object_or_404(Term, code=concept_code)
-    return redirect('concept', langcode=DEFAULT_LANGCODE, concept_id=cp.id)
+def concept_redirect(request, concept_type, concept_code):
+    concept_types = {
+        'concept': Term,
+        'theme': Theme,
+        'group': Group,
+        'supergroup': SuperGroup
+    }
+    model = concept_types.get(concept_type)
+    if model:
+        cp = get_object_or_404(model, code=concept_code)
+        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
+                        concept_id=cp.id)
+    else:
+        raise Http404
 
 
-def theme(request, theme_id, langcode):
+def theme(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    theme = get_object_or_404(Theme, pk=theme_id)
+    theme = get_object_or_404(Theme, pk=concept_id)
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
         theme.set_attribute(property_name, langcode)
@@ -133,7 +145,8 @@ def theme(request, theme_id, langcode):
                                 key=lambda t: t.language.name.lower())
 
     theme.url = request.build_absolute_uri(
-        reverse('theme_redirect', args=[theme.code]))
+        reverse('concept_redirect', kwargs={'concept_type': 'theme',
+                                            'concept_code': theme.code}))
 
     return render(request, 'theme.html', {
         'languages': languages,
@@ -142,16 +155,11 @@ def theme(request, theme_id, langcode):
     })
 
 
-def theme_redirect(request, theme_code):
-    tp = get_object_or_404(Theme, code=theme_code)
-    return redirect('theme', langcode=DEFAULT_LANGCODE, theme_id=tp.id)
-
-
-def group(request, group_id, langcode):
+def group(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    group = get_object_or_404(Group, pk=group_id)
+    group = get_object_or_404(Group, pk=concept_id)
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
         group.set_attribute(property_name, langcode)
@@ -167,7 +175,8 @@ def group(request, group_id, langcode):
         gp.set_attribute('prefLabel', langcode)
 
     group.url = request.build_absolute_uri(
-        reverse('group_redirect', args=[group.code]))
+        reverse('concept_redirect', kwargs={'concept_type': 'group',
+                                            'concept_code': group.code}))
 
     return render(request, 'group.html', {
         'languages': languages,
@@ -177,40 +186,31 @@ def group(request, group_id, langcode):
     })
 
 
-def group_redirect(request, group_code):
-    gp = get_object_or_404(Group, code=group_code)
-    return redirect('group', langcode=DEFAULT_LANGCODE, group_id=gp.id)
-
-
-def superGroup(request, superGroup_id, langcode):
+def supergroup(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    superGroup = get_object_or_404(SuperGroup, pk=superGroup_id)
+    supergroup = get_object_or_404(SuperGroup, pk=concept_id)
 
     for property_name in ['prefLabel', 'definition', 'scopeNote']:
-        superGroup.set_attribute(property_name, langcode)
+        supergroup.set_attribute(property_name, langcode)
 
-    superGroup.translations = superGroup.properties.filter(name='prefLabel')
+    supergroup.translations = supergroup.properties.filter(name='prefLabel')
 
-    superGroup.set_children()
+    supergroup.set_children()
 
-    for gp in superGroup.children:
+    for gp in supergroup.children:
         gp.set_attribute('prefLabel', langcode)
 
-    superGroup.url = request.build_absolute_uri(
-        reverse('superGroup_redirect', args=[superGroup.code]))
+    supergroup.url = request.build_absolute_uri(
+        reverse('concept_redirect', kwargs={'concept_type': 'supergroup',
+                                            'concept_code': supergroup.code}))
 
-    return render(request, 'superGroup.html', {
+    return render(request, 'supergroup.html', {
         'languages': languages,
         'language': language,
-        'superGroup': superGroup,
+        'supergroup': supergroup,
     })
-
-
-def superGroup_redirect(request, superGroup_code):
-    gp = get_object_or_404(SuperGroup, code=superGroup_code)
-    return redirect('superGroup', langcode=DEFAULT_LANGCODE, superGroup_id=gp.id)
 
 
 def relations(request, group_id, langcode):
