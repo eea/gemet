@@ -381,13 +381,16 @@ def old_concept_redirect(request):
     if ns and cp:
         namespace = get_object_or_404(Namespace, id=ns)
         concept = get_object_or_404(Concept, namespace=namespace, code=cp)
+        language = get_object_or_404(Language, pk=langcode)
         views_map = {
             'Concepts': 'concept',
             'Themes': 'theme',
             'Groups': 'group',
             'Super groups': 'supergroup'
         }
-        return redirect(views_map.get(namespace.heading), langcode = langcode,
+
+        return redirect(views_map.get(namespace.heading),
+                        langcode = language.code,
                         concept_id=concept.id)
     else:
         raise Http404
