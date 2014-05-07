@@ -7,7 +7,6 @@ from .factories import (
     TermFactory,
     ThemeFactory,
     GroupFactory,
-    SuperGroupFactory,
 )
 from . import GemetTest
 
@@ -24,7 +23,7 @@ class TestConceptView(GemetTest):
 
     def test_concept_one_theme(self):
         group = GroupFactory()
-        theme = SuperGroupFactory()
+        theme = ThemeFactory()
         PropertyFactory(concept=group, value="Group Parent")
         PropertyFactory(concept=theme, value="Theme Parent")
 
@@ -99,6 +98,14 @@ class TestConceptView(GemetTest):
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
+
+    def test_redirect(self):
+        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+                                         'langcode': 'en'})
+        resp = self.app.get(url)
+
+        url = resp.pyquery('h4:eq(4)').text().split('<')[1].split('>')[0]
+        self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
         url = reverse('concept', kwargs={'concept_id': 2, 'langcode': 'en'})
