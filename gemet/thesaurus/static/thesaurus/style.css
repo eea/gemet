@@ -2,3 +2,7 @@
     direction: rtl;
     text-align: right !important;
 }
+
+.results-nr {
+    float: right;
+}

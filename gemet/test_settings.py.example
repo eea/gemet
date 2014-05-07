@@ -6,5 +6,6 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'db_host',
         'PORT': 'db_port',
+        'TEST_CHARSET': 'utf8',
     }
 }

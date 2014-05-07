@@ -111,7 +111,7 @@ class Property(Model):
     concept = ForeignKey(Concept, related_name='properties')
     language = ForeignKey(Language)
     name = CharField(max_length=50)
-    value = CharField(max_length=65000)
+    value = CharField(max_length=16000)
     is_resource = BooleanField(default=False)
 
     def __unicode__(self):

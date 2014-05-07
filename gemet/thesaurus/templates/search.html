@@ -11,9 +11,9 @@
     <input type="submit" value="Search"/>
   </form>
 
-  {% if concepts %}
+  {% if query %}
     <div>
-      <span style="float: right;">{{ concepts|length }} results found.</span>
+      <span class="results-nr">{{ concepts|length }} results found.</span>
       <span>Searched for '<b>{{ query }}</b>'</span>
     </div>
 
@@ -21,8 +21,7 @@
       {% for concept in concepts %}
         <li>
             <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
-            <br/>
-            <b>broader context:</b> {{ concept.broader_context }}
+            <p><b>broader context:</b> {{ concept.broader_context }}</p>
         </li>
       {% endfor %}
     </ul>

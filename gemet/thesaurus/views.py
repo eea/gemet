@@ -7,7 +7,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from gemet.thesaurus.models import (
     Language,
-    Concept,
     Theme,
     Namespace,
     SuperGroup,

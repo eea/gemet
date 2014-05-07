@@ -20,6 +20,7 @@ class LanguageFactory(factory.django.DjangoModelFactory):
 
     code = 'en'
     name = 'English'
+    charset = 'utf8_general_ci'
 
 
 class ConceptFactory(factory.django.DjangoModelFactory):

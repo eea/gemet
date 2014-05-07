@@ -1,11 +1,7 @@
-import pyquery
-
-from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
     PropertyFactory,
-    NamespaceFactory,
     RelationFactory,
     PropertyTypeFactory,
     GroupFactory,
