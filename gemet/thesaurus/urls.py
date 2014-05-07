@@ -8,11 +8,12 @@ from .views import (
     alphabets,
     redirect_old_urls,
     search,
-    concept_redirect,
     concept,
     theme,
     group,
     supergroup,
+    concept_redirect,
+    old_concept_redirect
 )
 
 
@@ -37,4 +38,6 @@ urlpatterns = patterns(
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
+    url(r'^gemet/concept/$', old_concept_redirect,
+        name='old_concept_redirect'),
 )

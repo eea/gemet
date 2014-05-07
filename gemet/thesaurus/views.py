@@ -9,6 +9,7 @@ from gemet.thesaurus.models import (
     Language,
     Concept,
     Theme,
+    Namespace,
     SuperGroup,
     Term,
     Group,
@@ -107,22 +108,6 @@ def concept(request, concept_id, langcode):
     })
 
 
-def concept_redirect(request, concept_type, concept_code):
-    concept_types = {
-        'concept': Term,
-        'theme': Theme,
-        'group': Group,
-        'supergroup': SuperGroup
-    }
-    model = concept_types.get(concept_type)
-    if model:
-        cp = get_object_or_404(model, code=concept_code)
-        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
-                        concept_id=cp.id)
-    else:
-        raise Http404
-
-
 def theme(request, concept_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
@@ -211,6 +196,22 @@ def supergroup(request, concept_id, langcode):
         'language': language,
         'supergroup': supergroup,
     })
+
+
+def concept_redirect(request, concept_type, concept_code):
+    concept_types = {
+        'concept': Term,
+        'theme': Theme,
+        'group': Group,
+        'supergroup': SuperGroup
+    }
+    model = concept_types.get(concept_type)
+    if model:
+        cp = get_object_or_404(model, code=concept_code)
+        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
+                        concept_id=cp.id)
+    else:
+        raise Http404
 
 
 def relations(request, group_id, langcode):
@@ -371,3 +372,22 @@ def search(request, langcode):
         'concepts': [c[0] for c in concepts],
         'query': query,
     })
+
+
+def old_concept_redirect(request):
+    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
+    ns = request.GET.get('ns')
+    cp = request.GET.get('cp')
+    if ns and cp:
+        namespace = get_object_or_404(Namespace, id=ns)
+        concept = get_object_or_404(Concept, namespace=namespace, code=cp)
+        views_map = {
+            'Concepts': 'concept',
+            'Themes': 'theme',
+            'Groups': 'group',
+            'Super groups': 'supergroup'
+        }
+        return redirect(views_map.get(namespace.heading), langcode = langcode,
+                        concept_id=concept.id)
+    else:
+        raise Http404
