@@ -20,10 +20,6 @@ Install these before setting up an environment::
     apt-get install python-setuptools python-dev libmysqlclient-dev \
     libldap2-dev python-virtualenv mysql-server git
 
-Development setup::
-
-    apt-get install libxml2-dev libxslt1-dev
-
 
 RHEL based systems
 ~~~~~~~~~~~~~~~~~~
@@ -75,12 +71,14 @@ be run as an unprivileged user in the product directory::
 
 3. Install dependencies::
 
-    pip install -r requirements.txt
+    pip install -r requirements-dep.txt
 
 4. Create a local configuration file::
 
     cd gemet
     cp local_settings.py.example local_settings.py
+
+    # Follow instructions in local_settings.py to adapt it to your needs.
 
 6. Set up the MySQL database::
 
@@ -148,7 +146,11 @@ Development hints
 Requirements
 ------------
 
-    TODO
+    apt-get install libxml2-dev libxslt1-dev
+
+    Use `requirements-dev.txt` instead of `requirements-dep.txt`:
+
+    pip install -r requirements-dev.txt
 
 Configure deploy
 ----------------
@@ -158,7 +160,7 @@ Configure deploy
 Running unit tests
 ------------------
 
-    TODO
+    ./manage.py test
 
 
 Contacts
@@ -172,6 +174,7 @@ Other people involved in this project are:
 * Alex Eftimie (alex.eftimie at eaudeweb.ro)
 * Mihai Tabără (mihai.tabara at eaudeweb.ro)
 * Iulia Chiriac (iulia.chiriac at eaudeweb.ro)
+* Mihai Zamfir (mihai.zamfir at eaudeweb.ro)
 
 
 Resources
