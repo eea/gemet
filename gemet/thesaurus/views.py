@@ -7,7 +7,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from gemet.thesaurus.models import (
     Language,
-    Concept,
     Theme,
     Namespace,
     SuperGroup,
@@ -388,18 +387,28 @@ def old_concept_redirect(request):
     ns = request.GET.get('ns')
     cp = request.GET.get('cp')
     if ns and cp:
-        namespace = get_object_or_404(Namespace, id=ns)
-        concept = get_object_or_404(Concept, namespace=namespace, code=cp)
-        language = get_object_or_404(Language, pk=langcode)
         views_map = {
             'Concepts': 'concept',
             'Themes': 'theme',
             'Groups': 'group',
             'Super groups': 'supergroup'
         }
-
-        return redirect(views_map.get(namespace.heading),
-                        langcode = language.code,
-                        concept_id=concept.id)
+        concept_types = {
+            '1': Term,
+            '2': SuperGroup,
+            '3': Group,
+            '4': Theme
+        }
+        concept_type = concept_types.get(ns)
+        if concept_type:
+            namespace = get_object_or_404(Namespace, id=ns)
+            concept = get_object_or_404(concept_type, namespace=namespace,
+                                        code=cp)
+            language = get_object_or_404(Language, code=langcode)
+            return redirect(views_map.get(namespace.heading),
+                            langcode=langcode,
+                            concept_id=concept.id)
+        else:
+            raise Http404
     else:
         raise Http404
