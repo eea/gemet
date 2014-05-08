@@ -1,0 +1,1314 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=langcode.code view='about'%}
+
+<span metal:use-macro="here/thesaurus_template/macros/thesaurus_page">
+
+<tal:block metal:fill-slot="thesaurus_page_title">
+About GEMET
+</tal:block>
+
+<span metal:fill-slot="thesaurus_content" tal:omit-tag="">
+<h1>About GEMET - GEneral Multilingual Environmental Thesaurus</h1>
+<h2>CONTENTS</h2>
+<ul>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#preface" title="Preface to the 2004 version of GEMET">Preface: Preface to the 2004 version of GEMET</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-I" title="Introduction">Chapter I: Introduction</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-II" title="Criteria for the allocation of terms to the groups and themes of GEMET">Chapter II: Criteria for the allocation of terms to the groups and themes of GEMET</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-III" title="How to use the Thesaurus">Chapter III: How to use the Thesaurus</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-IV" title="List of Groups">Chapter VI: List of Groups</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-V" title="List of Themes">Chapter V: List of Themes</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-VI" title="Presentation of GEMET Version 2001">Chapter VI: Presentation of GEMET Version 2001</a></li>
+<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-VII" title="Essential References">Chapter VII: Essential References</a></li>
+</ul>
+
+
+<h2 id="preface" class="about-header">Preface to the 2004 version of GEMET</h2>
+
+<p class="about-text">
+This version of GEMET is an extension of the
+2001 version of GEMET. It includes the Czech, Estonian and Polish
+translations as national contributions and the entire content is
+embedded in a modern Internet application. Definitions are available in
+English and the Bulgarian, Russian and Slovenian translations are added.
+The application is browsable through this GUI and it is also available
+as a webservice for those who want to link it to their application. How
+to do this is explained under &ldquo;GEMET web service&rdquo;. The content of GEMET
+will need quality assurance around various terms over time. This is part
+of another initiative which is about to provide GEMET as open content
+in the WIKI set of Internet services (Wiktionary ...).
+</p>
+
+<p class="about-text">Please take a look at the text below for information on
+how GEMET was built, which will inform you about usage and limitations.
+</p>
+
+<h3>Preface of the 2001 version:</h3>
+<p class="about-text">For the 6th time since 1996 there is a new
+edition of GEMET, being the reference vocabulary of the European
+Environment Agency (EEA) and its Network (Eionet). The present version
+of the controlled vocabulary provides Bulgarian, Russian and Slovenian
+as new languages.
+This could be achieved through the kind co-operation with National
+Focal points and other expert organisations in these countries. These
+translations are contribution of the countries to EEA's work programme
+and have been financed through national funds or with additional funds
+from outside the EEA scheme.
+As special remark has to be made regarding the Russian version due to the
+fact that Russia is not part of Eionet. The translation of GEMET terms
+into Russian has been funded by the United Nations Environment Programme
+(UNEP) and carried out in the International Centre for Scientific and
+Technical Information within a respective Memorandum of Understanding.
+The 2001 version of GEMET also incorporates changes provided for the
+Portuguese and Swedish language. It also sees an inclusion of the Basque
+(Euskara) language into the ThesShow browser - this inclusion has not
+been possible in the year 2000 version.
+The EEA highly appreciates all these contributions.
+The content of GEMET has not been changed to assure consistency in use
+between the versions. There are plans to include more European languages
+in the years to come as well as to perform a thorough evaluation of
+the content.
+</p>
+
+<h2 id="chapter-I" class="about-header">1. Introduction to GEMET</h2>
+<p class="about-text">
+GEMET, the GEneral Multilingual Environmental
+Thesaurus, has been developed as an indexing, retrieval and control tool
+for the European Topic Centre on Catalogue of Data Sources (ETC/CDS)
+and the European Environment Agency (EEA), Copenhagen. The work has been
+carried out through a contract between the EEA and the ETC/CDS which is
+led by the Ministry of the Environment of Lower Saxony, includes members
+of Germany, Austria, Italy, Sweden and benefits of the collaboration of
+other member countries of the European Union (EU), as well as of UNEP
+Infoterra.
+</p>
+<p class="about-text">The basic idea for the development of GEMET
+was to use the best of the presently available excellent multilingual
+thesauri, in order to save time, energy and funds. GEMET was conceived
+as a &ldquo;general&rdquo; thesaurus, aimed to define a common general language, a
+core of general terminology for the environment. Specific thesauri and
+descriptor systems (e.g. on Nature Conservation, on Wastes, on Energy,
+etc.) have been excluded from the first step of development of the
+thesaurus and have been taken into account only for their structure and
+upper level terminology.</p>
+<p class="about-text">GEMET has been compiled by merging the terms of
+the following multilingual documents:</p>
+<ol>
+<li>
+A selection of the &ldquo;<span xml:lang="de">Umwelt Thesaurus</span>&rdquo; of <span xml:lang="de">Umweltbundesamt (UBA)</span>, Berlin, 1995,
+                with more than 2.000 descriptors out of 8.500 in German and English.
+</li>
+<li>
+The complete &ldquo;<span xml:lang="it">Thesaurus Italiano per l'Ambiente (TIA)</span>&rdquo;
+quadrilingual version on CD-ROM of <span xml:lang="it">Consiglio Nazionale delle
+Ricerche (CNR)</span>, Rome, 1994, with more than 4.000 descriptors
+in Italian, English, Dutch and German and a selection of
+more than 2.000 descriptors of this thesaurus, compiled as a
+Classification Scheme for the MET of the EEA, 1995 (see the
+following No. 3).
+</li>
+<li>
+The complete &ldquo;Multilingual Environment Thesaurus (MET)&rdquo; of
+<span xml:lang="nl">Nederlands Bureau voor Onderzoek Informatie (NBOI)</span>, Amsterdam,
+developed on the Dutch &ldquo;Milieu-thesaurus&rdquo; for the EEA in 1995,
+with more than 2.300 descriptors in Dutch, Danish, English,
+French, German, Italian, Norwegian and Spanish.
+</li>
+<li>
+The complete &ldquo;EnVoc Thesaurus&rdquo;, of UNEP Infoterra, 1997
+edition, with about 2.000 descriptors in English, French and
+Spanish, with possibility of access to Arabic, Chinese and
+Russian.
+</li>
+<li>
+The complete &ldquo;<span xml:lang="es">Thesaurus de Medio Ambiente</span>&rdquo; on CD-ROM of
+<span xml:lang="es">Ministerio de Obras Publicas, Transportes y Medio Ambiente
+(MOPTMA)</span>, Madrid, 1995, with more than 2.600 descriptors in
+Spanish, English, French, German.
+</li>
+<li>
+The complete &ldquo;<span xml:lang="fr">Lexique environnement - Plan&egrave;te</span>&rdquo;, of
+the <span xml:lang="fr">Minist&egrave;re de l'environnement</span>, Paris, 1995, with more
+than 5.000 descriptors in French and English.
+</li>
+<li>
+Descriptors of relevant documents of the EEA, namely &ldquo;Europe's
+Environment, The Dobris Assessment&rdquo;, the &ldquo;DPSIR Data Flow Scheme&rdquo;,
+as well as terminology of ETCs and Eionet, in English.
+</li>
+<li>
+Descriptors of the &ldquo;Thesaurus Eurovoc&rdquo; of the European
+Parliament, Brussels, 1996, in French, English, Dutch, German,
+Italian, and Spanish, with possibility of access to Danish,
+Greek, and Portuguese.
+</li>
+</ol>
+
+<p class="about-text">The merging has been performed both on conceptual
+and formal basis. Coinciding concepts in the different thesauri have
+been identified and scored. Like in other multilingual thesauri,
+e. g. Infoterra EnVoc, a neutral alphanumerical notation allows the
+identification of a concept independently on the user's language.</p>
+
+<p class="about-text">The links with the original thesauri are ensured
+by the respective identifiers or code notations.</p>
+
+<p class="about-text">Following the identification of the coinciding
+concepts, a selection was made by the experts of the National Focal
+Points of the organisations involved. </p>
+
+<p class="about-text">The resulting 6.562 terms have been arranged
+in a classification scheme made of 3 super-groups, 30 groups plus 5
+accessory, instrumental groups. Each descriptor has been arranged in a
+hierarchical structure headed by a Top Term. The level of poly-hierarchy,
+i.e. the allocation of a descriptor to more than one group, has been
+kept to a minimum. Further, to allow a thematic retrieval of terms
+thematically related but scattered in different groups, a set of 40
+themes have been agreed upon with the EEA and each descriptor has been
+assigned to as many themes as necessary. Thus, the user can access the
+thesaurus through the group-hierarchical list, through the thematic list
+or through the alphabetical list. As a complement to the hierarchical
+&ldquo;vertical&rdquo; relations, an exhaustive series of strong &ldquo;horizontal&rdquo;
+relations between terms (RT, Related Terms) have been introduced. A
+progressive Line Number has been assigned to each descriptor of the
+systematic list, in order to help the user of the lists to identify the
+descriptor in the different lists. The Line Number is merely a neutral
+identifier for the present version.
+</p>
+
+<p class="about-text">The GEMET size, formerly figured at about 200000
+descriptors, rose to more than 5.000 in the course of merging, due to
+the limited overlapping between the different thesauri, to constraints
+of the selection work carried out by the parental organisations and to
+a few new additions, mainly from CDS indexing work.
+</p>
+
+<p class="about-text">The present version 2001 of GEMET is the result of
+a close collaboration between CNR and UBA under contract and supervision
+of the ETC/CDS. It presents 5.298 descriptors, including 109 Top Terms,
+and 1.264 synonyms in English. The 5.524 terms belonging to the parental
+thesauri and not included in GEMET, constitute an accessory alphabetical
+list of free terms.
+</p>
+
+<p class="about-text">British English has been proposed as language
+of choice for the EEA, but the American English equivalents have been
+added through a collaboration with the US Environmental Protection Agency
+(EPA).
+</p>
+
+<p class="about-text">The present Version 2001 of GEMET provides a
+complete numerical equivalence (all the descriptors have an equivalent)
+with the following languages: Basque, Bulgarian, Dutch, Finnish, French,
+German, Hungarian, Italian, Norwegian, Portuguese, Russian, Slovenian
+and Spanish. For Danish, Slovak, Swedish and Greek some few descriptors
+are still missing - this issue is presently under work. The semantic
+equivalence (correct correspondence of meaning between languages) has been
+separately ensured by the NFPs experts for Dutch, French, German, Italian,
+Norwegian, Portuguese and almost completely for Spanish. Equivalence in
+Finnish is not yet validated.
+The translation of GEMET into other languages, both extra-EU and
+extra-European is foreseen in the future.
+</p>
+
+<p class="about-text">The need to ensure the internal systematic and
+linguistic coherence of the thesaurus led the GEMET Working Group to
+foster the endowment of all the descriptors with a consistent set of
+definitions. There are at present more than 4.000 definitions available,
+which provide a useful glossary function where the semantic of the
+thesaurus structure might not be completely caught. The sources of
+definitions are presented in Annex 1.
+</p>
+
+<p class="about-text">GEMET follows the ISO norms on monolingual and multilingual thesauri.
+</p>
+
+<p class="about-text">The thesaurus material, i.e. the terms and
+their control elements, is managed by the THESmain program, developed
+by the TBHS, Technisches B&uuml;ro Hermann Stallbaumer, Vienna,
+which provides a series of sophisticated functions for handling the
+poly-hierarchical, poly-thematic and multilingual aspects. The use of
+GEMET in THESmain is restricted to the developers of the thesaurus,
+but a user-friendly software program, THESshow (Windows95/98,
+NT 4.0), is available for the visualisation of GEMET for the lay
+user. In order to receive ThesShow, please contact the ETC/CDS at <a
+href="http://www.mu.niedersachsen.de">http://www.mu.niedersachsen.de</a>.
+From end of 2001, please contact the EEA's Information
+Centre via e-mail information.centre@eea.europa.eu or at <a
+href="http://www.eea.europa.eu/">http://www.eea.europa.eu/</a>
+</p>
+
+<p class="about-text">The thesaurus is part of WinCDS - MS-Access based
+data collection tool for the Catalogue of Data Sources, where it is used
+for indexing. A further software, GenThes, has been developed for the
+ETC/CDS by FZI, Forschungszentrum Informatik, Karlsruhe, in order to
+present GEMET in the Web environment. It functions as Java application
+to support expert retrieval on the Internet database WebCDS the Catalogue
+of environment related addresses and data sources.
+(<a href="http://www.mu.niedersachsen.de/system/cds">http://www.mu.niedersachsen.de/system/cds</a>)
+</p>
+
+<p class="about-text">GEMET, Version 2001, is published on CD-ROM in October 2001.
+</p>
+
+<p class="about-text">The printed edition in Adobe-Acrobat readable
+.PDF format, mainly intended for the Thesaurus users, will replace the 5
+volumes of the version 1.0, published in July 1997 as well as the version
+2.0 from August 1999 as well as the version 2000 from September 2000
+</p>
+
+<table border="0">
+        <col style="width:10%"/>
+        <col style="width:90%"/>
+<tr>
+<td valign="top">Volume 1:</td>
+<td >Systematic List of Descriptors, in English,
+containing the allocation of descriptors to groups and the
+poly-hierarchical relations of the descriptors;</td>
+</tr>
+<tr>
+<td valign="top">Volume 2:</td>
+<td>Thematic List of Descriptors, in English, containing the
+allocation of descriptors to themes;</td>
+</tr>
+<tr>
+<td valign="top">Volume 3:</td>
+<td>Alphabetical List of Terms, in English, containing
+descriptors, definitions, scope notes, synonyms, allocation to
+groups and themes, top terms, broader terms, narrower terms,
+related terms;</td>
+</tr>
+<tr>
+<td valign="top">Volume 4:</td>
+<td>Concordance, i.e. the Alphabetical List of Descriptors and
+Non-Descriptors in permuted form;</td>
+<tr>
+<td valign="top">Volume 5:</td>
+<td>Multilingual List of Descriptors, with British English as
+the filing language.</td>
+</tr>
+</table>
+
+
+
+<h2 id="chapter-II" class="about-header">2. Criteria for the allocation of terms to the groups and themes of GEMET</h2>
+<p class="about-text">GEMET has two systems for arranging the descriptors:
+</p>
+
+<p class="about-text">A classification scheme of 3 super-groups
+containing 30 groups; there are in addition 5 accessory groups of terms,
+instrumental to the thesaurus use.
+The super-groups have been adopted to approach an environmental management
+perspective and to help the hierarchical structuring of GEMET. The groups
+reflect a systematic, category- or discipline-oriented perspective. Within
+the groups, the descriptors are basically allocated in a mono-hierarchical
+order, but several descriptors needed to be allocated to more than one
+group or to more than a broader term inside the same group, thus creating
+a condition of poly-hierarchy.
+</p>
+
+<p class="about-text">Hierarchical relationships are either:
+</p>
+
+<p class="about-text"> generic relationships (the narrower term has all the characteristics of the broader term and at least one additional characteristic)
+</p>
+
+<p class="about-text">Example:</p>
+
+<table>
+<col style="width: 4em"/>
+<col style="width: 2em"/>
+<col style="width: 11em"/>
+<tr>
+    <td colspan="3">trees</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>deciduous trees</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>conifers</td>
+</tr>
+</table>
+
+<p class="about-text"> or whole-part relationships (the narrower term must be part of the broader term)
+</p>
+
+<p class="about-text">Example:
+</p>
+
+<table>
+<col style="width: 4em"/>
+<col style="width: 2em"/>
+<col style="width: 11em"/>
+<tr>
+    <td colspan="3">trees</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>tree trunks</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>treetops</td>
+</tr>
+</table>
+
+<p class="about-text">If both generic and whole-part relationships exist
+in connection with a term, this results in a poly-dimensional subdivision.
+For the sake of clarity and taking into consideration that GEMET deals
+mainly with generic relationships, both relationships are treated as
+equals in the thesaurus.
+</p>
+
+<p class="about-text">Example:</p>
+
+<table>
+<col style="width: 4em"/>
+<col style="width: 2em"/>
+<col style="width: 11em"/>
+<tr>
+    <td colspan="3">trees</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>tree trunks</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>treetops</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>deciduous trees</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>NT</td><td>conifers</td>
+</tr>
+</table>
+
+<p class="about-text"> Hierarchical relationships exist between terms
+belonging to the same logical categories. Every term can possess several
+broader terms (polyhierarchy)
+</p>
+
+<p class="about-text">Example:</p>
+
+<table>
+<col style="width: 4em"/>
+<col style="width: 2em"/>
+<col style="width: 11em"/>
+<tr>
+    <td colspan="3">sulphuric acid</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>BT</td><td>sulphur compounds</td>
+</tr>
+<tr>
+    <td>&nbsp;</td><td>BT</td><td>acid</td>
+</tr>
+</table>
+
+<p class="about-text">A thematic order, containing 40 themes.
+These themes have been established according to practical considerations,
+corresponding to the information needs. They have been developed to
+reflect the EEA activities in order to support the thematic elements of
+the EEA DPSIR Dataflow Scheme. The list of themes has taken into account
+all the main topics of the Scheme, of The Dobris Assessment and of other
+sources, like ETCs (European Topic Centres) and Eionet (Environmental
+Information and Observation Network). They can be used as checklists when
+dealing with environmental matters. The themes, being complementary to
+the groups, confer to the thesaurus a matrix structure.
+</p>
+
+<p class="about-text">The main principles followed for the allocation of descriptors were:
+</p>
+
+<ol>
+<li>
+A descriptor is usually allocated to one group;
+</li>
+<li>
+When necessary, a descriptor can be assigned to more than one group or to more than a broader term inside the same group (poly-hierarchy).
+</li>
+<li>
+A descriptor can be allocated to more than one theme (&ldquo;poly-thematic&rdquo; condition).
+</li>
+<li>
+A descriptor should be allocated to all the (relevant) themes to which it belongs.
+</li>
+<li>
+All descriptors belonging to a &ldquo;Group&rdquo; of GEMET whose name and content corresponds to a &ldquo;Theme&rdquo; will be allocated to that theme.
+</li>
+<li>
+The non-descriptors (synonyms) are linked to their descriptors.
+</li>
+<li>
+Descriptors with very general content or those which do not belong exactly to a theme, have been collected in a theme of general character, called &ldquo;no special theme&rdquo; (theme: general).
+</li>
+<li>
+According to the development of GEMET, additional themes might be identified.
+</li>
+</ol>
+
+<p class="about-text">The allocation of a descriptor to more than one
+theme reflects the relation of this term to different subject fields.
+A non-descriptor, being synonym to a descriptor, belongs to the same
+group or theme as the descriptor. The synonym guides the user directly to
+the preferred term, where s/he will find all the necessary information:
+the fundamental relations like equivalence, hierarchical and associative
+relationship, and so on.
+</p>
+
+<p class="about-text">Unlike in some parental thesauri, the singular
+form of terms has been preferred throughout the whole thesaurus; only
+a limited number of terms have been kept in plural form, to prevent
+change of meaning or to follow the rules of the English language. For
+the non-English languages, the translators are recommended to follow the
+same criterion used for English, but are left free to adopt a different
+form if the meaning of the term is at stake.
+All the complementary numerical forms (singular to plural, plural to
+singular) of the terms which can be endowed with such forms, have been
+entered into the thesaurus file; nevertheless, they will be presented
+only when they are alphabetically distant from the form presented (e.g.:
+man _ men).
+</p>
+
+<p class="about-text">The thesaurus has also been analysed for
+the presence of alternate forms and spelling variants, including
+the prepositional forms. The analysis was restricted to the English
+equivalents proposed by the parental thesauri, thus it was not
+extended to the rest of the terms. All these forms have been entered as
+non-descriptors (synonyms).
+</p>
+
+<p class="about-text">The themes have provided the basis for the work on associative relationships (RT, Related Terms).
+</p>
+
+<p class="about-text">Because of the restricted use of hierarchical
+relationships there was a need for another mechanism to draw attention
+to other terms which an indexer and a searcher should consider. These
+are RELATED TERMS of the starting term.
+Associative relationships between terms are relationships which do not
+correspond to the criteria of hierarchy or equivalence. Associative
+relationships can be established between terms belonging to different
+logical categories.
+From the numerous possible relationships only those relationships
+are included in GEMET which are considered useful for indexing and
+searching.
+</p>
+
+<p class="about-text">Related terms may be of several kinds:
+</p>
+<ul>
+<li>Objects and the discipline in which they are studied, such as Animals and Zoology.</li>
+<li>Processes and their products, such as Environmental Policy and Environmental Law.</li>
+<li>Tools and the processes in which they are used, such as Paint brushes and Painting.</li>
+<li>The Related Term relationship is also used between terms which are of the same kind, not hierarchically related, but where someone looking for one ought also to consider searching under the other, e.g. Beds RT Bedding; Quilts RT Feathers</li>
+<li>Relationship of opposites (antonymy) such as risks and safety</li>
+<li>Relationship between a determinant term and a specifying characteristic such as sulphuric acid production and sulphuric acid</li>
+<li>Relationship between functional or causal connections:
+process - equipment such as pulverization and shredder
+resources - function such as organic phosphorus compounds and insecticides
+cause - effect such as soil acidification and forest damage
+measure - target such as pesticides and pests</li>
+</ul>
+
+<p class="about-text">The established principles will produce a better
+performance of the indexers when preparing input for the CDS and will
+allow easier access to the data for the users via the descriptors.
+</p>
+
+<p class="about-text"><strong>Important Note.</strong> The
+classification scheme of GEMET, by groups, themes and hierarchies,
+should be considered merely as a mean to control the thesaurus terms
+and the semantic relations between them; in other words, as a way to
+control the internal coherence of the thesaurus. As such, it is not
+proposed as a general reference pattern for the organisation of any
+specific environmental information system, although its structure and
+comprehensive set of meta-concepts (mainly the themes and the top terms)
+can be fruitfully used for such purpose.
+</p>
+
+
+<h2 id="chapter-III" class="about-header"> 3. How to use the Thesaurus</h2>
+
+<p class="about-text"> To find the appropriate term, the user has
+several chances to navigate in the different parts of GEMET:
+</p>
+
+<p class="about-text"> 1. Have a look to the &ldquo;Systematic List of
+Descriptors&rdquo;, which guides you from the super-groups and groups to the
+descriptors and their hierarchical relations
+</p>
+<p class="about-text">or
+</p>
+<p class="about-text"> 2. Enter the &ldquo;Thematic List of Descriptors&rdquo;,
+indicating the various themes and the descriptors allocated to these
+themes in an alphabetic order
+</p>
+<p class="about-text">or
+</p>
+<p class="about-text"> 3. Consult the &ldquo;Alphabetic List of Terms&rdquo;,
+containing descriptors, definitions, scope notes, synonyms and the
+allocation of the terms to groups and themes
+</p>
+<p class="about-text">or
+</p>
+<p class="about-text"> 4. Another chance to access is, using the
+&ldquo;Concordance&rdquo; list which presents as entry terms also the internal words
+of a phrase or compound term, indicating the preferred terms.
+</p>
+
+<p class="about-text"> In the &ldquo;Alphabetic List of Terms&rdquo;, descriptors
+are presented in bold type; different themes belonging to one descriptor
+are separated by a semicolon.
+</p>
+
+<p class="about-text"> In the &ldquo;Alphabetic List of Terms&rdquo; and in
+the &ldquo;Concordance List&rdquo;, Non-Descriptors (synonyms) are printed in
+italics.
+</p>
+
+<p class="about-text"> The following abbreviations are used in GEMET:
+</p>
+<table class="about-envelope" border="0">
+<tr>
+<td>BT:</td>
+<td>Broader Term</td>
+</tr>
+<tr>
+<td>DEF:</td>
+<td>Definition</td>
+</tr>
+<tr>
+<td>NT:</td>
+<td>Narrower Term</td>
+</tr>
+<tr>
+<td>S:</td>
+<td>Indicates the line number of the term in the &ldquo;Systematic List of Descriptors&rdquo;</td>
+</tr>
+<tr>
+<td>SN:</td>
+<td>Scope Note</td>
+</tr>
+<tr>
+<td>T:</td>
+<td>Indicates the line number of the term in the &ldquo;Thematic List of Descriptors&rdquo;</td>
+</tr>
+<tr>
+<td>TT:</td>
+<td>Top Term</td>
+</tr>
+<tr>
+<td>UF:</td>
+<td>Used For</td>
+</tr>
+<tr>
+<td>USE:</td>
+<td>Use</td>
+</tr>
+</table>
+
+<p class="about-text"> Language abbreviations according to ISO standard 639-2:
+</p>
+
+<table class="about-envelope">
+<tr>
+<td> eng:</td>
+<td>English</td>
+</tr>
+<tr>
+<td> dan:</td>
+<td>Danish</td>
+</tr>
+<tr>
+<td> fin:</td>
+<td>Finnish</td>
+</tr>
+<tr>
+<td> ger:</td>
+<td>German</td>
+</tr>
+<tr>
+<td> dut:</td>
+<td>Dutch</td>
+</tr>
+<tr>
+<td> nor:</td>
+<td>Norwegian</td>
+</tr>
+<tr>
+<td> swe:</td>
+<td>Swedish</td>
+</tr>
+<tr>
+<td> fra:</td>
+<td>French</td>
+</tr>
+<tr>
+<td> gre:</td>
+<td>Greek</td>
+</tr>
+<tr>
+<td> ita:</td>
+<td>Italian</td>
+</tr>
+<tr>
+<td> por:</td>
+<td>Portuguese</td>
+</tr>
+<tr>
+<td> spa:</td>
+<td>Spanish</td>
+</tr>
+<tr>
+<td> hun:</td>
+<td>Hungarian</td>
+</tr>
+<tr>
+<td> slo:</td>
+<td>Slovak</td>
+</tr>
+<tr>
+<td> rus:</td>
+<td>Russian</td>
+</tr>
+<tr>
+<td> bul:</td>
+<td>Bulgarian</td>
+</tr>
+<tr>
+<td> slv:</td>
+<td>Slovenian</td>
+</tr>
+<tr>
+<td> baq:</td>
+<td>Basque</td>
+</tr>
+<tr>
+<td> usa:</td>
+<td>American English (not ISO)</td>
+</tr>
+</table>
+
+
+<h2 id="chapter-IV" class="about-text"> 4. List of Groups</h2>
+<h3 class="about-header"><i> No.* Abbreviation Name of the Super-group/Group</i></h3>
+
+
+<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;NATURAL ENVIRONMENT, ANTHROPIC ENVIRONMENT
+</p>
+
+<table border="0" width="90%" cellspacing="0">
+<tr>
+<td width="10%">1</td>
+<td width="20%"><strong>ENV</strong></td>
+<td width="*">ENVIRONMENT (natural environment, anthropic environment)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>TIM</strong></td>
+<td>TIME</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>SPA</strong></td>
+<td>SPACE</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>ATM</strong></td>
+<td>ATMOSPHERE (air, climate)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>HYD</strong></td>
+<td>HYDROSPHERE (freshwater, marine water, waters)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>LIT</strong></td>
+<td>LITHOSPHERE (soil, geological processes)</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>LAN</strong></td>
+<td>LAND (landscape, geography)</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>BIO</strong></td>
+<td>BIOSPHERE (organisms, ecosystems)</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>ANT</strong></td>
+<td>ANTHROPOSPHERE (built environment, human settlements)</td>
+</tr>
+</table>
+
+
+<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;HUMAN ACTIVITIES AND PRODUCTS, EFFECTS ON THE ENVIRONMENT
+</p>
+
+<table border="0" width="90%" cellspacing="0">
+<tr>
+<td width="10%">10</td>
+<td width="20%"><strong>CHE</strong></td>
+<td width="*">CHEMISTRY, SUBSTANCES, PROCESSES</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>PHY</strong></td>
+<td>PHYSICAL ASPECTS, NOISE, VIBRATIONS, RADIATIONS</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>ENE</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>RSC</strong></td>
+<td>RESOURCES (utilisation of resources)</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>PRD</strong></td>
+<td>PRODUCTS, MATERIALS</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>AGR</strong></td>
+<td>AGRICULTURE, FORESTRY; ANIMAL HUSBANDRY; FISHERY</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>IND</strong></td>
+<td>INDUSTRY, CRAFTS; TECHNOLOGY; EQUIPMENTS</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>SER</strong></td>
+<td>TRADE, SERVICES</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>TRA</strong></td>
+<td>TRAFFIC, TRANSPORTATION</td>
+</tr>
+<tr>
+<td>19</td>
+<td><strong>REC</strong></td>
+<td>RECREATION, TOURISM</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>WAS</strong></td>
+<td>WASTES, POLLUTANTS, POLLUTION</td>
+</tr>
+<tr>
+<td>21</td>
+<td><strong>EFF</strong></td>
+<td>EFFECTS, IMPACTS</td>
+</tr>
+</table>
+
+
+<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;SOCIAL ASPECTS, ENVIRONMENTAL POLICY MEASURES
+</p>
+<table border="0" width="90%" cellspacing="0">
+<tr>
+<td width="10%">22</td>
+<td width="20%"><strong>ECO</strong></td>
+<td width="*">ECONOMICS, FINANCE</td>
+</tr>
+<tr>
+<td>23</td>
+<td><strong>LEG</strong></td>
+<td>LEGISLATION, NORMS, CONVENTIONS</td>
+</tr>
+<tr>
+<td>24</td>
+<td><strong>ADM</strong></td>
+<td>ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING</td>
+</tr>
+<tr>
+<td>25</td>
+<td><strong>ENP</strong></td>
+<td>ENVIRONMENTAL POLICY</td>
+</tr>
+<tr>
+<td>26</td>
+<td><strong>INF</strong></td>
+<td>INFORMATION, EDUCATION, CULTURE, ENVIRONMENTAL AWARENESS</td>
+</tr>
+<tr>
+<td>27</td>
+<td><strong>RES</strong></td>
+<td>RESEARCH, SCIENCES</td>
+</tr>
+<tr>
+<td>28</td>
+<td><strong>HEA</strong></td>
+<td>HEALTH, NUTRITION</td>
+</tr>
+<tr>
+<td>29</td>
+<td><strong>SAF</strong></td>
+<td>RISKS, SAFETY</td>
+</tr>
+<tr>
+<td>30</td>
+<td><strong>SOC</strong></td>
+<td>SOCIETY</td>
+</tr>
+</table>
+
+<p class="about-text"> Accessory Groups
+</p>
+
+<table class="about-envelope" border="0" width="40%" cellspacing="0">
+<tr>
+<td width="20%"><strong>GEN</strong></td>
+<td width="*">GENERAL TERMS</td>
+</tr>
+<tr>
+<td><strong>FUN</strong></td>
+<td>FUNCTIONAL TERMS</td>
+</tr>
+<tr>
+<td><strong>PER</strong></td>
+<td>PERSONNEL</td>
+</tr>
+<tr>
+<td><strong>ACT</strong></td>
+<td>ACTS</td>
+</tr>
+<tr>
+<td><strong>PRO</strong></td>
+<td>PROGRAMMES</td>
+</tr>
+</table>
+
+<p class="about-text"> * Neutral number</p>
+
+
+
+<h2 id="chapter-V" class="about-header"> 5. List of Themes</h2>
+
+<table border="0" width="90%" cellspacing="0">
+<tr>
+<td width="5%" valign="top"><i> No</i></td>
+<td width="10%" valign="top"><i>Abbr.</i></td>
+<td width="40%" valign="top"><i>Theme</i></td>
+<td width="*"><i>Scope Notes</i></td>
+</tr>
+<tr>
+<td valign="top">*</td>
+<td valign="top"></td>
+<td valign="top"></td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">1</td>
+<td valign="top">adm</td>
+<td valign="top">Administration</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">2</td>
+<td valign="top">agr</td>
+<td valign="top">Agriculture</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">3</td>
+<td valign="top">air</td>
+<td valign="top">Air</td>
+<td>air, air pollution (acidification, stratospheric ozone, tropospheric oxidants), air pollution control</td>
+</tr>
+<tr>
+<td valign="top">4</td>
+<td valign="top">bio</td>
+<td valign="top">Biology</td>
+<td>Organisms (also genetically modified organisms), biological properties, processes, biosystems</td>
+</tr>
+<tr>
+<td valign="top">5</td>
+<td valign="top">bui</td>
+<td valign="top">Building</td>
+<td>buildings, built-up area, infrastructure</td>
+</tr>
+<tr>
+<td valign="top">6</td>
+<td valign="top">che</td>
+<td valign="top">Chemistry</td>
+<td>chemical substances, properties and processes</td>
+</tr>
+<tr>
+<td valign="top">7</td>
+<td valign="top">cli</td>
+<td valign="top">Climate</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">8</td>
+<td valign="top">dyn</td>
+<td valign="top">natural dynamics</td>
+<td>natural hazards, geophysical processes</td>
+</tr>
+<tr>
+<td valign="top">9</td>
+<td valign="top">eco</td>
+<td valign="top">Economics</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">10</td>
+<td valign="top">ene</td>
+<td valign="top">Energy</td>
+<td>energy and power, energy sources and consumption</td>
+</tr>
+<tr>
+<td valign="top">11</td>
+<td valign="top">enp</td>
+<td valign="top">Environmental policy</td>
+<td>Environmental information, e.g. CDS; land cover, remote sensing, environmental impact assessment (EIA), environmental auditing, target setting, environmental expenditures</td>
+</tr>
+<tr>
+<td valign="top">12</td>
+<td valign="top">fis</td>
+<td valign="top">Fishery</td>
+<td>industry, resources</td>
+</tr>
+<tr>
+<td valign="top">13</td>
+<td valign="top">fod</td>
+<td valign="top">food, drinking water</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">14</td>
+<td valign="top">for</td>
+<td valign="top">Forestry</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">15</td>
+<td valign="top">gen</td>
+<td valign="top">General</td>
+<td>no special theme</td>
+</tr>
+<tr>
+<td valign="top">16</td>
+<td valign="top">geo</td>
+<td valign="top">Geography</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">17</td>
+<td valign="top">hea</td>
+<td valign="top">human health</td>
+<td>nutrition, medical aspects, safety</td>
+</tr>
+<tr>
+<td valign="top">18</td>
+<td valign="top">hus</td>
+<td valign="top">animal husbandry</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">19</td>
+<td valign="top">ind</td>
+<td valign="top">Industry</td>
+<td>industry, mining, handicraft, technology, technical procedures and equipment</td>
+</tr>
+<tr>
+<td>20</td>
+<td>inf</td>
+<td>Information</td>
+<td></td>
+</tr>
+<tr>
+<td>21</td>
+<td>leg</td>
+<td>Legislation</td>
+<td></td>
+</tr>
+<tr>
+<td>22</td>
+<td>mil</td>
+<td>military aspects</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">23</td>
+<td valign="top">nat</td>
+<td valign="top">natural areas, landscape, ecosystems </td>
+<td>natural reserves, parks, landforms</td>
+</tr>
+<tr>
+<td>24</td>
+<td>noi</td>
+<td>noise, vibrations</td>
+<td></td>
+</tr>
+<tr>
+<td>25</td>
+<td>phy</td>
+<td>Physics</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">26</td>
+<td valign="top">pll</td>
+<td valign="top">Pollution</td>
+<td>pollution, pollution control, general pollutants (not special substances)</td>
+</tr>
+<tr>
+<td valign="top">27</td>
+<td valign="top">prd</td>
+<td valign="top">materials, products, equipments </td>
+<td>materials, raw materials and products, physical properties and processes, state of matter</td>
+</tr>
+<tr>
+<td>28</td>
+<td>rad</td>
+<td>Radiations</td>
+<td></td>
+</tr>
+<tr>
+<td>29</td>
+<td>rec</td>
+<td>Tourism</td>
+<td>Recreation and tourism</td>
+</tr>
+<tr>
+<td>30</td>
+<td>res</td>
+<td>Research</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">31</td>
+<td valign="top">rsc</td>
+<td valign="top">Resources</td>
+<td>use of resources (not special materials as resources)</td>
+</tr>
+<tr>
+<td valign="top">32</td>
+<td valign="top">saf</td>
+<td valign="top">disasters, accidents, risk, safety </td>
+<td>Contaminated sites, chemical risk, technical hazards, safety control</td>
+</tr>
+<tr>
+<td>33</td>
+<td>ser</td>
+<td>trade, services</td>
+<td></td>
+</tr>
+<tr>
+<td valign="top">34</td>
+<td valign="top">soc</td>
+<td valign="top">social aspects, population</td>
+<td>social aspects, production, consumption, culture, education, household, labour</td>
+</tr>
+<tr>
+<td valign="top">35</td>
+<td valign="top">soi</td>
+<td valign="top">Soil</td>
+<td>soil, soil pollution, soil pollution control</td>
+</tr>
+<tr>
+<td>36</td>
+<td>spa</td>
+<td>Space</td>
+<td>Interplanetary space</td>
+</tr>
+<tr>
+<td valign="top">37</td>
+<td valign="top">tra</td>
+<td valign="top">Transportation, traffic </td>
+<td>traffic and transportation</td>
+</tr>
+<tr>
+<td>38</td>
+<td>urb</td>
+<td>urban environment, urban stress</td>
+<td>Settlements</td>
+</tr>
+<tr>
+<td valign="top">39</td>
+<td valign="top">was</td>
+<td valign="top">Waste</td>
+<td>waste, waste treatment, waste control</td>
+</tr>
+<tr>
+<td valign="top">40</td>
+<td valign="top">wat</td>
+<td valign="top">Water</td>
+<td>Hydrosphere, water, waters, waste water</td>
+</tr>
+</table>
+
+<p class="about-text"> * Neutral number
+</p>
+
+
+<h2 id="chapter-VI" class="about-header"> 6. Presentation of GEMET Version 2001</h2>
+
+<p class="about-text"> After the distribution of different intermediate
+versions, GEMET versions 0.5, 1.0 and 1.5 have been subjected to
+an extensive work by CNR and UBA that led to the version 2.0. More
+translations and some corrections formed version 2000. Aiming at
+completing the European languages in GEMET, Basque, Bulgarian, Russian
+and the Slovenian language could be added to this version. No changes
+have been performed regarding the term count or the hierarchy. Please
+find a report on this work in Annex 4.
+</p>
+
+<p class="about-text"> The remarks and suggestions provided by the
+colleagues of Belgium, Sweden, Portugal, Norway, Austria, France, by
+the ETC for Nature Conservation and by US EPA and by UNEP GRID Geneva
+have been taken into account. Most of them have been applied to GEMET,
+to the extent they were not interfering with:
+</p>
+<ul>
+<li>The limits established by the selection of terms by the national experts;</li>
+<li>The present balance between the group and the thematic structure. </li>
+</ul>
+
+<p class="about-text"> The resulting version presents:
+</p>
+
+<ul class="about-text">
+<li>The complete allocation of descriptors to groups;</li>
+<li>The poly-hierarchical set-up;</li>
+<li>The complete allocation of descriptors to themes;</li>
+<li>An extensive set of synonyms in English, which include the
+alternate forms, the spelling variants and the prepositional
+forms;</li>
+<li>An extended range of Related Terms;</li>
+<li>A consistent number of definitions;</li>
+<li>A certain number of parenthetic qualifiers, consistently adopted
+for overall disambiguation purposes, both in British and American
+English.</li>
+</ul>
+
+<p class="about-text">The following table summarises the structural elements of GEMET.
+</p>
+
+<table>
+<tr>
+<td width="70%"><i>Structure elements</i></td>
+<td width="*"><i>No</i></td>
+</tr>
+<tr>
+<td>Super Groups</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Groups</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Accessory Groups</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Themes</td>
+<td>40</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td></td>
+</tr>
+<tr>
+<td>Top Terms (TT)</td>
+<td>109</td>
+</tr>
+<tr>
+<td>Narrower Terms (NT)</td>
+<td>5.189</td>
+</tr>
+<tr>
+<td>Total descriptors (TT + NT)</td>
+<td>5.298</td>
+</tr>
+<tr>
+<td>Total non-descriptors</td>
+<td>1.264</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td></td>
+</tr>
+<tr>
+<td>Total records</td>
+<td>6.562</td>
+</tr>
+</table>
+
+<p class="about-text">Due to the lack of a complete list of equivalents
+for all the above mentioned languages, the two alphabetical and the
+multilingual lists will be presented in this printed version only with
+British English as the filing language.
+Separate lists for the other languages will be available by the EEA on request.
+</p>
+
+
+<h2 id="chapter-VII" class="about-header">7. Essential References</h2>
+<dl>
+<dt>de Lavieter, L. (Ed.)</dt>
+<dd><i>Multilingual Environmental Thesaurus. Part 1, English; Part 2, Fran&ccedil;ais; Part 3, Deutsch; Part 4, Nederlands; Part 5, Italiano; Part 6, Norsk; Part 7, Dansk; Part 8, Espa&ntilde;ol.</i></dd>
+<dd>NBOI, Nederlandse Bureau voor Onderzoek Informatie / EEA-TF - European Environment Agency - Task Force, Amsterdam, November 1995, pp. (English) vi + A-78; B-112; C-56; D-199, total 445.</dd>
+
+<dt>Felluga, B., Lucke, S., Palmera, M., Plini, P., de Lavieter, L., Deschamps, J., Eds.</dt>
+<dd><i>Thesaurus per l'ambiente - Versione quadrilingue / Thesaurus for the Environment - Quadrilingual Version / Milieu-thesaurus - Viertalige vertaling / Thesaurus f&uuml;r die Umwelt.</i></dd>
+<dd>CNR-SIAM &amp; CNR-UPIS. CD-ROM Edition, Milan, 1994.</dd>
+<dd>(Includes the contents of: Felluga, B., de Lavieter, L., Deschamps, J., Lucke, S., Palmera, M., Eds.</dd>
+<dd><i>Thesaurus per l'ambiente - Versione trilingue per l'Italia / Thesaurus for the Environment - Trilingual Edition for Italy / Milieu-thesaurus - Drietalige vertaling voor Itali&euml;</i></dd>
+<dd>Edizione pilota, Vol. 1/3, pp. i-xiv + 700; Pilot Edition, Vol. 2/3, pp. xv-xxviii + 684; Proefuitgave, Vol. 3/3, pp. xxix-xxxiv+672, total pp. i+xiv+xxviii+xxxiv + 2056, 1991, Roma, CNR-ITBM.)</dd>
+
+<dt>Felluga, B. (Ed.)</dt>
+<dd><i>Multilingual Thesaurus for the Environment. Classification Scheme</i></dd>
+<dd>CNR, Roma, June 1995, pp. 3 + 90.</dd>
+
+<dt>Minist&egrave;re de l'environnement.</dt>
+<dd><i>Lexique environnement - Plan&egrave;te</i></dd>
+<dd>Tome 1, Liste alphab&eacute;tique, pp. 83;
+Tome 2, Liste th&eacute;matique, pp. iv + 186. Minist&egrave;re de
+l'environnement, Paris, D&eacute;cembre 1995.</dd>
+
+<dt>MOPTMA, Ministerio de Obras P&uacute;blicas, Transportes y Medio Ambiente.</dt>
+<dd><i>Tesauro Multiling&uuml;e de Medio Ambiente.</i></dd>
+<dd>MOPTMA, Madrid, 1995, CD-ROM Edition, 1995.</dd>
+<dd>(Includes the contents of: MOPU, Ministerio de Obras Publicas y Urbanismo.</dd>
+<dd><i>Tesauro de medio ambiente.</i></dd>
+<dd>MOPU, Madrid, 1990, pp. xxxii + 319.)</dd>
+
+<dt>NERI, National Environmental Research Institute.</dt>
+<dd><i>Guidelines for data collection for the Dobris+3 Report. Final Draft.</i></dd>
+<dd>NERI, Copenhagen, pp. 186, September 1996.</dd>
+
+<dt>Petersen, T. Ed.</dt>
+<dd><i>AAT - Art and Architecture Thesaurus.</i></dd>
+<dd>Oxford University Press, New York, Vol. 1, pp. xxix + 455; vol. 2, pp. 533; vol. 3, pp. 586; vol. 4, pp. 586; vol. 5, pp. 546, 1994.</dd>
+
+<dt>Stanners, D. &amp; Bourdeau, Ph., Eds.</dt>
+<dd><i>Europe's Environment. The Dobris Assesssment.</i></dd>
+<dd>EEA - European Environment Agency, Copenhagen, Version 1995-01, pp. xxvi + 616.</dd>
+
+<dt>UBA - Umweltbundesamt.</dt>
+<dd><i>Die Umwelt-CD -UMPLIS.</i></dd>
+<dd xml:lang="de">Umweltbundesamt, Berlin, I-1996, CD-ROM Edition + Benutzerhandbuch pp. 110 + Umweltklassifikation, 1993, pp. iii + 12.</dd>
+<dd>(Includes the contents of: UBA, Umweltbundesamt.</dd>
+<dd><i>Umwelt-Thesaurus und Umwelt Klassifikation.</i></dd>
+<dd>Umweltbundesamt, Berlin, 1994, pp. v + 11 + 347 + 495 + 150 + 133 + 9, total 1145.)</dd>
+
+<dt>UNEP, United Nations Environment Programme - Infoterra.</dt>
+<dd><i>EnVoc - Multilingual Thesaurus of Environmental Terms.</i></dd>
+<dd>UNEP, Nairobi, May 1997, pp. xix +248.</dd>
+</dl>
+</span>
+</span>
+
+{% endblock %}

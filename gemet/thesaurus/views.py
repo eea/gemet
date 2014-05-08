@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from gemet.thesaurus.models import (
     Language,
+    Concept,
     Theme,
     Namespace,
     SuperGroup,
@@ -31,6 +32,15 @@ def _attach_attributes(concept, langcode, expand=[]):
             _attach_attributes(child, langcode, expand)
 
 
+def about(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+    return render(request, 'about.html', {
+        'languages': languages,
+        'language': language
+    })
+
+
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     old_new_views = {'index_html': 'themes', 'groups': 'groups'}
@@ -40,7 +50,7 @@ def redirect_old_urls(request, view_name):
     return redirect(view, langcode=langcode)
 
 
-def themes(request, langcode='en'):
+def themes(request, langcode=DEFAULT_LANGCODE):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 

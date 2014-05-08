@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url, include
+
 from .views import (
+    about,
     themes,
     groups,
     relations,
@@ -21,6 +23,7 @@ urlpatterns = patterns(
     '',
     url(r'^$', themes),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
+        url(r'^about/$', about, name='about'),
         url(r'^themes/$', themes, name='themes'),
         url(r'^groups/$', groups, name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', concept, name='concept'),
