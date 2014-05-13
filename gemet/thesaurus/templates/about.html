@@ -3,24 +3,17 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=langcode.code view='about'%}
 
-<span metal:use-macro="here/thesaurus_template/macros/thesaurus_page">
-
-<tal:block metal:fill-slot="thesaurus_page_title">
-About GEMET
-</tal:block>
-
-<span metal:fill-slot="thesaurus_content" tal:omit-tag="">
 <h1>About GEMET - GEneral Multilingual Environmental Thesaurus</h1>
 <h2>CONTENTS</h2>
 <ul>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#preface" title="Preface to the 2004 version of GEMET">Preface: Preface to the 2004 version of GEMET</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-I" title="Introduction">Chapter I: Introduction</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-II" title="Criteria for the allocation of terms to the groups and themes of GEMET">Chapter II: Criteria for the allocation of terms to the groups and themes of GEMET</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-III" title="How to use the Thesaurus">Chapter III: How to use the Thesaurus</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-IV" title="List of Groups">Chapter VI: List of Groups</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-V" title="List of Themes">Chapter V: List of Themes</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-VI" title="Presentation of GEMET Version 2001">Chapter VI: Presentation of GEMET Version 2001</a></li>
-<li><a class="about-links" tal:attributes="href string:${here/absolute_url}/about?langcode=${langcode}#chapter-VII" title="Essential References">Chapter VII: Essential References</a></li>
+<li><a class="about-links" href="#preface" title="Preface to the 2004 version of GEMET">Preface: Preface to the 2004 version of GEMET</a></li>
+<li><a class="about-links" href="#chapter-I" title="Introduction">Chapter I: Introduction</a></li>
+<li><a class="about-links" href="#chapter-II" title="Criteria for the allocation of terms to the groups and themes of GEMET">Chapter II: Criteria for the allocation of terms to the groups and themes of GEMET</a></li>
+<li><a class="about-links" href="#chapter-III" title="How to use the Thesaurus">Chapter III: How to use the Thesaurus</a></li>
+<li><a class="about-links" href="#chapter-IV" title="List of Groups">Chapter VI: List of Groups</a></li>
+<li><a class="about-links" href="#chapter-V" title="List of Themes">Chapter V: List of Themes</a></li>
+<li><a class="about-links" href="#chapter-VI" title="Presentation of GEMET Version 2001">Chapter VI: Presentation of GEMET Version 2001</a></li>
+<li><a class="about-links" href="#chapter-VII" title="Essential References">Chapter VII: Essential References</a></li>
 </ul>
 
 

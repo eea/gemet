@@ -6,14 +6,18 @@
   <h1>{{ language.name }}'s alphabet</h1>
 
   <ul>
-    {% for letter in letters %}
-      <li class=letter>
-        {{ forloop.counter }}
-        {% for l in letter %}
-          {{ l }}
-        {% endfor %}
-      </li>
-    {% endfor %}
+    {% if letters %}
+      {% for letter in letters %}
+        <li class=letter>
+          {{ forloop.counter }}
+          {% for l in letter %}
+            {{ l }}
+          {% endfor %}
+        </li>
+      {% endfor %}
+    {% else %}
+      The alphabet information is not available.
+    {% endif %}
   </ul>
 
 {% endblock %}
