@@ -19,14 +19,16 @@
     {{ theme.scopeNote|default:"scope note is not available" }}
   </span>
 
-  <h4>Concepts:</h4>
-  <ul>
-    {% for cp in theme.themeMember_concepts %}
+  {% if theme.themeMember_concepts %}
+    <h4>Concepts:</h4>
+    <ul>
+      {% for cp in theme.themeMember_concepts %}
       <li>
         <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
       </li>
-    {% endfor %}
-  </ul>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
   <h4>Translations:</h4>
   <ul>
