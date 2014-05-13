@@ -2,7 +2,7 @@ import factory
 
 from gemet.thesaurus.models import (
     Concept, Property, Language, Namespace, Relation, PropertyType, Term,
-    Group, SuperGroup, Theme,
+    Group, SuperGroup, Theme, DefinitionSource,
 )
 
 
@@ -78,3 +78,7 @@ class RelationFactory(factory.django.DjangoModelFactory):
     property_type = factory.SubFactory(PropertyTypeFactory)
     source = factory.SubFactory(ConceptFactory)
     target = factory.SubFactory(ConceptFactory)
+
+
+class DataSourceFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = DefinitionSource
