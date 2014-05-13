@@ -1,6 +1,10 @@
+{% comment %}
 {% extends 'layout.html' %}
 
 {% block content %}
+{% endcomment %}
   <p>Sorry, the requested page was not found.</p>
   <span>Please visit the <a href="{% url 'themes' 'en' %}">homepage</a>.</span>
+{% comment %}
 {% endblock %}
+{% endcomment %}
