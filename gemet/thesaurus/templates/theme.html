@@ -1,15 +1,16 @@
 {% extends 'layout.html' %}
+{% load gemet_tags %}
 
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='theme' id=theme.id %}
 
-  <h3>{{ theme.prefLabel }}</h3>
+  <h3>{{ theme.name }}</h3>
   <h4>Definiton:</h4>
   <span class="infotext">
     {% if not theme.definition %}
       <span>Definition is not available</span>
     {% else %}
-      {{theme.definition }}
+      {{ theme.definition }}
     {% endif %}
   </span>
 
@@ -18,16 +19,14 @@
     {{ theme.scopeNote|default:"scope note is not available" }}
   </span>
 
-  {% if theme.children %}
-    <h4>Concepts:</h4>
-    <ul>
-      {% for tc in theme.children %}
-        <li>
-          {{ tc.prefLabel }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  <h4>Concepts:</h4>
+  <ul>
+    {% for cp in theme.themeMember_concepts %}
+      <li>
+        <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
 
   <h4>Translations:</h4>
   <ul>

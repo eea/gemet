@@ -1,16 +1,17 @@
 {% extends 'layout.html' %}
+{% load gemet_tags %}
 
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='concept' id=concept.id %}
 
-  <h3>{{ concept.prefLabel }}</h3>
+  <h3>{{ concept.name }}</h3>
   <h4>Definiton:{% if not concept.definition %} * {% endif %}</h4>
   <span class="infotext">
     {% if not concept.definition %}
       <span>*Note: </span>
       <span>Definition is not available for the current language</span>
     {% else %}
-      {{concept.definition }}
+      {{ concept.definition }}
     {% endif %}
   </span>
 
@@ -19,18 +20,29 @@
     <ul>
       {% for cp in concept.broader_concepts %}
         <li>
-          <a href="{% url 'concept' language.code cp.id %}">{{ cp.prefLabel }}</a>
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
         </li>
       {% endfor %}
     </ul>
   {% endif %}
 
-  {% if concept.children %}
+  {% if concept.narrower_concepts %}
     <h4>narrower terms</h4>
     <ul>
-      {% for cp in concept.children %}
+      {% for cp in concept.narrower_concepts %}
         <li>
-          <a href="{% url 'concept' language.code cp.id %}">{{ cp.prefLabel }}</a>
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if concept.related_concepts %}
+    <h4>related terms</h4>
+    <ul>
+      {% for cp in concept.related_concepts %}
+        <li>
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -43,20 +55,24 @@
 
   {% if concept.groups %}
     <h4>Groups:</h4>
-    <span class="infotext">
+    <ul class="infotext">
       {% for group in concept.groups %}
-        {{ group }}
+        <li>
+          <a href="{% url 'group' language.code group.id %}">{{ group.name }}</a>
+        </li>
       {% endfor %}
-    </span>
+    </ul>
   {% endif %}
 
   {% if concept.themes %}
     <h4>Themes:</h4>
-    <span class="infotext">
+    <ul class="infotext">
       {% for theme in concept.themes %}
-        {{ theme }}
+        <li>
+          <a href="{% url 'theme' language.code theme.id %}">{{ theme.name }}</a>
+        </li>
       {% endfor %}
-    </span>
+    </ul>
   {% endif %}
 
   <h4>Other relations:</h4>

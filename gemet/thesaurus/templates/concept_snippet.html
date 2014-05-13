@@ -1,16 +1,19 @@
+{% load gemet_tags %}
 <li>
-  <a href="{% url 'relations' langcode group_id %}?exp={{ concept.expand_param }}">
-    {% if concept.expanded %}
+  {% get_expand concept.id expand_list as expand %}
+  <a href="{% url 'relations' language.code group_id %}?exp={{ expand.param }}">
+    {% if expand.status %}
     -
     {% else %}
     +
     {% endif %}
   </a>
-  <a href="{% url 'concept' langcode concept.id %}">{{ concept.prefLabel }}</a>
+  <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
   <ul>
-    {% if concept.expanded %}
-      {% for concept in concept.children %}
-        {% with concept=concept group_id=group_id langcode=langcode template_name='concept_snippet.html'%}
+    {% if expand.status %}
+      {% get_children concept.id language.code as concept_children %}
+      {% for concept in concept_children %}
+        {% with concept=concept group_id=group_id template_name='concept_snippet.html'%}
           {% include template_name %}
         {% endwith %}
       {% endfor %}

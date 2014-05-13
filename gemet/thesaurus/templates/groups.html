@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% load gemet_tags %}
+
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='groups' %}
 
@@ -8,12 +10,13 @@
   <ul class="supergroups {% if language.rtl %}direction-rtl{% endif %}">
     {% for supergroup in supergroups %}
       <li>
-        <h2>{{ supergroup.prefLabel }}</h2>
+      <h2>{{ supergroup.name }}</h2>
 
         <ul class="groups">
-          {% for group in supergroup.children %}
+          {% get_children supergroup.id language.code as supergroup_children %}
+          {% for group in supergroup_children %}
             <li>
-              <a href="{% url 'relations' language.code group.id %}">{{ group.prefLabel }}</a>
+            <a href="{% url 'relations' language.code group.id %}">{{ group.name }}</a>
             </li>
           {% endfor %}
         </ul>

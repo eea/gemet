@@ -3,7 +3,8 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='supergroup' id=supergroup.id %}
 
-  <h3>{{ supergroup.prefLabel }}</h3>
+  <h3>{{ supergroup.name }}</h3>
+
   <h4>Definiton:</h4>
   <span class="infotext">
     {% if not supergroup.definition %}
@@ -18,12 +19,12 @@
     {{ supergroup.scopeNote|default:"scope note is not available" }}
   </span>
 
-  {% if supergroup.children %}
+  {% if supergroup.narrower_concepts %}
     <h4>Groups</h4>
     <ul>
-      {% for cp in supergroup.children %}
+      {% for cp in supergroup.narrower_concepts %}
         <li>
-          {{ cp.prefLabel }}
+          <a href="{% url 'group' language.code cp.id %}">{{ cp.name }}</a>
         </li>
       {% endfor %}
     </ul>

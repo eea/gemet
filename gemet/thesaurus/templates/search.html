@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% load gemet_tags %}
+
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='search' %}
 
@@ -21,7 +23,7 @@
       {% for concept in concepts %}
         <li>
             <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
-            <p><b>broader context:</b> {{ concept.broader_context }}</p>
+            <p><b>broader context:</b> {% broader_context concept.id language.code %}</p>
         </li>
       {% endfor %}
     </ul>

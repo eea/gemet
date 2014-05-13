@@ -1,7 +1,11 @@
 from django.db.models import (
-    Model, CharField, ForeignKey, DateTimeField, BooleanField,
-    Manager)
-from django.core.exceptions import ObjectDoesNotExist
+    Model,
+    CharField,
+    ForeignKey,
+    DateTimeField,
+    BooleanField,
+    Manager,
+)
 
 
 class Namespace(Model):
@@ -27,69 +31,108 @@ class Concept(Model):
     def visible_foreign_relations(self):
         return self.foreign_relations.filter(show_in_html=True)
 
-    def get_property_value(self, property_name, langcode):
-        try:
-            property_value = (
-                self.properties
-                .values_list('value', flat=True)
-                .get(name=property_name, language__code=langcode)
+    @property
+    def name(self):
+        return getattr(self, 'prefLabel', '')
+
+    def set_attributes(self, langcode, property_list):
+        properties = (
+            self.properties.filter(
+                name__in=property_list,
+                language__code=langcode,
             )
-        except ObjectDoesNotExist:
-            property_value = None
-
-        return property_value
-
-    def set_attribute(self, property_name, langcode):
-        setattr(
-            self,
-            property_name,
-            self.get_property_value(property_name, langcode)
+            .values('name', 'value')
         )
+        for prop in properties:
+            setattr(self, prop['name'], prop['value'])
 
-    def set_parent(self, parent_type, langcode):
+    def set_parent(self, langcode, parent_type):
         parent_name = parent_type + 's'
         setattr(
             self,
             parent_name,
-            [r.target.get_property_value('prefLabel', langcode)
-             for r in self.source_relations
-             .filter(property_type__name=parent_type)]
+            Property.objects.filter(
+                name='prefLabel',
+                language__code=langcode,
+                concept_id__in=self.source_relations
+                .filter(property_type__name=parent_type)
+                .values_list('target_id', flat=True)
+            )
+            .extra(select={'name': 'value',
+                           'id': 'concept_id'},
+                   order_by=['name'])
+            .values('id', 'name')
         )
 
-    def set_broader(self):
-        self.broader_concepts = [r.target for r in self.source_relations
-                                 .filter(property_type__name='broader')
-                                 .prefetch_related('target')]
+    def get_siblings(self, langcode, relation_type):
+        return (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                language__code=langcode,
+                concept_id__in=(
+                    self.source_relations
+                    .filter(property_type__name=relation_type)
+                    .values_list('target_id', flat=True)
+                )
+            )
+            .extra(select={'name': 'value',
+                            'id': 'concept_id'},
+                    order_by=['name'])
+            .values('id', 'name')
+        )
 
-    def set_children(self):
+    def set_siblings(self, langcode, relation_type):
+        setattr(self, relation_type + '_concepts',
+                self.get_siblings(langcode, relation_type))
+
+    def get_children(self, langcode):
+        children = (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                language__code=langcode,
+            )
+        )
+
         if self.namespace.heading in ['Concepts', 'Super groups']:
-            self.children = [r.target for r in self.source_relations
-                             .filter(property_type__name='narrower')
-                             .prefetch_related('target')]
+            children = children.filter(
+                concept_id__in=(
+                    self.source_relations
+                    .filter(property_type__name='narrower')
+                    .values_list('target_id', flat=True)
+                )
+            )
         elif self.namespace.heading == 'Groups':
-            group_concepts = [r.target for r in self.source_relations
-                              .filter(property_type__name='groupMember')
-                              .prefetch_related('target')]
-            self.children = [c for c in group_concepts
-                             if not c.source_relations
-                             .filter(property_type__name='broader')]
+            children = children.filter(
+                concept_id__in=(
+                    self.source_relations
+                    .filter(property_type__name='groupMember')
+                    .exclude(
+                        target__id__in=Relation.objects.filter(
+                            property_type__name='broader',
+                        )
+                        .values_list('source_id', flat=True)
+                    )
+                    .values_list('target_id', flat=True)
+                )
+            )
         elif self.namespace.heading == 'Themes':
-            self.children = [r.target for r in self.source_relations
-                             .filter(property_type__name='themeMember')
-                             .prefetch_related('target')]
-        else:
-            self.children = []
+            children = children.filter(
+                concept_id__in=(
+                    self.source_relations
+                    .filter(property_type__name='themeMember')
+                    .values_list('target_id', flat=True)
+                )
+            )
 
-    def set_expand(self, expand):
-        str_id = str(self.id)
-        expand_copy = expand[:]
-        if str_id in expand:
-            self.expanded = True
-            expand_copy.remove(str_id)
-        else:
-            self.expanded = False
-            expand_copy.append(str_id)
-        self.expand_param = '-'.join(expand_copy)
+        return (
+            children
+            .extra(select={'name': 'value',
+                           'id': 'concept_id'},
+                   order_by=['name'])
+            .values('id', 'name')
+        )
 
 
 class Language(Model):

@@ -10,7 +10,7 @@
   <ul class="concepts {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}
       <li>
-        <a href="{% url 'concept' language.code concept.id %}">{{ concept.prefLabel }}</a>
+        <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
       </li>
     {% endfor %}
   </ul>

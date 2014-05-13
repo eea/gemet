@@ -1,13 +1,16 @@
 {% extends 'layout.html' %}
+{% load gemet_tags %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='relations' id=group.id %}
+  {% include 'select_language.html' with langcode=language.code view='relations' id=group_id %}
 
   <h1>Relations</h1>
 
-  <h3 {% if language.rtl %}class="direction-rtl"{% endif %}>{{ group.prefLabel }}</h3>
+  <h3 {% if language.rtl %}class="direction-rtl"{% endif %}>{{ group.name }}</h3>
+
   <ul class="groupMembers {% if language.rtl %}direction-rtl{% endif %}">
-    {% for concept in group.children %}
+    {% get_children group.id language.code as group_children %}
+    {% for concept in group_children %}
       {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=language.code %}
     {% endfor %}
   </ul>

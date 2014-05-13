@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 
 from gemet.thesaurus.models import (
     Language,
@@ -20,15 +21,6 @@ from forms import SearchForm
 
 NR_CONCEPTS_ON_PAGE = 20
 DEFAULT_LANGCODE = 'en'
-
-
-def _attach_attributes(concept, langcode, expand=[]):
-    concept.set_attribute('prefLabel', langcode)
-    concept.set_expand(expand)
-    if concept.namespace.heading == 'Groups' or str(concept.id) in expand:
-        concept.set_children()
-        for child in concept.children:
-            _attach_attributes(child, langcode, expand)
 
 
 def about(request, langcode):
@@ -53,11 +45,17 @@ def themes(request, langcode=DEFAULT_LANGCODE):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    themes = Theme.objects.all()
-    for theme in themes:
-        theme.set_attribute('prefLabel', langcode)
-
-    themes = sorted(themes, key=lambda t: t.prefLabel.lower())
+    themes = (
+        Property.objects.filter(
+            name='prefLabel',
+            language__code=langcode,
+            concept_id__in=Theme.objects.values_list('id', flat=True)
+        )
+        .extra(select={'name': 'value',
+                       'id': 'concept_id'},
+               order_by=['name'])
+        .values('id', 'name')
+    )
 
     return render(request, 'themes.html', {
         'languages': languages,
@@ -70,13 +68,17 @@ def groups(request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    supergroups = SuperGroup.objects.all()
-
-    for supergroup in supergroups:
-        supergroup.set_attribute('prefLabel', langcode)
-        supergroup.set_children()
-        for concept in supergroup.children:
-            concept.set_attribute('prefLabel', langcode)
+    supergroups = (
+        Property.objects.filter(
+            name='prefLabel',
+            language__code=langcode,
+            concept_id__in=SuperGroup.objects.values_list('id', flat=True)
+        )
+        .extra(select={'name': 'value',
+                       'id': 'concept_id'},
+               order_by=['name'])
+        .values('id', 'name')
+    )
 
     return render(request, 'groups.html', {
         'languages': languages,
@@ -91,19 +93,16 @@ def concept(request, concept_id, langcode):
 
     concept = get_object_or_404(Term, pk=concept_id)
 
-    for property_name in ['prefLabel', 'definition', 'scopeNote']:
-        concept.set_attribute(property_name, langcode)
+    concept.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
 
     for parent in ['group', 'theme']:
-        concept.set_parent(parent, langcode)
+        concept.set_parent(langcode, parent)
 
     concept.translations = concept.properties.filter(name='prefLabel')
 
-    concept.set_children()
-    concept.set_broader()
-
-    for cp in concept.children + concept.broader_concepts:
-        cp.set_attribute('prefLabel', langcode)
+    concept.set_siblings(langcode, 'broader')
+    concept.set_siblings(langcode, 'narrower')
+    concept.set_siblings(langcode, 'related')
 
     concept.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'concept',
@@ -121,22 +120,9 @@ def theme(request, concept_id, langcode):
     language = get_object_or_404(Language, pk=langcode)
 
     theme = get_object_or_404(Theme, pk=concept_id)
-
-    for property_name in ['prefLabel', 'definition', 'scopeNote']:
-        theme.set_attribute(property_name, langcode)
-
+    theme.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
     theme.translations = theme.properties.filter(name='prefLabel')
-    theme.set_children()
-
-    for tp in theme.children:
-        tp.set_attribute('prefLabel', langcode)
-
-    theme.children = sorted([c for c in theme.children if c.prefLabel],
-                            key=lambda t: t.prefLabel.lower())
-    theme.translations = sorted([c for c in theme.translations
-                                 if c.language.name],
-                                key=lambda t: t.language.name.lower())
-
+    theme.set_siblings(langcode, 'themeMember')
     theme.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'theme',
                                             'concept_code': theme.code}))
@@ -153,20 +139,10 @@ def group(request, concept_id, langcode):
     language = get_object_or_404(Language, pk=langcode)
 
     group = get_object_or_404(Group, pk=concept_id)
-
-    for property_name in ['prefLabel', 'definition', 'scopeNote']:
-        group.set_attribute(property_name, langcode)
-
+    group.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
     group.translations = group.properties.filter(name='prefLabel')
-
-    group.set_broader()
-    group_concepts = [r.target for r in group.source_relations
-                      .filter(property_type__name='groupMember')
-                      .prefetch_related('target')]
-
-    for gp in group.broader_concepts + group_concepts:
-        gp.set_attribute('prefLabel', langcode)
-
+    group.set_siblings(langcode, 'broader')
+    group.set_siblings(langcode, 'groupMember')
     group.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'group',
                                             'concept_code': group.code}))
@@ -175,7 +151,6 @@ def group(request, concept_id, langcode):
         'languages': languages,
         'language': language,
         'group': group,
-        'group_concepts': group_concepts,
     })
 
 
@@ -184,17 +159,10 @@ def supergroup(request, concept_id, langcode):
     language = get_object_or_404(Language, pk=langcode)
 
     supergroup = get_object_or_404(SuperGroup, pk=concept_id)
-
-    for property_name in ['prefLabel', 'definition', 'scopeNote']:
-        supergroup.set_attribute(property_name, langcode)
-
+    supergroup.set_attributes(
+        langcode, ['prefLabel', 'definition', 'scopeNote'])
     supergroup.translations = supergroup.properties.filter(name='prefLabel')
-
-    supergroup.set_children()
-
-    for gp in supergroup.children:
-        gp.set_attribute('prefLabel', langcode)
-
+    supergroup.set_siblings(langcode, 'narrower')
     supergroup.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'supergroup',
                                             'concept_code': supergroup.code}))
@@ -227,67 +195,75 @@ def relations(request, group_id, langcode):
     language = get_object_or_404(Language, pk=langcode)
 
     expand_text = request.GET.get('exp')
-    expand = expand_text.split('-') if expand_text else []
+    expand_list = expand_text.split('-') if expand_text else []
 
     group = get_object_or_404(Group, pk=group_id)
-    _attach_attributes(group, langcode, expand)
+    group.set_attributes(langcode, ['prefLabel'])
 
     return render(request, 'relations.html', {
         'languages': languages,
         'language': language,
         'group': group,
+        'group_id': group.id,
         'get_params': request.GET.urlencode(),
+        'expand_list': expand_list,
     })
 
 
-def _letter_exists(letter, all_concepts):
-    for l in letter:
-        for concept in all_concepts:
-            if l == concept.prefLabel[0]:
-                return True
-    return False
+def _filter_by_letter(properties, letters, startswith=True):
+    if letters:
+        q_queries = [Q(value__startswith=letter) for letter in letters]
+        query = q_queries.pop()
+        for q_query in q_queries:
+            query |= q_query
+        properties = properties.filter(query) if startswith \
+            else properties.exclude(query)
+    return properties
+
+
+def _letter_exists(all_concepts, letters):
+    return _filter_by_letter(all_concepts, letters).count()
 
 
 def _get_concept_params(all_concepts, request, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
-    letters = unicode_character_map.get(langcode, [])
-
-    all_concepts = sorted([c for c in all_concepts if c.prefLabel],
-                          key=lambda t: t.prefLabel.lower())
-
     try:
         letter_index = int(request.GET.get('letter', '0'))
     except ValueError:
         raise Http404
 
+    all_letters = unicode_character_map.get(langcode, [])
+
+    startswith = True
     if letter_index == 0:
-        concepts = all_concepts
-    elif 0 < letter_index <= len(letters):
-        concepts = [c for c in all_concepts if c.prefLabel and
-                    c.prefLabel[0] in letters[letter_index - 1]]
+        letters = []
+    elif 0 < letter_index <= len(all_letters):
+        letters = all_letters[letter_index - 1]
     elif letter_index == 99:
-        concepts = [c for c in all_concepts if c.prefLabel and
-                    c.prefLabel[0] not in list(chain.from_iterable(letters))]
+        letters = list(chain.from_iterable(all_letters))
+        startswith = False
     else:
         raise Http404
 
-    if concepts:
-        paginator = Paginator(concepts, NR_CONCEPTS_ON_PAGE)
-        page = request.GET.get('page')
-        try:
-            concepts = paginator.page(page)
-        except PageNotAnInteger:
-            concepts = paginator.page(1)
-        except EmptyPage:
-            concepts = paginator.page(paginator.num_pages)
+    all_concepts = _filter_by_letter(all_concepts, letters, startswith)
+
+    paginator = Paginator(all_concepts, NR_CONCEPTS_ON_PAGE)
+    page = request.GET.get('page')
+    try:
+        concepts = paginator.page(page)
+    except PageNotAnInteger:
+        concepts = paginator.page(1)
+    except EmptyPage:
+        concepts = paginator.page(paginator.num_pages)
 
     return {
         'languages': languages,
         'language': language,
         'concepts': concepts,
-        'letters': [(l[0], _letter_exists(l, all_concepts)) for l in letters],
+        'letters':
+        [(l[0], _letter_exists(all_concepts, l)) for l in all_letters],
         'letter': letter_index,
         'get_params': request.GET.urlencode()
     }
@@ -295,22 +271,25 @@ def _get_concept_params(all_concepts, request, langcode):
 
 def theme_concepts(request, theme_id, langcode):
     theme = get_object_or_404(Theme, pk=theme_id)
-    theme.set_attribute('prefLabel', langcode)
-    theme.set_children()
-
-    for concept in theme.children:
-        concept.set_attribute('prefLabel', langcode)
-
-    params = _get_concept_params(theme.children, request, langcode)
+    theme.set_attributes(langcode, ['prefLabel'])
+    params = _get_concept_params(theme.get_children(langcode), request,
+                                 langcode)
     params.update({'theme': theme})
 
     return render(request, 'theme_concepts.html', params)
 
 
 def alphabetic(request, langcode):
-    concepts = Term.objects.all()
-    for concept in concepts:
-        concept.set_attribute('prefLabel', langcode)
+    concepts = (
+        Property.objects.filter(
+            name='prefLabel',
+            language__code=langcode,
+        )
+        .extra(select={'name': 'value',
+                       'id': 'concept_id'},
+               order_by=['name'])
+        .values('id', 'name')
+    )
 
     return render(request, 'alphabetic_listings.html',
                   _get_concept_params(concepts, request, langcode))
@@ -340,8 +319,7 @@ def search(request, langcode):
         form = SearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            concepts = [
-                (p.concept, p.value) for p in
+            concepts = (
                 Property.objects
                 .filter(
                     name='prefLabel',
@@ -357,17 +335,15 @@ def search(request, langcode):
                         language.charset)},
                 )
                 .extra(
+                    select={
+                        'name': 'value',
+                        'id': 'concept_id'
+                    })
+                .extra(
                     order_by=['value_coll']
                 )
-                .prefetch_related('concept')
-            ]
-            for concept, concept_name in concepts:
-                concept.name = concept_name
-                concept.broader_context = '; '.join([
-                    r.target.get_property_value('prefLabel', langcode)
-                    for r in concept.source_relations
-                    .filter(property_type__name='broader')
-                    .prefetch_related('target')])
+                .values('id', 'name')
+            )
     else:
         form = SearchForm(
             initial={'langcode': langcode}
@@ -377,7 +353,7 @@ def search(request, langcode):
         'languages': languages,
         'language': language,
         'form': form,
-        'concepts': [c[0] for c in concepts],
+        'concepts': concepts,
         'query': query,
     })
 
@@ -404,7 +380,6 @@ def old_concept_redirect(request):
             namespace = get_object_or_404(Namespace, id=ns)
             concept = get_object_or_404(concept_type, namespace=namespace,
                                         code=cp)
-            language = get_object_or_404(Language, code=langcode)
             return redirect(views_map.get(namespace.heading),
                             langcode=langcode,
                             concept_id=concept.id)

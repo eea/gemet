@@ -1,11 +1,12 @@
 {% extends 'concept_listings.html' %}
+{% load gemet_tags %}
 
 {% block language_selector %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='theme_concepts' id=theme.id %}
+  {% include 'select_language.html' with langcode=language.code view='theme_concepts' id=theme.id %}
 {% endblock %}
 
 {% block header %}
-  <h1>Concepts list for {{ theme.prefLabel }}</h1>
+  <h1>Concepts list for {{ theme.name }}</h1>
 {% endblock %}
 
 {% block pagination %}

@@ -3,7 +3,8 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='group' id=group.id %}
 
-  <h3>{{ group.prefLabel }}</h3>
+  <h3>{{ group.name }}</h3>
+
   <h4>Definiton:</h4>
   <span class="infotext">
     {% if not group.definition %}
@@ -13,12 +14,12 @@
     {% endif %}
   </span>
 
-  {% if group_concepts %}
+  {% if group.groupMember_concepts %}
     <h4>Concepts:</h4>
     <ul>
-      {% for gp in group_concepts %}
+      {% for cp in group.groupMember_concepts %}
         <li>
-          {{ gp.prefLabel }}
+          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -27,9 +28,9 @@
   {% if group.broader_concepts %}
     <h4>Super groups:</h4>
     <ul>
-      {% for gp in group.broader_concepts %}
+      {% for sg in group.broader_concepts %}
         <li>
-          {{ gp.prefLabel }}
+          <a href="{% url 'supergroup' language.code sg.id %}">{{ sg.name }}</a>
         </li>
       {% endfor %}
     </ul>
