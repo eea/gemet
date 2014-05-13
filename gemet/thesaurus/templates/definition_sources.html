@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'select_language.html' with languages=languages langcode=language.code view='definition_sources' %}
+    
+    {% if definitions %}
+        {% for definition in definitions %}
+        <table>
+        <thead></thead>
+        <tbody>
+            <tr>
+                <td>Abbreviation:</td>
+                <td>{{definition.abbr}}</td>
+            </tr>
+            {% if definition.author %}
+            <tr>
+                <td>Author:</td>
+                <td>{{definition.author}}</td>
+            </tr>
+            {% endif %}
+            {% if definition.title %}
+            <tr>
+                <td>Title:</td>
+                <td>{{definition.title}}</td>
+            </tr>
+            {% endif %}
+            {% if definition.url %}
+            <tr>
+                <td>URL:</td>
+                <td>{{definition.url}}</td>
+            </tr>
+            {% endif %}
+            {% if definition.publication %}
+            <tr>
+                <td>Publication:</td>
+                <td>{{definition.publication}}</td>
+            </tr>
+            {% endif %}
+            {% if definition.place %}
+                <tr>
+                    <td>Place:</td>
+                    <td>{{definition.place}}</td>
+                </tr>
+            {% endif %}
+            {% if definition.year %}
+                <tr>
+                    <td>Year:</td>
+                    <td>{{definition.year}}</td>
+                </tr>
+            {% endif %}
+        </tbody>
+        </table>
+        <br/>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

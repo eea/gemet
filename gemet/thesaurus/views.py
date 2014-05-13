@@ -14,6 +14,7 @@ from gemet.thesaurus.models import (
     Term,
     Group,
     Property,
+    DefinitionSource
 )
 from collation_charts import unicode_character_map
 from forms import SearchForm
@@ -388,3 +389,15 @@ def old_concept_redirect(request):
             raise Http404
     else:
         raise Http404
+
+def definition_sources(request, langcode):
+    languages = Language.objects.values_list('code', flat=True)
+    language = get_object_or_404(Language, pk=langcode)
+
+    definitions = DefinitionSource.objects.all()
+
+    return render(request, 'definition_sources.html', {
+        'languages': languages,
+        'language': language,
+        'definitions': definitions,
+    })

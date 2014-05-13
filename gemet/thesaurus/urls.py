@@ -15,7 +15,8 @@ from .views import (
     group,
     supergroup,
     concept_redirect,
-    old_concept_redirect
+    old_concept_redirect,
+    definition_sources,
 )
 
 
@@ -37,6 +38,7 @@ urlpatterns = patterns(
         url(r'^alphabetic/$', alphabetic, name='alphabetic'),
         url(r'^alphabets/$', alphabets, name='alphabets'),
         url(r'^search/$', search, name='search'),
+        url(r'^definition_sources$',definition_sources, name='definition_sources')
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
