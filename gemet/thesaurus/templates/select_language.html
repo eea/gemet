@@ -1,8 +1,12 @@
-Select language:
-{% for lang in languages %}
-  {% if lang == langcode %}
-    {{ lang }}
-  {% else %}
-  <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}?{{ get_params }}">{{ lang }}</a>
-  {% endif %}
-{% endfor %}
+<div class="well well-sm">
+  Select language:
+  {% for lang in languages %}
+    {% if lang == langcode %}
+      {{ lang }}
+    {% else %}
+    <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}?{{ get_params }}" class="btn btn-primary btn-xs active" role="button">
+      {{ lang }}
+    </a>
+    {% endif %}
+  {% endfor %}
+</div>

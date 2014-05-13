@@ -1,24 +1,45 @@
 {% load staticfiles %}
+
 <!doctype html>
 <html>
   <head>
     <title>GEMET</title>
     <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/style.css' %}" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
   </head>
 <body>
-  <p>
-    <a href="{% url 'themes' language.code %}">Thematic Listings</a>
-    <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
-    <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-    <a href="{% url 'search' language.code %}">Search Thesaurus</a>
-  </p>
 
-    {% block content %}
-    {% endblock %}
+     <div class="container">
+      <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'themes' language.code %}">Thematic Listings</a></li>
+              <li><a href="{% url 'groups' language.code %}">Hierarchical Listings</a></li>
+              <li><a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a></li>
+              <li><a href="{% url 'search' language.code %}">Search Thesaurus</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <p>
-    <a href="{% url 'about' language.code %}">About GEMET</a>
-    <a href="{% url 'alphabets' language.code %}">Alphabets</a>
-  </p>
-  </body>
+      <div class="jumbotron">
+        {% block content %}
+        {% endblock %}
+
+        <br/>
+
+        <div class="well">
+          <a href="{% url 'about' language.code %}">About GEMET</a>
+          <span class="verticalLine">&nbsp;|&nbsp; </span>
+          <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+        </div>
+      </div>
+    </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+</body>
 </html>
