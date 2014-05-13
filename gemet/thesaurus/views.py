@@ -380,6 +380,7 @@ def old_concept_redirect(request):
             namespace = get_object_or_404(Namespace, id=ns)
             concept = get_object_or_404(concept_type, namespace=namespace,
                                         code=cp)
+            get_object_or_404(Language, pk=langcode)
             return redirect(views_map.get(namespace.heading),
                             langcode=langcode,
                             concept_id=concept.id)
