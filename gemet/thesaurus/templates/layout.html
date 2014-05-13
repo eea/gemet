@@ -24,17 +24,17 @@
         </div>
       </div>
 
-      <div class="jumbotron">
+      <div class="content">
         {% block content %}
         {% endblock %}
+      </div>
 
-        <br/>
+      <br/>
 
-        <div class="well">
-          <a href="{% url 'about' language.code %}">About GEMET</a>
-          <span class="verticalLine">&nbsp;|&nbsp; </span>
-          <a href="{% url 'alphabets' language.code %}">Alphabets</a>
-        </div>
+      <div class="well">
+        <a href="{% url 'about' language.code %}">About GEMET</a>
+        <span class="verticalLine">&nbsp;|&nbsp; </span>
+        <a href="{% url 'alphabets' language.code %}">Alphabets</a>
       </div>
     </div>
 
