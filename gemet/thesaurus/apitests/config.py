@@ -1,4 +1,4 @@
-from tests import ApiTester
+from api_tests import ApiTester
 
 
 HOST = ApiTester().get_full_path()
