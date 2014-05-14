@@ -14,7 +14,7 @@ from gemet.thesaurus.models import (
     Term,
     Group,
     Property,
-    DefinitionSource
+    DefinitionSource,
 )
 from collation_charts import unicode_character_map
 from forms import SearchForm
@@ -89,10 +89,11 @@ def groups(request, langcode):
 
 
 def concept(request, concept_id, langcode):
-    languages = Language.objects.values_list('code', flat=True)
+    concept = get_object_or_404(Term, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
 
-    concept = get_object_or_404(Term, pk=concept_id)
+    properties = concept.properties.filter(name='prefLabel', value__isnull=False)
+    languages = [p.language.code for p in properties]
 
     concept.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
 
@@ -136,10 +137,12 @@ def theme(request, concept_id, langcode):
 
 
 def group(request, concept_id, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
     group = get_object_or_404(Group, pk=concept_id)
+    language = get_object_or_404(Language, pk=langcode)
+    properties = group.properties.filter(name='prefLabel',
+                                           value__isnull=False)
+    languages = [p.language.code for p in properties]
+
     group.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
     group.translations = group.properties.filter(name='prefLabel')
     group.set_siblings(langcode, 'broader')
@@ -156,10 +159,12 @@ def group(request, concept_id, langcode):
 
 
 def supergroup(request, concept_id, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
     supergroup = get_object_or_404(SuperGroup, pk=concept_id)
+    language = get_object_or_404(Language, pk=langcode)
+    properties = supergroup.properties.filter(name='prefLabel',
+                                           value__isnull=False)
+    languages = [p.language.code for p in properties]
+
     supergroup.set_attributes(
         langcode, ['prefLabel', 'definition', 'scopeNote'])
     supergroup.translations = supergroup.properties.filter(name='prefLabel')
@@ -389,6 +394,7 @@ def old_concept_redirect(request):
             raise Http404
     else:
         raise Http404
+
 
 def definition_sources(request, langcode):
     languages = Language.objects.values_list('code', flat=True)

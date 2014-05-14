@@ -152,7 +152,7 @@ class Language(Model):
 
 class Property(Model):
     concept = ForeignKey(Concept, related_name='properties')
-    language = ForeignKey(Language)
+    language = ForeignKey(Language, related_name='properties')
     name = CharField(max_length=50)
     value = CharField(max_length=16000)
     is_resource = BooleanField(default=False)
