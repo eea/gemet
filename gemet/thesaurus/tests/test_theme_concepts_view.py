@@ -11,7 +11,7 @@ from .factories import (
     ThemeFactory,
     TermFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestThemeConceptsView(GemetTest):
@@ -189,7 +189,8 @@ class TestThemeConceptsView(GemetTest):
                                           'theme_id': self.theme.id}),
                       letter=100)
         resp = self.app.get(url, expect_errors=True)
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())
 
     def test_404_error_concept_id(self):
         concept = TermFactory()
@@ -203,4 +204,5 @@ class TestThemeConceptsView(GemetTest):
         url = reverse('theme_concepts', kwargs={'langcode': 'en',
                                                 'theme_id': concept.id})
         resp = self.app.get(url, expect_errors=True)
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())

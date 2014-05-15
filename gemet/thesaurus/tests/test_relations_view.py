@@ -10,7 +10,8 @@ from .factories import (
     TermFactory,
     GroupFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
+from gemet.thesaurus.views import exp_encrypt
 
 
 class TestRelationsView(GemetTest):
@@ -50,10 +51,11 @@ class TestRelationsView(GemetTest):
         self.assertEqual(resp.pyquery('.groupMembers > li').length, 1)
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)')
                          .attr('href'),
-                         u'{url}?exp=1'.
+                         u'{url}?exp={exp}'.
                          format(url=reverse('relations',
                                             kwargs={'langcode': 'en',
-                                                    'group_id': self.group.id})
+                                                    'group_id': self.group.id}),
+                                exp=exp_encrypt(str(concept.id))
                                 )
                          )
         self.assertEqual(resp.pyquery('.groupMembers > li a:eq(0)').text(),
@@ -80,4 +82,5 @@ class TestRelationsView(GemetTest):
                                            'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())

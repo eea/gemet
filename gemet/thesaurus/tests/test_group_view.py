@@ -8,7 +8,7 @@ from .factories import (
     GroupFactory,
     SuperGroupFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestGroupView(GemetTest):
@@ -85,4 +85,5 @@ class TestGroupView(GemetTest):
         url = reverse('group', kwargs={'concept_id': 1, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())

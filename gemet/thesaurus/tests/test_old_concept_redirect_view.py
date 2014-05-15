@@ -9,7 +9,7 @@ from .factories import (
     GroupFactory,
     SuperGroupFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestOldConceptRedirectView(GemetTest):
@@ -86,7 +86,8 @@ class TestOldConceptRedirectView(GemetTest):
                       cp=concept.id)
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())
 
     def test_404_no_concept(self):
         concept = TermFactory()
@@ -98,7 +99,8 @@ class TestOldConceptRedirectView(GemetTest):
                       cp=5)
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())
 
     def test_404_no_language(self):
         concept = TermFactory()
@@ -111,4 +113,5 @@ class TestOldConceptRedirectView(GemetTest):
                       lang='ESP')
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(404, resp.status_int)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())

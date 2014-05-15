@@ -7,7 +7,7 @@ from .factories import (
     GroupFactory,
     SuperGroupFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestGroupsView(GemetTest):
