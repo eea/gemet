@@ -405,3 +405,8 @@ def definition_sources(request, langcode):
         'language': language,
         'definitions': definitions,
     })
+
+
+def error404(request):
+    language = Language.objects.get(pk=DEFAULT_LANGCODE)
+    return render(request, '404.html', {'language': language})
