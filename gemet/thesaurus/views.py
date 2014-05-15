@@ -1,4 +1,6 @@
 from itertools import chain
+from base64 import encodestring, decodestring
+from zlib import compress, decompress
 
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -194,12 +196,24 @@ def concept_redirect(request, concept_type, concept_code):
         raise Http404
 
 
+def exp_encrypt(exp):
+    return encodestring(compress(exp))
+
+def exp_decrypt(exp):
+    return decompress(decodestring(exp))
+
+
 def relations(request, group_id, langcode):
     languages = Language.objects.values_list('code', flat=True)
     language = get_object_or_404(Language, pk=langcode)
 
     expand_text = request.GET.get('exp')
-    expand_list = expand_text.split('-') if expand_text else []
+    if expand_text:
+        expand_text = expand_text.replace(' ','+')
+        expand_text = exp_decrypt(expand_text)
+        expand_list = expand_text.split('-')
+    else:
+        expand_list = []
 
     group = get_object_or_404(Group, pk=group_id)
     group.set_attributes(langcode, ['prefLabel'])

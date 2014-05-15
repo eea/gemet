@@ -1,8 +1,8 @@
 from django import template
 
 from gemet.thesaurus.models import Concept
-
 from gemet.thesaurus import DEFAULT_LANGCODE
+from gemet.thesaurus.views import exp_encrypt
 
 
 register = template.Library()
@@ -20,7 +20,7 @@ def get_expand(concept_id, expand_list):
         expand_copy.append(str_id)
 
     return {
-        'param': '-'.join(expand_copy),
+        'param': exp_encrypt('-'.join(expand_copy)),
         'status': expanded,
     }
 
