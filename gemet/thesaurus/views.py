@@ -90,17 +90,20 @@ def groups(request, langcode):
 def concept(request, concept_id, langcode):
     concept = get_object_or_404(Term, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
+    languages = [p.language.code for p in concept.properties.filter(
+        name='prefLabel',
+        value__isnull=False)]
 
-    properties = concept.properties.filter(name='prefLabel',
-                                           value__isnull=False)
-    languages = [p.language.code for p in properties]
+    concept.translations = concept.properties.filter(
+        name='prefLabel'
+        ).order_by(
+        'language__name'
+        )
 
     concept.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
 
     for parent in ['group', 'theme']:
         concept.set_parent(langcode, parent)
-
-    concept.translations = concept.properties.filter(name='prefLabel')
 
     concept.set_siblings(langcode, 'broader')
     concept.set_siblings(langcode, 'narrower')
@@ -118,12 +121,20 @@ def concept(request, concept_id, langcode):
 
 
 def theme(request, concept_id, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
     theme = get_object_or_404(Theme, pk=concept_id)
+    language = get_object_or_404(Language, pk=langcode)
+    languages = [p.language.code for p in theme.properties.filter(
+        name='prefLabel',
+        value__isnull=False)]
+
+    theme.translations = theme.properties.filter(
+        name='prefLabel'
+        ).order_by(
+        'language__name'
+        )
+
     theme.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
-    theme.translations = theme.properties.filter(name='prefLabel')
+
     theme.set_siblings(langcode, 'themeMember')
     theme.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'theme',
@@ -139,12 +150,17 @@ def theme(request, concept_id, langcode):
 def group(request, concept_id, langcode):
     group = get_object_or_404(Group, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
-    properties = group.properties.filter(name='prefLabel',
-                                         value__isnull=False)
-    languages = [p.language.code for p in properties]
+    languages = [p.language.code for p in group.properties.filter(
+        name='prefLabel',
+        value__isnull=False)]
+
+    group.translations = group.properties.filter(
+        name='prefLabel'
+        ).order_by(
+        'language__name'
+        )
 
     group.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
-    group.translations = group.properties.filter(name='prefLabel')
     group.set_siblings(langcode, 'broader')
     group.set_siblings(langcode, 'groupMember')
     group.url = request.build_absolute_uri(
@@ -161,14 +177,20 @@ def group(request, concept_id, langcode):
 def supergroup(request, concept_id, langcode):
     supergroup = get_object_or_404(SuperGroup, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
-    properties = supergroup.properties.filter(name='prefLabel',
-                                              value__isnull=False)
-    languages = [p.language.code for p in properties]
+    languages = [p.language.code for p in supergroup.properties.filter(
+        name='prefLabel',
+        value__isnull=False)]
 
-    supergroup.set_attributes(
-        langcode, ['prefLabel', 'definition', 'scopeNote'])
-    supergroup.translations = supergroup.properties.filter(name='prefLabel')
+    supergroup.translations = supergroup.properties.filter(
+        name='prefLabel'
+        ).order_by(
+        'language__name'
+        )
+
+    supergroup.set_attributes(langcode,
+                              ['prefLabel', 'definition', 'scopeNote'])
     supergroup.set_siblings(langcode, 'narrower')
+
     supergroup.url = request.build_absolute_uri(
         reverse('concept_redirect', kwargs={'concept_type': 'supergroup',
                                             'concept_code': supergroup.code}))
@@ -199,6 +221,7 @@ def concept_redirect(request, concept_type, concept_code):
 def exp_encrypt(exp):
     return encodestring(compress(exp))
 
+
 def exp_decrypt(exp):
     return decompress(decodestring(exp))
 
@@ -209,7 +232,7 @@ def relations(request, group_id, langcode):
 
     expand_text = request.GET.get('exp')
     if expand_text:
-        expand_text = expand_text.replace(' ','+')
+        expand_text = expand_text.replace(' ', '+')
         expand_text = exp_decrypt(expand_text)
         expand_list = expand_text.split('-')
     else:
