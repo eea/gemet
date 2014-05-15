@@ -18,10 +18,7 @@ from gemet.thesaurus.models import (
 )
 from collation_charts import unicode_character_map
 from forms import SearchForm
-
-
-NR_CONCEPTS_ON_PAGE = 20
-DEFAULT_LANGCODE = 'en'
+from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
 def about(request, langcode):
@@ -92,7 +89,8 @@ def concept(request, concept_id, langcode):
     concept = get_object_or_404(Term, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
 
-    properties = concept.properties.filter(name='prefLabel', value__isnull=False)
+    properties = concept.properties.filter(name='prefLabel',
+                                           value__isnull=False)
     languages = [p.language.code for p in properties]
 
     concept.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
@@ -140,7 +138,7 @@ def group(request, concept_id, langcode):
     group = get_object_or_404(Group, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
     properties = group.properties.filter(name='prefLabel',
-                                           value__isnull=False)
+                                         value__isnull=False)
     languages = [p.language.code for p in properties]
 
     group.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
@@ -162,7 +160,7 @@ def supergroup(request, concept_id, langcode):
     supergroup = get_object_or_404(SuperGroup, pk=concept_id)
     language = get_object_or_404(Language, pk=langcode)
     properties = supergroup.properties.filter(name='prefLabel',
-                                           value__isnull=False)
+                                              value__isnull=False)
     languages = [p.language.code for p in properties]
 
     supergroup.set_attributes(

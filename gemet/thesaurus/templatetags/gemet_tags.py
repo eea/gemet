@@ -2,6 +2,8 @@ from django import template
 
 from gemet.thesaurus.models import Concept
 
+from gemet.thesaurus import DEFAULT_LANGCODE
+
 
 register = template.Library()
 
@@ -33,3 +35,11 @@ def broader_context(concept_id, langcode):
     broader_concepts = Concept.objects.get(pk=concept_id).get_siblings(
         langcode, 'broader')
     return '; '.join([cp['name'] for cp in broader_concepts])
+
+
+@register.simple_tag
+def get_default_name(concept_id):
+    return Concept.objects.get(pk=concept_id).properties.filter(
+        language__code=DEFAULT_LANGCODE,
+        name='prefLabel'
+    ).first().value

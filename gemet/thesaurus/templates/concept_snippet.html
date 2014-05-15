@@ -8,7 +8,11 @@
     +
     {% endif %}
   </a>
-  <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
+  {% if concept.name %}
+    <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
+  {% else %}
+    <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
+  {% endif %}
   <ul>
     {% if expand.status %}
       {% get_children concept.id language.code as concept_children %}
