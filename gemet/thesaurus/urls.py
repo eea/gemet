@@ -1,32 +1,35 @@
 from django.conf.urls import patterns, url, include
 
 from .views import (
-    about,
-    themes,
-    groups,
     relations,
     theme_concepts,
     alphabetic,
     alphabets,
     redirect_old_urls,
-    search,
     concept,
     theme,
     group,
     supergroup,
     concept_redirect,
     old_concept_redirect,
-    definition_sources,
+    LanguageView,
+    ThemesView,
+    GroupsView,
+    DefinitionSourcesView,
+    SearchView,
 )
 
 
 urlpatterns = patterns(
     '',
-    url(r'^$', themes),
+    url(r'^$', ThemesView.as_view(template_name="themes.html")),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
-        url(r'^about/$', about, name='about'),
-        url(r'^themes/$', themes, name='themes'),
-        url(r'^groups/$', groups, name='groups'),
+        url(r'^about/$', LanguageView.as_view(template_name="about.html"),
+            name='about'),
+        url(r'^themes/$', ThemesView.as_view(template_name="themes.html"),
+            name='themes'),
+        url(r'^groups/$', GroupsView.as_view(template_name="groups.html"),
+            name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', concept, name='concept'),
         url(r'^theme/(?P<concept_id>\d+)/$', theme, name='theme'),
         url(r'^group/(?P<concept_id>\d+)/$', group, name='group'),
@@ -37,8 +40,12 @@ urlpatterns = patterns(
             name='theme_concepts'),
         url(r'^alphabetic/$', alphabetic, name='alphabetic'),
         url(r'^alphabets/$', alphabets, name='alphabets'),
-        url(r'^search/$', search, name='search'),
-        url(r'^definition_sources/$',definition_sources,
+        url(r'^search/$', SearchView.as_view(template_name="search.html"),
+                                             name='search'),
+        url(r'^definition_sources/$',
+            DefinitionSourcesView.as_view(
+                template_name="definition_sources.html"
+            ),
             name='definition_sources')
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),

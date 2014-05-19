@@ -3,10 +3,11 @@ from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from django.views.generic import TemplateView
 
 from gemet.thesaurus.models import (
     Language,
@@ -23,68 +24,126 @@ from forms import SearchForm
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
-def about(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-    return render(request, 'about.html', {
-        'languages': languages,
-        'language': language
-    })
+class LanguageView(TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        self.langcode = kwargs.pop("langcode")
+        self.language = get_object_or_404(Language, pk=self.langcode)
+        return TemplateView.dispatch(self, request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = TemplateView.get_context_data(self, **kwargs)
+        context.update({"language": self.language,
+                        "languages": Language.objects.values_list('code',
+                                                                  flat=True)})
+
+        return context
 
 
-def redirect_old_urls(request, view_name):
-    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
-    old_new_views = {'index_html': 'themes', 'groups': 'groups'}
-    view = old_new_views.get(view_name)
-    if not view:
-        raise Http404()
-    return redirect(view, langcode=langcode)
+class ThemesView(LanguageView):
+    def get_context_data(self, **kwargs):
+        context = LanguageView.get_context_data(self, **kwargs)
 
-
-def themes(request, langcode=DEFAULT_LANGCODE):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
-    themes = (
-        Property.objects.filter(
-            name='prefLabel',
-            language__code=langcode,
-            concept_id__in=Theme.objects.values_list('id', flat=True)
+        themes = (
+            Property.objects.filter(
+                name='prefLabel',
+                language__code=self.langcode,
+                concept_id__in=Theme.objects.values_list('id', flat=True)
+            )
+            .extra(select={'name': 'value',
+                           'id': 'concept_id'},
+                   order_by=['name'])
+            .values('id', 'name')
         )
-        .extra(select={'name': 'value',
-                       'id': 'concept_id'},
-               order_by=['name'])
-        .values('id', 'name')
-    )
 
-    return render(request, 'themes.html', {
-        'languages': languages,
-        'language': language,
-        'themes': themes,
-    })
+        context.update({"themes": themes})
+        return context
 
 
-def groups(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
+class GroupsView(LanguageView):
+    def get_context_data(self, **kwargs):
+        context = LanguageView.get_context_data(self, **kwargs)
 
-    supergroups = (
-        Property.objects.filter(
-            name='prefLabel',
-            language__code=langcode,
-            concept_id__in=SuperGroup.objects.values_list('id', flat=True)
+        supergroups = (
+            Property.objects.filter(
+                name='prefLabel',
+                language__code=self.langcode,
+                concept_id__in=SuperGroup.objects.values_list('id', flat=True)
+            )
+            .extra(select={'name': 'value',
+                           'id': 'concept_id'},
+                   order_by=['name'])
+            .values('id', 'name')
         )
-        .extra(select={'name': 'value',
-                       'id': 'concept_id'},
-               order_by=['name'])
-        .values('id', 'name')
-    )
 
-    return render(request, 'groups.html', {
-        'languages': languages,
-        'language': language,
-        'supergroups': supergroups,
-    })
+        context.update({"supergroups": supergroups})
+        return context
+
+
+class SearchView(LanguageView):
+    def update_context(self, context, form, concepts=[], query=''):
+        context.update({
+            "concepts": concepts,
+            "query": query,
+            "form": form,
+        })
+        return context
+
+    def get(self, request, *args, **kwargs):
+        form = SearchForm(
+            initial={'langcode': self.langcode}
+            )
+        context = LanguageView.get_context_data(self, **kwargs)
+        return self.render_to_response(self.update_context(
+            context=context,
+            form=form
+        ))
+
+    def post(self, request, *args, **kwargs):
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            concepts = (
+                Property.objects
+                .filter(
+                    name='prefLabel',
+                    language__code=self.langcode,
+                    concept__namespace__heading='Concepts',
+                )
+                .extra(
+                    where=['value like convert(_utf8%s using utf8)'],
+                    params=[query + '%%'],
+                )
+                .extra(
+                    select={'value_coll': 'value COLLATE {0}'.format(
+                        self.language.charset)},
+                )
+                .extra(
+                    select={
+                        'name': 'value',
+                        'id': 'concept_id'
+                    })
+                .extra(
+                    order_by=['value_coll']
+                )
+                .values('id', 'name')
+            )
+        context = LanguageView.get_context_data(self, **kwargs)
+
+        return self.render_to_response(self.update_context(
+            context= context,
+            form=form,
+            query=query,
+            concepts=concepts
+        ))
+
+
+class DefinitionSourcesView(LanguageView):
+    def get_context_data(self, **kwargs):
+        context = LanguageView.get_context_data(self, **kwargs)
+        definitions = DefinitionSource.objects.all()
+
+        context.update({"definitions": definitions})
+        return context
 
 
 def concept(request, concept_id, langcode):
@@ -200,22 +259,6 @@ def supergroup(request, concept_id, langcode):
         'language': language,
         'supergroup': supergroup,
     })
-
-
-def concept_redirect(request, concept_type, concept_code):
-    concept_types = {
-        'concept': Term,
-        'theme': Theme,
-        'group': Group,
-        'supergroup': SuperGroup
-    }
-    model = concept_types.get(concept_type)
-    if model:
-        cp = get_object_or_404(model, code=concept_code)
-        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
-                        concept_id=cp.id)
-    else:
-        raise Http404
 
 
 def exp_encrypt(exp):
@@ -349,54 +392,13 @@ def alphabets(request, langcode):
     })
 
 
-def search(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
-    concepts = []
-    query = ''
-
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            concepts = (
-                Property.objects
-                .filter(
-                    name='prefLabel',
-                    language__code=langcode,
-                    concept__namespace__heading='Concepts',
-                )
-                .extra(
-                    where=['value like convert(_utf8%s using utf8)'],
-                    params=[query + '%%'],
-                )
-                .extra(
-                    select={'value_coll': 'value COLLATE {0}'.format(
-                        language.charset)},
-                )
-                .extra(
-                    select={
-                        'name': 'value',
-                        'id': 'concept_id'
-                    })
-                .extra(
-                    order_by=['value_coll']
-                )
-                .values('id', 'name')
-            )
-    else:
-        form = SearchForm(
-            initial={'langcode': langcode}
-        )
-
-    return render(request, 'search.html', {
-        'languages': languages,
-        'language': language,
-        'form': form,
-        'concepts': concepts,
-        'query': query,
-    })
+def redirect_old_urls(request, view_name):
+    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
+    old_new_views = {'index_html': 'themes', 'groups': 'groups'}
+    view = old_new_views.get(view_name)
+    if not view:
+        raise Http404()
+    return redirect(view, langcode=langcode)
 
 
 def old_concept_redirect(request):
@@ -431,17 +433,20 @@ def old_concept_redirect(request):
         raise Http404
 
 
-def definition_sources(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
-    definitions = DefinitionSource.objects.all()
-
-    return render(request, 'definition_sources.html', {
-        'languages': languages,
-        'language': language,
-        'definitions': definitions,
-    })
+def concept_redirect(request, concept_type, concept_code):
+    concept_types = {
+        'concept': Term,
+        'theme': Theme,
+        'group': Group,
+        'supergroup': SuperGroup
+    }
+    model = concept_types.get(concept_type)
+    if model:
+        cp = get_object_or_404(model, code=concept_code)
+        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
+                        concept_id=cp.id)
+    else:
+        raise Http404
 
 
 def error404(request):
