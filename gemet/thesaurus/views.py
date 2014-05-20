@@ -3,11 +3,13 @@ from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect, render_to_response
-from django.core.urlresolvers import reverse
+from django.shortcuts import (render, get_object_or_404, redirect,
+                              render_to_response)
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from gemet.thesaurus.models import (
     Language,
@@ -21,27 +23,34 @@ from gemet.thesaurus.models import (
 )
 from collation_charts import unicode_character_map
 from forms import SearchForm
+from utils import search
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
-class LanguageView(TemplateView):
+class _LanguageMixin(object):
+
     def dispatch(self, request, *args, **kwargs):
         self.langcode = kwargs.pop("langcode")
         self.language = get_object_or_404(Language, pk=self.langcode)
-        return TemplateView.dispatch(self, request, *args, **kwargs)
+        return super(_LanguageMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = TemplateView.get_context_data(self, **kwargs)
+        context = super(_LanguageMixin, self).get_context_data(**kwargs)
         context.update({"language": self.language,
                         "languages": Language.objects.values_list('code',
                                                                   flat=True)})
-
         return context
 
 
-class ThemesView(LanguageView):
+class AboutView(_LanguageMixin, TemplateView):
+    template_name = "about.html"
+
+
+class ThemesView(_LanguageMixin, TemplateView):
+    template_name = "themes.html"
+
     def get_context_data(self, **kwargs):
-        context = LanguageView.get_context_data(self, **kwargs)
+        context = super(ThemesView, self).get_context_data(**kwargs)
 
         themes = (
             Property.objects.filter(
@@ -59,9 +68,11 @@ class ThemesView(LanguageView):
         return context
 
 
-class GroupsView(LanguageView):
+class GroupsView(_LanguageMixin, TemplateView):
+    template_name = "groups.html"
+
     def get_context_data(self, **kwargs):
-        context = LanguageView.get_context_data(self, **kwargs)
+        context = super(GroupsView, self).get_context_data(**kwargs)
 
         supergroups = (
             Property.objects.filter(
@@ -79,71 +90,54 @@ class GroupsView(LanguageView):
         return context
 
 
-class SearchView(LanguageView):
-    def update_context(self, context, form, concepts=[], query=''):
-        context.update({
-            "concepts": concepts,
-            "query": query,
-            "form": form,
-        })
-        return context
+class DefinitionSourcesView(_LanguageMixin, TemplateView):
+    template_name = "definition_sources.html"
 
-    def get(self, request, *args, **kwargs):
-        form = SearchForm(
-            initial={'langcode': self.langcode}
-            )
-        context = LanguageView.get_context_data(self, **kwargs)
-        return self.render_to_response(self.update_context(
-            context=context,
-            form=form
-        ))
-
-    def post(self, request, *args, **kwargs):
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            concepts = (
-                Property.objects
-                .filter(
-                    name='prefLabel',
-                    language__code=self.langcode,
-                    concept__namespace__heading='Concepts',
-                )
-                .extra(
-                    where=['value like convert(_utf8%s using utf8)'],
-                    params=[query + '%%'],
-                )
-                .extra(
-                    select={'value_coll': 'value COLLATE {0}'.format(
-                        self.language.charset)},
-                )
-                .extra(
-                    select={
-                        'name': 'value',
-                        'id': 'concept_id'
-                    })
-                .extra(
-                    order_by=['value_coll']
-                )
-                .values('id', 'name')
-            )
-        context = LanguageView.get_context_data(self, **kwargs)
-
-        return self.render_to_response(self.update_context(
-            context= context,
-            form=form,
-            query=query,
-            concepts=concepts
-        ))
-
-
-class DefinitionSourcesView(LanguageView):
     def get_context_data(self, **kwargs):
-        context = LanguageView.get_context_data(self, **kwargs)
+        context = super(DefinitionSourcesView, self).get_context_data(**kwargs)
+
         definitions = DefinitionSource.objects.all()
 
         context.update({"definitions": definitions})
         return context
+
+
+class AlphabetsView(_LanguageMixin, TemplateView):
+    template_name = "alphabets.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AlphabetsView, self).get_context_data(**kwargs)
+
+        letters = unicode_character_map.get(self.langcode, [])
+
+        context.update({"letters": letters})
+        return context
+
+
+class SearchView(_LanguageMixin, FormView):
+    template_name = "search.html"
+    form_class = SearchForm
+
+    query = ''
+    concepts = []
+
+    def get_initial(self):
+        return {'langcode': self.langcode}
+
+    def get_success_url(self):
+        return reverse('search', kwargs={'langcode': self.langcode})
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+
+        context.update({"query": self.query, "concepts": self.concepts})
+        return context
+
+    def form_valid(self, form):
+        self.query = form.cleaned_data['query']
+        self.concepts = search(self.query, self.langcode, self.language)
+
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 def concept(request, concept_id, langcode):
@@ -269,29 +263,33 @@ def exp_decrypt(exp):
     return decompress(decodestring(exp))
 
 
-def relations(request, group_id, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
+class RelationsView(_LanguageMixin, TemplateView):
+    template_name = "relations.html"
 
-    expand_text = request.GET.get('exp')
-    if expand_text:
-        expand_text = expand_text.replace(' ', '+')
-        expand_text = exp_decrypt(expand_text)
-        expand_list = expand_text.split('-')
-    else:
-        expand_list = []
+    def dispatch(self, request, *args, **kwargs):
+        self.group_id = kwargs.pop("group_id")
+        return super(RelationsView, self).dispatch(request, *args, **kwargs)
 
-    group = get_object_or_404(Group, pk=group_id)
-    group.set_attributes(langcode, ['prefLabel'])
+    def get_context_data(self, **kwargs):
+        expand_text = self.request.GET.get('exp')
+        if expand_text:
+            expand_text = expand_text.replace(' ', '+')
+            expand_text = exp_decrypt(expand_text)
+            expand_list = expand_text.split('-')
+        else:
+            expand_list = []
 
-    return render(request, 'relations.html', {
-        'languages': languages,
-        'language': language,
-        'group': group,
-        'group_id': group.id,
-        'get_params': request.GET.urlencode(),
-        'expand_list': expand_list,
-    })
+        group = get_object_or_404(Group, pk=self.group_id)
+        group.set_attributes(self.langcode, ['prefLabel'])
+
+        context = super(RelationsView, self).get_context_data(**kwargs)
+        context.update({
+            'group_id': self.group_id,
+            'group': group,
+            'get_params': self.request.GET.urlencode(),
+            'expand_list': expand_list,
+        })
+        return context
 
 
 def _filter_by_letter(properties, letters, startswith=True):
@@ -377,19 +375,6 @@ def alphabetic(request, langcode):
 
     return render(request, 'alphabetic_listings.html',
                   _get_concept_params(concepts, request, langcode))
-
-
-def alphabets(request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
-    letters = unicode_character_map.get(langcode, [])
-
-    return render(request, 'alphabets.html', {
-        'languages': languages,
-        'language': language,
-        'letters': letters
-    })
 
 
 def redirect_old_urls(request, view_name):
