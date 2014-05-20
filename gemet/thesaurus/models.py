@@ -77,8 +77,8 @@ class Concept(Model):
                 )
             )
             .extra(select={'name': 'value',
-                            'id': 'concept_id'},
-                    order_by=['name'])
+                           'id': 'concept_id'},
+                   order_by=['name'])
             .values('id', 'name')
         )
 
@@ -216,7 +216,7 @@ class ConceptManager(Manager):
 
     def get_queryset(self):
         ns = self._get_ns()
-        return Concept.objects.filter(namespace=ns)
+        return self.model.base_manager.filter(namespace=ns)
 
     def create(self, **kwargs):
         ns = self._get_ns()
@@ -225,28 +225,48 @@ class ConceptManager(Manager):
 
 
 class Term(Concept):
+    def set_siblings(self, langcode):
+        for relation_type in ['broader', 'narrower', 'related']:
+            super(Term, self).get_siblings(langcode, relation_type)
+
     class Meta:
         proxy = True
 
     objects = ConceptManager('Concepts')
-
-
-class Group(Concept):
-    class Meta:
-        proxy = True
-
-    objects = ConceptManager('Groups')
-
-
-class SuperGroup(Concept):
-    class Meta:
-        proxy = True
-
-    objects = ConceptManager('Super groups')
+    base_manager = Manager()
 
 
 class Theme(Concept):
+    def set_siblings(self, langcode):
+        for relation_type in ['themeMember']:
+            super(Theme, self).set_siblings(langcode, relation_type)
+
     class Meta:
         proxy = True
 
     objects = ConceptManager('Themes')
+    base_manager = Manager()
+
+
+class Group(Concept):
+    def set_siblings(self, langcode):
+        for relation_type in ['broader', 'groupMember']:
+            super(Group, self).set_siblings(langcode, relation_type)
+
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Groups')
+    base_manager = Manager()
+
+
+class SuperGroup(Concept):
+    def set_siblings(self, langcode):
+        for relation_type in ['narrower']:
+            super(SuperGroup, self).set_siblings(langcode, relation_type)
+
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Super groups')
+    base_manager = Manager()

@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
 from gemet.thesaurus.models import (
@@ -140,119 +141,74 @@ class SearchView(_LanguageMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-def concept(request, concept_id, langcode):
-    concept = get_object_or_404(Term, pk=concept_id)
-    language = get_object_or_404(Language, pk=langcode)
-    languages = [p.language.code for p in concept.properties.filter(
-        name='prefLabel',
-        value__isnull=False)]
+class ConceptView(_LanguageMixin, DetailView):
 
-    concept.translations = concept.properties.filter(
-        name='prefLabel'
-        ).order_by(
-        'language__name'
-        )
+    def dispatch(self, request, *args, **kwargs):
+        self.concept_id = kwargs.pop('concept_id')
+        return super(ConceptView, self).dispatch(request, *args, **kwargs)
 
-    concept.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
+    def get_object(self):
+        self.concept = get_object_or_404(self.model, pk=self.concept_id)
+        self.concept.set_siblings(self.langcode)
+        self.concept.translations = self.concept.properties.filter(
+            name='prefLabel'
+            ).order_by(
+            'language__name'
+            )
+        self.concept.url = self.request.build_absolute_uri(
+            reverse('concept_redirect', kwargs={
+                'concept_type': self.concept_type,
+                'concept_code': self.concept.code
+            }))
 
-    for parent in ['group', 'theme']:
-        concept.set_parent(langcode, parent)
+        return self.concept
 
-    concept.set_siblings(langcode, 'broader')
-    concept.set_siblings(langcode, 'narrower')
-    concept.set_siblings(langcode, 'related')
+    def get_context_data(self, **kwargs):
+        context = super(ConceptView, self).get_context_data(**kwargs)
 
-    concept.url = request.build_absolute_uri(
-        reverse('concept_redirect', kwargs={'concept_type': 'concept',
-                                            'concept_code': concept.code}))
+        self.concept.set_attributes(self.langcode,
+                                    ['prefLabel', 'definition', 'scopeNote'])
+        languages = [p.language.code for p in self.concept.properties.filter(
+            name='prefLabel',
+            value__isnull=False)]
 
-    return render(request, 'concept.html', {
-        'languages': languages,
-        'language': language,
-        'concept': concept,
-    })
-
-
-def theme(request, concept_id, langcode):
-    theme = get_object_or_404(Theme, pk=concept_id)
-    language = get_object_or_404(Language, pk=langcode)
-    languages = [p.language.code for p in theme.properties.filter(
-        name='prefLabel',
-        value__isnull=False)]
-
-    theme.translations = theme.properties.filter(
-        name='prefLabel'
-        ).order_by(
-        'language__name'
-        )
-
-    theme.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
-
-    theme.set_siblings(langcode, 'themeMember')
-    theme.url = request.build_absolute_uri(
-        reverse('concept_redirect', kwargs={'concept_type': 'theme',
-                                            'concept_code': theme.code}))
-
-    return render(request, 'theme.html', {
-        'languages': languages,
-        'language': language,
-        'theme': theme,
-    })
+        context.update({"languages": languages})
+        return context
 
 
-def group(request, concept_id, langcode):
-    group = get_object_or_404(Group, pk=concept_id)
-    language = get_object_or_404(Language, pk=langcode)
-    languages = [p.language.code for p in group.properties.filter(
-        name='prefLabel',
-        value__isnull=False)]
+class TermView(ConceptView):
+    template_name = "concept.html"
+    model = Term
+    concept_type = 'concept'
+    context_object_name = 'concept'
 
-    group.translations = group.properties.filter(
-        name='prefLabel'
-        ).order_by(
-        'language__name'
-        )
+    def get_context_data(self, **kwargs):
+        context = super(TermView, self).get_context_data(**kwargs)
+        for parent in ['group', 'theme']:
+            context['concept'].set_parent(self.langcode, parent)
 
-    group.set_attributes(langcode, ['prefLabel', 'definition', 'scopeNote'])
-    group.set_siblings(langcode, 'broader')
-    group.set_siblings(langcode, 'groupMember')
-    group.url = request.build_absolute_uri(
-        reverse('concept_redirect', kwargs={'concept_type': 'group',
-                                            'concept_code': group.code}))
-
-    return render(request, 'group.html', {
-        'languages': languages,
-        'language': language,
-        'group': group,
-    })
+        return context
 
 
-def supergroup(request, concept_id, langcode):
-    supergroup = get_object_or_404(SuperGroup, pk=concept_id)
-    language = get_object_or_404(Language, pk=langcode)
-    languages = [p.language.code for p in supergroup.properties.filter(
-        name='prefLabel',
-        value__isnull=False)]
+class ThemeView(ConceptView):
+    template_name = "theme.html"
+    model = Theme
+    concept_type = 'theme'
+    context_object_name = 'theme'
 
-    supergroup.translations = supergroup.properties.filter(
-        name='prefLabel'
-        ).order_by(
-        'language__name'
-        )
 
-    supergroup.set_attributes(langcode,
-                              ['prefLabel', 'definition', 'scopeNote'])
-    supergroup.set_siblings(langcode, 'narrower')
+class GroupView(ConceptView):
+    template_name = "group.html"
+    model = Group
+    concept_type = 'group'
+    context_object_name = 'group'
 
-    supergroup.url = request.build_absolute_uri(
-        reverse('concept_redirect', kwargs={'concept_type': 'supergroup',
-                                            'concept_code': supergroup.code}))
 
-    return render(request, 'supergroup.html', {
-        'languages': languages,
-        'language': language,
-        'supergroup': supergroup,
-    })
+class SuperGroupView(ConceptView):
+    template_name = "supergroup.html"
+    model = SuperGroup
+    concept_type = 'supergroup'
+    context_object_name = 'supergroup'
 
 
 def exp_encrypt(exp):
