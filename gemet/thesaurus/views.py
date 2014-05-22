@@ -8,7 +8,7 @@ from django.shortcuts import (render, get_object_or_404, redirect,
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
@@ -141,76 +141,6 @@ class SearchView(_LanguageMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class ConceptView(_LanguageMixin, DetailView):
-
-    def dispatch(self, request, *args, **kwargs):
-        self.concept_id = kwargs.pop('concept_id')
-        return super(ConceptView, self).dispatch(request, *args, **kwargs)
-
-    def get_object(self):
-        self.concept = get_object_or_404(self.model, pk=self.concept_id)
-        self.concept.set_siblings(self.langcode)
-        self.concept.translations = self.concept.properties.filter(
-            name='prefLabel'
-            ).order_by(
-            'language__name'
-            )
-        self.concept.url = self.request.build_absolute_uri(
-            reverse('concept_redirect', kwargs={
-                'concept_type': self.concept_type,
-                'concept_code': self.concept.code
-            }))
-
-        return self.concept
-
-    def get_context_data(self, **kwargs):
-        context = super(ConceptView, self).get_context_data(**kwargs)
-
-        self.concept.set_attributes(self.langcode,
-                                    ['prefLabel', 'definition', 'scopeNote'])
-        languages = [p.language.code for p in self.concept.properties.filter(
-            name='prefLabel',
-            value__isnull=False)]
-
-        context.update({"languages": languages})
-        return context
-
-
-class TermView(ConceptView):
-    template_name = "concept.html"
-    model = Term
-    concept_type = 'concept'
-    context_object_name = 'concept'
-
-    def get_context_data(self, **kwargs):
-        context = super(TermView, self).get_context_data(**kwargs)
-        for parent in ['group', 'theme']:
-            context['concept'].set_parent(self.langcode, parent)
-
-        return context
-
-
-class ThemeView(ConceptView):
-    template_name = "theme.html"
-    model = Theme
-    concept_type = 'theme'
-    context_object_name = 'theme'
-
-
-class GroupView(ConceptView):
-    template_name = "group.html"
-    model = Group
-    concept_type = 'group'
-    context_object_name = 'group'
-
-
-class SuperGroupView(ConceptView):
-    template_name = "supergroup.html"
-    model = SuperGroup
-    concept_type = 'supergroup'
-    context_object_name = 'supergroup'
-
-
 def exp_encrypt(exp):
     return encodestring(compress(exp))
 
@@ -248,89 +178,185 @@ class RelationsView(_LanguageMixin, TemplateView):
         return context
 
 
-def _filter_by_letter(properties, letters, startswith=True):
-    if letters:
-        q_queries = [Q(value__startswith=letter) for letter in letters]
-        query = q_queries.pop()
-        for q_query in q_queries:
-            query |= q_query
-        properties = properties.filter(query) if startswith \
-            else properties.exclude(query)
-    return properties
+class ConceptView(_LanguageMixin, DetailView):
+
+    def dispatch(self, request, *args, **kwargs):
+        self.concept_id = kwargs.pop('concept_id')
+        return super(ConceptView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        concept = get_object_or_404(self.model, pk=self.concept_id)
+        concept.set_siblings(self.langcode)
+        concept.translations = concept.properties.filter(
+            name='prefLabel'
+            ).order_by(
+            'language__name'
+            )
+        concept.set_attributes(self.langcode,
+                               ['prefLabel', 'definition', 'scopeNote'])
+        concept.url = self.request.build_absolute_uri(
+            reverse('concept_redirect', kwargs={
+                'concept_type': self.concept_type,
+                'concept_code': concept.code
+            }))
+
+        return concept
+
+    def get_context_data(self, **kwargs):
+        context = super(ConceptView, self).get_context_data(**kwargs)
+
+        languages = [
+            p.language.code
+            for p in context[self.context_object_name].properties.filter(
+                name='prefLabel',
+                value__isnull=False)
+            ]
+
+        context.update({"languages": languages})
+        return context
 
 
-def _letter_exists(all_concepts, letters):
-    return _filter_by_letter(all_concepts, letters).count()
+class TermView(ConceptView):
+    template_name = "concept.html"
+    model = Term
+    concept_type = 'concept'
+    context_object_name = 'concept'
+
+    def get_context_data(self, **kwargs):
+        context = super(TermView, self).get_context_data(**kwargs)
+        for parent in ['group', 'theme']:
+            context[self.context_object_name].set_parent(self.langcode, parent)
+
+        return context
 
 
-def _get_concept_params(all_concepts, request, langcode):
-    languages = Language.objects.values_list('code', flat=True)
-    language = get_object_or_404(Language, pk=langcode)
-
-    try:
-        letter_index = int(request.GET.get('letter', '0'))
-    except ValueError:
-        raise Http404
-
-    all_letters = unicode_character_map.get(langcode, [])
-
-    startswith = True
-    if letter_index == 0:
-        letters = []
-    elif 0 < letter_index <= len(all_letters):
-        letters = all_letters[letter_index - 1]
-    elif letter_index == 99:
-        letters = list(chain.from_iterable(all_letters))
-        startswith = False
-    else:
-        raise Http404
-
-    all_concepts = _filter_by_letter(all_concepts, letters, startswith)
-
-    paginator = Paginator(all_concepts, NR_CONCEPTS_ON_PAGE)
-    page = request.GET.get('page')
-    try:
-        concepts = paginator.page(page)
-    except PageNotAnInteger:
-        concepts = paginator.page(1)
-    except EmptyPage:
-        concepts = paginator.page(paginator.num_pages)
-
-    return {
-        'languages': languages,
-        'language': language,
-        'concepts': concepts,
-        'letters':
-        [(l[0], _letter_exists(all_concepts, l)) for l in all_letters],
-        'letter': letter_index,
-        'get_params': request.GET.urlencode()
-    }
+class ThemeView(ConceptView):
+    template_name = "theme.html"
+    model = Theme
+    concept_type = 'theme'
+    context_object_name = 'theme'
 
 
-def theme_concepts(request, theme_id, langcode):
-    theme = get_object_or_404(Theme, pk=theme_id)
-    theme.set_attributes(langcode, ['prefLabel'])
-    params = _get_concept_params(theme.get_children(langcode), request,
-                                 langcode)
-    params.update({'theme': theme})
-
-    return render(request, 'theme_concepts.html', params)
+class GroupView(ConceptView):
+    template_name = "group.html"
+    model = Group
+    concept_type = 'group'
+    context_object_name = 'group'
 
 
-def alphabetic(request, langcode):
-    concepts = (
-        Property.objects.filter(
-            name='prefLabel',
-            language__code=langcode,
+class SuperGroupView(ConceptView):
+    template_name = "supergroup.html"
+    model = SuperGroup
+    concept_type = 'supergroup'
+    context_object_name = 'supergroup'
+
+
+class PaginatorView(_LanguageMixin, ListView):
+    context_object_name = 'concepts'
+    paginate_by = NR_CONCEPTS_ON_PAGE
+
+    def _filter_by_letter(self, properties, letters, startswith=True):
+        if letters:
+            q_queries = [Q(value__startswith=letter) for letter in letters]
+            query = q_queries.pop()
+            for q_query in q_queries:
+                query |= q_query
+            properties = properties.filter(query) if startswith \
+                else properties.exclude(query)
+
+        return properties
+
+    def _letter_exists(self, all_concepts, letters):
+        return self._filter_by_letter(all_concepts, letters).count()
+
+    def get_queryset(self):
+        try:
+            self.letter_index = int(self.request.GET.get('letter', '0'))
+        except ValueError:
+            raise Http404
+
+        all_letters = unicode_character_map.get(self.langcode, [])
+
+        startswith = True
+        if self.letter_index == 0:
+            letters = []
+        elif 0 < self.letter_index <= len(all_letters):
+            letters = all_letters[self.letter_index - 1]
+        elif self.letter_index == 99:
+            letters = list(chain.from_iterable(all_letters))
+            startswith = False
+        else:
+            raise Http404
+
+        self.letters = [
+            (l[0], self._letter_exists(self.concepts, l))
+            for l in all_letters
+        ]
+
+        all_concepts = self._filter_by_letter(self.concepts, letters,
+                                              startswith)
+
+        return all_concepts
+
+    def get_context_data(self, **kwargs):
+        context = super(PaginatorView, self).get_context_data(**kwargs)
+        page_number = context['page_obj'].number
+        total_pages = len(context['page_obj'].paginator.page_range)
+        distance_number = 9
+
+        context.update({
+            'letters': self.letters,
+            'letter': self.letter_index,
+            'get_params': self.request.GET.urlencode(),
+            'visible_pages': range(
+                max(1, page_number-distance_number),
+                min(page_number+distance_number+1, total_pages+1)
+            ),
+        })
+
+        return context
+
+
+class ThemeConceptsView(PaginatorView):
+    template_name = "theme_concepts.html"
+    model = Theme
+
+    def dispatch(self, request, *args, **kwargs):
+        self.theme_id = kwargs.pop('theme_id')
+        return super(ThemeConceptsView, self).dispatch(request, *args,
+                                                       **kwargs)
+
+    def get_queryset(self):
+        self.theme = get_object_or_404(self.model, pk=self.theme_id)
+        self.theme.set_attributes(self.langcode, ['prefLabel'])
+        self.concepts = self.theme.get_children(self.langcode)
+        return super(ThemeConceptsView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(ThemeConceptsView, self).get_context_data(**kwargs)
+        context.update({'theme': self.theme})
+
+        return context
+
+
+class AlphabeticView(PaginatorView):
+    template_name = "alphabetic_listings.html"
+    model = Property
+
+    def get_queryset(self):
+        self.concepts = (
+            self.model.objects.filter(
+                name='prefLabel',
+                language__code=self.langcode,
+                concept__namespace__heading='Concepts'
+            )
+            .extra(select={'name': 'value',
+                           'id': 'concept_id'},
+                   order_by=['name'])
+            .values('id', 'name')
         )
-        .extra(select={'name': 'value',
-                       'id': 'concept_id'},
-               order_by=['name'])
-        .values('id', 'name')
-    )
 
-    return render(request, 'alphabetic_listings.html',
-                  _get_concept_params(concepts, request, langcode))
+        return super(AlphabeticView, self).get_queryset()
 
 
 def redirect_old_urls(request, view_name):

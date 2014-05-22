@@ -8,7 +8,7 @@
   <h1>Alphabetic listing of terms</h1>
 {% endblock %}
 
-{% block pagination %}
+{% block letter_pagination %}
   <a href="{% url 'alphabetic' language.code %}?letter=0">all</a>
   {% for letter in letters %}
     {% if letter.1 %}

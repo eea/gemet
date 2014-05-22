@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, url, include
 
 from .views import (
-    theme_concepts,
-    alphabetic,
     redirect_old_urls,
     concept_redirect,
     old_concept_redirect,
@@ -17,6 +15,8 @@ from .views import (
     ThemeView,
     GroupView,
     SuperGroupView,
+    ThemeConceptsView,
+    AlphabeticView,
 )
 
 
@@ -37,9 +37,11 @@ urlpatterns = patterns(
             name='supergroup'),
         url(r'^relations/(?P<group_id>\d+)/$', RelationsView.as_view(),
             name='relations'),
-        url(r'^theme/(?P<theme_id>\d+)/concepts/$', theme_concepts,
-            name='theme_concepts'),
-        url(r'^alphabetic/$', alphabetic, name='alphabetic'),
+        url(r'^theme/(?P<theme_id>\d+)/concepts/$',
+            ThemeConceptsView.as_view(),
+            name='theme_concepts'
+            ),
+        url(r'^alphabetic/$', AlphabeticView.as_view(), name='alphabetic'),
         url(r'^alphabets/$', AlphabetsView.as_view(), name='alphabets'),
         url(r'^search/$', SearchView.as_view(), name='search'),
         url(r'^definition_sources/$', DefinitionSourcesView.as_view(),

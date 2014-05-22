@@ -22,25 +22,26 @@
 
   <div class="pagination">
     <span class="step-links">
-      {% if concepts.has_previous %}
-        <a href="?page={{ concepts.previous_page_number }}&letter={{ letter }}">previous</a>
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&letter={{ letter }}">previous</a>
       {% endif %}
 
-      {% for page_number in concepts.paginator.page_range %}
-        {% if page_number == concepts.number %}
+      {% for page_number in visible_pages %}
+        {% if page_number == page_obj.number %}
           {{ page_number }}
         {% else %}
           <a href="?page={{ page_number }}&letter={{ letter }}">{{ page_number }}</a>
         {% endif %}
       {% endfor %}
 
-      {% if concepts.has_next %}
-        <a href="?page={{ concepts.next_page_number }}&letter={{ letter }}">next</a>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&letter={{ letter }}">next</a>
       {% endif %}
     </span>
   </div>
 
-  {% block pagination %}
-  {% endblock %}
-
+  <div>
+    {% block letter_pagination %}
+    {% endblock %}
+  </div>
 {% endblock %}

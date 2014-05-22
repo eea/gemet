@@ -9,7 +9,7 @@
   <h1>Concepts list for {{ theme.name }}</h1>
 {% endblock %}
 
-{% block pagination %}
+{% block letter_pagination %}
   <a href="{% url 'theme_concepts' language.code theme.id %}?letter=0">all</a>
   {% for letter in letters %}
     {% if letter.1 %}
