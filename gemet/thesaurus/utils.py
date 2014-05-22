@@ -1,7 +1,10 @@
+from base64 import encodestring, decodestring
+from zlib import compress, decompress
+
 from models import Property
 
 
-def search(query, langcode, language):
+def search_queryset(query, langcode, language):
     return (
         Property.objects
         .filter(
@@ -27,3 +30,10 @@ def search(query, langcode, language):
         )
         .values('id', 'name')
     )
+
+def exp_encrypt(exp):
+    return encodestring(compress(exp))
+
+
+def exp_decrypt(exp):
+    return decompress(decodestring(exp))

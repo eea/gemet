@@ -46,23 +46,24 @@ class Concept(Model):
         for prop in properties:
             setattr(self, prop['name'], prop['value'])
 
-    def set_parent(self, langcode, parent_type):
-        parent_name = parent_type + 's'
-        setattr(
-            self,
-            parent_name,
-            Property.objects.filter(
-                name='prefLabel',
-                language__code=langcode,
-                concept_id__in=self.source_relations
-                .filter(property_type__name=parent_type)
-                .values_list('target_id', flat=True)
+    def set_parents(self, langcode):
+        for parent_type in self.parents_relations:
+            parent_name = parent_type + 's'
+            setattr(
+                self,
+                parent_name,
+                Property.objects.filter(
+                    name='prefLabel',
+                    language__code=langcode,
+                    concept_id__in=self.source_relations
+                    .filter(property_type__name=parent_type)
+                    .values_list('target_id', flat=True)
+                )
+                .extra(select={'name': 'value',
+                               'id': 'concept_id'},
+                       order_by=['name'])
+                .values('id', 'name')
             )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
-                   order_by=['name'])
-            .values('id', 'name')
-        )
 
     def get_siblings(self, langcode, relation_type):
         return (
@@ -82,9 +83,10 @@ class Concept(Model):
             .values('id', 'name')
         )
 
-    def set_siblings(self, langcode, relation_type):
-        setattr(self, relation_type + '_concepts',
-                self.get_siblings(langcode, relation_type))
+    def set_siblings(self, langcode):
+        for relation_type in self.siblings_relations:
+            setattr(self, relation_type + '_concepts',
+                    self.get_siblings(langcode, relation_type))
 
     def get_children(self, langcode):
         children = (
@@ -225,9 +227,8 @@ class ConceptManager(Manager):
 
 
 class Term(Concept):
-    def set_siblings(self, langcode):
-        for relation_type in ['broader', 'narrower', 'related']:
-            super(Term, self).get_siblings(langcode, relation_type)
+    siblings_relations = ['broader', 'narrower', 'related']
+    parents_relations = ['group', 'theme']
 
     class Meta:
         proxy = True
@@ -237,9 +238,8 @@ class Term(Concept):
 
 
 class Theme(Concept):
-    def set_siblings(self, langcode):
-        for relation_type in ['themeMember']:
-            super(Theme, self).set_siblings(langcode, relation_type)
+    siblings_relations = ['themeMember']
+    parents_relations = []
 
     class Meta:
         proxy = True
@@ -249,9 +249,8 @@ class Theme(Concept):
 
 
 class Group(Concept):
-    def set_siblings(self, langcode):
-        for relation_type in ['broader', 'groupMember']:
-            super(Group, self).set_siblings(langcode, relation_type)
+    siblings_relations = ['broader', 'groupMember']
+    parents_relations = []
 
     class Meta:
         proxy = True
@@ -261,9 +260,8 @@ class Group(Concept):
 
 
 class SuperGroup(Concept):
-    def set_siblings(self, langcode):
-        for relation_type in ['narrower']:
-            super(SuperGroup, self).set_siblings(langcode, relation_type)
+    siblings_relations = ['narrower']
+    parents_relations = []
 
     class Meta:
         proxy = True

@@ -1,10 +1,12 @@
 from itertools import chain
-from base64 import encodestring, decodestring
-from zlib import compress, decompress
 
 from django.http import Http404
-from django.shortcuts import (render, get_object_or_404, redirect,
-                              render_to_response)
+from django.shortcuts import (
+    render,
+    get_object_or_404,
+    redirect,
+    render_to_response,
+)
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
@@ -23,31 +25,31 @@ from gemet.thesaurus.models import (
     DefinitionSource,
 )
 from collation_charts import unicode_character_map
-from forms import SearchForm
-from utils import search
+from gemet.thesaurus.forms import SearchForm
+from gemet.thesaurus.utils import search_queryset, exp_encrypt, exp_decrypt
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
-class _LanguageMixin(object):
+class LanguageMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         self.langcode = kwargs.pop("langcode")
         self.language = get_object_or_404(Language, pk=self.langcode)
-        return super(_LanguageMixin, self).dispatch(request, *args, **kwargs)
+        return super(LanguageMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(_LanguageMixin, self).get_context_data(**kwargs)
+        context = super(LanguageMixin, self).get_context_data(**kwargs)
         context.update({"language": self.language,
                         "languages": Language.objects.values_list('code',
                                                                   flat=True)})
         return context
 
 
-class AboutView(_LanguageMixin, TemplateView):
+class AboutView(LanguageMixin, TemplateView):
     template_name = "about.html"
 
 
-class ThemesView(_LanguageMixin, TemplateView):
+class ThemesView(LanguageMixin, TemplateView):
     template_name = "themes.html"
 
     def get_context_data(self, **kwargs):
@@ -69,7 +71,7 @@ class ThemesView(_LanguageMixin, TemplateView):
         return context
 
 
-class GroupsView(_LanguageMixin, TemplateView):
+class GroupsView(LanguageMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
@@ -91,7 +93,7 @@ class GroupsView(_LanguageMixin, TemplateView):
         return context
 
 
-class DefinitionSourcesView(_LanguageMixin, TemplateView):
+class DefinitionSourcesView(LanguageMixin, TemplateView):
     template_name = "definition_sources.html"
 
     def get_context_data(self, **kwargs):
@@ -103,7 +105,7 @@ class DefinitionSourcesView(_LanguageMixin, TemplateView):
         return context
 
 
-class AlphabetsView(_LanguageMixin, TemplateView):
+class AlphabetsView(LanguageMixin, TemplateView):
     template_name = "alphabets.html"
 
     def get_context_data(self, **kwargs):
@@ -115,7 +117,7 @@ class AlphabetsView(_LanguageMixin, TemplateView):
         return context
 
 
-class SearchView(_LanguageMixin, FormView):
+class SearchView(LanguageMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
@@ -136,20 +138,16 @@ class SearchView(_LanguageMixin, FormView):
 
     def form_valid(self, form):
         self.query = form.cleaned_data['query']
-        self.concepts = search(self.query, self.langcode, self.language)
+        self.concepts = search_queryset(
+            self.query,
+            self.langcode,
+            self.language
+        )
 
         return self.render_to_response(self.get_context_data(form=form))
 
 
-def exp_encrypt(exp):
-    return encodestring(compress(exp))
-
-
-def exp_decrypt(exp):
-    return decompress(decodestring(exp))
-
-
-class RelationsView(_LanguageMixin, TemplateView):
+class RelationsView(LanguageMixin, TemplateView):
     template_name = "relations.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -178,7 +176,7 @@ class RelationsView(_LanguageMixin, TemplateView):
         return context
 
 
-class ConceptView(_LanguageMixin, DetailView):
+class ConceptView(LanguageMixin, DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.concept_id = kwargs.pop('concept_id')
@@ -187,6 +185,7 @@ class ConceptView(_LanguageMixin, DetailView):
     def get_object(self):
         concept = get_object_or_404(self.model, pk=self.concept_id)
         concept.set_siblings(self.langcode)
+        concept.set_parents(self.langcode)
         concept.translations = concept.properties.filter(
             name='prefLabel'
             ).order_by(
@@ -222,13 +221,6 @@ class TermView(ConceptView):
     concept_type = 'concept'
     context_object_name = 'concept'
 
-    def get_context_data(self, **kwargs):
-        context = super(TermView, self).get_context_data(**kwargs)
-        for parent in ['group', 'theme']:
-            context[self.context_object_name].set_parent(self.langcode, parent)
-
-        return context
-
 
 class ThemeView(ConceptView):
     template_name = "theme.html"
@@ -251,7 +243,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(_LanguageMixin, ListView):
+class PaginatorView(LanguageMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
