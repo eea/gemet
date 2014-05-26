@@ -5,10 +5,8 @@ from django.shortcuts import (
     render,
     get_object_or_404,
     redirect,
-    render_to_response,
 )
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
@@ -26,7 +24,7 @@ from gemet.thesaurus.models import (
 )
 from collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm
-from gemet.thesaurus.utils import search_queryset, exp_encrypt, exp_decrypt
+from gemet.thesaurus.utils import search_queryset, exp_decrypt
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
