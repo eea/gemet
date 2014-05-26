@@ -24,6 +24,8 @@ class Concept(Model):
     date_entered = DateTimeField(blank=True, null=True)
     date_changed = DateTimeField(blank=True, null=True)
 
+    parents_relations = []
+
     def __unicode__(self):
         return self.code
 
@@ -239,7 +241,6 @@ class Term(Concept):
 
 class Theme(Concept):
     siblings_relations = ['themeMember']
-    parents_relations = []
 
     class Meta:
         proxy = True
@@ -250,7 +251,6 @@ class Theme(Concept):
 
 class Group(Concept):
     siblings_relations = ['broader', 'groupMember']
-    parents_relations = []
 
     class Meta:
         proxy = True
@@ -261,7 +261,6 @@ class Group(Concept):
 
 class SuperGroup(Concept):
     siblings_relations = ['narrower']
-    parents_relations = []
 
     class Meta:
         proxy = True

@@ -140,7 +140,6 @@ class SearchView(LanguageMixin, FormView):
         self.query = form.cleaned_data['query']
         self.concepts = search_queryset(
             self.query,
-            self.langcode,
             self.language
         )
 

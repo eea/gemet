@@ -4,12 +4,12 @@ from zlib import compress, decompress
 from models import Property
 
 
-def search_queryset(query, langcode, language):
+def search_queryset(query, language):
     return (
         Property.objects
         .filter(
             name='prefLabel',
-            language__code=langcode,
+            language__code=language.code,
             concept__namespace__heading='Concepts',
         )
         .extra(
@@ -30,6 +30,7 @@ def search_queryset(query, langcode, language):
         )
         .values('id', 'name')
     )
+
 
 def exp_encrypt(exp):
     return encodestring(compress(exp))
