@@ -18,6 +18,7 @@ from .views import (
     ThemeConceptsView,
     AlphabeticView,
 )
+from .api import ApiView
 
 
 urlpatterns = patterns(
@@ -52,4 +53,6 @@ urlpatterns = patterns(
         name='concept_redirect'),
     url(r'^gemet/concept/$', old_concept_redirect,
         name='old_concept_redirect'),
+
+    url(r'^gemet$', ApiView.as_view(), name='api_root'),
 )
