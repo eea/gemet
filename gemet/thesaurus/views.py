@@ -31,7 +31,7 @@ from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 class LanguageMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        self.langcode = kwargs.pop("langcode")
+        self.langcode = kwargs.pop("langcode", DEFAULT_LANGCODE)
         self.language = get_object_or_404(Language, pk=self.langcode)
         return super(LanguageMixin, self).dispatch(request, *args, **kwargs)
 
