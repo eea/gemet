@@ -355,7 +355,7 @@ def redirect_old_urls(request, view_name):
     old_new_views = {'index_html': 'themes', 'groups': 'groups'}
     view = old_new_views.get(view_name)
     if not view:
-        raise Http404()
+        raise Http404
     return redirect(view, langcode=langcode)
 
 
