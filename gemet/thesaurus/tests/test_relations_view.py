@@ -1,6 +1,3 @@
-import pyquery
-
-from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
@@ -11,7 +8,7 @@ from .factories import (
     GroupFactory,
 )
 from . import GemetTest, ERROR_404
-from gemet.thesaurus.views import exp_encrypt
+from gemet.thesaurus.utils import exp_encrypt
 
 
 class TestRelationsView(GemetTest):

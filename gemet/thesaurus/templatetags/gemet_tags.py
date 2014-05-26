@@ -2,7 +2,7 @@ from django import template
 
 from gemet.thesaurus.models import Concept
 from gemet.thesaurus import DEFAULT_LANGCODE
-from gemet.thesaurus.views import exp_encrypt
+from gemet.thesaurus.utils import exp_encrypt
 
 
 register = template.Library()
