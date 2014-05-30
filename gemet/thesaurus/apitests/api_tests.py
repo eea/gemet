@@ -258,7 +258,7 @@ class TestGetConceptsMatchingKeyword(unittest.TestCase):
         result = apiTester.doXmlRpc(
             'getConceptsMatchingKeyword', keyword, mode,
             apiTester.get_full_path('concept/'), 'en')
-
+        #print result[0]
         return set(concept['preferredLabel']['string']
                    for concept in result)
 

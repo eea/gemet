@@ -21,6 +21,7 @@ from models import (
     PropertyType,
 )
 from gemet.thesaurus import DEFAULT_LANGCODE
+from gemet.thesaurus.utils import search_queryset
 
 HOST = 'http://www.eionet.europa.eu/gemet/'
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
@@ -61,7 +62,8 @@ def split_concept_uri(concept_uri, get_only_thesaurus=True):
 
 def test_has_language(langcode):
     try:
-        Language.objects.get(pk=langcode)
+        language = Language.objects.get(pk=langcode)
+        return language
     except Language.DoesNotExist:
         raise Fault(-1, 'Language not found: %s' % langcode)
 
@@ -77,6 +79,14 @@ def has_thesaurus_uri(thesaurus_uri):
     if thesaurus_uri in all_thesaurus:
         return True
     return False
+
+
+def get_namespace(thesaurus_uri):
+    try:
+        ns = Namespace.objects.get(url=thesaurus_uri)
+        return ns
+    except Namespace.DoesNotExist:
+        raise Fault(-1, 'Thesaurus URI not found: %s' % thesaurus_uri)
 
 
 def get_model(thesaurus_uri):
@@ -154,22 +164,20 @@ def get_concept(thesaurus_uri, concept_id, langcode):
 
 def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
     test_has_language(langcode)
-    if has_thesaurus_uri(thesaurus_uri):
-        model = get_model(thesaurus_uri)
-        concepts_id = model.objects.values_list('id', flat=True)
+    ns = get_namespace(thesaurus_uri)
+    model = get_model(thesaurus_uri)
+    concepts_id = model.objects.values_list('id', flat=True)
 
-        concepts = []
-        for concept_id in concepts_id:
-            concept = get_concept(thesaurus_uri, concept_id, langcode)
-            concepts.append(concept)
+    concepts = []
+    for concept_id in concepts_id:
+        concept = get_concept(thesaurus_uri, concept_id, langcode)
+        concepts.append(concept)
 
-        return sorted(concepts,
-                      key=lambda x: x['preferredLabel']['string'].lower())
-
-    raise Fault(-1, 'Thesaurus URI not found: %s' % thesaurus_uri)
+    return sorted(concepts,
+                  key=lambda x: x['preferredLabel']['string'].lower())
 
 
-def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
+def getAllConceptRelatives(concept_uri, target_namespace=None,
                            relation_uri=None):
     concept_id = get_concept_id(concept_uri)
     if concept_id[0]:
@@ -177,9 +185,9 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
         relations = Relation.objects.filter(source_id=concept_id[1])
         if relation_uri:
             relations = relations.filter(property_type__uri=relation_uri)
-        if target_thesaurus_uri:
+        if target_namespace:
             relations = relations.filter(
-                target__namespace__url=target_thesaurus_uri
+                target__namespace__url=target_namespace
             )
         relations = relations.values(
             'property_type__uri',
@@ -278,12 +286,20 @@ def getAllTranslationsForConcept(concept_uri, property_uri):
     raise Fault(-1, concept_id[1])
 
 
-def GetConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
+def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
                                langcode=DEFAULT_LANGCODE):
-    pass
+
+    language = test_has_language(langcode)
+    ns = get_namespace(thesaurus_uri)
+    concepts = search_queryset(keyword, language, searchmode, ns.heading, True)
+    results = []
+    for concept in concepts:
+        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+
+    return results
 
 
-def GetConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
+def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
                                         langcode=DEFAULT_LANGCODE):
     pass
 
@@ -301,14 +317,12 @@ def getAvailableLanguages(concept_uri):
 
 
 def getSupportedLanguages(thesaurus_uri):
-    if has_thesaurus_uri(thesaurus_uri):
-        languages = Property.objects.filter(
-            concept__namespace__url=thesaurus_uri,
-            ).values_list('language', flat=True)
+    ns = get_namespace(thesaurus_uri)
+    languages = Property.objects.filter(
+        concept__namespace__url=thesaurus_uri,
+        ).values_list('language', flat=True)
 
-        return [] or sorted(set(languages))
-
-    raise Fault(-1, "Thesaurus URI not found: %s" % thesaurus_uri)
+    return [] or sorted(set(languages))
 
 
 def getAvailableThesauri():
@@ -338,6 +352,8 @@ dispatcher.register_function(hasConcept, 'hasConcept')
 dispatcher.register_function(hasRelation, 'hasRelation')
 dispatcher.register_function(getAllTranslationsForConcept,
                              'getAllTranslationsForConcept')
+dispatcher.register_function(getConceptsMatchingKeyword,
+                             'getConceptsMatchingKeyword')
 dispatcher.register_function(getAvailableLanguages, 'getAvailableLanguages')
 dispatcher.register_function(getSupportedLanguages, 'getSupportedLanguages')
 dispatcher.register_function(getAvailableThesauri, 'getAvailableThesauri')
