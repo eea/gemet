@@ -68,8 +68,7 @@ TOPMOST_TERMS = [
     'science', 'services', 'society', 'space (interplanetary)',
     'state of matter', 'statistics', 'subject', 'technical regulation',
     'technology', 'tourism', 'trade (services)', 'trade activity',
-    'traffic', 'transportation', 'transportation mean', 'vibration',
-    'waste'
+    'traffic', 'transportation', 'transportation mean', 'vibration', 'waste'
     ]
 
 TOPMOST_GROUPS = [
@@ -159,39 +158,41 @@ TEST_AVAILABLE_LANGUAGES = sorted([
     'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh-CN'
     ])
 
-TEST_SUPPORTED_LANGUAGES = sorted([
+TEST_SUPPORTED_LANGUAGES = [
     'ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'en-US', 'es', 'et', 'eu',
     'fi', 'fr', 'ga', 'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'no', 'pl',
-    'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh-CN', 'zh'
-    ])
+    'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh-CN'
+    ]
+TEST_EXTRA_LANGUAGES = ['zh']
 
 THESAURI = [
     {
         'name': 'Concepts',
-        'uri': HOST + '/concept/',
+        'uri': HOST+ 'concept/',
         'version': 'GEMET - Concepts, version 3.1, 2012-07-20'
         },
     {
         'name': 'Super groups',
-        'uri': HOST + '/supergroup/',
+        'uri': HOST + 'supergroup/',
         'version': 'GEMET - Super groups, version 2.4, 2010-01-13'
     },
     {
         'name': 'Groups',
-        'uri': HOST + '/group/',
+        'uri': HOST + 'group/',
         'version': 'GEMET - Groups, version 2.4, 2010-01-13'
         },
     {
         'name': 'Themes',
-        'uri': HOST + '/theme/',
+        'uri': HOST +'theme/',
         'version': 'GEMET - Themes, version 2.4, 2010-01-13'
-        },
-    {
+        }
+    ]
+
+THESAURI_EXTENSION = [{
         'name': 'Inspire Themes',
         'uri': 'http://inspire.ec.europa.eu/theme/',
         'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'
-        }
-    ]
+    }]
 
 THEMES_PREF_LABEL = [
     {'string': 'administration', 'language': 'en'},
@@ -237,49 +238,49 @@ THEMES_PREF_LABEL = [
     ]
 
 THEMES_URI = [
-    HOST + '/theme/1',
-    HOST + '/theme/2',
-    HOST + '/theme/3',
-    HOST + '/theme/18',
-    HOST + '/theme/4',
-    HOST + '/theme/5',
-    HOST + '/theme/6',
-    HOST + '/theme/7',
-    HOST + '/theme/32',
-    HOST + '/theme/9',
-    HOST + '/theme/10',
-    HOST + '/theme/11',
-    HOST + '/theme/12',
-    HOST + '/theme/13',
-    HOST + '/theme/14',
-    HOST + '/theme/15',
-    HOST + '/theme/16',
-    HOST + '/theme/17',
-    HOST + '/theme/19',
-    HOST + '/theme/20',
-    HOST + '/theme/21',
-    HOST + '/theme/27',
-    HOST + '/theme/22',
-    HOST + '/theme/23',
-    HOST + '/theme/8',
-    HOST + '/theme/24',
-    HOST + '/theme/25',
-    HOST + '/theme/26',
-    HOST + '/theme/28',
-    HOST + '/theme/30',
-    HOST + '/theme/31',
-    HOST + '/theme/34',
-    HOST + '/theme/35',
-    HOST + '/theme/36',
-    HOST + '/theme/29',
-    HOST + '/theme/33',
-    HOST + '/theme/37',
-    HOST + '/theme/38',
-    HOST + '/theme/39',
-    HOST + '/theme/40'
+    HOST + 'theme/1',
+    HOST + 'theme/2',
+    HOST + 'theme/3',
+    HOST + 'theme/18',
+    HOST + 'theme/4',
+    HOST + 'theme/5',
+    HOST + 'theme/6',
+    HOST + 'theme/7',
+    HOST + 'theme/32',
+    HOST + 'theme/9',
+    HOST + 'theme/10',
+    HOST + 'theme/11',
+    HOST + 'theme/12',
+    HOST + 'theme/13',
+    HOST + 'theme/14',
+    HOST + 'theme/15',
+    HOST + 'theme/16',
+    HOST + 'theme/17',
+    HOST + 'theme/19',
+    HOST + 'theme/20',
+    HOST + 'theme/21',
+    HOST + 'theme/27',
+    HOST + 'theme/22',
+    HOST + 'theme/23',
+    HOST + 'theme/8',
+    HOST + 'theme/24',
+    HOST + 'theme/25',
+    HOST + 'theme/26',
+    HOST + 'theme/28',
+    HOST + 'theme/30',
+    HOST + 'theme/31',
+    HOST + 'theme/34',
+    HOST + 'theme/35',
+    HOST + 'theme/36',
+    HOST + 'theme/29',
+    HOST + 'theme/33',
+    HOST + 'theme/37',
+    HOST + 'theme/38',
+    HOST + 'theme/39',
+    HOST + 'theme/40'
     ]
 
-THEMES_THESAURUS = 40*[HOST + '/theme/']
+THEMES_THESAURUS = 40*[HOST + 'theme/']
 
 GROUPS_PREF_LABEL = [
     {'string':
@@ -324,60 +325,60 @@ GROUPS_PREF_LABEL = [
     ]
 
 GROUPS_URI = [
-    HOST + '/group/96',
-    HOST + '/group/234',
-    HOST + '/group/1062',
-    HOST + '/group/618',
-    HOST + '/group/893',
-    HOST + '/group/1349',
-    HOST + '/group/2504',
-    HOST + '/group/10114',
-    HOST + '/group/2711',
-    HOST + '/group/10111',
-    HOST + '/group/13109',
-    HOST + '/group/14980',
-    HOST + '/group/10117',
-    HOST + '/group/3875',
-    HOST + '/group/4125',
-    HOST + '/group/4281',
-    HOST + '/group/1922',
-    HOST + '/group/4630',
-    HOST + '/group/4750',
-    HOST + '/group/4856',
-    HOST + '/group/6237',
-    HOST + '/group/10112',
-    HOST + '/group/7007',
-    HOST + '/group/7136',
-    HOST + '/group/10118',
-    HOST + '/group/7243',
-    HOST + '/group/7779',
-    HOST + '/group/7956',
-    HOST + '/group/14979',
-    HOST + '/group/8575',
-    HOST + '/group/8603',
-    HOST + '/group/9117'
+    HOST + 'group/96',
+    HOST + 'group/234',
+    HOST + 'group/1062',
+    HOST + 'group/618',
+    HOST + 'group/893',
+    HOST + 'group/1349',
+    HOST + 'group/2504',
+    HOST + 'group/10114',
+    HOST + 'group/2711',
+    HOST + 'group/10111',
+    HOST + 'group/13109',
+    HOST + 'group/14980',
+    HOST + 'group/10117',
+    HOST + 'group/3875',
+    HOST + 'group/4125',
+    HOST + 'group/4281',
+    HOST + 'group/1922',
+    HOST + 'group/4630',
+    HOST + 'group/4750',
+    HOST + 'group/4856',
+    HOST + 'group/6237',
+    HOST + 'group/10112',
+    HOST + 'group/7007',
+    HOST + 'group/7136',
+    HOST + 'group/10118',
+    HOST + 'group/7243',
+    HOST + 'group/7779',
+    HOST + 'group/7956',
+    HOST + 'group/14979',
+    HOST + 'group/8575',
+    HOST + 'group/8603',
+    HOST + 'group/9117'
     ]
 
-GROUPS_THESAURUS = 32*[HOST + '/group/']
+GROUPS_THESAURUS = 32*[HOST + 'group/']
 
 SUPERGROUP_RELATIVES = [
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/10112',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/10114',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/10118',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/1349',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/234',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/2711',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/4281',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/6237',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/7007',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/8575',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/8603',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/group/9117'
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/10112',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/10114',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/10118',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/1349',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/234',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/2711',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/4281',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/6237',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/7007',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/8575',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/8603',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/9117'
     ]
 
 CONCEPT_RELATIVES = [
-    HOST + '/2004/06/gemet-schema.rdf#group ' + HOST + '/group/96',
-    HOST + '/2004/06/gemet-schema.rdf#theme ' + HOST + '/theme/1',
-    'http://www.w3.org/2004/02/skos/core#broader ' + HOST + '/concept/13292',
-    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + '/concept/661'
+    HOST + '2004/06/gemet-schema.rdf#group ' + HOST + 'group/96',
+    HOST + '2004/06/gemet-schema.rdf#theme ' + HOST + 'theme/1',
+    'http://www.w3.org/2004/02/skos/core#broader ' + HOST + 'concept/13292',
+    'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'concept/661'
     ]

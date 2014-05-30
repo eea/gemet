@@ -24,6 +24,7 @@ from .api import ApiView
 urlpatterns = patterns(
     '',
     url(r'^$', ThemesView.as_view()),
+    url(r'^gemet/$', ApiView.as_view(), name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^about/$', AboutView.as_view(), name='about'),
         url(r'^themes/$', ThemesView.as_view(), name='themes'),
@@ -53,6 +54,4 @@ urlpatterns = patterns(
         name='concept_redirect'),
     url(r'^gemet/concept/$', old_concept_redirect,
         name='old_concept_redirect'),
-
-    url(r'^gemet$', ApiView.as_view(), name='api_root'),
 )
