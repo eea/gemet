@@ -39,7 +39,6 @@ class ApiView(View):
         response.write(dispatcher._marshaled_dispatch(request.body))
         return response
 
-
     @classmethod
     def as_view(cls, **initkwargs):
         return csrf_exempt(super(ApiView, cls).as_view(**initkwargs))
@@ -91,7 +90,7 @@ def get_model(thesaurus_uri):
     return(thesaurus_to_model.get(thesaurus_uri))
 
 
-def get_reverse_name(concept_id):
+def get_reverse_name(heading):
     heading_to_urlname = {
         'Concepts': 'concept',
         'Themes': 'theme',
@@ -99,7 +98,6 @@ def get_reverse_name(concept_id):
         'Super groups': 'supergroup',
     }
 
-    heading = Concept.objects.get(pk=concept_id).namespace.heading
     return heading_to_urlname[heading]
 
 
@@ -118,7 +116,9 @@ def get_concept_id(concept_uri):
 
 
 def get_concept(thesaurus_uri, concept_id, langcode):
-    reverse_name = get_reverse_name(concept_id)
+    reverse_name = get_reverse_name(
+        Namespace.objects.get(url=thesaurus_uri).heading
+        )
 
     names = {
         'prefLabel': 'preferredLabel',
@@ -163,7 +163,8 @@ def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
             concept = get_concept(thesaurus_uri, concept_id, langcode)
             concepts.append(concept)
 
-        return sorted(concepts, key=lambda x: x['preferredLabel']['string'].lower())
+        return sorted(concepts,
+                      key=lambda x: x['preferredLabel']['string'].lower())
 
     raise Fault(-1, 'Thesaurus URI not found: %s' % thesaurus_uri)
 
@@ -180,17 +181,25 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
             relations = relations.filter(
                 target__namespace__url=target_thesaurus_uri
             )
-        relations = relations.values('property_type__uri', 'target_id')
+        relations = relations.values(
+            'property_type__uri',
+            'target_id',
+            'target__namespace__heading'
+            )
         relatives = []
         for relation in relations:
             target_id = relation['target_id']
-            reverse_name = get_reverse_name(target_id)
+            reverse_name = get_reverse_name(
+                relation['target__namespace__heading']
+                )
 
             relatives.append({
                 'relation': relation['property_type__uri'],
-                'target': HOST.split('/gemet/')[0] + reverse(reverse_name, kwargs = {
-                    'langcode': DEFAULT_LANGCODE,
-                    'concept_id': target_id
+                'target': HOST.split('/gemet/')[0] + reverse(
+                    reverse_name,
+                    kwargs={
+                        'langcode': DEFAULT_LANGCODE,
+                        'concept_id': target_id
                     })
             })
         return relatives
@@ -230,7 +239,6 @@ def hasConcept(concept_uri):
     if not concept_id or not concept_id[0]:
         return False
     return True
-
 
 
 def hasRelation(concept_uri, relation_uri, object_uri):
@@ -328,7 +336,8 @@ dispatcher.register_function(getRelatedConcepts, 'getRelatedConcepts')
 dispatcher.register_function(getConcept, 'getConcept')
 dispatcher.register_function(hasConcept, 'hasConcept')
 dispatcher.register_function(hasRelation, 'hasRelation')
-dispatcher.register_function(getAllTranslationsForConcept, 'getAllTranslationsForConcept')
+dispatcher.register_function(getAllTranslationsForConcept,
+                             'getAllTranslationsForConcept')
 dispatcher.register_function(getAvailableLanguages, 'getAvailableLanguages')
 dispatcher.register_function(getSupportedLanguages, 'getSupportedLanguages')
 dispatcher.register_function(getAvailableThesauri, 'getAvailableThesauri')

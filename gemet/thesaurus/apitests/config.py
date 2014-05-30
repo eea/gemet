@@ -168,7 +168,7 @@ TEST_EXTRA_LANGUAGES = ['zh']
 THESAURI = [
     {
         'name': 'Concepts',
-        'uri': HOST+ 'concept/',
+        'uri': HOST + 'concept/',
         'version': 'GEMET - Concepts, version 3.1, 2012-07-20'
         },
     {
@@ -183,15 +183,15 @@ THESAURI = [
         },
     {
         'name': 'Themes',
-        'uri': HOST +'theme/',
+        'uri': HOST + 'theme/',
         'version': 'GEMET - Themes, version 2.4, 2010-01-13'
         }
     ]
 
 THESAURI_EXTENSION = [{
-        'name': 'Inspire Themes',
-        'uri': 'http://inspire.ec.europa.eu/theme/',
-        'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'
+    'name': 'Inspire Themes',
+    'uri': 'http://inspire.ec.europa.eu/theme/',
+    'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'
     }]
 
 THEMES_PREF_LABEL = [

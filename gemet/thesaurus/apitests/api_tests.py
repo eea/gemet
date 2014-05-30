@@ -4,7 +4,7 @@ import unittest
 
 from config import *
 
-LOCAL_TEST = True
+LOCAL_TEST = False
 
 
 class ApiTester(object):
@@ -97,7 +97,9 @@ class TestGetRelatedConcepts(unittest.TestCase):
 
         self.assertRaises(xmlrpclib.Fault, apiTester.doXmlRpc,
                           'getRelatedConcepts',
-                          apiTester.get_full_path('concept/42'), relation, language
+                          apiTester.get_full_path('concept/42'),
+                          relation,
+                          language
                           )
 
 
@@ -204,9 +206,11 @@ class TestHasRelation(unittest.TestCase):
         self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
 
     def test_groupMember(self):
-        relation = (apiTester.get_full_path('group/96'),
-                    apiTester.get_full_path('2004/06/gemet-schema.rdf#groupMember'),
-                    apiTester.get_full_path('concept/21'))
+        relation = (
+            apiTester.get_full_path('group/96'),
+            apiTester.get_full_path('2004/06/gemet-schema.rdf#groupMember'),
+            apiTester.get_full_path('concept/21')
+        )
 
         self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
 
@@ -249,13 +253,11 @@ class TestGetAllTranslationsForConcept(unittest.TestCase):
 
 
 class TestGetConceptsMatchingKeyword(unittest.TestCase):
-    def setUp(self):
-        self.concept_uri = apiTester.get_full_path()
 
     def search(self, keyword, mode):
         result = apiTester.doXmlRpc(
             'getConceptsMatchingKeyword', keyword, mode,
-            self.concept_uri + '/concept/', 'en')
+            apiTester.get_full_path('concept/'), 'en')
 
         return set(concept['preferredLabel']['string']
                    for concept in result)
@@ -302,11 +304,9 @@ class TestGetConceptsMatchingKeyword(unittest.TestCase):
 
 
 class TestGetAvailableLanguages(unittest.TestCase):
-    def setUp(self):
-        self.concept_uri = apiTester.get_full_path()
 
     def test_getAvailableLanguages(self):
-        concept_uri = self.concept_uri + 'concept/7970'
+        concept_uri = apiTester.get_full_path('concept/7970')
         result = apiTester.doXmlRpc('getAvailableLanguages', concept_uri)
 
         self.assertEqual(sorted(result), TEST_AVAILABLE_LANGUAGES)
@@ -316,7 +316,7 @@ class TestGetSupportedLanguages(unittest.TestCase):
 
     def test_getSupportedLanguages(self):
         result = apiTester.doXmlRpc('getSupportedLanguages',
-                                    apiTester.get_full_path('concept/'),)
+                                    apiTester.get_full_path('concept/'))
 
         if LOCAL_TEST:
             self.assertEqual(sorted(result), sorted(TEST_SUPPORTED_LANGUAGES))
@@ -358,7 +358,7 @@ class TestFetchThemes(unittest.TestCase):
             self.assertEqual(apiTester.get_full_path('theme/9'),
                              (sorted([r['uri'] for r in result])[-1]))
         self.assertEqual(apiTester.get_full_path('theme/'),
-                      (sorted([r['thesaurus'] for r in result])[-1]))
+                         (sorted([r['thesaurus'] for r in result])[-1]))
 
 
 class TestFetchGroups(unittest.TestCase):
@@ -388,8 +388,6 @@ class TestFetchGroups(unittest.TestCase):
 
 
 class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
-    def setUp(self):
-        self.concept_uri = apiTester.get_full_path()
 
     def get_match_names(self, match):
         names = []
@@ -400,7 +398,7 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
     def test_begins_with(self):
         query = {
             'regexp': '^space t',
-            'namespace': self.concept_uri + '/concept/',
+            'namespace': apiTester.get_full_path('concept/'),
             'language': 'en',
         }
         match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
@@ -413,7 +411,7 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
     def test_all_operators(self):
         query = {
             'regexp': '^air.+pol.+$',
-            'namespace': self.concept_uri + '/concept/',
+            'namespace': apiTester.get_full_path('concept/'),
             'language': 'en',
         }
         match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
@@ -426,7 +424,7 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
     def test_no_operator(self):
         query = {
             'regexp': 'so',
-            'namespace': self.concept_uri + '/theme/',
+            'namespace': apiTester.get_full_path('theme/'),
             'language': 'en',
         }
         match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
@@ -468,7 +466,8 @@ class TestGetAllConceptRelatives(unittest.TestCase):
             pass
         else:
             for i in range(0, len(received_relations)):
-                self.assertEqual(received_relations[i], SUPERGROUP_RELATIVES[i])
+                self.assertEqual(received_relations[i],
+                                 SUPERGROUP_RELATIVES[i])
 
     def test_random_group(self):
         group_uri = apiTester.get_full_path('group/96')
