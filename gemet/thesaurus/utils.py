@@ -9,14 +9,10 @@ def search_queryset(query, language, search_mode=1, heading='Concepts',
 
     if api_call:
         if search_mode == 4:
-            values = search_queryset_mode(query, language, 0, heading)
-            if not values:
-                values = search_queryset_mode(query, language, 1, heading)
-                if not values:
-                    values = search_queryset_mode(query, language, 2, heading)
-                    if not values:
-                        values = search_queryset_mode(query, language, 3,
-                                                      heading)
+            values = search_queryset_mode(query, language, 0, heading) or \
+                     search_queryset_mode(query, language, 1, heading) or \
+                     search_queryset_mode(query, language, 2, heading) or \
+                     search_queryset_mode(query, language, 3, heading)
         else:
             values = search_queryset_mode(query, language, search_mode,
                                           heading)

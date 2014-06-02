@@ -291,12 +291,16 @@ def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
 
     language = test_has_language(langcode)
     ns = get_namespace(thesaurus_uri)
-    concepts = search_queryset(keyword, language, searchmode, ns.heading, True)
-    results = []
-    for concept in concepts:
-        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+    if searchmode in [0,1,2,3,4]:
+        concepts = search_queryset(keyword, language, searchmode, ns.heading,
+                                   True)
+        results = []
+        for concept in concepts:
+            results.append(get_concept(thesaurus_uri, concept['id'], langcode))
 
-    return results
+        return results
+    else:
+        raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
 
 
 def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
