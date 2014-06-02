@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='download'%}
+
+    <h2> Download GEMET</h2>
+
+    <h4>General structure</h4>
+    <div>
+        <a href="{% url 'backbone'%}">Themes and groups relationships as simple HTML importable into MS-Access</a>
+    </div>
+    <div>
+        <a href=''>Themes and groups relationships as RDF</a>
+    </div>
+    <div>
+        <a href=''>Labels and definitions as simple HTML table importable into MS-Access</a>
+     </div>
+    <div>
+        <a href=''>Supergroups, groups and themes as simple HTML tables importable into MS-Access</a>
+     </div>
+    <div>
+        <a href=''>Relations in simple HTML importable into MS-Access</a>
+     </div>
+    <div>
+        <a href=''>SKOS broader and narrower relations as RDF</a>
+     </div>
+    <div>
+        <a href=''>An object for the Concept Scheme</a>
+     </div>
+
+{% endblock %}

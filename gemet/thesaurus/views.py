@@ -21,6 +21,7 @@ from gemet.thesaurus.models import (
     Group,
     Property,
     DefinitionSource,
+    Relation,
 )
 from collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm
@@ -350,6 +351,24 @@ class AlphabeticView(PaginatorView):
 
 class DownloadView(LanguageMixin, TemplateView):
     template_name = 'download.html'
+
+
+class BackboneView(LanguageMixin, TemplateView):
+    template_name = 'backbone.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BackboneView, self).get_context_data(**kwargs)
+
+        relations = (
+            Relation.objects.filter(
+                property_type__label__in=['Theme', 'Group'],
+            ).values(
+                'source__code', 'property_type__label', 'target__code',
+            )
+        )
+
+        context.update({"relations": relations})
+        return context
 
 
 def redirect_old_urls(request, view_name):

@@ -18,6 +18,7 @@ from .views import (
     ThemeConceptsView,
     AlphabeticView,
     DownloadView,
+    BackboneView,
 )
 from .api import ApiView
 
@@ -56,4 +57,5 @@ urlpatterns = patterns(
         name='concept_redirect'),
     url(r'^gemet/concept/$', old_concept_redirect,
         name='old_concept_redirect'),
+    url(r'^gemet-backbone.html$', BackboneView.as_view(), name='backbone'),
 )
