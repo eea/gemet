@@ -21,7 +21,7 @@ from models import (
     PropertyType,
 )
 from gemet.thesaurus import DEFAULT_LANGCODE
-from gemet.thesaurus.utils import search_queryset
+from gemet.thesaurus.utils import search_queryset, regex_search
 
 HOST = 'http://www.eionet.europa.eu/gemet/'
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
@@ -305,7 +305,15 @@ def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
 
 def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
                                         langcode=DEFAULT_LANGCODE):
-    pass
+    language = test_has_language(langcode)
+    ns = get_namespace(thesaurus_uri)
+
+    concepts = regex_search(regex, language, ns.heading)
+    results = []
+    for concept in concepts:
+        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+
+    return results
 
 
 def getAvailableLanguages(concept_uri):
@@ -358,6 +366,8 @@ dispatcher.register_function(getAllTranslationsForConcept,
                              'getAllTranslationsForConcept')
 dispatcher.register_function(getConceptsMatchingKeyword,
                              'getConceptsMatchingKeyword')
+dispatcher.register_function(getConceptsMatchingRegexByThesaurus,
+                             'getConceptsMatchingRegexByThesaurus')
 dispatcher.register_function(getAvailableLanguages, 'getAvailableLanguages')
 dispatcher.register_function(getSupportedLanguages, 'getSupportedLanguages')
 dispatcher.register_function(getAvailableThesauri, 'getAvailableThesauri')
