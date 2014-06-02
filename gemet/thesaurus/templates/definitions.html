@@ -1,0 +1,38 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+        table { border-collapse:collapse; margin: 1em; }
+        td,th {border: 1px solid black}
+    </style>
+  </head>
+<body>
+    <table>
+        <caption>Concept definitions</caption>
+        <col style="width:4em"/><col style="width:12em"/><col style="width:40em"/><col style="width:4em"/>
+        <thead>
+            <tr>
+              <th>Id</th>
+              <th>Concept</th>
+              <th>Definition</th>
+              <th>Scope Note</th>
+              <th>Notation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table %}
+            <tr>
+              <td>{{ row.code }}</td>
+              <td>{{ row.prefLabel }}</td>
+              <td>{{ row.definition }}</td>
+              <td>{{ row.scopeNote }}</td>
+              <td>{{ row.notation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

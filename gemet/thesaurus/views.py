@@ -353,7 +353,7 @@ class DownloadView(LanguageMixin, TemplateView):
     template_name = 'download.html'
 
 
-class BackboneView(LanguageMixin, TemplateView):
+class BackboneView(TemplateView):
     template_name = 'backbone.html'
 
     def get_context_data(self, **kwargs):
@@ -368,6 +368,29 @@ class BackboneView(LanguageMixin, TemplateView):
         )
 
         context.update({"relations": relations})
+        return context
+
+
+class DefinitionsView(TemplateView):
+    template_name = 'definitions.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DefinitionsView, self).get_context_data(**kwargs)
+
+        table = []
+        for concept in Term.objects.all():
+            row = {'code': concept.code}
+            result=concept.properties.filter(
+                name__in=['prefLabel', 'scopeNote', 'definition', 'notation'],
+                language__code=DEFAULT_LANGCODE,
+            )
+            for r in result:
+                row.update({
+                    r.name: r.value,
+                })
+            table.append(row)
+        context.update({"table": table})
+
         return context
 
 
