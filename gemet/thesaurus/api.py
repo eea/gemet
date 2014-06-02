@@ -291,7 +291,7 @@ def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
 
     language = test_has_language(langcode)
     ns = get_namespace(thesaurus_uri)
-    if searchmode in [0,1,2,3,4]:
+    if searchmode in range(5):
         concepts = search_queryset(keyword, language, searchmode, ns.heading,
                                    True)
         results = []
