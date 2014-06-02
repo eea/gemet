@@ -32,9 +32,11 @@
       <br/>
 
       <div class="well">
-        <a href="{% url 'about' language.code %}">About GEMET</a>
+        <a href="{% url 'download' language.code %}">Download</a>
         &nbsp;|&nbsp;
         <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+        &nbsp;|&nbsp;
+        <a href="{% url 'about' language.code %}">About GEMET</a>
         &nbsp;|&nbsp;
         <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
       </div>

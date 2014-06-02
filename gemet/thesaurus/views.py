@@ -348,6 +348,10 @@ class AlphabeticView(PaginatorView):
         return super(AlphabeticView, self).get_queryset()
 
 
+class DownloadView(LanguageMixin, TemplateView):
+    template_name = 'download.html'
+
+
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     old_new_views = {'index_html': 'themes', 'groups': 'groups'}

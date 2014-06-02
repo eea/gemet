@@ -17,6 +17,7 @@ from .views import (
     SuperGroupView,
     ThemeConceptsView,
     AlphabeticView,
+    DownloadView,
 )
 from .api import ApiView
 
@@ -47,7 +48,8 @@ urlpatterns = patterns(
         url(r'^alphabets/$', AlphabetsView.as_view(), name='alphabets'),
         url(r'^search/$', SearchView.as_view(), name='search'),
         url(r'^definition_sources/$', DefinitionSourcesView.as_view(),
-            name='definition_sources')
+            name='definition_sources'),
+        url(r'^rdf/$', DownloadView.as_view(), name='download'),
         ])),
     url(r'^(?P<view_name>index_html|groups)$', redirect_old_urls),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
