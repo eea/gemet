@@ -22,6 +22,7 @@ from gemet.thesaurus.models import (
     Property,
     DefinitionSource,
     Relation,
+    PropertyType,
 )
 from collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm
@@ -368,6 +369,22 @@ class BackboneView(TemplateView):
         )
 
         context.update({"relations": relations})
+        return context
+
+
+class BackboneRDFView(TemplateView):
+    template_name = 'backbone.rdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(BackboneRDFView, self).get_context_data(**kwargs)
+
+        theme_uri = PropertyType.objects.get(label='Theme').uri
+        themes = Theme.objects.all().values('code')
+
+        context.update({
+            'theme_uri': theme_uri,
+            'themes': themes,
+        })
         return context
 
 
