@@ -20,6 +20,7 @@ from .views import (
     DownloadView,
     BackboneView,
     DefinitionsView,
+    GemetGroupsView,
 )
 from .api import ApiView
 
@@ -59,5 +60,8 @@ urlpatterns = patterns(
     url(r'^gemet/concept/$', old_concept_redirect,
         name='old_concept_redirect'),
     url(r'^gemet-backbone.html$', BackboneView.as_view(), name='backbone'),
-    url(r'^gemet-definitions.html$', DefinitionsView.as_view(), name='definitions'),
+    url(r'^gemet-definitions.html$', DefinitionsView.as_view(),
+        name='definitions'),
+    url(r'^gemet-groups.html$', GemetGroupsView.as_view(),
+        name='gemet-groups'),
 )

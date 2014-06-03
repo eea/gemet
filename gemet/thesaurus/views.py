@@ -394,6 +394,53 @@ class DefinitionsView(TemplateView):
         return context
 
 
+class GemetGroupsView(TemplateView):
+    template_name = 'gemet-groups.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GemetGroupsView, self).get_context_data(**kwargs)
+
+        supergroups = Property.objects.filter(
+            name='prefLabel',
+            concept__namespace__heading='Super groups',
+            language__code=DEFAULT_LANGCODE,
+        ).values('concept__code', 'value')
+
+        relations = Relation.objects.filter(
+            target_id__in=SuperGroup.objects.all().values_list('id',
+                                                                flat=True),
+            property_type__label='broader term',
+        ).values('target__code', 'source_id')
+
+        groups = []
+        for relation in relations:
+            source=Property.objects.filter(
+                concept_id=relation['source_id'],
+                name='prefLabel',
+                language__code=DEFAULT_LANGCODE,
+            ).values('concept__code', 'value').first()
+            groups.append({
+                'source_code': source['concept__code'],
+                'source_label': source['value'],
+                'target_code': relation['target__code'],
+            })
+
+        themes = Property.objects.filter(
+            name='prefLabel',
+            language__code=DEFAULT_LANGCODE,
+            concept__namespace__heading='Themes',
+        ).values('concept__code', 'value')
+
+        context.update({
+            'supergroups': supergroups,
+            'groups': groups,
+            'themes': themes,
+        })
+
+        return context
+
+
+
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     old_new_views = {'index_html': 'themes', 'groups': 'groups'}
