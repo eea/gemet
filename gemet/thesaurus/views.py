@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
+from django.http import HttpResponseRedirect
 
 from gemet.thesaurus.models import (
     Language,
@@ -25,7 +26,7 @@ from gemet.thesaurus.models import (
     PropertyType,
 )
 from collation_charts import unicode_character_map
-from gemet.thesaurus.forms import SearchForm
+from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
@@ -350,10 +351,6 @@ class AlphabeticView(PaginatorView):
         return super(AlphabeticView, self).get_queryset()
 
 
-class DownloadView(LanguageMixin, TemplateView):
-    template_name = 'download.html'
-
-
 class BackboneView(TemplateView):
     template_name = 'backbone.html'
 
@@ -397,7 +394,7 @@ class DefinitionsView(TemplateView):
         table = []
         for concept in Term.objects.all():
             row = {'code': concept.code}
-            result=concept.properties.filter(
+            result = concept.properties.filter(
                 name__in=['prefLabel', 'scopeNote', 'definition', 'notation'],
                 language__code=DEFAULT_LANGCODE,
             )
@@ -424,14 +421,13 @@ class GemetGroupsView(TemplateView):
         ).values('concept__code', 'value')
 
         relations = Relation.objects.filter(
-            target_id__in=SuperGroup.objects.all().values_list('id',
-                                                                flat=True),
+            target_id__in=SuperGroup.objects.all().values_list('id', flat=True),
             property_type__label='broader term',
         ).values('target__code', 'source_id')
 
         groups = []
         for relation in relations:
-            source=Property.objects.filter(
+            source = Property.objects.filter(
                 concept_id=relation['source_id'],
                 name='prefLabel',
                 language__code=DEFAULT_LANGCODE,
@@ -474,6 +470,67 @@ class GemetRelationsView(TemplateView):
         context.update({'relations': relations})
 
         return context
+
+
+class DefinitionsByLanguage(LanguageMixin, TemplateView):
+    template_name = 'language_definitions.rdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(DefinitionsByLanguage, self).get_context_data(**kwargs)
+
+        return context
+
+
+class GroupsByLanguage(LanguageMixin, TemplateView):
+    template_name = 'language_groups.rdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupsByLanguage, self).get_context_data(**kwargs)
+
+        return context
+
+
+def download(request, langcode):
+    language = Language.objects.get(pk=langcode)
+    if request.method == 'POST':
+        if request.POST['type'] == 'definitions':
+            reverse_name = 'language_definitions'
+            definitions_form = ExportForm(request.POST)
+            groups_form = ExportForm(initial={'language_names': language.pk})
+
+            if definitions_form.is_valid():
+                name = definitions_form.cleaned_data['language_names']
+                return HttpResponseRedirect(reverse(
+                    'language_definitions',
+                    kwargs={
+                        'langcode': Language.objects.get(name=name).code
+                    })
+                )
+
+        elif request.POST['type'] == 'groups':
+            reverse_name = 'language_groups'
+            groups_form = ExportForm(request.POST)
+            definitions_form = ExportForm(initial={
+                'language_names': language.pk
+                })
+
+            if groups_form.is_valid():
+                name = groups_form.cleaned_data['language_names']
+                return HttpResponseRedirect(reverse(
+                    'language_groups',
+                    kwargs={
+                        'langcode': Language.objects.get(name=name).code
+                    })
+                )
+    else:
+        definitions_form = ExportForm(initial={'language_names': language.pk})
+        groups_form = ExportForm(initial={'language_names': language.pk})
+
+    return render(request, 'download.html', {
+        'definitions_form': definitions_form,
+        'groups_form': groups_form,
+        'language': language,
+    })
 
 
 def redirect_old_urls(request, view_name):

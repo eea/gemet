@@ -28,4 +28,26 @@
         <a href=''>An object for the Concept Scheme</a>
      </div>
 
+    <p>
+        <p><b>Labels and definitions in RDF</b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ definitions_form.as_p }}
+
+            <button type="submit" name="type" value="definitions">
+                Get labels and definitios
+            </button>
+        </form>
+    </p>
+    <br/>
+    <p>
+        <p><b>Supergroups, groups and themes in RDF</b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ groups_form.as_p }}
+            <button type="submit" name="type" value="groups">
+                Get groups and themes
+            </button>
+        </form>
+    </p>
 {% endblock %}
