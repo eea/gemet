@@ -114,15 +114,15 @@ def get_reverse_name(heading):
 def get_concept_id(concept_uri):
     thesaurus_uri, concept_code = split_concept_uri(concept_uri, False)
 
-    if has_thesaurus_uri(thesaurus_uri):
-        model = get_model(thesaurus_uri)
-        try:
-            concept = model.objects.get(code=concept_code)
-            return (True, concept.id)
-        except model.DoesNotExist:
-            return (False, 'Concept code not found: %s' % concept_code)
-    else:
+    if not has_thesaurus_uri(thesaurus_uri):
         return (False, 'Thesaurus URI not found: %s' % thesaurus_uri)
+
+    model = get_model(thesaurus_uri)
+    try:
+        concept = model.objects.get(code=concept_code)
+        return (True, concept.id)
+    except model.DoesNotExist:
+        return (False, 'Concept code not found: %s' % concept_code)
 
 
 def get_concept(thesaurus_uri, concept_id, langcode):
@@ -180,66 +180,65 @@ def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
 def getAllConceptRelatives(concept_uri, target_namespace=None,
                            relation_uri=None):
     concept_id = get_concept_id(concept_uri)
-    if concept_id[0]:
+    if not concept_id[0]:
+        raise Fault(-1, concept_id[1])
 
-        relations = Relation.objects.filter(source_id=concept_id[1])
-        if relation_uri:
-            relations = relations.filter(property_type__uri=relation_uri)
-        if target_namespace:
-            relations = relations.filter(
-                target__namespace__url=target_namespace
+    relations = Relation.objects.filter(source_id=concept_id[1])
+    if relation_uri:
+        relations = relations.filter(property_type__uri=relation_uri)
+    if target_namespace:
+        relations = relations.filter(
+            target__namespace__url=target_namespace
+        )
+    relations = relations.values(
+        'property_type__uri',
+        'target_id',
+        'target__namespace__heading',
+    )
+    relatives = []
+    for relation in relations:
+        target_id = relation['target_id']
+        reverse_name = get_reverse_name(
+            relation['target__namespace__heading']
             )
-        relations = relations.values(
-            'property_type__uri',
-            'target_id',
-            'target__namespace__heading'
-            )
-        relatives = []
-        for relation in relations:
-            target_id = relation['target_id']
-            reverse_name = get_reverse_name(
-                relation['target__namespace__heading']
-                )
 
-            relatives.append({
-                'relation': relation['property_type__uri'],
-                'target': HOST.split('/gemet/')[0] + reverse(
-                    reverse_name,
-                    kwargs={
-                        'langcode': DEFAULT_LANGCODE,
-                        'concept_id': target_id
-                    })
-            })
-        return relatives
-
-    raise Fault(-1, concept_id[1])
+        relatives.append({
+            'relation': relation['property_type__uri'],
+            'target': HOST.split('/gemet/')[0] + reverse(
+                reverse_name,
+                kwargs={
+                    'langcode': DEFAULT_LANGCODE,
+                    'concept_id': target_id
+                })
+        })
+    return relatives
 
 
 def getRelatedConcepts(concept_uri, relation_uri, langcode=DEFAULT_LANGCODE):
     concept_id = get_concept_id(concept_uri)
-    if concept_id[0]:
-        related_concepts = Relation.objects.filter(
-            source_id=concept_id[1],
-            property_type__uri=relation_uri,
-        ).values_list('target_id', flat=True)
+    if not concept_id[0]:
+        return []
 
-        relatives = []
-        thesaurus_uri = split_concept_uri(concept_uri)
-        for related_id in related_concepts:
-            relatives.append(get_concept(thesaurus_uri, related_id, langcode))
-        return relatives
+    related_concepts = Relation.objects.filter(
+        source_id=concept_id[1],
+        property_type__uri=relation_uri,
+    ).values_list('target_id', flat=True)
 
-    return []
+    relatives = []
+    thesaurus_uri = split_concept_uri(concept_uri)
+    for related_id in related_concepts:
+        relatives.append(get_concept(thesaurus_uri, related_id, langcode))
+    return relatives
 
 
 def getConcept(concept_uri, langcode=DEFAULT_LANGCODE):
     test_has_language(langcode)
     concept_id = get_concept_id(concept_uri)
-    if concept_id[0]:
-        thesaurus_uri = split_concept_uri(concept_uri)
-        return get_concept(thesaurus_uri, concept_id[1], langcode)
+    if not concept_id[0]:
+        raise Fault(-1, concept_id[1])
 
-    raise Fault(-1, concept_id[1])
+    thesaurus_uri = split_concept_uri(concept_uri)
+    return get_concept(thesaurus_uri, concept_id[1], langcode)
 
 
 def hasConcept(concept_uri):
@@ -269,21 +268,21 @@ def hasRelation(concept_uri, relation_uri, object_uri):
 
 def getAllTranslationsForConcept(concept_uri, property_uri):
     concept_id = get_concept_id(concept_uri)
-    if concept_id[0]:
-        name = property_uri.rsplit('#', 1)[-1]
+    if not concept_id[0]:
+        raise Fault(-1, concept_id[1])
 
-        result = []
-        for p in Property.objects.filter(
-            concept_id=concept_id[1],
-            name=name,
-        ).values('language', 'value'):
-            result.append({
-                'language': p['language'],
-                'string': p['value']
-            })
-        return result
+    name = property_uri.rsplit('#', 1)[-1]
 
-    raise Fault(-1, concept_id[1])
+    result = []
+    for p in Property.objects.filter(
+        concept_id=concept_id[1],
+        name=name,
+    ).values('language', 'value'):
+        result.append({
+            'language': p['language'],
+            'string': p['value']
+        })
+    return result
 
 
 def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
@@ -291,16 +290,16 @@ def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
 
     language = test_has_language(langcode)
     ns = get_namespace(thesaurus_uri)
-    if searchmode in range(5):
-        concepts = search_queryset(keyword, language, searchmode, ns.heading,
-                                   True)
-        results = []
-        for concept in concepts:
-            results.append(get_concept(thesaurus_uri, concept['id'], langcode))
-
-        return results
-    else:
+    if not searchmode in range(5):
         raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
+
+    concepts = search_queryset(keyword, language, searchmode, ns.heading,
+                               True)
+    results = []
+    for concept in concepts:
+        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+
+    return results
 
 
 def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
@@ -318,14 +317,14 @@ def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
 
 def getAvailableLanguages(concept_uri):
     concept_id = get_concept_id(concept_uri)
-    if concept_id[0]:
-        languages = Property.objects.filter(
-            concept_id=concept_id[1],
-            name='prefLabel',
-            ).values_list('language', flat=True)
-        return [] or sorted(languages)
+    if not concept_id[0]:
+        raise Fault(-1, concept_id[1])
 
-    raise Fault(-1, concept_id[1])
+    languages = Property.objects.filter(
+        concept_id=concept_id[1],
+        name='prefLabel',
+        ).values_list('language', flat=True)
+    return [] or sorted(languages)
 
 
 def getSupportedLanguages(thesaurus_uri):
@@ -354,6 +353,7 @@ def fetchThemes(langcode=DEFAULT_LANGCODE):
 
 def fetchGroups(langcode=DEFAULT_LANGCODE):
     return getTopmostConcepts(HOST + 'group/', langcode)
+
 
 dispatcher.register_introspection_functions()
 dispatcher.register_function(getTopmostConcepts, 'getTopmostConcepts')
