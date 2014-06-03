@@ -21,6 +21,7 @@ from .views import (
     BackboneView,
     DefinitionsView,
     GemetGroupsView,
+    GemetRelationsView,
 )
 from .api import ApiView
 
@@ -64,4 +65,6 @@ urlpatterns = patterns(
         name='definitions'),
     url(r'^gemet-groups.html$', GemetGroupsView.as_view(),
         name='gemet-groups'),
+    url(r'^gemet-relations.html$', GemetRelationsView.as_view(),
+        name='gemet-relations'),
 )

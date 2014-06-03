@@ -440,6 +440,24 @@ class GemetGroupsView(TemplateView):
         return context
 
 
+class GemetRelationsView(TemplateView):
+    template_name = 'gemet-relations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GemetRelationsView, self).get_context_data(**kwargs)
+
+        relations = Relation.objects.filter(
+            source__namespace__heading='Concepts',
+            target__namespace__heading='Concepts',
+        ).values(
+            'source__code',
+            'target__code',
+            'property_type__label',
+        )
+        context.update({'relations': relations})
+
+        return context
+
 
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)

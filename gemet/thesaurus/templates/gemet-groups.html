@@ -1,0 +1,80 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+        table { border-collapse:collapse; margin: 1em; }
+        td,th {border: 1px solid black}
+    </style>
+  </head>
+<body>
+    <table>
+        <caption>Super groups</caption>
+        <col style="width:4em"/><col style="width:6em"/><col style="width:4em"/><col style="width:30em"/>
+        <thead>
+            <tr>
+              <th>Id</th>
+              <th>Type</th>
+              <th>SubGroupOf</th>
+              <th>Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supergroup in supergroups %}
+            <tr>
+              <td>{{ supergroup.concept__code }}</td>
+              <td>SuperGroup</td>
+              <td></td>
+              <td>{{ supergroup.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table>
+        <caption>Groups</caption>
+        <col style="width:4em"/><col style="width:6em"/><col style="width:4em"/><col style="width:30em"/>
+        <thead>
+            <tr>
+              <th>Id</th>
+              <th>Type</th>
+              <th>SubGroupOf</th>
+              <th>Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+              <td>{{ group.source_code }}</td>
+              <td>Group</td>
+              <td>{{ group.target_code }}</td>
+              <td>{{ group.source_label }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table>
+        <caption>Themes</caption>
+        <col style="width:4em"/><col style="width:6em"/><col style="width:30em"/>
+        <thead>
+            <tr>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for theme in themes %}
+            <tr>
+              <td>{{ theme.concept__code }}</td>
+              <td>Theme</td>
+              <td>{{ theme.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

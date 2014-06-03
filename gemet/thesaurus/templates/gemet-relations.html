@@ -1,0 +1,34 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html>
+  <head>
+    <title>Relations in simple HTML importable into MS-Access</title>
+    <style type="text/css">
+        table { border-collapse:collapse; margin: 1em; }
+        td,th {border: 1px solid black}
+    </style>
+  </head>
+<body>
+    <table>
+        <caption>Concept to concept relations</caption>
+        <col style="width:4em"/><col style="width:8em"/><col style="width:4em"/>
+        <thead>
+            <tr>
+              <th>Id</th>
+              <th>Relation</th>
+              <th>Object</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for relation in relations %}
+            <tr>
+              <td>{{ relation.source__code }}</td>
+              <td>{{ relation.property_type__label }}</td>
+              <td>{{ relation.target__code  }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
