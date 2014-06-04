@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#">
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
+    xml:base="http://www.eionet.europa.eu/gemet/">
 
 {% for theme in themes %}
     <skos:Collection rdf:about="theme/{{ theme.code }}">

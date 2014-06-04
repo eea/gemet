@@ -352,7 +352,7 @@ class AlphabeticView(PaginatorView):
 
 
 class BackboneView(TemplateView):
-    template_name = 'backbone.html'
+    template_name = 'downloads/backbone.html'
 
     def get_context_data(self, **kwargs):
         context = super(BackboneView, self).get_context_data(**kwargs)
@@ -369,8 +369,15 @@ class BackboneView(TemplateView):
         return context
 
 
-class BackboneRDFView(TemplateView):
-    template_name = 'backbone.rdf'
+class SetContentToXML(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context,
+                                       content_type="text/xml; charset=utf-8")
+
+
+class BackboneRDFView(SetContentToXML):
+    template_name = 'downloads/backbone.rdf'
 
     def get_context_data(self, **kwargs):
         context = super(BackboneRDFView, self).get_context_data(**kwargs)
@@ -386,7 +393,7 @@ class BackboneRDFView(TemplateView):
 
 
 class DefinitionsView(TemplateView):
-    template_name = 'definitions.html'
+    template_name = 'downloads/definitions.html'
 
     def get_context_data(self, **kwargs):
         context = super(DefinitionsView, self).get_context_data(**kwargs)
@@ -409,7 +416,7 @@ class DefinitionsView(TemplateView):
 
 
 class GemetGroupsView(TemplateView):
-    template_name = 'gemet-groups.html'
+    template_name = 'downloads/gemet-groups.html'
 
     def get_context_data(self, **kwargs):
         context = super(GemetGroupsView, self).get_context_data(**kwargs)
@@ -454,10 +461,21 @@ class GemetGroupsView(TemplateView):
 
 
 class GemetRelationsView(TemplateView):
-    template_name = 'gemet-relations.html'
+    template_name = 'downloads/gemet-relations.html'
 
     def get_context_data(self, **kwargs):
         context = super(GemetRelationsView, self).get_context_data(**kwargs)
+
+        translate = {
+            'narrower term': 'Narrower',
+            'broader term': 'Broader',
+            'related': 'Related',
+            'relatedMatch': 'Relatedmatch',
+            'exactMatch': 'Exactmatch',
+            'closeMatch': 'Closematch',
+            'narrowMatch': 'Narrowmatch',
+            'broadMatch': 'BroadMatch',
+        }
 
         relations = Relation.objects.filter(
             source__namespace__heading='Concepts',
@@ -467,13 +485,15 @@ class GemetRelationsView(TemplateView):
             'target__code',
             'property_type__label',
         )
+        for r in relations:
+            r['property_type__label'] = translate[r['property_type__label']]
         context.update({'relations': relations})
 
         return context
 
 
 class DefinitionsByLanguage(LanguageMixin, TemplateView):
-    template_name = 'language_definitions.rdf'
+    template_name = 'downloads/language_definitions.rdf'
 
     def get_context_data(self, **kwargs):
         context = super(DefinitionsByLanguage, self).get_context_data(**kwargs)
@@ -482,7 +502,7 @@ class DefinitionsByLanguage(LanguageMixin, TemplateView):
 
 
 class GroupsByLanguage(LanguageMixin, TemplateView):
-    template_name = 'language_groups.rdf'
+    template_name = 'downloads/language_groups.rdf'
 
     def get_context_data(self, **kwargs):
         context = super(GroupsByLanguage, self).get_context_data(**kwargs)
@@ -496,7 +516,9 @@ def download(request, langcode):
         if request.POST['type'] == 'definitions':
             reverse_name = 'language_definitions'
             definitions_form = ExportForm(request.POST)
-            groups_form = ExportForm(initial={'language_names': DEFAULT_LANGCODE})
+            groups_form = ExportForm(initial={
+                'language_names': DEFAULT_LANGCODE
+                })
 
             if definitions_form.is_valid():
                 name = definitions_form.cleaned_data['language_names']
@@ -523,14 +545,16 @@ def download(request, langcode):
                     })
                 )
     else:
-        definitions_form = ExportForm(initial={'language_names': DEFAULT_LANGCODE})
+        definitions_form = ExportForm(initial={
+            'language_names': DEFAULT_LANGCODE
+            })
         groups_form = ExportForm(initial={'language_names': DEFAULT_LANGCODE})
 
-    return render(request, 'download.html', {
+    return render(request, 'downloads/download.html', {
         'definitions_form': definitions_form,
         'groups_form': groups_form,
         'language': language,
-        'languages': Language.objects.values_list('code',flat=True)
+        'languages': Language.objects.values_list('code', flat=True),
     })
 
 
