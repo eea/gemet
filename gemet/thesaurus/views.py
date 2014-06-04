@@ -165,7 +165,6 @@ class RelationsView(LanguageMixin, TemplateView):
 
         group = get_object_or_404(Group, pk=self.group_id)
         group.set_attributes(self.langcode, ['prefLabel'])
-
         context = super(RelationsView, self).get_context_data(**kwargs)
         context.update({
             'group_id': self.group_id,
@@ -186,11 +185,11 @@ class ConceptView(LanguageMixin, DetailView):
         concept = get_object_or_404(self.model, pk=self.concept_id)
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
-        concept.translations = concept.properties.filter(
-            name='prefLabel'
-            ).order_by(
-            'language__name'
-            )
+        concept.translations = (
+            concept.properties
+            .filter(name='prefLabel')
+            .order_by('language__name')
+        )
         concept.set_attributes(self.langcode,
                                ['prefLabel', 'definition', 'scopeNote'])
         concept.url = self.request.build_absolute_uri(
@@ -208,8 +207,8 @@ class ConceptView(LanguageMixin, DetailView):
             p.language.code
             for p in context[self.context_object_name].properties.filter(
                 name='prefLabel',
-                value__isnull=False)
-            ]
+                value__isnull=False,
+            )]
 
         context.update({"languages": languages})
         return context
@@ -301,8 +300,8 @@ class PaginatorView(LanguageMixin, ListView):
             'letter': self.letter_index,
             'get_params': self.request.GET.urlencode(),
             'visible_pages': range(
-                max(1, page_number-distance_number),
-                min(page_number+distance_number+1, total_pages+1)
+                max(1, page_number - distance_number),
+                min(page_number + distance_number + 1, total_pages + 1)
             ),
         })
 
@@ -383,7 +382,7 @@ class BackboneRDFView(SetContentToXML):
         context = super(BackboneRDFView, self).get_context_data(**kwargs)
 
         theme_uri = PropertyType.objects.get(label='Theme').uri
-        themes = Theme.objects.all().values('code')
+        themes = Theme.objects.values('code')
 
         context.update({
             'theme_uri': theme_uri,
@@ -428,7 +427,7 @@ class GemetGroupsView(TemplateView):
         ).values('concept__code', 'value')
 
         relations = Relation.objects.filter(
-            target_id__in=SuperGroup.objects.all().values_list('id', flat=True),
+            target_id__in=SuperGroup.objects.values_list('id', flat=True),
             property_type__label='broader term',
         ).values('target__code', 'source_id')
 
@@ -514,11 +513,9 @@ def download(request, langcode):
     language = Language.objects.get(pk=langcode)
     if request.method == 'POST':
         if request.POST['type'] == 'definitions':
-            reverse_name = 'language_definitions'
             definitions_form = ExportForm(request.POST)
-            groups_form = ExportForm(initial={
-                'language_names': DEFAULT_LANGCODE
-                })
+            groups_form = ExportForm(initial=
+                                     {'language_names': DEFAULT_LANGCODE})
 
             if definitions_form.is_valid():
                 name = definitions_form.cleaned_data['language_names']
@@ -530,11 +527,9 @@ def download(request, langcode):
                 )
 
         elif request.POST['type'] == 'groups':
-            reverse_name = 'language_groups'
             groups_form = ExportForm(request.POST)
-            definitions_form = ExportForm(initial={
-                'language_names': DEFAULT_LANGCODE
-                })
+            definitions_form = ExportForm(initial=
+                                          {'language_names': DEFAULT_LANGCODE})
 
             if groups_form.is_valid():
                 name = groups_form.cleaned_data['language_names']
@@ -545,9 +540,8 @@ def download(request, langcode):
                     })
                 )
     else:
-        definitions_form = ExportForm(initial={
-            'language_names': DEFAULT_LANGCODE
-            })
+        definitions_form = ExportForm(initial=
+                                      {'language_names': DEFAULT_LANGCODE})
         groups_form = ExportForm(initial={'language_names': DEFAULT_LANGCODE})
 
     return render(request, 'downloads/download.html', {
