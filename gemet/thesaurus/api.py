@@ -166,7 +166,15 @@ def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
     test_has_language(langcode)
     ns = get_namespace(thesaurus_uri)
     model = get_model(thesaurus_uri)
-    concepts_id = model.objects.values_list('id', flat=True)
+    all_concepts = model.objects.values_list('id', flat=True)
+    excluded_concepts = (Relation.objects
+                 .filter(property_type__name='narrower',
+                         target__namespace_id=ns.id,
+                         )
+                 .exclude(source__namespace__heading='Super groups')
+                 .values_list('target_id', flat=True)
+                )
+    concepts_id = list(set(all_concepts) - set(excluded_concepts))
 
     concepts = []
     for concept_id in concepts_id:
