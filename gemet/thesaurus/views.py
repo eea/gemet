@@ -579,7 +579,7 @@ def download(request, langcode):
         if request.POST['type'] == 'definitions':
             definitions_form = ExportForm(request.POST)
             groups_form = ExportForm(initial=
-                                     {'language_names': DEFAULT_LANGCODE})
+                                     {'language_names': langcode})
 
             if definitions_form.is_valid():
                 name = definitions_form.cleaned_data['language_names']
@@ -593,7 +593,7 @@ def download(request, langcode):
         elif request.POST['type'] == 'groups':
             groups_form = ExportForm(request.POST)
             definitions_form = ExportForm(initial=
-                                          {'language_names': DEFAULT_LANGCODE})
+                                          {'language_names': langcode})
 
             if groups_form.is_valid():
                 name = groups_form.cleaned_data['language_names']
@@ -605,8 +605,8 @@ def download(request, langcode):
                 )
     else:
         definitions_form = ExportForm(initial=
-                                      {'language_names': DEFAULT_LANGCODE})
-        groups_form = ExportForm(initial={'language_names': DEFAULT_LANGCODE})
+                                      {'language_names': langcode})
+        groups_form = ExportForm(initial={'language_names': langcode})
 
     return render(request, 'downloads/download.html', {
         'definitions_form': definitions_form,
