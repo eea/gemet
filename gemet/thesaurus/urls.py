@@ -68,7 +68,7 @@ urlpatterns = patterns(
     url(r'^gemet/concept/$', old_concept_redirect,
         name='old_concept_redirect'),
     url(r'^gemet-backbone.html$', BackboneView.as_view(), name='backbone'),
-    url(r'^gemet-backbone.rdf.xml$', BackboneRDFView.as_view(),
+    url(r'^gemet-backbone.rdf$', BackboneRDFView.as_view(),
         name='backbone_rdf'),
     url(r'^gemet-definitions.html$', DefinitionsView.as_view(),
         name='definitions'),

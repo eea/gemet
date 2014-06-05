@@ -4,10 +4,61 @@
     xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
     xml:base="http://www.eionet.europa.eu/gemet/">
 
+<skos:Collection rdf:about="supergroup/">
+    <rdf:label>GEMET Supergroups</rdf:label>
+    <skos:prefLabel>Supergroups</skos:prefLabel>
+    <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+    {% for supergroup in supergroups %}
+        <skos:member rdf:resource="supergroup/{{ supergroup.code }}"/>
+    {% endfor %}
+</skos:Collection>
+
+<skos:Collection rdf:about="group/">
+    <rdf:label>GEMET Groups</rdf:label>
+    <skos:prefLabel>Groups</skos:prefLabel>
+    <skos:inScheme rdf:resource="gemetThesaurus"/>
+    {% for group in groups %}
+        <skos:member rdf:resource="group/{{ group.code }}"/>
+    {% endfor %}
+</skos:Collection>
+
+<skos:Collection rdf:about="theme/">
+    <rdf:label>GEMET Themes</rdf:label>
+    <skos:prefLabel>Themes</skos:prefLabel>
+    <skos:inScheme rdf:resource="gemetThesaurus"/>
+    {% for theme in themes %}
+        <skos:member rdf:resource="theme/{{ theme.code }}"/>
+    {% endfor %}
+</skos:Collection>
+
+{% for supergroup in supergroups %}
+    <skos:Collection rdf:about="supergroup/{{ supergroup.code }}">
+        <rdf:type rdf:resource="{{ supergroup_uri }}"/>
+    </skos:Collection>
+{% endfor %}
+
+{% for group in groups %}
+    <skos:Collection rdf:about="group/{{ group.code }}">
+        <rdf:type rdf:resource="{{ group_uri }}"/>
+    </skos:Collection>
+{% endfor %}
+
 {% for theme in themes %}
     <skos:Collection rdf:about="theme/{{ theme.code }}">
         <rdf:type rdf:resource="{{ theme_uri }}"/>
     </skos:Collection>
+{% endfor %}
+
+{% for code, relations in concept_relations.items %}
+<rdf:Description rdf:about="concept/{{ code }}">
+    {% for relation in relations %}
+        <gemet:{{ relation.property_type__name }}>
+            <rdf:Description rdf:about="{{ relation.property_type__name }}/{{ relation.target__code }}">
+                <skos:member rdf:resource="concept/{{ code }}"/>
+            </rdf:Description>
+        </gemet:{{ relation.property_type__name }}>
+    {% endfor %}
+</rdf:Description>
 {% endfor %}
 
 </rdf:RDF>

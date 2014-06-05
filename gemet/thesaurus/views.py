@@ -381,12 +381,39 @@ class BackboneRDFView(SetContentToXML):
     def get_context_data(self, **kwargs):
         context = super(BackboneRDFView, self).get_context_data(**kwargs)
 
-        theme_uri = PropertyType.objects.get(label='Theme').uri
+        supergroup_uri = Namespace.objects.get(heading='Super groups').type_url
+        supergroups = SuperGroup.objects.values('code')
+
+        group_uri = Namespace.objects.get(heading='Groups').type_url
+        groups = Group.objects.values('code')
+
+        theme_uri = Namespace.objects.get(heading='Themes').type_url
         themes = Theme.objects.values('code')
 
+        relations = {}
+        concepts = Term.objects.values('id', 'code')
+
+        for concept in concepts:
+            relations.update({
+                concept['code']: (Relation.objects
+                                  .filter(source_id=concept['id'],
+                                          property_type__name__in=
+                                          ['theme', 'group'],
+                                          )
+                                  .values('target__code',
+                                          'property_type__name',
+                                          )
+                                  )
+                })
+
         context.update({
+            'supergroup_uri': supergroup_uri,
+            'supergroups': supergroups,
+            'group_uri': group_uri,
+            'groups': groups,
             'theme_uri': theme_uri,
             'themes': themes,
+            'concept_relations': relations,
         })
         return context
 

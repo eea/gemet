@@ -11,7 +11,7 @@ def regex_search(query, language, heading):
             name='prefLabel',
             language__code=language.code,
             concept__namespace__heading=heading,
-            value__iregex = r'%s' % query,
+            value__iregex=r'%s' % query,
         )
         .extra(
             select={'value_coll': 'value COLLATE {0}'.format(
@@ -27,7 +27,6 @@ def regex_search(query, language, heading):
         )
         .values('id', 'name')
     )
-
 
 
 def search_queryset(query, language, search_mode=1, heading='Concepts',
