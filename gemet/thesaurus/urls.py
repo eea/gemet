@@ -26,6 +26,7 @@ from .views import (
     DefinitionsByLanguage,
     GroupsByLanguage,
     GemetThesaurus,
+    Skoscore,
 )
 from .api import ApiView
 
@@ -78,4 +79,5 @@ urlpatterns = patterns(
     url(r'^gemet-relations.html$', GemetRelationsView.as_view(),
         name='gemet-relations'),
     url(r'^gemetThesaurus$', GemetThesaurus.as_view(), name='gemetThesaurus'),
+    url(r'^gemet-skoscore.rdf$', Skoscore.as_view(), name='skoscore'),
 )

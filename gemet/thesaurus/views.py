@@ -486,24 +486,11 @@ class GemetGroupsView(TemplateView):
         return context
 
 
-class GemetRelationsView(TemplateView):
-    template_name = 'downloads/gemet-relations.html'
-
+class GemetRelations(TemplateView):
     def get_context_data(self, **kwargs):
-        context = super(GemetRelationsView, self).get_context_data(**kwargs)
+        context = super(GemetRelations, self).get_context_data(**kwargs)
 
-        translate = {
-            'narrower term': 'Narrower',
-            'broader term': 'Broader',
-            'related': 'Related',
-            'relatedMatch': 'Relatedmatch',
-            'exactMatch': 'Exactmatch',
-            'closeMatch': 'Closematch',
-            'narrowMatch': 'Narrowmatch',
-            'broadMatch': 'BroadMatch',
-        }
-
-        relations = Relation.objects.filter(
+        self.relations = Relation.objects.filter(
             source__namespace__heading='Concepts',
             target__namespace__heading='Concepts',
         ).values(
@@ -511,9 +498,55 @@ class GemetRelationsView(TemplateView):
             'target__code',
             'property_type__label',
         )
-        for r in relations:
-            r['property_type__label'] = translate[r['property_type__label']]
-        context.update({'relations': relations})
+
+        return context
+
+
+class GemetRelationsView(GemetRelations):
+    template_name = 'downloads/gemet-relations.html'
+    translate = {
+        'narrower term': 'Narrower',
+        'broader term': 'Broader',
+        'related': 'Related',
+        'relatedMatch': 'Relatedmatch',
+        'exactMatch': 'Exactmatch',
+        'closeMatch': 'Closematch',
+        'narrowMatch': 'Narrowmatch',
+        'broadMatch': 'BroadMatch',
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super(GemetRelationsView, self).get_context_data(**kwargs)
+
+        for r in self.relations:
+            r['property_type__label'] = translate[
+                r['property_type__label']
+            ]
+        context.update({'relations': self.relations})
+
+        return context
+
+
+class Skoscore(GemetRelations, SetContentToXML):
+    template_name = 'downloads/skoscore.rdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(Skoscore, self).get_context_data(**kwargs)
+
+        relations = {}
+        for r in self.relations:
+            label = r['property_type__label']
+            code = r['target__code']
+            d = {
+                'target__code': ('' if 'Matc' in label else 'concept/') + code,
+                'property_type__label': label.split(' ')[0]
+            }
+            key_code = r['source__code']
+            if key_code in relations:
+                relations[key_code].append(d)
+            else:
+                relations[key_code] = [d]
+        context.update({'concept_relations': relations})
 
         return context
 
