@@ -536,6 +536,10 @@ class GroupsByLanguage(LanguageMixin, TemplateView):
         return context
 
 
+class GemetThesaurus(SetContentToXML):
+    template_name = 'downloads/gemetThesaurus'
+
+
 def download(request, langcode):
     language = Language.objects.get(pk=langcode)
     if request.method == 'POST':

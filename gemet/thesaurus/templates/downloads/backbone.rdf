@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
     xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
     xml:base="http://www.eionet.europa.eu/gemet/">
 
 <skos:Collection rdf:about="supergroup/">
-    <rdf:label>GEMET Supergroups</rdf:label>
+    <rdfs:label>GEMET Supergroups</rdfs:label>
     <skos:prefLabel>Supergroups</skos:prefLabel>
     <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
     {% for supergroup in supergroups %}
@@ -14,7 +15,7 @@
 </skos:Collection>
 
 <skos:Collection rdf:about="group/">
-    <rdf:label>GEMET Groups</rdf:label>
+    <rdfs:label>GEMET Groups</rdfs:label>
     <skos:prefLabel>Groups</skos:prefLabel>
     <skos:inScheme rdf:resource="gemetThesaurus"/>
     {% for group in groups %}
@@ -23,7 +24,7 @@
 </skos:Collection>
 
 <skos:Collection rdf:about="theme/">
-    <rdf:label>GEMET Themes</rdf:label>
+    <rdfs:label>GEMET Themes</rdfs:label>
     <skos:prefLabel>Themes</skos:prefLabel>
     <skos:inScheme rdf:resource="gemetThesaurus"/>
     {% for theme in themes %}

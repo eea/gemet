@@ -25,6 +25,7 @@ from .views import (
     GemetRelationsView,
     DefinitionsByLanguage,
     GroupsByLanguage,
+    GemetThesaurus,
 )
 from .api import ApiView
 
@@ -76,4 +77,5 @@ urlpatterns = patterns(
         name='gemet-groups'),
     url(r'^gemet-relations.html$', GemetRelationsView.as_view(),
         name='gemet-relations'),
+    url(r'^gemetThesaurus$', GemetThesaurus.as_view(), name='gemetThesaurus'),
 )
