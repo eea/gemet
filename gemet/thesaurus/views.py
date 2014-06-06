@@ -1,4 +1,5 @@
 from itertools import chain
+from collections import OrderedDict
 
 from django.http import Http404
 from django.shortcuts import (
@@ -551,12 +552,30 @@ class Skoscore(GemetRelations, SetContentToXML):
         return context
 
 
-class DefinitionsByLanguage(LanguageMixin, TemplateView):
+class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
     template_name = 'downloads/language_definitions.rdf'
 
     def get_context_data(self, **kwargs):
         context = super(DefinitionsByLanguage, self).get_context_data(**kwargs)
 
+        concepts = Term.objects.values('id', 'code').order_by('code')
+        definitions = OrderedDict()
+
+        for concept in concepts:
+            properties = sorted(
+                (Property.objects
+                 .filter(concept_id=concept['id'],
+                         language=self.language,
+                         name__in=['definition', 'prefLabel'],
+                         )
+                 .values('name', 'value')
+                 ),
+                key=lambda x: x['name'],
+                reverse=True
+                )
+            definitions[concept['code']] = properties
+
+        context.update({'langcode': self.langcode, 'definitions': definitions})
         return context
 
 

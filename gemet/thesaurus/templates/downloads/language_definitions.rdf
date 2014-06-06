@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+        xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+        xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
+        xml:lang="{{ langcode }}"
+        xml:base="http://www.eionet.europa.eu/gemet/">
+
+{% for concept_code, definition in definitions.items %}
+    <rdf:Description rdf:about="concept/{{ concept_code }}">
+    {% for d in definition %}
+    <skos:{{ d.name }}>{{ d.value }}</skos:{{ d.name }}>
+    {% endfor %}
+    </rdf:Description>
+{% endfor %}
+</rdf:RDF>
