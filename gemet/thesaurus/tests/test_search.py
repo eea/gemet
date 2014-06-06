@@ -7,6 +7,7 @@ from .factories import (
     PropertyTypeFactory,
     RelationFactory,
 )
+from gemet.thesaurus.utils import SEPARATOR
 
 
 class TestSearchView(GemetTest):
@@ -20,17 +21,17 @@ class TestSearchView(GemetTest):
 
         PropertyFactory(
             concept=cp1,
-            value='|something|||',
+            value='{0}something{0}{0}{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp2,
-            value='|something else|||',
+            value='{0}something else{0}{0}{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp3,
-            value='|another somefling|||',
+            value='{0}another somefling{0}{0}{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(concept=cp11, value='broader 1')
