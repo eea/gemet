@@ -3,6 +3,8 @@ from zlib import compress, decompress
 
 from models import Property
 
+SEPARATOR = '|'
+
 
 def regex_search(query, language, heading):
     return (
@@ -49,9 +51,9 @@ def search_queryset(query, language, search_mode=1, heading='Concepts',
 
 def search_queryset_mode(query, language, search_mode, heading):
     search_types = {
-        0: [query],
-        1: [query + '%%'],
-        2: ['%%' + query],
+        0: ['%%' + SEPARATOR + query + SEPARATOR + '%%'],
+        1: ['%%' + SEPARATOR + query + '%%'],
+        2: ['%%' + query + SEPARATOR + '%%'],
         3: ['%%' + query + '%%'],
     }
     query_search = search_types.get(search_mode)
@@ -61,7 +63,7 @@ def search_queryset_mode(query, language, search_mode, heading):
     return (
         Property.objects
         .filter(
-            name='prefLabel',
+            name='searchText',
             language__code=language.code,
             concept__namespace__heading=heading,
         )
@@ -70,18 +72,12 @@ def search_queryset_mode(query, language, search_mode, heading):
             params=query_search,
         )
         .extra(
-            select={'value_coll': 'value COLLATE {0}'.format(
-                language.charset)},
-        )
-        .extra(
             select={
-                'name': 'value',
-                'id': 'concept_id'
+                'search_text': 'value COLLATE {0}'.format(language.charset),
+                'id': 'concept_id',
             })
-        .extra(
-            order_by=['value_coll']
-        )
-        .values('id', 'name')
+        .extra(order_by=['search_text'])
+        .values('id', 'search_text')
     )
 
 
