@@ -37,14 +37,13 @@ def broader_context(concept_id, langcode):
     return '; '.join([cp['name'] for cp in broader_concepts])
 
 
-@register.simple_tag
-def concept_name(search_text):
-    return search_text.split(SEPARATOR)[1]
-
-
 @register.assignment_tag
-def get_other_names(search_text):
-    return '; '.join([n for n in search_text.split(SEPARATOR)[2:] if n])
+def get_concept_names(search_text):
+    names = search_text.split(SEPARATOR)
+    return {
+        'concept_name': names[1],
+        'other_names': '; '.join([n for n in names[2:] if n])
+    }
 
 
 @register.simple_tag
