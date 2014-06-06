@@ -24,7 +24,6 @@ from gemet.thesaurus.models import (
     Property,
     DefinitionSource,
     Relation,
-    PropertyType,
 )
 from collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -255,10 +254,32 @@ class PaginatorView(LanguageMixin, ListView):
 
         return properties
 
-    def _letter_exists(self, all_concepts, letters):
-        return self._filter_by_letter(all_concepts, letters).count()
+    def _get_letters_presence(self, all_letters, theme=None):
+        letters = (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                language_id=self.langcode,
+            )
+            .extra(
+                select={'first_letter': 'SUBSTR(value, 1, 1)'}
+            )
+        )
+        if theme:
+            letters = letters.filter(
+                concept_id__in=(
+                    theme.source_relations
+                    .filter(property_type__name='themeMember')
+                    .values_list('target_id', flat=True)
+                )
+            )
+        unique_letters = set(letters.values_list('first_letter', flat=True))
 
-    def get_queryset(self):
+        return [
+            (letter_group[0], bool(set(letter_group) & unique_letters))
+            for letter_group in all_letters]
+
+    def get_queryset(self, theme=None):
         try:
             self.letter_index = int(self.request.GET.get('letter', '0'))
         except ValueError:
@@ -277,10 +298,7 @@ class PaginatorView(LanguageMixin, ListView):
         else:
             raise Http404
 
-        self.letters = [
-            (l[0], self._letter_exists(self.concepts, l))
-            for l in all_letters
-        ]
+        self.letters = self._get_letters_presence(all_letters, theme)
 
         all_concepts = self._filter_by_letter(self.concepts, letters,
                                               startswith)
@@ -319,7 +337,7 @@ class ThemeConceptsView(PaginatorView):
         self.theme = get_object_or_404(self.model, pk=self.theme_id)
         self.theme.set_attributes(self.langcode, ['prefLabel'])
         self.concepts = self.theme.get_children(self.langcode)
-        return super(ThemeConceptsView, self).get_queryset()
+        return super(ThemeConceptsView, self).get_queryset(self.theme)
 
     def get_context_data(self, **kwargs):
         context = super(ThemeConceptsView, self).get_context_data(**kwargs)
@@ -402,7 +420,7 @@ class BackboneRDFView(SetContentToXML):
                                           'property_type__name',
                                           )
                                   )
-                })
+            })
 
         context.update({
             'supergroup_uri': supergroup_uri,
@@ -574,7 +592,7 @@ class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
                  ),
                 key=lambda x: x['name'],
                 reverse=True
-                )
+            )
             definitions[concept['code']] = properties
 
         context.update({'definitions': definitions})
@@ -587,7 +605,6 @@ class GroupsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(GroupsByLanguage, self).get_context_data(**kwargs)
 
-        r = OrderedDict()
         for heading in ['Super groups', 'Groups', 'Themes']:
             context.update({
                 heading.replace(' ', '_'): (
@@ -598,7 +615,7 @@ class GroupsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
                     .values('concept__code',
                             'value',
                             )
-                    )
+                )
             })
 
         return context
