@@ -520,7 +520,7 @@ class GemetRelationsView(GemetRelations):
         context = super(GemetRelationsView, self).get_context_data(**kwargs)
 
         for r in self.relations:
-            r['property_type__label'] = translate[
+            r['property_type__label'] = self.translate[
                 r['property_type__label']
             ]
         context.update({'relations': self.relations})
