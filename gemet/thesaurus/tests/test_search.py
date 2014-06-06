@@ -18,9 +18,21 @@ class TestSearchView(GemetTest):
         cp12 = TermFactory(id=12, code='12')
         cp13 = TermFactory(id=13, code='13')
 
-        PropertyFactory(concept=cp1, value='something')
-        PropertyFactory(concept=cp2, value='something else')
-        PropertyFactory(concept=cp3, value='another somefling')
+        PropertyFactory(
+            concept=cp1,
+            value='|something|||',
+            name='searchText',
+        )
+        PropertyFactory(
+            concept=cp2,
+            value='|something else|||',
+            name='searchText',
+        )
+        PropertyFactory(
+            concept=cp3,
+            value='|another somefling|||',
+            name='searchText',
+        )
         PropertyFactory(concept=cp11, value='broader 1')
         PropertyFactory(concept=cp12, value='broader 2.1')
         PropertyFactory(concept=cp13, value='broader 2.2')
