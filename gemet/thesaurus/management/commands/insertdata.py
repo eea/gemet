@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 from datetime import datetime
 
 from gemet.thesaurus.models import Property, Concept, Language
+from gemet.thesaurus.utils import SEPARATOR
 
 SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']
-SEPARATOR = '|'
 
 
 class Command(BaseCommand):
@@ -34,12 +34,15 @@ class Command(BaseCommand):
                         name__in=SEARCH_FIELDS,
                         language_id=language_code,
                     )
-                    .values_list('value', flat=True)
+                    .values_list('name', 'value')
                 )
 
-                search_text = SEPARATOR.join(search_properties)
-                if not search_text:
+                if not search_properties:
                     continue
+
+                search_dict = dict(search_properties)
+                search_text = SEPARATOR.join(
+                    [search_dict.get(field, '') for field in SEARCH_FIELDS])
 
                 search_text = SEPARATOR + search_text + SEPARATOR
                 search_property = Property(
