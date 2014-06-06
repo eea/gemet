@@ -575,15 +575,29 @@ class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
                 )
             definitions[concept['code']] = properties
 
-        context.update({'langcode': self.langcode, 'definitions': definitions})
+        context.update({'definitions': definitions})
         return context
 
 
-class GroupsByLanguage(LanguageMixin, TemplateView):
+class GroupsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
     template_name = 'downloads/language_groups.rdf'
 
     def get_context_data(self, **kwargs):
         context = super(GroupsByLanguage, self).get_context_data(**kwargs)
+
+        r = OrderedDict()
+        for heading in ['Super groups', 'Groups', 'Themes']:
+            context.update({
+                heading.replace(' ', '_'): (
+                    Property.objects
+                    .filter(concept__namespace__heading=heading,
+                            name='prefLabel',
+                            )
+                    .values('concept__code',
+                            'value',
+                            )
+                    )
+            })
 
         return context
 

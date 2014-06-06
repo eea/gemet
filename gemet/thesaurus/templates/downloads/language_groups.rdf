@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xml:lang="{{ language.code }}"
+         xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+         xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
+         xml:base="http://www.eionet.europa.eu/gemet/">
+
+{% for supergroup in Super_groups %}
+    <rdf:Description rdf:about="supergroup/{{ supergroup.concept__code }}">
+    <rdfs:label>{{ supergroup.value }}</rdfs:label>
+    </rdf:Description>
+{% endfor %}
+
+{% for group in Groups %}
+    <rdf:Description rdf:about="group/{{ group.concept__code }}">
+    <rdfs:label>{{ group.value }}</rdfs:label>
+    </rdf:Description>
+{% endfor %}
+
+{% for theme in Themes %}
+    <rdf:Description rdf:about="theme/{{ theme.concept__code }}">
+    <rdfs:label>{{ theme.value }}</rdfs:label>
+    </rdf:Description>
+{% endfor %}
+</rdf:RDF>
