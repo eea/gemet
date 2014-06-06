@@ -6,6 +6,7 @@ from .factories import (
     PropertyTypeFactory,
     GroupFactory,
     SuperGroupFactory,
+    TermFactory,
 )
 from . import GemetTest, ERROR_404
 
@@ -13,41 +14,13 @@ from . import GemetTest, ERROR_404
 class TestSuperGroupView(GemetTest):
     def setUp(self):
         self.supergroup = SuperGroupFactory()
-        PropertyFactory(group=self.supergroup, name="prefLabel",
+        PropertyFactory(concept=self.supergroup, name="prefLabel",
                         value="some prefLabel")
 
     def test_supergroup_no_concept(self):
         url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-
-        self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
-                         "Definition is not available")
-        self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
-                         "scope note is not available")
-        self.assertEqual(resp.pyquery('body ul').size(), 1)
-        self.assertEqual(resp.pyquery('ul').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul li').text(),
-                         "English: some prefLabel")
-
-    def test_supergroup_one_group(self):
-        group = GroupFactory()
-        PropertyFactory(group=group, name="prefLabel",
-                        value="group prefLabel")
-        pt1 = PropertyTypeFactory(id=1, name="supergroupMember",
-                                  label="Supergroup member")
-        pt2 = PropertyTypeFactory(id=2, name="supergroup", label="Supergroup")
-        RelationFactory(property_type=pt1, source=self.supergroup,
-                        target=group)
-        RelationFactory(property_type=pt2, source=group,
-                        target=self.supergroup)
-        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
-                                       'langcode': 'en'})
-        resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
@@ -56,30 +29,56 @@ class TestSuperGroupView(GemetTest):
         self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
                          "scope note is not available")
         self.assertEqual(resp.pyquery('body ul').size(), 2)
-        self.assertEqual(resp.pyquery('ul:eq(0)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(0) li').text(),
-                         "group prefLabel")
         self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 1)
         self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
                          "English: some prefLabel")
 
+    def test_supergroup_one_group(self):
+        group = GroupFactory()
+        PropertyFactory(concept=group, name="prefLabel",
+                        value="group prefLabel")
+        pt1 = PropertyTypeFactory(id=1, name="narrower",
+                                  label="narrower term")
+        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.supergroup,
+                        target=group)
+        RelationFactory(property_type=pt2, source=group,
+                        target=self.supergroup)
+        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
+                                       'langcode': 'en'})
+        resp = self.app.get(url)
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
+                         "Definition is not available")
+        self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
+                         "scope note is not available")
+        self.assertEqual(resp.pyquery('body ul').size(), 3)
+        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+                         "group prefLabel")
+        self.assertEqual(resp.pyquery('ul:eq(2)').children().size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(2) li').text(),
+                         "English: some prefLabel")
+
     def test_supergroup_two_groups(self):
-        group1 = GroupFactory()
-        PropertyFactory(group=group1, name="prefLabel",
+        group1 = GroupFactory(id=1, code="1")
+        PropertyFactory(concept=group1, name="prefLabel",
                         value="group1 prefLabel")
-        pt1 = PropertyTypeFactory(id=1, name="supergroupMember",
-                                  label="Supergroup member")
-        pt2 = PropertyTypeFactory(id=2, name="supergroup", label="Supergroup")
+        pt1 = PropertyTypeFactory(id=1, name="narrower",
+                                  label="narrower term")
+        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
         RelationFactory(property_type=pt1, source=self.supergroup,
                         target=group1)
         RelationFactory(property_type=pt2, source=group1,
                         target=self.supergroup)
-        group2 = TermFactory(id=2, code="2")
-        PropertyFactory(group=group2, name="prefLabel",
+        group2 = GroupFactory(id=2, code="2")
+        PropertyFactory(concept=group2, name="prefLabel",
                         value="group2 prefLabel")
-        pt3 = PropertyTypeFactory(id=3, name="supergroupMember",
-                                  label="Supergroup member")
-        pt4 = PropertyTypeFactory(id=4, name="supergroup", label="Supergroup")
+        pt3 = PropertyTypeFactory(id=3, name="narrower",
+                                  label="narrower term")
+        pt4 = PropertyTypeFactory(id=4, name="broader", label="broader term")
         RelationFactory(property_type=pt3, source=self.supergroup,
                         target=group2)
         RelationFactory(property_type=pt4, source=group2,
@@ -95,14 +94,14 @@ class TestSuperGroupView(GemetTest):
                          "Definition is not available")
         self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
                          "scope note is not available")
-        self.assertEqual(resp.pyquery('body ul').size(), 2)
-        self.assertEqual(resp.pyquery('ul:eq(0)').children().size(), 2)
-        self.assertEqual(resp.pyquery('ul:eq(0) li:eq(0)').text(),
+        self.assertEqual(resp.pyquery('body ul').size(), 3)
+        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 2)
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
                          "group1 prefLabel")
-        self.assertEqual(resp.pyquery('ul:eq(0) li:eq(1)').text(),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(),
                          "group2 prefLabel")
-        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1)').children().text(),
+        self.assertEqual(resp.pyquery('ul:eq(2)').children().size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(2)').children().text(),
                          "English: some prefLabel")
 
     def test_redirect(self):

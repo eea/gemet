@@ -139,7 +139,10 @@ class SearchView(LanguageMixin, FormView):
 
     def form_valid(self, form):
         self.query = form.cleaned_data['query']
-        self.concepts = search_queryset(self.query, self.language)
+        self.concepts = search_queryset(
+            self.query,
+            self.language
+        )
 
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -454,7 +457,6 @@ class DefinitionsView(TemplateView):
             concept = {'code': term.code}
             for c in concept_properties:
                 concept.update({c['name']: c['value']})
-            #import pdb; pdb.set_trace()
             concepts.append(concept)
 
         context.update({"concepts": concepts})
