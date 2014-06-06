@@ -2,7 +2,7 @@ from django import template
 
 from gemet.thesaurus.models import Concept
 from gemet.thesaurus import DEFAULT_LANGCODE
-from gemet.thesaurus.utils import exp_encrypt
+from gemet.thesaurus.utils import exp_encrypt, SEPARATOR
 
 
 register = template.Library()
@@ -35,6 +35,16 @@ def broader_context(concept_id, langcode):
     broader_concepts = Concept.objects.get(pk=concept_id).get_siblings(
         langcode, 'broader')
     return '; '.join([cp['name'] for cp in broader_concepts])
+
+
+@register.simple_tag
+def concept_name(search_text):
+    return search_text.split(SEPARATOR)[1]
+
+
+@register.assignment_tag
+def get_other_names(search_text):
+    return '; '.join([n for n in search_text.split(SEPARATOR)[2:] if n])
 
 
 @register.simple_tag

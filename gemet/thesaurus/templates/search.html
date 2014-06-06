@@ -22,7 +22,11 @@
     <ul>
       {% for concept in concepts %}
         <li>
-            <a href="{% url 'concept' language.code concept.id %}">{{ concept.name }}</a>
+            <a href="{% url 'concept' language.code concept.id %}">{% concept_name concept.search_text %}</a>
+            {% get_other_names concept.search_text as other_names %}
+            {% if other_names %}
+              <p><b>other names:</b> {{ other_names }}</p>
+            {% endif %}
             <p><b>broader context:</b> {% broader_context concept.id language.code %}</p>
         </li>
       {% endfor %}
