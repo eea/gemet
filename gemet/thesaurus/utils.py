@@ -3,7 +3,7 @@ from zlib import compress, decompress
 
 from models import Property
 
-SEPARATOR = ' # '
+SEPARATOR = '\t'
 
 
 def regex_search(query, language, heading):
