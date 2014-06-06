@@ -422,19 +422,24 @@ class DefinitionsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DefinitionsView, self).get_context_data(**kwargs)
 
-        table = []
-        for concept in Term.objects.all():
-            row = {'code': concept.code}
-            result = concept.properties.filter(
-                name__in=['prefLabel', 'scopeNote', 'definition', 'notation'],
-                language__code=DEFAULT_LANGCODE,
-            )
-            for r in result:
-                row.update({
-                    r.name: r.value,
-                })
-            table.append(row)
-        context.update({"table": table})
+        concepts = []
+        for term in Term.objects.all():
+            concept_properties = (
+                term.properties
+                .filter(
+                    language=DEFAULT_LANGCODE,
+                    name__in=['prefLabel', 'scopeNote', 'definition',
+                              'notation'],
+                    )
+                .values('name', 'value')
+                )
+            concept = {'code': term.code}
+            for c in concept_properties:
+                concept.update({c['name']: c['value']})
+            #import pdb; pdb.set_trace()
+            concepts.append(concept)
+
+        context.update({"concepts": concepts})
 
         return context
 
@@ -534,16 +539,16 @@ class Skoscore(GemetRelations, SetContentToXML):
         relations = {}
         for r in self.relations:
             label = r['property_type__label']
-            code = r['target__code']
+            target_code = r['target__code']
             d = {
-                'target__code': ('' if 'Matc' in label else 'concept/') + code,
+                'target__code': ('' if 'Matc' in label else 'concept/') + target_code,
                 'property_type__label': label.split(' ')[0]
             }
-            key_code = r['source__code']
-            if key_code in relations:
-                relations[key_code].append(d)
+            source_code = r['source__code']
+            if source_code in relations:
+                relations[source_code].append(d)
             else:
-                relations[key_code] = [d]
+                relations[source_code] = [d]
         context.update({'concept_relations': relations})
 
         return context
