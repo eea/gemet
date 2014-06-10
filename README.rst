@@ -82,15 +82,15 @@ be run as an unprivileged user in the product directory::
 
 6. Set up the MySQL database::
 
-   # Replace [user] and [password] with your MySQL credentials and [db_name]
-   with the name of the database:
-   mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8
-   COLLATE utf8_general_ci;'
+    # Replace [user] and [password] with your MySQL credentials and [db_name] with the name of the database:
 
-**The database charset MUST be `utf8`**
+    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET
+    utf8 COLLATE utf8_general_ci;'
+
+   **The database charset MUST be ``utf8``.**
 
 7. Update local configuration file with database credentials and database name
-   - `default` section in `DATABASES` dict.
+   - ``default`` section in ``DATABASES`` dict.
 
 8. Create initial database structure::
 
@@ -100,7 +100,9 @@ be run as an unprivileged user in the product directory::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
-9. Import data, see *Data import* below.
+9. Import data, see `Data Import`_ below.
+
+.. _`Data Import`: https://github.com/eaudeweb/gemet#data-import
 
 10. Insert data that enables search to work properly::
 
@@ -149,7 +151,7 @@ production, for example 8010)::
 Configuration
 -------------
 
-Details about configurable settings can be found in `settings.py`.
+Details about configurable settings can be found in ``settings.py``.
 
 
 Data Import
@@ -162,9 +164,9 @@ seaparate database::
     utf8_general_ci;'
     mysql gemet_old < gemet.sql
 
-2. Update the `import` section from `DATABASES` dict in the local
+2. Update the ``import`` section from ``DATABASES`` dict in the local
 configuration file with the name of the database used for import
-(`gemet_old` from the previous example)
+(``gemet_old`` from the previous example)
 
 3. Run the management command for data import::
 
@@ -176,10 +178,11 @@ Development hints
 
 Requirements
 ------------
+These packages should be installed as superuser(root)::
 
     apt-get install libxml2-dev libxslt1-dev
 
-    Use `requirements-dev.txt` instead of `requirements-dep.txt`:
+Use ``requirements-dev.txt`` instead of ``requirements-dep.txt``::
 
     pip install -r requirements-dev.txt
 
@@ -245,4 +248,4 @@ the terms of the EUPL v1.1.
 
 More details under `LICENSE.txt`_.
 
-.. _`LICENSE.txt`: https://github.com/eaudeweb/gemet/blob/master/README.rst
+.. _`LICENSE.txt`: https://github.com/eaudeweb/gemet/blob/master/LICENSE.txt
