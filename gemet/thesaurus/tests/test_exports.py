@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 
 from .factories import (
+    LanguageFactory,
     PropertyFactory,
     RelationFactory,
     PropertyTypeFactory,
@@ -82,3 +83,58 @@ class TestExports(GemetTest):
         self.assertEqual(resp.body.count('group/2'), 3)
         self.assertEqual(resp.body.count('theme/4'), 3)
         self.assertEqual(resp.body.count('concept/1'), 3)
+
+    def test_label_and_definitions(self):
+        term1 = TermFactory(id='1', code='1')
+        term2 = TermFactory(id='2', code='2')
+        term3 = TermFactory(id='3', code='3')
+        term4 = TermFactory(id='4', code='4')
+        spanish_term = TermFactory(id='5', code='5')
+        spanish = LanguageFactory(code='es', name='Spanish')
+
+        PropertyFactory(concept=term1, name='prefLabel', value='A')
+
+        PropertyFactory(concept=term2, name='prefLabel', value='A')
+        PropertyFactory(concept=term2, name='definition', value='B')
+
+        PropertyFactory(concept=term3, name='prefLabel', value='A')
+        PropertyFactory(concept=term3, name='definition', value='B')
+        PropertyFactory(concept=term3, name='scopeNote', value='C')
+
+        PropertyFactory(concept=term4, name='prefLabel', value='A')
+        PropertyFactory(concept=term4, name='definition', value='B')
+        PropertyFactory(concept=term4, name='scopeNote', value='C')
+        PropertyFactory(concept=term4, name='notation', value='D')
+
+        PropertyFactory(concept=spanish_term, language=spanish,
+                        name='prefLabel', value='X')
+
+
+        resp = self.app.get(reverse('definitions'))
+
+        self.assertEqual(resp.status_int, 200)
+        self.assertEqual(resp.pyquery('tbody tr').size(), 4)
+
+        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(0)').text(), '1')
+        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(1)').text(), 'A')
+        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(2)').text(), '')
+        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(3)').text(), '')
+        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(4)').text(), '')
+
+        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(0)').text(), '2')
+        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(1)').text(), 'A')
+        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(2)').text(), 'B')
+        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(3)').text(), '')
+        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(4)').text(), '')
+
+        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(0)').text(), '3')
+        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(1)').text(), 'A')
+        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(2)').text(), 'B')
+        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(3)').text(), 'C')
+        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(4)').text(), '')
+
+        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(0)').text(), '4')
+        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(1)').text(), 'A')
+        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(2)').text(), 'B')
+        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(3)').text(), 'C')
+        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(4)').text(), 'D')

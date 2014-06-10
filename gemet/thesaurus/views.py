@@ -452,16 +452,17 @@ class DefinitionsView(TemplateView):
             concept_properties = (
                 term.properties
                 .filter(
-                    language=DEFAULT_LANGCODE,
+                    language__code=DEFAULT_LANGCODE,
                     name__in=['prefLabel', 'scopeNote', 'definition',
                               'notation'],
                     )
                 .values('name', 'value')
                 )
-            concept = {'code': term.code}
-            for c in concept_properties:
-                concept.update({c['name']: c['value']})
-            concepts.append(concept)
+            if concept_properties:
+                concept = {'code': term.code}
+                for c in concept_properties:
+                    concept.update({c['name']: c['value']})
+                concepts.append(concept)
 
         context.update({"concepts": concepts})
 
