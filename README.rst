@@ -82,12 +82,13 @@ be run as an unprivileged user in the product directory::
 
 6. Set up the MySQL database::
 
-    # Replace [user] and [password] with your MySQL credentials and [db_name] with the name of the database:
+    # Replace [user] and [password] with your MySQL credentials and [db_name]
+    # with the name of the database:
 
     mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET
     utf8 COLLATE utf8_general_ci;'
 
-   **The database charset MUST be ``utf8``.**
+   **The database charset MUST be utf8.**
 
 7. Update local configuration file with database credentials and database name
    - ``default`` section in ``DATABASES`` dict.
@@ -160,13 +161,12 @@ Data Import
 1. Considering you have a dump of the old database, import it in a
 seaparate database::
 
-    mysql -e 'create database gemet_old CHARACTER SET utf8 COLLATE
-    utf8_general_ci;'
+    mysql -e 'create database gemet_old CHARACTER SET utf8 COLLATE utf8_general_ci;'
     mysql gemet_old < gemet.sql
 
 2. Update the ``import`` section from ``DATABASES`` dict in the local
 configuration file with the name of the database used for import
-(``gemet_old`` from the previous example)
+(``gemet_old`` from the previous example).
 
 3. Run the management command for data import::
 
@@ -202,7 +202,7 @@ Running unit tests
 
 2. For the API::
 
-   python gemet/thesaurus/apitests/api_tests.py
+    python gemet/thesaurus/apitests/api_tests.py
 
 
 Contacts
