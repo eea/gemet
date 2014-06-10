@@ -57,3 +57,28 @@ class TestExports(GemetTest):
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(1)').text(),
                          'Group')
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(2)').text(), '31')
+
+    def test_themes_groups_relations_rdf(self):
+        term = TermFactory()
+        theme = ThemeFactory()
+        group = GroupFactory()
+        supergroup = SuperGroupFactory()
+
+        p11 = PropertyTypeFactory()
+        p12 = PropertyTypeFactory(id='2', name='theme', label='Theme')
+        p21 = PropertyTypeFactory(id='3', name='groupMember',
+                                  label='Group member')
+        p22 = PropertyTypeFactory(id='4', name='group', label='Group')
+
+        r11 = RelationFactory(property_type=p11, source=theme, target=term)
+        r12 = RelationFactory(property_type=p12, source=term, target=theme)
+        r21 = RelationFactory(property_type=p21, source=group, target=term)
+        r22 = RelationFactory(property_type=p22, source=term, target=group)
+
+        resp = self.app.get(reverse('backbone_rdf'))
+
+        self.assertEqual(resp.status_int, 200)
+        self.assertEqual(resp.body.count('supergroup/3'), 2)
+        self.assertEqual(resp.body.count('group/2'), 3)
+        self.assertEqual(resp.body.count('theme/4'), 3)
+        self.assertEqual(resp.body.count('concept/1'), 3)
