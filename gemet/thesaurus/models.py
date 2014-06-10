@@ -26,9 +26,6 @@ class Concept(Model):
 
     parents_relations = []
 
-    def __unicode__(self):
-        return self.code
-
     @property
     def visible_foreign_relations(self):
         return self.foreign_relations.filter(show_in_html=True)
@@ -132,11 +129,13 @@ class Concept(Model):
 
         return (
             children
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
+            .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
             .values('id', 'name')
         )
+
+    def __unicode__(self):
+        return self.code
 
 
 class Language(Model):
@@ -161,12 +160,12 @@ class Property(Model):
     value = CharField(max_length=16000)
     is_resource = BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = "properties"
+
     def __unicode__(self):
         return "{0} - {1} ({2})".format(
             self.concept.code, self.name, self.language.code)
-
-    class Meta:
-        verbose_name_plural = "properties"
 
 
 class PropertyType(Model):
