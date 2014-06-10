@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='changes'%}
+
+<h1>History of Changes in GEMET</h1>
+
+<dl>
+
+    <dt>2012-12-11</dt>
+    <dd>
+    New terms added:
+        air quality impact,
+        alternative fuel,
+        climate change adaptation,
+        climate change mitigation,
+        emission to air,
+        fishing fleet,
+        material flow,
+        non-mineral waste,
+        other waste,
+        waste prevention,
+        wood resource
+    </dd>
+
+    <dt>2012-11-15</dt>
+    <dd>Ukranian added</dd>
+
+    <dt>2012-07-20</dt>
+    <dd>Added Slovak, Croatian and Catalan.</dd>
+
+    <dt>2011-05-03</dt>
+    <dd>Catalan language added</dd>
+
+    <dt>2011-02-02</dt>
+    <dd>Source references that were part of the description - a.l.a. <i>(Source: HMD / OED)</i>
+    have been removed and added as separate property values.
+    </dd>
+
+    <dt>2011-01-03</dt>
+    <dd>Chinese language added</dd>
+
+    <dt>2009-07-20</dt>
+    <dd>Arabic language added</dd>
+
+</dl>
+{% endblock %}

@@ -6,6 +6,7 @@ from .views import (
     old_concept_redirect,
     download,
     AboutView,
+    ChangesView,
     ThemesView,
     GroupsView,
     DefinitionSourcesView,
@@ -37,6 +38,7 @@ urlpatterns = patterns(
     url(r'^gemet/$', ApiView.as_view(), name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^about/$', AboutView.as_view(), name='about'),
+        url(r'^changes/$', ChangesView.as_view(), name='changes'),
         url(r'^themes/$', ThemesView.as_view(), name='themes'),
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', TermView.as_view(),

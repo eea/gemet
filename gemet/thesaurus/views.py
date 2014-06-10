@@ -50,6 +50,10 @@ class AboutView(LanguageMixin, TemplateView):
     template_name = "about.html"
 
 
+class ChangesView(LanguageMixin, TemplateView):
+    template_name = "changes.html"
+
+
 class ThemesView(LanguageMixin, TemplateView):
     template_name = "themes.html"
 
