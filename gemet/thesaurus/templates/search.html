@@ -25,9 +25,12 @@
             {% get_concept_names concept.search_text as names %}
             <a href="{% url 'concept' language.code concept.id %}">{{ names.concept_name }}</a>
             {% if names.other_names %}
-              <p><b>other names:</b> {{ names.other_names }}</p>
+              <p class="other-names"><b>other names:</b> {{ names.other_names }}</p>
             {% endif %}
-            <p><b>broader context:</b> {% broader_context concept.id language.code %}</p>
+            <p class="broader-context">
+              <b>broader context:</b>
+              {% broader_context concept.id language.code %}
+            </p>
         </li>
       {% endfor %}
     </ul>

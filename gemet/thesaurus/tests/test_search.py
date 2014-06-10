@@ -21,17 +21,17 @@ class TestSearchView(GemetTest):
 
         PropertyFactory(
             concept=cp1,
-            value='{0}something{0}{0}{0}'.format(SEPARATOR),
+            value='{0}something{0}{0}not{0}hiddenLabel{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp2,
-            value='{0}something else{0}{0}{0}'.format(SEPARATOR),
+            value='{0}something else{0}altLabel{0}{0}{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp3,
-            value='{0}another somefling{0}{0}{0}'.format(SEPARATOR),
+            value='{0}another somefling{0}{0}{0}{0}'.format(SEPARATOR),
             name='searchText',
         )
         PropertyFactory(concept=cp11, value='broader 1')
@@ -79,9 +79,9 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.content li:eq(0) p').text(),
+        self.assertEqual(resp.pyquery('.broader-context:eq(0)').text(),
                          'broader context: broader 1')
-        self.assertEqual(resp.pyquery('.content li:eq(1) p').text(),
+        self.assertEqual(resp.pyquery('.broader-context:eq(1)').text(),
                          'broader context: broader 2.1; broader 2.2')
 
     def test_number_of_results_found(self):
@@ -120,3 +120,16 @@ class TestSearchView(GemetTest):
                          'something')
         self.assertEqual(resp.pyquery('.content li:eq(2) a').text(),
                          'something else')
+
+    def test_other_names(self):
+        url = reverse('search', kwargs={'langcode': 'en'})
+        form = self.app.get(url).form
+        form['query'] = '%%Label'
+        resp = form.submit()
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(len(resp.pyquery('.content li')), 2)
+        self.assertEqual(resp.pyquery('.other-names:eq(0)').text(),
+                         'other names: not; hiddenLabel')
+        self.assertEqual(resp.pyquery('.other-names:eq(1)').text(),
+                         'other names: altLabel')
