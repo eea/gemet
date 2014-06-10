@@ -25,7 +25,7 @@ from gemet.thesaurus.models import (
     DefinitionSource,
     Relation,
 )
-from collation_charts import unicode_character_map
+from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
