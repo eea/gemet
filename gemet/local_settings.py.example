@@ -3,6 +3,9 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+# debug_toolbar app is needed only in development. Remove this section
+# alltogether in production.
+
 LOCAL_INSTALLED_APPS = (
     'debug_toolbar',
 )

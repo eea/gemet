@@ -82,30 +82,48 @@ be run as an unprivileged user in the product directory::
 
 6. Set up the MySQL database::
 
-    TODO
+   # Replace [user] and [password] with your MySQL credentials and [db_name]
+   with the name of the database:
+   mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8
+   COLLATE utf8_general_ci;'
 
-7. Create initial database::
+**The database charset MUST be `utf8`**
+
+7. Update local configuration file with database credentials and database name
+   - `default` section in `DATABASES` dict.
+
+8. Create initial database structure::
 
     ./manage.py syncdb
 
-8. Load fixtures data into the database::
+9. Load fixtures data into the database::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
+
+9. Import data, see *Data import* below.
+
+10. Insert data that enables search to work properly::
+
+    ./manage.py insertdata
+
 
 Build production
 ----------------
 
-Setup the production environment like this (using an unprivileged user)::
+Setup production environment using an unprivileged user::
 
-    TODO
+    cd /var/local/gemet
+    source sandbox/bin/activate
 
-Configure supervisord and set the WSGI server port (by default it is 5000)::
+Change the local_settings.py file by setting debug mode off::
 
-    TODO
+    DEBUG = False
+    ALLOWED_HOSTS = ['localhost']  # Add allowed hosts to the list as needed
 
-At this stage, the application is up and running. You should also configure::
+Configure supervisord and set the WSGI server port::
 
-    TODO
+    cp gemet/supervisord.conf.example supervisord.conf
+    supervisorctl reload 1>/dev/null || ./bin/supervisord
 
 
 Build staging
@@ -127,17 +145,30 @@ production, for example 8010)::
     cp gemet/supervisord.conf.example supervisord.conf
     supervisorctl reload 1>/dev/null || ./bin/supervisord
 
+
 Configuration
 -------------
-Details about configurable settings can be found in `settings.py.example`.
 
-    TODO
+Details about configurable settings can be found in `settings.py`.
 
 
 Data Import
 -----------
 
-    TODO
+1. Considering you have a dump of the old database, import it in a
+seaparate database::
+
+    mysql -e 'create database gemet_old CHARACTER SET utf8 COLLATE
+    utf8_general_ci;'
+    mysql gemet_old < gemet.sql
+
+2. Update the `import` section from `DATABASES` dict in the local
+configuration file with the name of the database used for import
+(`gemet_old` from the previous example)
+
+3. Run the management command for data import::
+
+    ./manage.py import
 
 
 Development hints
@@ -155,12 +186,20 @@ Requirements
 Configure deploy
 ----------------
 
-    TODO
+* copy ``fabfile/env.ini.example`` to ``fabfile/env.ini``
+* configure staging and production settings
+* run ``fab staging deploy`` or ``fab production deploy``
 
 Running unit tests
 ------------------
 
+1. For the GEMET web application::
+
     ./manage.py test
+
+2. For the API::
+
+   python gemet/thesaurus/apitests/api_tests.py
 
 
 Contacts
@@ -206,4 +245,4 @@ the terms of the EUPL v1.1.
 
 More details under `LICENSE.txt`_.
 
-    TODO
+.. _`LICENSE.txt`: https://github.com/eaudeweb/gemet/blob/master/README.rst
