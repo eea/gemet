@@ -466,44 +466,69 @@ class DefinitionsView(TemplateView):
 
 class GemetGroupsView(TemplateView):
     template_name = 'downloads/gemet-groups.html'
+    translate = {
+        'Super groups': 'SuperGroup',
+        'Groups': 'Group',
+        'Themes': 'Theme',
+    }
 
     def get_context_data(self, **kwargs):
         context = super(GemetGroupsView, self).get_context_data(**kwargs)
 
-        supergroups = Property.objects.filter(
-            name='prefLabel',
-            concept__namespace__heading='Super groups',
-            language__code=DEFAULT_LANGCODE,
-        ).values('concept__code', 'value')
+        supergroups = (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                concept__namespace__heading='Super groups',
+                language__code=DEFAULT_LANGCODE,
+            )
+            .values('concept__code', 'value')
+        )
 
-        relations = Relation.objects.filter(
-            target_id__in=SuperGroup.objects.values_list('id', flat=True),
-            property_type__label='broader term',
-        ).values('target__code', 'source_id')
+        relations = (
+            Relation.objects
+            .filter(
+                target_id__in=SuperGroup.objects.values_list('id', flat=True),
+                property_type__label='broader term',
+            )
+            .values('target__code', 'source_id')
+        )
 
         groups = []
         for relation in relations:
-            source = Property.objects.filter(
-                concept_id=relation['source_id'],
-                name='prefLabel',
-                language__code=DEFAULT_LANGCODE,
-            ).values('concept__code', 'value').first()
+            source = (
+                Property.objects
+                .filter(
+                    concept_id=relation['source_id'],
+                    name='prefLabel',
+                    language__code=DEFAULT_LANGCODE,
+                )
+                .values('concept__code', 'value')
+                .first()
+            )
             groups.append({
                 'source_code': source['concept__code'],
                 'source_label': source['value'],
                 'target_code': relation['target__code'],
             })
 
-        themes = Property.objects.filter(
-            name='prefLabel',
-            language__code=DEFAULT_LANGCODE,
-            concept__namespace__heading='Themes',
-        ).values('concept__code', 'value')
+        themes = (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                language__code=DEFAULT_LANGCODE,
+                concept__namespace__heading='Themes',
+            )
+            .values('concept__code', 'value')
+        )
 
         context.update({
             'supergroups': supergroups,
+            'supergroup_type': self.translate.get('Super groups'),
             'groups': groups,
+            'group_type': self.translate.get('Groups'),
             'themes': themes,
+            'theme_type': self.translate.get('Themes'),
         })
 
         return context
@@ -561,7 +586,8 @@ class Skoscore(GemetRelations, SetContentToXML):
             label = r['property_type__label']
             target_code = r['target__code']
             d = {
-                'target__code': ('' if 'Matc' in label else 'concept/') + target_code,
+                'target__code':
+                    ('' if 'Matc' in label else 'concept/') + target_code,
                 'property_type__label': label.split(' ')[0]
             }
             source_code = r['source__code']
