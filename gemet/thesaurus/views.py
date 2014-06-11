@@ -672,15 +672,15 @@ class DownloadView(LanguageMixin, FormView):
 
     def form_valid(self, form):
         if self.request.POST['type'] == 'definitions':
-            reverse_name='language_definitions'
+            reverse_name = 'language_definitions'
         elif self.request.POST['type'] == 'groups':
-            reverse_name='language_groups'
+            reverse_name = 'language_groups'
+        else:
+            raise Http404
 
+        langcode = form.cleaned_data['language_names'].code
         return HttpResponseRedirect(
-            reverse(
-                reverse_name,
-                kwargs={'langcode': form.cleaned_data['language_names'].code}
-            )
+            reverse(reverse_name, kwargs={'langcode': langcode})
         )
 
 
