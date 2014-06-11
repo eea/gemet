@@ -32,7 +32,7 @@
         <p><b>Labels and definitions in RDF</b></p>
         <form method="post">
             {% csrf_token %}
-            {{ definitions_form.as_p }}
+            {{ form.as_p }}
 
             <button type="submit" name="type" value="definitions">
                 Get labels and definitios
@@ -44,7 +44,7 @@
         <p><b>Supergroups, groups and themes in RDF</b></p>
         <form method="post">
             {% csrf_token %}
-            {{ groups_form.as_p }}
+            {{ form.as_p }}
             <button type="submit" name="type" value="groups">
                 Get groups and themes
             </button>

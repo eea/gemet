@@ -148,7 +148,7 @@ class SearchView(LanguageMixin, FormView):
             self.language
         )
 
-        return self.render_to_response(self.get_context_data(form=form))
+        self.render_to_response(self.get_context_data(form=form))
 
 
 class RelationsView(LanguageMixin, TemplateView):
@@ -592,7 +592,7 @@ class Skoscore(GemetRelations, SetContentToXML):
             target_code = r['target__code']
             d = {
                 'target__code':
-                    ('' if 'Matc' in label else 'concept/') + target_code,
+                ('' if 'Matc' in label else 'concept/') + target_code,
                 'property_type__label': label.split(' ')[0]
             }
             source_code = r['source__code']
@@ -605,7 +605,7 @@ class Skoscore(GemetRelations, SetContentToXML):
         return context
 
 
-class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
+class DefinitionsByLanguage(LanguageMixin, SetContentToXML):
     template_name = 'downloads/language_definitions.rdf'
 
     def get_context_data(self, **kwargs):
@@ -616,13 +616,15 @@ class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
 
         for concept in concepts:
             properties = sorted(
-                (Property.objects
-                 .filter(concept_id=concept['id'],
-                         language=self.language,
-                         name__in=['definition', 'prefLabel'],
-                         )
-                 .values('name', 'value')
-                 ),
+                (
+                    Property.objects
+                    .filter(
+                        concept_id=concept['id'],
+                        language=self.language,
+                        name__in=['definition', 'prefLabel'],
+                    )
+                    .values('name', 'value')
+                ),
                 key=lambda x: x['name'],
                 reverse=True
             )
@@ -632,7 +634,7 @@ class DefinitionsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
         return context
 
 
-class GroupsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
+class GroupsByLanguage(LanguageMixin, SetContentToXML):
     template_name = 'downloads/language_groups.rdf'
 
     def get_context_data(self, **kwargs):
@@ -642,12 +644,15 @@ class GroupsByLanguage(LanguageMixin, SetContentToXML, TemplateView):
             context.update({
                 heading.replace(' ', '_'): (
                     Property.objects
-                    .filter(concept__namespace__heading=heading,
-                            name='prefLabel',
-                            )
-                    .values('concept__code',
-                            'value',
-                            )
+                    .filter(
+                        concept__namespace__heading=heading,
+                        language=self.language,
+                        name='prefLabel',
+                    )
+                    .values(
+                        'concept__code',
+                        'value',
+                    )
                 )
             })
 
@@ -658,47 +663,29 @@ class GemetThesaurus(SetContentToXML):
     template_name = 'downloads/gemetThesaurus'
 
 
-def download(request, langcode):
-    language = Language.objects.get(pk=langcode)
-    if request.method == 'POST':
-        if request.POST['type'] == 'definitions':
-            definitions_form = ExportForm(request.POST)
-            groups_form = ExportForm(initial=
-                                     {'language_names': langcode})
+class DownloadView(LanguageMixin, FormView):
+    template_name = "downloads/download.html"
+    form_class = ExportForm
 
-            if definitions_form.is_valid():
-                name = definitions_form.cleaned_data['language_names']
-                return HttpResponseRedirect(reverse(
+    def get_initial(self):
+        return {'language_names': self.language}
+
+    def form_valid(self, form):
+        context = {'langcode': form.cleaned_data['language_names'].code}
+        if self.request.POST['type'] == 'definitions':
+            return HttpResponseRedirect(
+                reverse(
                     'language_definitions',
-                    kwargs={
-                        'langcode': Language.objects.get(name=name).code
-                    })
+                    kwargs=context
                 )
-
-        elif request.POST['type'] == 'groups':
-            groups_form = ExportForm(request.POST)
-            definitions_form = ExportForm(initial=
-                                          {'language_names': langcode})
-
-            if groups_form.is_valid():
-                name = groups_form.cleaned_data['language_names']
-                return HttpResponseRedirect(reverse(
+            )
+        elif self.request.POST['type'] == 'groups':
+            return HttpResponseRedirect(
+                reverse(
                     'language_groups',
-                    kwargs={
-                        'langcode': Language.objects.get(name=name).code
-                    })
+                    kwargs=context
                 )
-    else:
-        definitions_form = ExportForm(initial=
-                                      {'language_names': langcode})
-        groups_form = ExportForm(initial={'language_names': langcode})
-
-    return render(request, 'downloads/download.html', {
-        'definitions_form': definitions_form,
-        'groups_form': groups_form,
-        'language': language,
-        'languages': Language.objects.values_list('code', flat=True),
-    })
+            )
 
 
 def redirect_old_urls(request, view_name):
