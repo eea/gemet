@@ -12,7 +12,6 @@ from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
-from django.http import HttpResponseRedirect
 
 from gemet.thesaurus.models import (
     Language,
@@ -679,9 +678,7 @@ class DownloadView(LanguageMixin, FormView):
             raise Http404
 
         langcode = form.cleaned_data['language_names'].code
-        return HttpResponseRedirect(
-            reverse(reverse_name, kwargs={'langcode': langcode})
-        )
+        return redirect(reverse_name, langcode=langcode)
 
 
 def redirect_old_urls(request, view_name):
