@@ -391,14 +391,14 @@ class BackboneView(TemplateView):
         return context
 
 
-class SetContentToXML(TemplateView):
+class XMLTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context,
                                        content_type="text/xml; charset=utf-8")
 
 
-class BackboneRDFView(SetContentToXML):
+class BackboneRDFView(XMLTemplateView):
     template_name = 'downloads/backbone.rdf'
 
     def get_context_data(self, **kwargs):
@@ -539,9 +539,9 @@ class GemetGroupsView(TemplateView):
         return context
 
 
-class GemetRelations(TemplateView):
+class GemetRelationsMixin(TemplateView):
     def get_context_data(self, **kwargs):
-        context = super(GemetRelations, self).get_context_data(**kwargs)
+        context = super(GemetRelationsMixin, self).get_context_data(**kwargs)
 
         self.relations = Relation.objects.filter(
             source__namespace__heading='Concepts',
@@ -555,7 +555,7 @@ class GemetRelations(TemplateView):
         return context
 
 
-class GemetRelationsView(GemetRelations):
+class GemetRelationsView(GemetRelationsMixin):
     template_name = 'downloads/gemet-relations.html'
     translate = {
         'narrower term': 'Narrower',
@@ -580,7 +580,7 @@ class GemetRelationsView(GemetRelations):
         return context
 
 
-class Skoscore(GemetRelations, SetContentToXML):
+class Skoscore(GemetRelationsMixin, XMLTemplateView):
     template_name = 'downloads/skoscore.rdf'
 
     def get_context_data(self, **kwargs):
@@ -605,7 +605,7 @@ class Skoscore(GemetRelations, SetContentToXML):
         return context
 
 
-class DefinitionsByLanguage(LanguageMixin, SetContentToXML):
+class DefinitionsByLanguage(LanguageMixin, XMLTemplateView):
     template_name = 'downloads/language_definitions.rdf'
 
     def get_context_data(self, **kwargs):
@@ -634,7 +634,7 @@ class DefinitionsByLanguage(LanguageMixin, SetContentToXML):
         return context
 
 
-class GroupsByLanguage(LanguageMixin, SetContentToXML):
+class GroupsByLanguage(LanguageMixin, XMLTemplateView):
     template_name = 'downloads/language_groups.rdf'
 
     def get_context_data(self, **kwargs):
@@ -659,8 +659,8 @@ class GroupsByLanguage(LanguageMixin, SetContentToXML):
         return context
 
 
-class GemetThesaurus(SetContentToXML):
-    template_name = 'downloads/gemetThesaurus'
+class GemetThesaurus(XMLTemplateView):
+    template_name = 'downloads/gemetThesaurus.xml'
 
 
 class DownloadView(LanguageMixin, FormView):
