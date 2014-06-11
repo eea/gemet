@@ -36,7 +36,7 @@ class TestExports(GemetTest):
         r41 = RelationFactory(property_type=p21, source=group, target=term3)
         r42 = RelationFactory(property_type=p22, source=term3, target=group)
 
-        resp = self.app.get(reverse('backbone'))
+        resp = self.app.get(reverse('gemet-backbone.html'))
 
         self.assertEqual(resp.status_int, 200)
         self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(0)').text(), '11')
@@ -76,7 +76,7 @@ class TestExports(GemetTest):
         r21 = RelationFactory(property_type=p21, source=group, target=term)
         r22 = RelationFactory(property_type=p22, source=term, target=group)
 
-        resp = self.app.get(reverse('backbone_rdf'))
+        resp = self.app.get(reverse('gemet-backbone.rdf'))
 
         self.assertEqual(resp.status_int, 200)
         self.assertEqual(resp.body.count('supergroup/3'), 2)
@@ -110,7 +110,7 @@ class TestExports(GemetTest):
                         name='prefLabel', value='X')
 
 
-        resp = self.app.get(reverse('definitions'))
+        resp = self.app.get(reverse('gemet-definitions.html'))
 
         self.assertEqual(resp.status_int, 200)
         self.assertEqual(resp.pyquery('tbody tr').size(), 4)

@@ -683,11 +683,17 @@ class DownloadView(LanguageMixin, FormView):
 
 def redirect_old_urls(request, view_name):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
-    old_new_views = {'index_html': 'themes', 'groups': 'groups'}
-    view = old_new_views.get(view_name)
-    if not view:
-        raise Http404
-    return redirect(view, langcode=langcode)
+    old_new_views = {
+        'index_html': 'themes',
+        'groups': 'groups',
+        'rdf': 'download',
+    }
+    view = old_new_views.get(view_name, view_name)
+    if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
+                'gemet-groups.rdf']:
+        return redirect(view, permanent=True, langcode=langcode)
+    else:
+        return redirect(view, permanent=True)
 
 
 def old_concept_redirect(request):
