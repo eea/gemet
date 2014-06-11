@@ -95,7 +95,7 @@ def get_reverse_name(heading):
         'Super groups': 'supergroup',
     }
 
-    return heading_to_urlname.get(heading, None)
+    return heading_to_urlname.get(heading)
 
 
 def get_concept_uri(view_name, concept_id, langcode):
