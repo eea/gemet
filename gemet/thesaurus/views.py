@@ -148,7 +148,7 @@ class SearchView(LanguageMixin, FormView):
             self.language
         )
 
-        self.render_to_response(self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class RelationsView(LanguageMixin, TemplateView):
@@ -671,21 +671,17 @@ class DownloadView(LanguageMixin, FormView):
         return {'language_names': self.language}
 
     def form_valid(self, form):
-        context = {'langcode': form.cleaned_data['language_names'].code}
         if self.request.POST['type'] == 'definitions':
-            return HttpResponseRedirect(
-                reverse(
-                    'language_definitions',
-                    kwargs=context
-                )
-            )
+            reverse_name='language_definitions'
         elif self.request.POST['type'] == 'groups':
-            return HttpResponseRedirect(
-                reverse(
-                    'language_groups',
-                    kwargs=context
-                )
+            reverse_name='language_groups'
+
+        return HttpResponseRedirect(
+            reverse(
+                reverse_name,
+                kwargs={'langcode': form.cleaned_data['language_names'].code}
             )
+        )
 
 
 def redirect_old_urls(request, view_name):
