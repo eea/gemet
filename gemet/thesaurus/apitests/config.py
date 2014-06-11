@@ -4,13 +4,16 @@ from api_tests import ApiTester
 HOST = ApiTester().get_full_path()
 
 ALL_TTRANSLATIONS_FOR_CONCEPT = [
-    ('ar', u'\u0627\u0644\u0633\u0641\u0631 \u0641\u064a \u0627\u0644\u0641\u0636\u0627\u0621'),
-    ('bg', u'\u041f\u044a\u0442\u0443\u0432\u0430\u043d\u0435 \u0432 \u043a\u043e\u0441\u043c\u043e\u0441\u0430'),
+    ('ar',
+     u'\u0627\u0644\u0633\u0641\u0631 \u0641\u064a \u0627\u0644\u0641\u0636\u0627\u0621'),
+    ('bg',
+     u'\u041f\u044a\u0442\u0443\u0432\u0430\u043d\u0435 \u0432 \u043a\u043e\u0441\u043c\u043e\u0441\u0430'),
     ('ca', u'viatge espacial'),
     ('cs', u'let kosmick\xfd'),
     ('da', u'rumfart'),
     ('de', u'Raumfahrt'),
-    ('el', u'\u03b4\u03b9\u03b1\u03c3\u03c4\u03b7\u03bc\u03b9\u03ba\u03cc \u03c4\u03b1\u03be\u03af\u03b4\u03b9'),
+    ('el',
+     u'\u03b4\u03b9\u03b1\u03c3\u03c4\u03b7\u03bc\u03b9\u03ba\u03cc \u03c4\u03b1\u03be\u03af\u03b4\u03b9'),
     ('en', u'space travel'),
     ('en-US', u'space travel'),
     ('es', u'viaje espacial'),
@@ -30,14 +33,16 @@ ALL_TTRANSLATIONS_FOR_CONCEPT = [
     ('pl', u'podr\xf3\u017c kosmiczna'),
     ('pt', u'viagens espaciais'),
     ('ro', u'c\u0103l\u0103torie \xeen spa\u0163iu'),
-    ('ru', u'\u043a\u043e\u0441\u043c\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u043f\u043e\u043b\u0435\u0442'),
+    ('ru',
+     u'\u043a\u043e\u0441\u043c\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u043f\u043e\u043b\u0435\u0442'),
     ('sk', u'kozmick\xfd let'),
     ('sl', u'vesoljski polet'),
     ('sv', u'rymdf\xe4rder'),
     ('tr', u'uzay yolculu\u011fu'),
-    ('uk', u'\u043a\u043e\u0441\u043c\u0456\u0447\u043d\u0438\u0439 \u043f\u043e\u043b\u0456\u0442'),
+    ('uk',
+     u'\u043a\u043e\u0441\u043c\u0456\u0447\u043d\u0438\u0439 \u043f\u043e\u043b\u0456\u0442'),
     ('zh-CN', u'\u592a\u7a7a\u65c5\u884c')
-    ]
+]
 
 TOPMOST_TERMS = [
     'accident', 'administration', 'agriculture', 'analysis',
@@ -69,7 +74,7 @@ TOPMOST_TERMS = [
     'state of matter', 'statistics', 'subject', 'technical regulation',
     'technology', 'tourism', 'trade (services)', 'trade activity',
     'traffic', 'transportation', 'transportation mean', 'vibration', 'waste'
-    ]
+]
 
 TOPMOST_GROUPS = [
     'ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING',
@@ -90,7 +95,7 @@ TOPMOST_GROUPS = [
     'RESOURCES (utilisation of resources)', 'RISKS, SAFETY', 'SOCIETY',
     'SPACE', 'TIME (chronology)', 'TRADE, SERVICES',
     'TRAFFIC, TRANSPORTATION', 'WASTES, POLLUTANTS, POLLUTION'
-    ]
+]
 
 TOPMOST_THEMES = [
     'administration', 'agriculture', 'air', 'animal husbandry', 'biology',
@@ -103,24 +108,24 @@ TOPMOST_THEMES = [
     'radiations', 'research', 'resources', 'social aspects, population',
     'soil', 'space', 'tourism', 'trade, services', 'transport',
     'urban environment, urban stress', 'waste', 'water'
-    ]
+]
 
-TEST_PREFFIX = set([
+TEST_PREFFIX = {
     'waste air', 'emission to air', 'respiratory air', 'soil air', 'air'
-    ])
+}
 
-TEST_SUFFIX = set([
+TEST_SUFFIX = {
     'air traffic law', 'aircraft engine emission', 'air quality monitoring',
     'air safety', 'air traffic regulation', 'airborne noise',
     'air quality management', 'air quality', 'air pollutant',
-    'air conditioning', 'air transportation', 'air movement', 'aircraft noise',
-    'air quality control', 'aircraft', 'air traffic', 'air quality impact',
-    'air pollution', 'air-water interaction', 'air temperature', 'air',
-    'airport', 'airspace planning'
-    ])
+    'air conditioning', 'air transportation', 'air movement',
+    'aircraft noise', 'air quality control', 'aircraft',
+    'air traffic', 'air quality impact', 'air pollution',
+    'air-water interaction', 'air temperature', 'air', 'airport',
+    'airspace planning'
+}
 
-
-TEST_SUFFIX_PREFFIX = set([
+TEST_SUFFIX_PREFFIX = {
     'air traffic law', 'military air traffic', 'respiratory air',
     'aircraft engine emission', 'air quality monitoring',
     'ocean-air interface', 'air safety', 'waste air',
@@ -132,14 +137,14 @@ TEST_SUFFIX_PREFFIX = set([
     'emission to air', 'air traffic', 'air quality impact', 'soil air',
     'air pollution', 'clean air area', 'air-water interaction',
     'repair business', 'air temperature', 'air', 'clean air car', 'airport',
-    'airspace planning', 'dairy industry'
-    ])
+    'airspace planning', 'dairy industry',
+}
 
-TEST_EXACT_TERM = set(['travel'])
+TEST_EXACT_TERM = {'travel'}
 
-TEST_PREFFIX_TERMS = set(['travel cost', 'travel'])
+TEST_PREFFIX_TERMS = {'travel cost', 'travel'}
 
-TEST_SUFFIX_TERMS = set(['travel', 'gravel', 'space travel'])
+TEST_SUFFIX_TERMS = {'travel', 'gravel', 'space travel'}
 
 TEST_NO_MATCH = set([])
 
@@ -147,22 +152,23 @@ TEST_NO_MATCH_REGEX = set([])
 
 TEST_NO_WILDCARD = set(['air'])
 
-TEST_QUOTE = set([
+TEST_QUOTE = {
     "earth's crust", "woman's status", "Chagas' disease",
-    "public prosecutor's office"
-    ])
+    "public prosecutor's office",
+}
 
 TEST_AVAILABLE_LANGUAGES = sorted([
     'ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'en-US', 'es', 'et', 'eu',
     'fi', 'fr', 'ga', 'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'no', 'pl',
     'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh-CN'
-    ])
+])
 
 TEST_SUPPORTED_LANGUAGES = [
     'ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'en-US', 'es', 'et', 'eu',
     'fi', 'fr', 'ga', 'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'no', 'pl',
     'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh-CN'
-    ]
+]
+
 TEST_EXTRA_LANGUAGES = ['zh']
 
 THESAURI = [
@@ -170,7 +176,7 @@ THESAURI = [
         'name': 'Concepts',
         'uri': HOST + 'concept/',
         'version': 'GEMET - Concepts, version 3.1, 2012-07-20'
-        },
+    },
     {
         'name': 'Super groups',
         'uri': HOST + 'supergroup/',
@@ -180,19 +186,21 @@ THESAURI = [
         'name': 'Groups',
         'uri': HOST + 'group/',
         'version': 'GEMET - Groups, version 2.4, 2010-01-13'
-        },
+    },
     {
         'name': 'Themes',
         'uri': HOST + 'theme/',
         'version': 'GEMET - Themes, version 2.4, 2010-01-13'
-        }
-    ]
+    }
+]
 
-THESAURI_EXTENSION = [{
-    'name': 'Inspire Themes',
-    'uri': 'http://inspire.ec.europa.eu/theme/',
-    'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'
-    }]
+THESAURI_EXTENSION = [
+    {
+        'name': 'Inspire Themes',
+        'uri': 'http://inspire.ec.europa.eu/theme/',
+        'version': 'GEMET - INSPIRE themes, version 1.0, 2008-06-01'
+    }
+]
 
 THEMES_PREF_LABEL = [
     {'string': 'administration', 'language': 'en'},
@@ -235,7 +243,7 @@ THEMES_PREF_LABEL = [
     {'string': 'urban environment, urban stress', 'language': 'en'},
     {'string': 'waste', 'language': 'en'},
     {'string': 'water', 'language': 'en'}
-    ]
+]
 
 THEMES_URI = [
     HOST + 'theme/1',
@@ -278,51 +286,62 @@ THEMES_URI = [
     HOST + 'theme/38',
     HOST + 'theme/39',
     HOST + 'theme/40'
-    ]
+]
 
-THEMES_THESAURUS = 40*[HOST + 'theme/']
+THEMES_THESAURUS = 40 * [HOST + 'theme/']
 
 GROUPS_PREF_LABEL = [
     {'string':
         'ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING',
-     'language': 'en'},
-    {'string': 'AGRICULTURE, FORESTRY; ANIMAL HUSBANDRY; FISHERY',
-     'language': 'en'},
-    {'string':
-        'ANTHROPOSPHERE (built environment, human settlements, land setup)',
         'language': 'en'},
+    {'string': 'AGRICULTURE, FORESTRY; ANIMAL HUSBANDRY; FISHERY',
+        'language': 'en'},
+    {'string':
+         'ANTHROPOSPHERE (built environment, human settlements, land setup)',
+         'language': 'en'},
     {'string': 'ATMOSPHERE (air, climate)', 'language': 'en'},
-    {'string': 'BIOSPHERE (organisms, ecosystems)', 'language': 'en'},
-    {'string': 'CHEMISTRY, SUBSTANCES, PROCESSES', 'language': 'en'},
+    {'string': 'BIOSPHERE (organisms, ecosystems)',
+     'language': 'en'},
+    {'string': 'CHEMISTRY, SUBSTANCES, PROCESSES',
+     'language': 'en'},
     {'string': 'ECONOMICS, FINANCE', 'language': 'en'},
     {'string': 'EFFECTS, IMPACTS', 'language': 'en'},
     {'string': 'ENERGY', 'language': 'en'},
-    {'string': 'ENVIRONMENT (natural environment, anthropic environment)',
-     'language': 'en'}, {'string': 'ENVIRONMENTAL POLICY', 'language': 'en'},
+    {
+        'string': 'ENVIRONMENT (natural environment, anthropic environment)',
+        'language': 'en'},
+    {'string': 'ENVIRONMENTAL POLICY', 'language': 'en'},
     {'string': 'FUNCTIONAL TERMS', 'language': 'en'},
     {'string': 'GENERAL TERMS', 'language': 'en'},
     {'string': 'HEALTH, NUTRITION', 'language': 'en'},
     {'string': 'HYDROSPHERE (freshwater, marine water, waters)',
+        'language': 'en'},
+    {'string': 'INDUSTRY, CRAFTS; TECHNOLOGY; EQUIPMENTS',
      'language': 'en'},
-    {'string': 'INDUSTRY, CRAFTS; TECHNOLOGY; EQUIPMENTS', 'language': 'en'},
     {'string': 'INFORMATION, EDUCATION, CULTURE, ENVIRONMENTAL AWARENESS',
+        'language': 'en'},
+    {'string': 'LAND (landscape, geography)',
      'language': 'en'},
-    {'string': 'LAND (landscape, geography)', 'language': 'en'},
-    {'string': 'LEGISLATION, NORMS, CONVENTIONS', 'language': 'en'},
-    {'string': 'LITHOSPHERE (soil, geological processes)', 'language': 'en'},
+    {'string': 'LEGISLATION, NORMS, CONVENTIONS',
+     'language': 'en'},
+    {'string': 'LITHOSPHERE (soil, geological processes)',
+     'language': 'en'},
     {'string': 'PHYSICAL ASPECTS, NOISE, VIBRATIONS, RADIATIONS',
-     'language': 'en'}, {'string': 'PRODUCTS, MATERIALS', 'language': 'en'},
+        'language': 'en'},
+    {'string': 'PRODUCTS, MATERIALS', 'language': 'en'},
     {'string': 'RECREATION, TOURISM', 'language': 'en'},
     {'string': 'RESEARCH, SCIENCES', 'language': 'en'},
-    {'string': 'RESOURCES (utilisation of resources)', 'language': 'en'},
+    {'string': 'RESOURCES (utilisation of resources)',
+     'language': 'en'},
     {'string': 'RISKS, SAFETY', 'language': 'en'},
     {'string': 'SOCIETY', 'language': 'en'},
     {'string': 'SPACE', 'language': 'en'},
     {'string': 'TIME (chronology)', 'language': 'en'},
     {'string': 'TRADE, SERVICES', 'language': 'en'},
     {'string': 'TRAFFIC, TRANSPORTATION', 'language': 'en'},
-    {'string': 'WASTES, POLLUTANTS, POLLUTION', 'language': 'en'}
-    ]
+    {'string': 'WASTES, POLLUTANTS, POLLUTION',
+     'language': 'en'}
+]
 
 GROUPS_URI = [
     HOST + 'group/96',
@@ -357,9 +376,9 @@ GROUPS_URI = [
     HOST + 'group/8575',
     HOST + 'group/8603',
     HOST + 'group/9117'
-    ]
+]
 
-GROUPS_THESAURUS = 32*[HOST + 'group/']
+GROUPS_THESAURUS = 32 * [HOST + 'group/']
 
 SUPERGROUP_RELATIVES = [
     'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/10112',
@@ -374,11 +393,11 @@ SUPERGROUP_RELATIVES = [
     'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/8575',
     'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/8603',
     'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'group/9117'
-    ]
+]
 
 CONCEPT_RELATIVES = [
     HOST + '2004/06/gemet-schema.rdf#group ' + HOST + 'group/96',
     HOST + '2004/06/gemet-schema.rdf#theme ' + HOST + 'theme/1',
     'http://www.w3.org/2004/02/skos/core#broader ' + HOST + 'concept/13292',
     'http://www.w3.org/2004/02/skos/core#narrower ' + HOST + 'concept/661'
-    ]
+]

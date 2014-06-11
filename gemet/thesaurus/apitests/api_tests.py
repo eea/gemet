@@ -1,6 +1,7 @@
+from argparse import ArgumentParser
 import xmlrpclib
-import random
 import unittest
+import sys
 
 from config import *
 
@@ -537,8 +538,15 @@ class TestGetAllConceptRelatives(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    if LOCAL_TEST:
-        apiTester = ApiTester('http://localhost:8000/gemet/')
-    else:
+    parser = ArgumentParser()
+    parser.add_argument('--public', action='store_true')
+    options = parser.parse_args()
+    argv = sys.argv
+
+    if options.public:
         apiTester = ApiTester('http://www.eionet.europa.eu/gemet/')
-    unittest.main()
+        argv.remove('--public')
+    else:
+        apiTester = ApiTester('http://localhost:8000/gemet/')
+
+    unittest.main(argv=argv)
