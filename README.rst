@@ -202,7 +202,10 @@ Running unit tests
 
 2. For the API::
 
-    python gemet/thesaurus/apitests/api_tests.py
+    python apitests/api_tests.py
+
+An optional ``--public`` parameter exists, which runs the tests
+against the production website.
 
 
 Contacts
