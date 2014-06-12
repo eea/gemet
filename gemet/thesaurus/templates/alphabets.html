@@ -5,11 +5,10 @@
 
   <h1>{{ language.name }}'s alphabet</h1>
 
-  <ul>
+  <ol class="letter {% if language.rtl %}direction-rtl{% endif %}">
     {% if letters %}
       {% for letter in letters %}
-        <li class=letter>
-          {{ forloop.counter }}
+        <li>
           {% for l in letter %}
             {{ l }}
           {% endfor %}
@@ -18,6 +17,6 @@
     {% else %}
       The alphabet information is not available.
     {% endif %}
-  </ul>
+  </ol>
 
 {% endblock %}
