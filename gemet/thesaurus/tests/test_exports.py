@@ -66,10 +66,11 @@ class TestExports(GemetTest):
         resp = self.app.get(reverse('gemet-backbone.rdf'))
 
         self.assertEqual(resp.status_int, 200)
-        self.assertEqual(resp.body.count('supergroup/3'), 2)
-        self.assertEqual(resp.body.count('group/2'), 3)
-        self.assertEqual(resp.body.count('theme/4'), 3)
-        self.assertEqual(resp.body.count('concept/1'), 3)
+        self.assertEqual(resp.content_type, 'text/xml')
+        self.assertEqual(resp.content.count('supergroup/3'), 2)
+        self.assertEqual(resp.content.count('group/2'), 3)
+        self.assertEqual(resp.content.count('theme/4'), 3)
+        self.assertEqual(resp.content.count('concept/1'), 3)
 
     def test_label_and_definitions(self):
         term1 = TermFactory(id='1', code='1')
@@ -193,3 +194,26 @@ class TestExports(GemetTest):
             self.assertTrue(
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
             )
+
+    def test_skoscore(self):
+        term1 = TermFactory(id='1', code='11')
+        term2 = TermFactory(id='2', code='12')
+        term3 = TermFactory(id='3', code='13')
+
+        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
+        p3 = PropertyTypeFactory(id=3, name='related', label='related')
+        r1 = RelationFactory(property_type=p1, source=term1, target=term2)
+        r2 = RelationFactory(property_type=p2, source=term2, target=term1)
+        r3 = RelationFactory(property_type=p3, source=term2, target=term3)
+        r4 = RelationFactory(property_type=p3, source=term3, target=term2)
+
+        resp = self.app.get(reverse('gemet-skoscore.rdf'))
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.content.count('concept/11'), 2)
+        self.assertEqual(resp.content.count('concept/12'), 3)
+        self.assertEqual(resp.content.count('concept/13'), 2)
+        self.assertEqual(resp.content.count('broader'), 1)
+        self.assertEqual(resp.content.count('narrower'), 1)
+        self.assertEqual(resp.content.count('related'), 2)
