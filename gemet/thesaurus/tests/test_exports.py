@@ -36,28 +36,15 @@ class TestExports(GemetTest):
         r41 = RelationFactory(property_type=p21, source=group, target=term3)
         r42 = RelationFactory(property_type=p22, source=term3, target=group)
 
+        rows = ['11 Theme 21', '13 Theme 21', '12 Group 31', '13 Group 31']
+
         resp = self.app.get(reverse('gemet-backbone.html'))
 
         self.assertEqual(resp.status_int, 200)
-        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(0)').text(), '11')
-        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(1)').text(),
-                         'Theme')
-        self.assertEqual(resp.pyquery('table tr:eq(0) td:eq(2)').text(), '21')
-
-        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(0)').text(), '13')
-        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(1)').text(),
-                         'Theme')
-        self.assertEqual(resp.pyquery('table tr:eq(1) td:eq(2)').text(), '21')
-
-        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(0)').text(), '12')
-        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(1)').text(),
-                         'Group')
-        self.assertEqual(resp.pyquery('table tr:eq(2) td:eq(2)').text(), '31')
-
-        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(0)').text(), '13')
-        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(1)').text(),
-                         'Group')
-        self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(2)').text(), '31')
+        for i in range(0,4):
+            self.assertTrue(
+                resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
+            )
 
     def test_themes_groups_relations_rdf(self):
         term = TermFactory()
@@ -180,3 +167,29 @@ class TestExports(GemetTest):
                          'Theme')
         self.assertEqual(resp.pyquery('table:eq(2) tbody td:eq(2)').text(),
                          'C')
+
+    def test_gemet_relations_html(self):
+        term1 = TermFactory(id='1', code='11')
+        term2 = TermFactory(id='2', code='12')
+        term3 = TermFactory(id='3', code='13')
+
+        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
+        p3 = PropertyTypeFactory(id=3, name='related', label='related')
+        r1 = RelationFactory(property_type=p1, source=term1, target=term2)
+        r2 = RelationFactory(property_type=p2, source=term2, target=term1)
+        r3 = RelationFactory(property_type=p3, source=term2, target=term3)
+        r4 = RelationFactory(property_type=p3, source=term3, target=term2)
+
+        rows = ['11 Narrower 12', '12 Broader 11', '12 Related 13',
+                '13 Related 12']
+
+        resp = self.app.get(reverse('gemet-relations.html'))
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.pyquery('table').size(), 1)
+        self.assertEqual(resp.pyquery('tbody tr').size(), 4)
+        for i in range(0,4):
+            self.assertTrue(
+                resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
+            )
