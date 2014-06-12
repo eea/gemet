@@ -627,7 +627,8 @@ class DefinitionsByLanguage(LanguageMixin, XMLTemplateView):
                 key=lambda x: x['name'],
                 reverse=True
             )
-            definitions[concept['code']] = properties
+            if properties:
+                definitions[concept['code']] = properties
 
         context.update({'definitions': definitions})
         return context

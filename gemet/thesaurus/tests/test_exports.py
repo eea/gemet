@@ -73,7 +73,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('theme/4'), 3)
         self.assertEqual(resp.content.count('concept/1'), 3)
 
-    def test_label_and_definitions(self):
+    def test_label_and_definitions_html(self):
         term1 = TermFactory(id='1', code='1')
         term2 = TermFactory(id='2', code='2')
         term3 = TermFactory(id='3', code='3')
@@ -219,11 +219,40 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('narrower'), 1)
         self.assertEqual(resp.content.count('related'), 2)
 
+    def test_label_and_definitions_rdf(self):
+        term1 = TermFactory(id='1', code='11')
+        term2 = TermFactory(id='2', code='12')
+
+        PropertyFactory(concept=term1, name='prefLabel', value='A_label')
+        PropertyFactory(concept=term2, name='prefLabel', value='B_label')
+        PropertyFactory(concept=term2, name='definition',
+                        value='B_definition')
+
+        spanish = LanguageFactory(code='es', name='Spanish')
+        term3 = TermFactory(id='3', code='13')
+        PropertyFactory(concept=term3, language=spanish, name='prefLabel',
+                        value='C_label')
+        PropertyFactory(concept=term3, language=spanish, name='definition',
+                        value='C_definition')
+
+        resp = self.app.get(reverse('gemet-definitions.rdf', args=['en']))
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.content_type, 'text/xml')
+        self.assertEqual(resp.content.count('xml:lang="en"'), 1)
+        self.assertEqual(resp.content.count('concept/11'), 1)
+        self.assertEqual(resp.content.count('A_label'), 1)
+        self.assertEqual(resp.content.count('concept/12'), 1)
+        self.assertEqual(resp.content.count('B_label'), 1)
+        self.assertEqual(resp.content.count('B_definition'), 1)
+        self.assertEqual(resp.content.count('concept/13'), 0)
+        self.assertEqual(resp.content.count('C_label'), 0)
+        self.assertEqual(resp.content.count('C_definition'), 0)
+
     def test_gemet_groups_rdf(self):
         supergroup = SuperGroupFactory(code='10')
         group = GroupFactory(code='11')
         theme = ThemeFactory(code='12')
-
         PropertyFactory(concept=supergroup, name='prefLabel', value='A_label')
         PropertyFactory(concept=group, name='prefLabel', value='B_label')
         PropertyFactory(concept=theme, name='prefLabel', value='C_label')
@@ -232,12 +261,12 @@ class TestExports(GemetTest):
         es_supergroup = SuperGroupFactory(id=5, code='20')
         es_group = GroupFactory(id=6, code='21')
         es_theme = ThemeFactory(id=7, code='22')
-        PropertyFactory(concept=supergroup, language=spanish, name='prefLabel',
-                        value='A_label')
-        PropertyFactory(concept=group, language=spanish, name='prefLabel',
-                        value='B_label')
-        PropertyFactory(concept=theme, language=spanish, name='prefLabel',
-                        value='C_label')
+        PropertyFactory(concept=es_supergroup, language=spanish,
+                        name='prefLabel', value='A_label_spanish')
+        PropertyFactory(concept=es_group, language=spanish, name='prefLabel',
+                        value='B_label_spanish')
+        PropertyFactory(concept=es_theme, language=spanish, name='prefLabel',
+                        value='C_label_spanish')
 
         resp = self.app.get(reverse('gemet-groups.rdf', args=['en']))
 
@@ -250,3 +279,9 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('B_label'), 1)
         self.assertEqual(resp.content.count('theme/12'), 1)
         self.assertEqual(resp.content.count('C_label'), 1)
+        self.assertEqual(resp.content.count('A_label_spanish'), 0)
+        self.assertEqual(resp.content.count('supergroup/20'), 0)
+        self.assertEqual(resp.content.count('B_label_spanish'), 0)
+        self.assertEqual(resp.content.count('group/21'), 0)
+        self.assertEqual(resp.content.count('C_label_spanish'), 0)
+        self.assertEqual(resp.content.count('theme/22'), 0)
