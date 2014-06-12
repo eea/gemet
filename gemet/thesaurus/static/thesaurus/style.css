@@ -6,3 +6,8 @@
 .results-nr {
     float: right;
 }
+
+#search-bar {
+    background-color: lightcyan;
+    padding: 8px;
+}

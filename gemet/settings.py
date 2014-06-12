@@ -23,6 +23,7 @@ SECRET_KEY = '*e59o%%4$uxue*-aqn58$adv!fu+%p&7rg3bp=k36blzn9#(4r'
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
+    'gemet.layout.layout_context_processor',
 )
 
 ALLOWED_HOSTS = []
@@ -47,6 +48,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'gemet.layout.LayoutMiddleware',
 )
 
 ROOT_URLCONF = 'gemet.urls'
@@ -67,6 +69,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+USE_ZOPE_LAYOUT = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

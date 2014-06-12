@@ -1,0 +1,31 @@
+{% autoescape off %}
+{{ header_text }}
+{% endautoescape %}
+
+<div id="search-bar">
+    <a href="{% url 'themes' language.code %}">Thematic Listings</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'search' language.code %}">Search Thesaurus</a>
+</div>
+
+{% block content %}
+{% endblock %}
+
+<div class="">
+  <a href="{% url 'download' language.code %}">Download</a>
+  &nbsp;|&nbsp;
+  <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+  &nbsp;|&nbsp;
+  <a href="{% url 'about' language.code %}">About GEMET</a>
+  &nbsp;|&nbsp;
+  <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
+  &nbsp;|&nbsp;
+  <a href="{% url 'changes' language.code %}">History of changes</a>
+</div>
+{% autoescape off %}
+{{ footer_text }}
+{% endautoescape %}
