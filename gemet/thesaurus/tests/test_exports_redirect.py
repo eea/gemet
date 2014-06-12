@@ -4,13 +4,6 @@ from django.core.urlresolvers import reverse
 
 from .factories import (
     LanguageFactory,
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    TermFactory,
-    ThemeFactory,
-    GroupFactory,
-    SuperGroupFactory,
 )
 from . import GemetTest
 

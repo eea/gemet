@@ -86,7 +86,8 @@ urlpatterns = patterns(
         ])),
     url(
         r'^(?P<view_name>\index_html|groups|rdf|gemet-backbone\.html|gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|gemet-definitions\.rdf|gemet-groups\.rdf)/$',
-        redirect_old_urls
+        redirect_old_urls,
+        name='redirects'
     ),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),

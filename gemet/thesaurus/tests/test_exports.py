@@ -138,3 +138,45 @@ class TestExports(GemetTest):
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(2)').text(), 'B')
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(3)').text(), 'C')
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(4)').text(), 'D')
+
+    def test_gemet_groups_html(self):
+        supergroup = SuperGroupFactory(code='10')
+        group = GroupFactory(code='11')
+        theme = ThemeFactory(code='12')
+
+        PropertyFactory(concept=supergroup, name='prefLabel', value='A')
+        PropertyFactory(concept=group, name='prefLabel', value='B')
+        PropertyFactory(concept=theme, name='prefLabel', value='C')
+
+        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
+        r1 = RelationFactory(property_type=p1, source=supergroup, target=group)
+        r2 = RelationFactory(property_type=p2, source=group, target=supergroup)
+
+        resp = self.app.get(reverse('gemet-groups.html'))
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.pyquery('table:eq(0) tbody tr').size(), 1)
+        self.assertEqual(resp.pyquery('table:eq(0) tbody td:eq(0)').text(),
+                         '10')
+        self.assertEqual(resp.pyquery('table:eq(0) tbody td:eq(1)').text(),
+                         'SuperGroup')
+        self.assertEqual(resp.pyquery('table:eq(0) tbody td:eq(2)').text(), '')
+        self.assertEqual(resp.pyquery('table:eq(0) tbody td:eq(3)').text(),
+                         'A')
+        self.assertEqual(resp.pyquery('table:eq(1) tbody tr').size(), 1)
+        self.assertEqual(resp.pyquery('table:eq(1) tbody td:eq(0)').text(),
+                         '11')
+        self.assertEqual(resp.pyquery('table:eq(1) tbody td:eq(1)').text(),
+                         'Group')
+        self.assertEqual(resp.pyquery('table:eq(1) tbody td:eq(2)').text(),
+                         '10')
+        self.assertEqual(resp.pyquery('table:eq(1) tbody td:eq(3)').text(),
+                         'B')
+        self.assertEqual(resp.pyquery('table:eq(2) tbody tr').size(), 1)
+        self.assertEqual(resp.pyquery('table:eq(2) tbody td:eq(0)').text(),
+                         '12')
+        self.assertEqual(resp.pyquery('table:eq(2) tbody td:eq(1)').text(),
+                         'Theme')
+        self.assertEqual(resp.pyquery('table:eq(2) tbody td:eq(2)').text(),
+                         'C')
