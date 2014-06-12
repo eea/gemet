@@ -12,6 +12,7 @@ from .factories import (
 )
 from . import GemetTest
 
+
 class TestExports(GemetTest):
 
     def test_themes_groups_relations_html(self):
@@ -41,7 +42,7 @@ class TestExports(GemetTest):
         resp = self.app.get(reverse('gemet-backbone.html'))
 
         self.assertEqual(resp.status_int, 200)
-        for i in range(0,4):
+        for i in range(0, 4):
             self.assertTrue(
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
             )
@@ -96,7 +97,6 @@ class TestExports(GemetTest):
 
         PropertyFactory(concept=spanish_term, language=spanish,
                         name='prefLabel', value='X')
-
 
         resp = self.app.get(reverse('gemet-definitions.html'))
 
@@ -190,7 +190,7 @@ class TestExports(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.pyquery('table').size(), 1)
         self.assertEqual(resp.pyquery('tbody tr').size(), 4)
-        for i in range(0,4):
+        for i in range(0, 4):
             self.assertTrue(
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
             )
@@ -211,9 +211,42 @@ class TestExports(GemetTest):
         resp = self.app.get(reverse('gemet-skoscore.rdf'))
 
         self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.content_type, 'text/xml')
         self.assertEqual(resp.content.count('concept/11'), 2)
         self.assertEqual(resp.content.count('concept/12'), 3)
         self.assertEqual(resp.content.count('concept/13'), 2)
         self.assertEqual(resp.content.count('broader'), 1)
         self.assertEqual(resp.content.count('narrower'), 1)
         self.assertEqual(resp.content.count('related'), 2)
+
+    def test_gemet_groups_rdf(self):
+        supergroup = SuperGroupFactory(code='10')
+        group = GroupFactory(code='11')
+        theme = ThemeFactory(code='12')
+
+        PropertyFactory(concept=supergroup, name='prefLabel', value='A_label')
+        PropertyFactory(concept=group, name='prefLabel', value='B_label')
+        PropertyFactory(concept=theme, name='prefLabel', value='C_label')
+
+        spanish = LanguageFactory(code='es', name='Spanish')
+        es_supergroup = SuperGroupFactory(id=5, code='20')
+        es_group = GroupFactory(id=6, code='21')
+        es_theme = ThemeFactory(id=7, code='22')
+        PropertyFactory(concept=supergroup, language=spanish, name='prefLabel',
+                        value='A_label')
+        PropertyFactory(concept=group, language=spanish, name='prefLabel',
+                        value='B_label')
+        PropertyFactory(concept=theme, language=spanish, name='prefLabel',
+                        value='C_label')
+
+        resp = self.app.get(reverse('gemet-groups.rdf', args=['en']))
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.content_type, 'text/xml')
+        self.assertEqual(resp.content.count('xml:lang="en"'), 1)
+        self.assertEqual(resp.content.count('supergroup/10'), 1)
+        self.assertEqual(resp.content.count('A_label'), 1)
+        self.assertEqual(resp.content.count('group/11'), 1)
+        self.assertEqual(resp.content.count('B_label'), 1)
+        self.assertEqual(resp.content.count('theme/12'), 1)
+        self.assertEqual(resp.content.count('C_label'), 1)

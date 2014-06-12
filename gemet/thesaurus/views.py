@@ -671,9 +671,9 @@ class DownloadView(LanguageMixin, FormView):
 
     def form_valid(self, form):
         if self.request.POST['type'] == 'definitions':
-            reverse_name = 'language_definitions'
+            reverse_name = 'gemet-definitions.rdf'
         elif self.request.POST['type'] == 'groups':
-            reverse_name = 'language_groups'
+            reverse_name = 'gemet-groups.rdf'
         else:
             raise Http404
 
