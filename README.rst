@@ -158,11 +158,11 @@ Details about configurable settings can be found in ``settings.py``.
 Data Import
 -----------
 
-1. Considering you have a dump of the old database, import it in a
+1. Considering you have a dump of the old database (``gemet.sql``), import it in a
 seaparate database::
 
-    mysql -e 'create database gemet_old CHARACTER SET utf8 COLLATE utf8_general_ci;'
-    mysql gemet_old < gemet.sql
+    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
+    mysql [db_name] < gemet.sql
 
 2. Update the ``import`` section from ``DATABASES`` dict in the local
 configuration file with the name of the database used for import
