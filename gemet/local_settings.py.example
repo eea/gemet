@@ -3,12 +3,17 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-# debug_toolbar app is needed only in development. Remove this section
-# alltogether in production.
+# debug_toolbar app is needed only in development. Uncomment the section
+# below in development if you want to use the debug_toolbar.
 
-LOCAL_INSTALLED_APPS = (
-    'debug_toolbar',
-)
+# LOCAL_INSTALLED_APPS = (
+#     'debug_toolbar',
+# )
+
+# Set the variable USE_ZOPE_LAYOUT to False if you are in development
+# and you want to run the tests (i.e. ./manage.py test).
+
+USE_ZOPE_LAYOUT = True
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
