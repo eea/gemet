@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url, include
 
-from .views import (
+from gemet.thesaurus.views import (
     redirect_old_urls,
     concept_redirect,
     old_concept_redirect,
@@ -85,7 +85,7 @@ urlpatterns = patterns(
             ])),
         ])),
     url(
-        r'^(?P<view_name>\index_html|groups|rdf|gemet-backbone\.html|gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|gemet-definitions\.rdf|gemet-groups\.rdf)/$',
+        r'^(?P<view_name>index_html|groups|rdf|gemet-backbone\.html|gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|gemet-definitions\.rdf|gemet-groups\.rdf)/$',
         redirect_old_urls,
         name='redirects'
     ),

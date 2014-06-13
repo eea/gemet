@@ -28,7 +28,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
             'getTopmostConcepts',
             apiTester.get_full_path('concept/'),
             'en'
-            )
+        )
 
         result = [top_concept['preferredLabel']['string']
                   for top_concept in top_concepts]
@@ -40,7 +40,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
             'getTopmostConcepts',
             apiTester.get_full_path('group/'),
             'en'
-            )
+        )
 
         result = [top_group['preferredLabel']['string']
                   for top_group in top_groups]
@@ -52,7 +52,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
             'getTopmostConcepts',
             apiTester.get_full_path('theme/'),
             'en'
-            )
+        )
 
         result = [top_theme['preferredLabel']['string']
                   for top_theme in top_themes]
@@ -222,7 +222,7 @@ class TestHasRelation(unittest.TestCase):
 
         self.assertEqual(False, apiTester.doXmlRpc('hasRelation', *relation))
 
-    def test_no_concept(self):
+    def test_no_relation(self):
         relation = (apiTester.get_full_path('concept/100'),
                     'bad_relation',
                     apiTester.get_full_path('concept/13292'))

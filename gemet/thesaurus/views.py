@@ -454,9 +454,9 @@ class DefinitionsView(TemplateView):
                     language__code=DEFAULT_LANGCODE,
                     name__in=['prefLabel', 'scopeNote', 'definition',
                               'notation'],
-                    )
-                .values('name', 'value')
                 )
+                .values('name', 'value')
+            )
             if concept_properties:
                 concept = {'code': term.code}
                 for c in concept_properties:
