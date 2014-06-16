@@ -26,3 +26,7 @@
 .pagination {
     margin-top: 25px;
 }
+
+a.btn, .pagination a, .letter-pagination a {
+    text-decoration: none;
+}
