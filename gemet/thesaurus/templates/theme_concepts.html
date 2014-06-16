@@ -27,7 +27,9 @@
   {% endif %}
   {% for letter_index in letters %}
     {% if letter == forloop.counter %}
-      {{  letter_index.0 }}
+      <span class="selected-elm">{{ letter_index.0 }}</span>
+    {% elif not letter_index.1 %}
+      <span class="unavailable-letter">{{ letter_index.0 }}</span>
     {% else %}
       <a href="{% url 'theme_concepts' language.code theme.id %}?letter={{ forloop.counter }}">{{ letter_index.0 }}</a>
     {% endif %}

@@ -2,7 +2,7 @@
   Select language:
   {% for lang in languages %}
     {% if lang == langcode %}
-      <span class="btn btn-primary btn-xs" disabled="disabled">{{ lang }}</span>
+      <span class="btn btn-primary btn-xs selected-elm" disabled="disabled">{{ lang }}</span>
     {% else %}
     <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}?{{ get_params }}" class="btn btn-primary btn-xs active" role="button">
       {{ lang }}

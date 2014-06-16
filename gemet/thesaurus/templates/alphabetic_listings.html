@@ -16,7 +16,9 @@
   {% endif %}
   {% for letter_tuple in letters %}
     {% if letter == forloop.counter %}
-      {{ letter_tuple.0 }}
+      <span class="selected-elm">{{ letter_tuple.0 }}</span>
+    {% elif not letter_tuple.1 %}
+      <span class="unavailable-letter">{{ letter_tuple.0 }}</span>
     {% else %}
       <a href="{% url 'alphabetic' language.code %}?letter={{ forloop.counter }}">{{ letter_tuple.0 }}</a>
     {% endif %}

@@ -30,3 +30,11 @@
 a.btn, .pagination a, .letter-pagination a {
     text-decoration: none;
 }
+
+.selected-elm {
+    font-weight: bold;
+}
+
+.unavailable-letter {
+    color: gray;
+}
