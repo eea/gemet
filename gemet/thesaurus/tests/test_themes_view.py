@@ -1,4 +1,3 @@
-from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
@@ -20,7 +19,7 @@ class TestThemesView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
 
-        self.assertEqual(resp.pyquery('.themes').children(), [])
+        self.assertEqual(resp.pyquery('.themes').find("li"), [])
 
     def test_one_theme(self):
         theme = ThemeFactory()
@@ -54,19 +53,19 @@ class TestThemesView(GemetTest):
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.themes li').length, 2)
 
-        self.assertEqual(resp.pyquery('.themes li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('#left-box li:eq(0) a').attr('href'),
                          reverse('theme_concepts',
                                  kwargs={'langcode': 'en',
                                          'theme_id': theme1.id})
                          )
-        self.assertEqual(resp.pyquery('.themes li:eq(0) a').text(),
+        self.assertEqual(resp.pyquery('#left-box li:eq(0) a').text(),
                          u'Theme 1'
                          )
-        self.assertEqual(resp.pyquery('.themes li:eq(1) a').attr('href'),
+        self.assertEqual(resp.pyquery('#right-box li:eq(0) a').attr('href'),
                          reverse('theme_concepts',
                                  kwargs={'langcode': 'en',
                                          'theme_id': theme2.id})
                          )
-        self.assertEqual(resp.pyquery('.themes li:eq(1) a').text(),
+        self.assertEqual(resp.pyquery('#right-box li:eq(0) a').text(),
                          u'Theme 2'
                          )

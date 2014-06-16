@@ -1,6 +1,3 @@
-import pyquery
-
-from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from .factories import (
@@ -67,19 +64,19 @@ class TestThemeConceptsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.concepts li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('#left-box li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id}
                                  )
                          )
-        self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
+        self.assertEqual(resp.pyquery('#left-box li:eq(0)').text(),
                          u'Concept 1')
-        self.assertEqual(resp.pyquery('.concepts li:eq(1) a').attr('href'),
+        self.assertEqual(resp.pyquery('#right-box li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept2.id}
                                  )
                          )
-        self.assertEqual(resp.pyquery('.concepts li:eq(1)').text(),
+        self.assertEqual(resp.pyquery('#right-box li:eq(0)').text(),
                          u'Concept 2')
 
     def test_letter_selected_filter_one_language(self):
@@ -105,7 +102,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').children().size(), 1)
+        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
         self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
         self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
@@ -139,7 +136,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').children().size(), 1)
+        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
         self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
         self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
                          reverse('concept',
@@ -166,7 +163,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').children().size(), 1)
+        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
         self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
         self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
                          reverse('concept',
