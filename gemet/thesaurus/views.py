@@ -56,13 +56,11 @@ class ChangesView(LanguageMixin, TemplateView):
 class ThemesView(LanguageMixin, TemplateView):
     template_name = "themes.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(ThemesView, self).get_context_data(**kwargs)
-
-        themes = (
+    def _get_themes_by_langcode(self, langcode):
+        return (
             Property.objects.filter(
                 name='prefLabel',
-                language__code=self.langcode,
+                language__code=langcode,
                 concept_id__in=Theme.objects.values_list('id', flat=True)
             )
             .extra(select={'name': 'value',
@@ -70,6 +68,14 @@ class ThemesView(LanguageMixin, TemplateView):
                    order_by=['name'])
             .values('id', 'name')
         )
+
+    def get_context_data(self, **kwargs):
+        context = super(ThemesView, self).get_context_data(**kwargs)
+
+        themes = self._get_themes_by_langcode(self.langcode)
+        if not themes:
+            themes = self._get_themes_by_langcode(DEFAULT_LANGCODE)
+            context.update({"language_warning": True})
 
         context.update({"themes": themes})
         return context
@@ -347,6 +353,9 @@ class ThemeConceptsView(PaginatorView):
 
     def get_context_data(self, **kwargs):
         context = super(ThemeConceptsView, self).get_context_data(**kwargs)
+        if not hasattr(self.theme, 'prefLabel'):
+            self.theme.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
+            context.update({'language_warning': True})
         context.update({'theme': self.theme})
 
         return context

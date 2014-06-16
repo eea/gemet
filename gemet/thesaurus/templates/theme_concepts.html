@@ -6,7 +6,17 @@
 {% endblock %}
 
 {% block header %}
-  <h1>Concepts list for {{ theme.name }}</h1>
+  <h1>
+    Concepts list for
+    {% if language_warning %}
+      <i>{{ theme.name }}</i>
+    {% else %}
+      {{ theme.name }}
+    {% endif %}
+  </h1>
+  {% if language_warning %}
+    <p>* Note: Theme name is not available for the current language</p>
+  {% endif %}
 {% endblock %}
 
 {% block letter_pagination %}

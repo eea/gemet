@@ -4,7 +4,11 @@
   {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
 
   <h1>Themes</h1>
-
+  {% if language_warning %}
+    <p>
+      * There are no themes available for the current language so these are listed in English
+    </p>
+  {% endif %}
   <ul class="themes {% if language.rtl %}direction-rtl{% endif %}">
     {% for theme in themes %}
       <li>
