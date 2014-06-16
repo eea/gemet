@@ -10,11 +10,6 @@ TEMPLATE_DEBUG = True
 #     'debug_toolbar',
 # )
 
-# Set the variable USE_ZOPE_LAYOUT to False if you are in development
-# and you want to run the tests (i.e. ./manage.py test).
-
-USE_ZOPE_LAYOUT = True
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
