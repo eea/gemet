@@ -50,8 +50,10 @@ class TestRelationsView(GemetTest):
                          .attr('href'),
                          u'{url}?exp={exp}'.
                          format(url=reverse('relations',
-                                            kwargs={'langcode': 'en',
-                                                    'group_id': self.group.id}),
+                                            kwargs={
+                                                'langcode': 'en',
+                                                'group_id': self.group.id,
+                                            }),
                                 exp=exp_encrypt(str(concept.id))
                                 )
                          )

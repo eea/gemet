@@ -28,14 +28,14 @@ class TestExports(GemetTest):
                                   label='Group member')
         p22 = PropertyTypeFactory(id='4', name='group', label='Group')
 
-        r11 = RelationFactory(property_type=p11, source=theme, target=term1)
-        r12 = RelationFactory(property_type=p12, source=term1, target=theme)
-        r21 = RelationFactory(property_type=p21, source=group, target=term2)
-        r22 = RelationFactory(property_type=p22, source=term2, target=group)
-        r31 = RelationFactory(property_type=p11, source=theme, target=term3)
-        r32 = RelationFactory(property_type=p12, source=term3, target=theme)
-        r41 = RelationFactory(property_type=p21, source=group, target=term3)
-        r42 = RelationFactory(property_type=p22, source=term3, target=group)
+        RelationFactory(property_type=p11, source=theme, target=term1)
+        RelationFactory(property_type=p12, source=term1, target=theme)
+        RelationFactory(property_type=p21, source=group, target=term2)
+        RelationFactory(property_type=p22, source=term2, target=group)
+        RelationFactory(property_type=p11, source=theme, target=term3)
+        RelationFactory(property_type=p12, source=term3, target=theme)
+        RelationFactory(property_type=p21, source=group, target=term3)
+        RelationFactory(property_type=p22, source=term3, target=group)
 
         rows = ['11 Theme 21', '13 Theme 21', '12 Group 31', '13 Group 31']
 
@@ -51,7 +51,7 @@ class TestExports(GemetTest):
         term = TermFactory()
         theme = ThemeFactory()
         group = GroupFactory()
-        supergroup = SuperGroupFactory()
+        SuperGroupFactory()
 
         p11 = PropertyTypeFactory()
         p12 = PropertyTypeFactory(id='2', name='theme', label='Theme')
@@ -59,10 +59,10 @@ class TestExports(GemetTest):
                                   label='Group member')
         p22 = PropertyTypeFactory(id='4', name='group', label='Group')
 
-        r11 = RelationFactory(property_type=p11, source=theme, target=term)
-        r12 = RelationFactory(property_type=p12, source=term, target=theme)
-        r21 = RelationFactory(property_type=p21, source=group, target=term)
-        r22 = RelationFactory(property_type=p22, source=term, target=group)
+        RelationFactory(property_type=p11, source=theme, target=term)
+        RelationFactory(property_type=p12, source=term, target=theme)
+        RelationFactory(property_type=p21, source=group, target=term)
+        RelationFactory(property_type=p22, source=term, target=group)
 
         resp = self.app.get(reverse('gemet-backbone.rdf'))
 
@@ -138,8 +138,8 @@ class TestExports(GemetTest):
 
         p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
         p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
-        r1 = RelationFactory(property_type=p1, source=supergroup, target=group)
-        r2 = RelationFactory(property_type=p2, source=group, target=supergroup)
+        RelationFactory(property_type=p1, source=supergroup, target=group)
+        RelationFactory(property_type=p2, source=group, target=supergroup)
 
         resp = self.app.get(reverse('gemet-groups.html'))
 
@@ -177,10 +177,10 @@ class TestExports(GemetTest):
         p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
         p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
         p3 = PropertyTypeFactory(id=3, name='related', label='related')
-        r1 = RelationFactory(property_type=p1, source=term1, target=term2)
-        r2 = RelationFactory(property_type=p2, source=term2, target=term1)
-        r3 = RelationFactory(property_type=p3, source=term2, target=term3)
-        r4 = RelationFactory(property_type=p3, source=term3, target=term2)
+        RelationFactory(property_type=p1, source=term1, target=term2)
+        RelationFactory(property_type=p2, source=term2, target=term1)
+        RelationFactory(property_type=p3, source=term2, target=term3)
+        RelationFactory(property_type=p3, source=term3, target=term2)
 
         rows = ['11 Narrower 12', '12 Broader 11', '12 Related 13',
                 '13 Related 12']
@@ -203,10 +203,10 @@ class TestExports(GemetTest):
         p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
         p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
         p3 = PropertyTypeFactory(id=3, name='related', label='related')
-        r1 = RelationFactory(property_type=p1, source=term1, target=term2)
-        r2 = RelationFactory(property_type=p2, source=term2, target=term1)
-        r3 = RelationFactory(property_type=p3, source=term2, target=term3)
-        r4 = RelationFactory(property_type=p3, source=term3, target=term2)
+        RelationFactory(property_type=p1, source=term1, target=term2)
+        RelationFactory(property_type=p2, source=term2, target=term1)
+        RelationFactory(property_type=p3, source=term2, target=term3)
+        RelationFactory(property_type=p3, source=term3, target=term2)
 
         resp = self.app.get(reverse('gemet-skoscore.rdf'))
 

@@ -21,9 +21,9 @@ class TestDefinitionSourcesView(GemetTest):
         self.assertEqual(resp.pyquery('.content table').size(), 0)
 
     def test_one_entry_all_data(self):
-        ds = DataSourceFactory(abbr="abbr", author="author", title="title",
-                               url="url", publication="publication",
-                               place="place", year="year")
+        DataSourceFactory(abbr="abbr", author="author", title="title",
+                          url="url", publication="publication",
+                          place="place", year="year")
         url = reverse('definition_sources',
                       kwargs={'langcode': self.language.code})
         resp = self.app.get(url)
@@ -53,8 +53,8 @@ class TestDefinitionSourcesView(GemetTest):
             resp.pyquery('.content table tr:eq(6) td:eq(1)').text(),
             "year")
 
-    def test_one_entry_all_data(self):
-        ds = DataSourceFactory(abbr="abbr", url="url")
+    def test_one_entry_less_data(self):
+        DataSourceFactory(abbr="abbr", url="url")
         url = reverse('definition_sources',
                       kwargs={'langcode': self.language.code})
         resp = self.app.get(url)

@@ -2,8 +2,6 @@ from django.core.urlresolvers import reverse
 
 from .factories import (
     PropertyFactory,
-    PropertyTypeFactory,
-    RelationFactory,
     TermFactory,
     ThemeFactory,
     GroupFactory,

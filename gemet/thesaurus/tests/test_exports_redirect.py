@@ -1,5 +1,3 @@
-from django_webtest import WebTest
-from django.test.testcases import SimpleTestCase
 from django.core.urlresolvers import reverse
 
 from .factories import (

@@ -63,13 +63,16 @@ class TestGroupView(GemetTest):
         self.assertEqual(resp.pyquery('.content .infotext:eq(0)').text(),
                          "Definition is not available")
         self.assertEqual(resp.pyquery('.content  ul').size(), 3)
-        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(),
+                         1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          "concept prefLabel")
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(),
+                         1)
         self.assertEqual(resp.pyquery('.content ul:eq(1) li').text(),
                          "supergroup prefLabel")
-        self.assertEqual(resp.pyquery('.content ul:eq(2)').children().size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(2)').children().size(),
+                         1)
         self.assertEqual(resp.pyquery('.content ul:eq(2) li').text(),
                          "English: some prefLabel")
 
