@@ -32,6 +32,11 @@ def staging():
 
 
 @task
+def public():
+    environment('public')
+
+
+@task
 def deploy():
     require_variables()
 
@@ -39,6 +44,7 @@ def deploy():
         run('git pull --rebase')
         run('pip install -r requirements-dep.txt')
         run('./manage.py syncdb')
+        run('./manage.py collectstatic')
         run('supervisorctl -c {0} restart django'.format(env.supervisord_conf))
 
 
