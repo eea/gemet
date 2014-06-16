@@ -319,7 +319,7 @@ class PaginatorView(LanguageMixin, ListView):
 
         context.update({
             'letters': self.letters,
-            'letter_index': self.letter_index,
+            'letter': self.letter_index,
             'get_params': self.request.GET.urlencode(),
             'visible_pages': range(
                 max(1, page_number - distance_number),

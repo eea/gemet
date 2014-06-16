@@ -9,13 +9,21 @@
 {% endblock %}
 
 {% block letter_pagination %}
-  <a href="{% url 'alphabetic' language.code %}?letter=0">all</a>
-  {% for letter in letters %}
-    {% if letter_index == forloop.counter %}
-      {{ letter.0 }}
+  {% if letter == 0 %}
+    all
+  {% else %}
+    <a href="{% url 'alphabetic' language.code %}?letter=0">all</a>
+  {% endif %}
+  {% for letter_tuple in letters %}
+    {% if letter == forloop.counter %}
+      {{ letter_tuple.0 }}
     {% else %}
-      <a href="{% url 'alphabetic' language.code %}?letter={{ forloop.counter }}">{{ letter.0 }}</a>
+      <a href="{% url 'alphabetic' language.code %}?letter={{ forloop.counter }}">{{ letter_tuple.0 }}</a>
     {% endif %}
   {% endfor %}
-  <a href="{% url 'alphabetic' language.code %}?letter=99">other</a>
+  {% if letter == 99 %}
+    other
+  {% else %}
+    <a href="{% url 'alphabetic' language.code %}?letter=99">other</a>
+  {% endif %}
 {% endblock %}
