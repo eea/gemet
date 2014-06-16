@@ -15,83 +15,88 @@
     {% endif %}
   </span>
 
-  {% if concept.broader_concepts %}
-    <h4>broader terms</h4>
+  <div id="left-box">
+    {% if concept.broader_concepts %}
+      <h4>broader terms</h4>
+        <ul>
+        {% for cp in concept.broader_concepts %}
+          <li>
+            <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if concept.narrower_concepts %}
+      <h4>narrower terms</h4>
+        <ul>
+        {% for cp in concept.narrower_concepts %}
+          <li>
+            <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if concept.related_concepts %}
+      <h4>related terms</h4>
+        <ul>
+        {% for cp in concept.related_concepts %}
+          <li>
+            <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <h4>Scope note:</h4>
+    <span class="infotext">
+      {{ concept.scopeNote|default:"scope note is not available" }}
+    </span>
+
+    {% if concept.groups %}
+      <h4>Groups:</h4>
+        <ul class="infotext">
+        {% for group in concept.groups %}
+          <li>
+            <a href="{% url 'group' language.code group.id %}">{{ group.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if concept.themes %}
+      <h4>Themes:</h4>
+        <ul class="infotext">
+        {% for theme in concept.themes %}
+          <li>
+            <a href="{% url 'theme' language.code theme.id %}">{{ theme.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <h4>Other relations:</h4>
     <ul>
-      {% for cp in concept.broader_concepts %}
+      {% for relation in concept.visible_foreign_relations %}
         <li>
-          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+          {{ relation.property_type.label }}:
+          <a href="{{ relation.uri }}">{{ relation.label }}</a>
         </li>
       {% endfor %}
     </ul>
-  {% endif %}
 
-  {% if concept.narrower_concepts %}
-    <h4>narrower terms</h4>
+    <h4>Concept URL: &lt;{{ concept.url }}&gt;</h4>
+  </div>
+
+  <div id="right-box">
+    <h4>Translations:</h4>
     <ul>
-      {% for cp in concept.narrower_concepts %}
-        <li>
-          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
-        </li>
+      {% for translation in concept.translations %}
+        <li>{{ translation.language.name }}: {{ translation.value }}</li>
       {% endfor %}
     </ul>
-  {% endif %}
+  </div>
 
-  {% if concept.related_concepts %}
-    <h4>related terms</h4>
-    <ul>
-      {% for cp in concept.related_concepts %}
-        <li>
-          <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-  <h4>Scope note:</h4>
-  <span class="infotext">
-    {{ concept.scopeNote|default:"scope note is not available" }}
-  </span>
-
-  {% if concept.groups %}
-    <h4>Groups:</h4>
-    <ul class="infotext">
-      {% for group in concept.groups %}
-        <li>
-          <a href="{% url 'group' language.code group.id %}">{{ group.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-  {% if concept.themes %}
-    <h4>Themes:</h4>
-    <ul class="infotext">
-      {% for theme in concept.themes %}
-        <li>
-          <a href="{% url 'theme' language.code theme.id %}">{{ theme.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-  <h4>Other relations:</h4>
-  <ul>
-    {% for relation in concept.visible_foreign_relations %}
-      <li>
-        {{ relation.property_type.label }}:
-        <a href="{{ relation.uri }}">{{ relation.label }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <h4>Translations:</h4>
-  <ul>
-    {% for translation in concept.translations %}
-      <li>{{ translation.language.name }}: {{ translation.value }}</li>
-    {% endfor %}
-  </ul>
-
-  <h4>Concept URL: &lt;{{ concept.url }}&gt;</h4>
 
 {% endblock %}

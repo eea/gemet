@@ -11,3 +11,16 @@
     background-color: lightcyan;
     padding: 8px;
 }
+
+#left-box {
+    width: 50%;
+    float: left;
+}
+
+#right-box {
+    margin-left: 51%;
+}
+
+#footer-menu {
+    margin-top: 20px;
+}
