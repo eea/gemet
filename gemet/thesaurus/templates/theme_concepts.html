@@ -25,11 +25,11 @@
   {% else %}
     <a href="{% url 'theme_concepts' language.code theme.id %}?letter=0">all</a>
   {% endif %}
-  {% for letter in letters %}
-    {% if letter_index == forloop.counter %}
-      {{  letter.0 }}
+  {% for letter_index in letters %}
+    {% if letter == forloop.counter %}
+      {{  letter_index.0 }}
     {% else %}
-      <a href="{% url 'theme_concepts' language.code theme.id %}?letter={{ forloop.counter }}">{{ letter.0 }}</a>
+      <a href="{% url 'theme_concepts' language.code theme.id %}?letter={{ forloop.counter }}">{{ letter_index.0 }}</a>
     {% endif %}
   {% endfor %}
   {% if letter == 99 %}
