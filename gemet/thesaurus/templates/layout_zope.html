@@ -12,8 +12,10 @@
     <a href="{% url 'search' language.code %}">Search Thesaurus</a>
 </div>
 
-{% block content %}
-{% endblock %}
+<div class="content">
+  {% block content %}
+  {% endblock %}
+</div>
 
 <div class="footer-menu">
   <a href="{% url 'download' language.code %}">Download</a>

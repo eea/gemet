@@ -7,7 +7,7 @@
 
   <h1>Search thesaurus</h1>
 
-  <form method="post">{% csrf_token %}
+  <form method="post" id='search-form'>{% csrf_token %}
     {{ form.as_p }}
     <p>Selected language: {{ language.name }}</p>
     <input type="submit" value="Search"/>

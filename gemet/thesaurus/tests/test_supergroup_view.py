@@ -6,7 +6,6 @@ from .factories import (
     PropertyTypeFactory,
     GroupFactory,
     SuperGroupFactory,
-    TermFactory,
 )
 from . import GemetTest, ERROR_404
 
@@ -19,7 +18,7 @@ class TestSuperGroupView(GemetTest):
 
     def test_supergroup_no_concept(self):
         url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
-                                       'langcode': 'en'})
+                                            'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
@@ -28,9 +27,9 @@ class TestSuperGroupView(GemetTest):
                          "Definition is not available")
         self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
                          "scope note is not available")
-        self.assertEqual(resp.pyquery('body ul').size(), 2)
-        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+        self.assertEqual(resp.pyquery('.content ul').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul').children().size(), 1)
+        self.assertEqual(resp.pyquery('.content ul li').text(),
                          "English: some prefLabel")
 
     def test_supergroup_one_group(self):
@@ -45,7 +44,7 @@ class TestSuperGroupView(GemetTest):
         RelationFactory(property_type=pt2, source=group,
                         target=self.supergroup)
         url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
-                                       'langcode': 'en'})
+                                            'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
@@ -54,12 +53,14 @@ class TestSuperGroupView(GemetTest):
                          "Definition is not available")
         self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
                          "scope note is not available")
-        self.assertEqual(resp.pyquery('body ul').size(), 3)
-        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+        self.assertEqual(resp.pyquery('.content ul').size(), 2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(),
+                         1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          "group prefLabel")
-        self.assertEqual(resp.pyquery('ul:eq(2)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(2) li').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(),
+                         1)
+        self.assertEqual(resp.pyquery('.content ul:eq(1) li').text(),
                          "English: some prefLabel")
 
     def test_supergroup_two_groups(self):
@@ -84,7 +85,7 @@ class TestSuperGroupView(GemetTest):
         RelationFactory(property_type=pt4, source=group2,
                         target=self.supergroup)
         url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
-                                       'langcode': 'en'})
+                                            'langcode': 'en'})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -94,19 +95,21 @@ class TestSuperGroupView(GemetTest):
                          "Definition is not available")
         self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
                          "scope note is not available")
-        self.assertEqual(resp.pyquery('body ul').size(), 3)
-        self.assertEqual(resp.pyquery('ul:eq(1)').children().size(), 2)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content ul').size(), 2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(),
+                         2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          "group1 prefLabel")
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          "group2 prefLabel")
-        self.assertEqual(resp.pyquery('ul:eq(2)').children().size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(2)').children().text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(),
+                         1)
+        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().text(),
                          "English: some prefLabel")
 
     def test_redirect(self):
         url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
-                                       'langcode': 'en'})
+                                            'langcode': 'en'})
         resp = self.app.get(url)
 
         url = resp.pyquery('h4:eq(3)').text().split('<')[1].split('>')[0]

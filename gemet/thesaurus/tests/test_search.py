@@ -50,7 +50,8 @@ class TestSearchView(GemetTest):
 
     def test_no_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = 'foo'
         resp = form.submit()
 
@@ -61,7 +62,8 @@ class TestSearchView(GemetTest):
 
     def test_multiple_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = 'something'
         resp = form.submit()
 
@@ -74,7 +76,8 @@ class TestSearchView(GemetTest):
 
     def test_broader_context(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = 'something'
         resp = form.submit()
 
@@ -86,7 +89,8 @@ class TestSearchView(GemetTest):
 
     def test_number_of_results_found(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = 'something'
         resp = form.submit()
 
@@ -97,7 +101,8 @@ class TestSearchView(GemetTest):
 
     def test_search_language(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = 'something'
         resp = form.submit()
 
@@ -108,7 +113,8 @@ class TestSearchView(GemetTest):
 
     def test_regex_search(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = '%%some__ing'
         resp = form.submit()
 
@@ -123,7 +129,8 @@ class TestSearchView(GemetTest):
 
     def test_other_names(self):
         url = reverse('search', kwargs={'langcode': 'en'})
-        form = self.app.get(url).form
+        resp = self.app.get(url)
+        form = resp.forms['search-form']
         form['query'] = '%%Label'
         resp = form.submit()
 
