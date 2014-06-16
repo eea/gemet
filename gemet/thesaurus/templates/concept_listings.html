@@ -9,15 +9,29 @@
   {% endblock %}
 
   <ul class="concepts {% if language.rtl %}direction-rtl{% endif %}">
-    {% for concept in concepts %}
-      <li>
-        {% if concept.name %}
-          <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
-        {% else %}
-          <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
-        {% endif %}
-      </li>
-    {% endfor %}
+    <div id="left-box">
+      {% for concept in concepts|half:0 %}
+        <li>
+          {% if concept.name %}
+            <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
+          {% else %}
+            <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
+          {% endif %}
+        </li>
+      {% endfor %}
+    </div>
+
+    <div id="right-box">
+      {% for concept in concepts|half:1 %}
+        <li>
+          {% if concept.name %}
+            <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
+          {% else %}
+            <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
+          {% endif %}
+        </li>
+      {% endfor %}
+    </div>
   </ul>
 
   <div class="pagination">

@@ -1,5 +1,7 @@
 {% extends layout_template %}
 
+{% load gemet_tags %}
+
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
 
@@ -9,11 +11,22 @@
       * There are no themes available for the current language so these are listed in English
     </p>
   {% endif %}
+
   <ul class="themes {% if language.rtl %}direction-rtl{% endif %}">
-    {% for theme in themes %}
-      <li>
-        <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.name }}</a>
-      </li>
-    {% endfor %}
+    <div id="left-box">
+      {% for theme in themes|half:0 %}
+        <li>
+          <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.name }}</a>
+        </li>
+      {% endfor %}
+    </div>
+
+    <div id="right-box">
+      {% for theme in themes|half:1 %}
+        <li>
+          <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.name }}</a>
+        </li>
+      {% endfor %}
+    </div>
   </ul>
 {% endblock %}

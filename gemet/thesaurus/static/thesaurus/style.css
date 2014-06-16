@@ -21,6 +21,10 @@
     margin-left: 51%;
 }
 
-#footer-menu {
+.footer-menu {
     margin-top: 20px;
+}
+
+.pagination {
+    margin-top: 25px;
 }
