@@ -88,10 +88,21 @@ urlpatterns = patterns(
             ])),
         ])),
     url(
-        r'^(?P<view_name>index_html|groups|rdf|gemet-backbone\.html|'
-        'gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|'
-        'gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|'
-        'gemet-definitions\.rdf|gemet-groups\.rdf)/$',
+        r'^(?P<view_name>'
+        'index_html|'
+        'groups|'
+        'rdf|'
+        'gemet-backbone\.html|'
+        'gemet-backbone\.rdf|'
+        'gemet-definitions\.html|'
+        'gemet-groups\.html|'
+        'gemet-relations\.html|'
+        'gemet-skoscore\.rdf|'
+        'gemetThesaurus|'
+        'gemet-definitions\.rdf|'
+        'gemet-groups\.rdf|'
+        'inspire_themes'
+        ')/$',
         redirect_old_urls,
         name='redirects'
     ),

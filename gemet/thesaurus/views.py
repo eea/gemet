@@ -701,10 +701,11 @@ def redirect_old_urls(request, view_name):
         'index_html': 'themes',
         'groups': 'groups',
         'rdf': 'download',
+        'inspire_themes': 'inspire-themes',
     }
     view = old_new_views.get(view_name, view_name)
     if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
-                'gemet-groups.rdf']:
+                'gemet-groups.rdf', 'inspire-themes']:
         return redirect(view, permanent=True, langcode=langcode)
     else:
         return redirect(view, permanent=True)
