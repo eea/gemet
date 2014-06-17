@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db.models import (
     Model,
     CharField,
@@ -134,6 +135,20 @@ class Concept(Model):
             .values('id', 'name')
         )
 
+    def get_concept_type(self):
+        mapping = {
+            'Concepts': 'concept', 'Groups': 'group', 'Themes': 'theme',
+            'Super groups': 'supergroup',
+        }
+        return mapping.get(self.namespace.heading, 'concept')
+
+    def get_about_url(self):
+        # get the concept type, since we cannot rely on self.concept_type
+        concept_type = self.get_concept_type()
+        return reverse('concept_redirect',
+                       kwargs={'concept_type': concept_type,
+                               'concept_code': self.code})
+
     def __unicode__(self):
         return self.code
 
@@ -163,6 +178,10 @@ class Property(Model):
     class Meta:
         verbose_name_plural = "properties"
 
+    @property
+    def property_type(self):
+        return PropertyType.get_by_name(self.name)
+
     def __unicode__(self):
         return "{0} - {1} ({2})".format(
             self.concept.code, self.name, self.language.code)
@@ -172,6 +191,21 @@ class PropertyType(Model):
     name = CharField(max_length=40)
     label = CharField(max_length=100)
     uri = CharField(max_length=255)
+
+    @property
+    def prefix(self):
+        uri = self.uri
+        uri = uri[uri.rfind('/')+1:]
+        if '#' not in uri:
+            return ''
+        schema, suffix = uri.split('#')
+        if schema == 'core':
+            return 'skos:' + suffix
+        return 'gemet:' + suffix
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.objects.filter(name=name).first()
 
     def __unicode__(self):
         return self.name

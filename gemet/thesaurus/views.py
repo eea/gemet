@@ -26,7 +26,7 @@ from gemet.thesaurus.models import (
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
-from gemet.thesaurus.utils import search_queryset, exp_decrypt
+from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
@@ -197,11 +197,7 @@ class ConceptView(LanguageMixin, DetailView):
         )
         concept.set_attributes(self.langcode,
                                ['prefLabel', 'definition', 'scopeNote'])
-        concept.url = self.request.build_absolute_uri(
-            reverse('concept_redirect', kwargs={
-                'concept_type': self.concept_type,
-                'concept_code': concept.code
-            }))
+        concept.url = concept.get_about_url()
 
         return concept
 
@@ -217,6 +213,13 @@ class ConceptView(LanguageMixin, DetailView):
 
         context.update({"languages": languages})
         return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        if is_rdf(request):
+            return render_rdf(self.request, self.object)
+        return self.render_to_response(context)
 
 
 class TermView(ConceptView):
@@ -740,10 +743,22 @@ def concept_redirect(request, concept_type, concept_code):
     model = concept_types.get(concept_type)
     if model:
         cp = get_object_or_404(model, code=concept_code)
+        if is_rdf(request):
+            return render_rdf(request, cp)
         return redirect(concept_type, langcode=DEFAULT_LANGCODE,
                         concept_id=cp.id)
     else:
         raise Http404
+
+
+def render_rdf(request, obj):
+    context = {}
+    context['concept'] = obj
+    context['base_url'] = request.build_absolute_uri('/')[:-1]
+    context['relations'] = obj.source_relations.order_by('property_type__uri')
+    context['properties'] = obj.properties.order_by('name')
+    return render(request, 'concept.rdf', context,
+                  content_type='application/rdf+xml')
 
 
 def error404(request):

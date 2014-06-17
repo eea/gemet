@@ -6,6 +6,12 @@ from models import Property
 SEPARATOR = '\t'
 
 
+def is_rdf(request):
+    accepts = request.META.get('HTTP_ACCEPT', '*/*')
+    parts = accepts.split(',')
+    return 'application/rdf+xml' in parts
+
+
 def regex_search(query, language, heading):
     return (
         Property.objects

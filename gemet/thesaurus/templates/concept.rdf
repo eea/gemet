@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+ xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+ xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+<rdf:Description rdf:about="{{ base_url }}{{ concept.get_about_url }}">
+    <rdf:type rdf:resource="{{ concept.namespace.type_url }}"/>
+
+{% for relation in relations %}
+<{{ relation.property_type.prefix }} rdf:resource="{{ base_url }}{{ relation.target.get_about_url }}" />{% endfor %}
+{% for property in properties %}{% if property.property_type %}
+<{{ property.property_type.prefix }} xml:lang="{{ property.language.code }}">{{ property.value }}</skos:{{ property.name }}>{% endif %}{% endfor %}
+</rdf:Description>
