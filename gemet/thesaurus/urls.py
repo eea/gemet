@@ -28,6 +28,7 @@ from gemet.thesaurus.views import (
     GroupsByLanguage,
     GemetThesaurus,
     Skoscore,
+    InspireThemesView,
 )
 from .api import ApiView
 
@@ -40,6 +41,8 @@ urlpatterns = patterns(
         url(r'^about/$', AboutView.as_view(), name='about'),
         url(r'^changes/$', ChangesView.as_view(), name='changes'),
         url(r'^themes/$', ThemesView.as_view(), name='themes'),
+        url(r'^inspire-themes/$', InspireThemesView.as_view(),
+            name='inspire-themes'),
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', TermView.as_view(),
             name='concept'),
@@ -85,7 +88,10 @@ urlpatterns = patterns(
             ])),
         ])),
     url(
-        r'^(?P<view_name>index_html|groups|rdf|gemet-backbone\.html|gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|gemet-definitions\.rdf|gemet-groups\.rdf)/$',
+        r'^(?P<view_name>index_html|groups|rdf|gemet-backbone\.html|'
+        'gemet-backbone\.rdf|gemet-definitions\.html|gemet-groups\.html|'
+        'gemet-relations\.html|gemet-skoscore\.rdf|gemetThesaurus|'
+        'gemet-definitions\.rdf|gemet-groups\.rdf)/$',
         redirect_old_urls,
         name='redirects'
     ),
