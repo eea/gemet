@@ -138,13 +138,15 @@ class Concept(Model):
     def get_concept_type(self):
         mapping = {
             'Concepts': 'concept', 'Groups': 'group', 'Themes': 'theme',
-            'Super groups': 'supergroup',
+            'Super groups': 'supergroup', 'Inspire Themes': 'inspire-theme',
         }
         return mapping.get(self.namespace.heading, 'concept')
 
     def get_about_url(self):
         # get the concept type, since we cannot rely on self.concept_type
         concept_type = self.get_concept_type()
+        if concept_type == 'inspire-theme':
+            return self.namespace.url + self.code
         return reverse('concept_redirect',
                        kwargs={'concept_type': concept_type,
                                'concept_code': self.code})
@@ -195,7 +197,7 @@ class PropertyType(Model):
     @property
     def prefix(self):
         uri = self.uri
-        uri = uri[uri.rfind('/')+1:]
+        uri = uri[uri.rfind('/') + 1:]
         if '#' not in uri:
             return ''
         schema, suffix = uri.split('#')

@@ -207,7 +207,7 @@ class ConceptView(LanguageMixin, DetailView):
         concept.set_parents(self.langcode)
         concept.translations = (
             concept.properties
-            .filter(name='prefLabel')\
+            .filter(name='prefLabel')
             .order_by('language__name')
         )
         concept.set_attributes(self.langcode,
@@ -242,6 +242,13 @@ class TermView(ConceptView):
     model = Term
     concept_type = 'concept'
     context_object_name = 'concept'
+
+
+class InspireThemeView(ConceptView):
+    template_name = "inspire-theme.html"
+    model = InspireTheme
+    concept_type = 'inspire-theme'
+    context_object_name = 'inspire_theme'
 
 
 class ThemeView(ConceptView):

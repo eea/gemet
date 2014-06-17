@@ -29,6 +29,7 @@ from gemet.thesaurus.views import (
     GemetThesaurus,
     Skoscore,
     InspireThemesView,
+    InspireThemeView,
 )
 from .api import ApiView
 
@@ -46,6 +47,8 @@ urlpatterns = patterns(
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', TermView.as_view(),
             name='concept'),
+        url(r'^inspire-theme/(?P<concept_id>\d+)/$', InspireThemeView.as_view(),
+            name='inspire-theme'),
         url(r'^theme/(?P<concept_id>\d+)/$', ThemeView.as_view(),
             name='theme'),
         url(r'^group/(?P<concept_id>\d+)/$', GroupView.as_view(),

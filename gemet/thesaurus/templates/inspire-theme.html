@@ -1,0 +1,47 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block content %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view='inspire-theme' id=inspire_theme.id %}
+
+  <h3>{{ inspire_theme.name }}</h3>
+  <h4>Definiton:{% if not inspire_theme.definition %} * {% endif %}</h4>
+  <span class="infotext">
+    {% if not inspire_theme.definition %}
+      <span>*Note: </span>
+      <span>Definition is not available for the current language</span>
+    {% else %}
+      {{ inspire_theme.definition }}
+    {% endif %}
+  </span>
+
+  <div id="left-box">
+    <h4>Scope note:</h4>
+    <span class="infotext">
+      {{ inspire_theme.scopeNote|default:"scope note is not available" }}
+    </span>
+
+    <h4>Other relations:</h4>
+    <ul>
+      {% for relation in inspire_theme.visible_foreign_relations %}
+        <li>
+          {{ relation.property_type.label }}:
+          <a href="{{ relation.uri }}">{{ relation.label }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Concept URL: &lt;{{ inspire_theme.url }}&gt;</h4>
+  </div>
+
+  <div id="right-box">
+    <h4>Translations:</h4>
+    <ul>
+      {% for translation in inspire_theme.translations %}
+        <li>{{ translation.language.name }}: {{ translation.value }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+
+{% endblock %}
