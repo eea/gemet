@@ -174,7 +174,7 @@ class RelationsView(LanguageMixin, TemplateView):
 
         context = super(RelationsView, self).get_context_data(**kwargs)
         context.update({
-            'group_id': self.group_id,
+            'group_id': group.id,
             'group': group,
             'expand_list': expand_list,
         })
