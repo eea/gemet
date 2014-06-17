@@ -5,7 +5,7 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
 
-  <h1>Themes</h1>
+  <h1>{{ page_title }}</h1>
   {% if language_warning %}
     <p>
       * There are no themes available for the current language so these are listed in English

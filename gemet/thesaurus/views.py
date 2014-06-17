@@ -23,6 +23,7 @@ from gemet.thesaurus.models import (
     Property,
     DefinitionSource,
     Relation,
+    InspireTheme,
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -55,13 +56,16 @@ class ChangesView(LanguageMixin, TemplateView):
 
 class ThemesView(LanguageMixin, TemplateView):
     template_name = "themes.html"
+    model_cls = Theme
+    page_title = 'Themes'
 
     def _get_themes_by_langcode(self, langcode):
         return (
             Property.objects.filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept_id__in=Theme.objects.values_list('id', flat=True)
+                concept_id__in=self.model_cls.objects.values_list(
+                    'id', flat=True)
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'},
@@ -77,8 +81,13 @@ class ThemesView(LanguageMixin, TemplateView):
             themes = self._get_themes_by_langcode(DEFAULT_LANGCODE)
             context.update({"language_warning": True})
 
-        context.update({"themes": themes})
+        context.update({"themes": themes, "page_title": self.page_title})
         return context
+
+
+class InspireThemesView(ThemesView):
+    model_cls = InspireTheme
+    page_title = 'INSPIRE Spatial Data Themes'
 
 
 class GroupsView(LanguageMixin, TemplateView):
