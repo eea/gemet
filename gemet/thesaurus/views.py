@@ -159,11 +159,11 @@ class SearchView(LanguageMixin, FormView):
 class RelationsView(LanguageMixin, TemplateView):
     template_name = "relations.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        self.group_id = kwargs.pop("group_id")
-        return super(RelationsView, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('group_id')
+        group = get_object_or_404(Group, pk=pk)
+        group.set_attributes(self.langcode, ['prefLabel'])
+
         expand_text = self.request.GET.get('exp')
         if expand_text:
             expand_text = expand_text.replace(' ', '+')
@@ -172,8 +172,6 @@ class RelationsView(LanguageMixin, TemplateView):
         else:
             expand_list = []
 
-        group = get_object_or_404(Group, pk=self.group_id)
-        group.set_attributes(self.langcode, ['prefLabel'])
         context = super(RelationsView, self).get_context_data(**kwargs)
         context.update({
             'group_id': self.group_id,
@@ -185,12 +183,11 @@ class RelationsView(LanguageMixin, TemplateView):
 
 class ConceptView(LanguageMixin, DetailView):
 
-    def dispatch(self, request, *args, **kwargs):
-        self.concept_id = kwargs.pop('concept_id')
-        return super(ConceptView, self).dispatch(request, *args, **kwargs)
+    pk_url_kwarg = 'concept_id'
 
     def get_object(self):
-        concept = get_object_or_404(self.model, pk=self.concept_id)
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        concept = get_object_or_404(self.model, pk=pk)
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
@@ -335,16 +332,13 @@ class PaginatorView(LanguageMixin, ListView):
 
 
 class ThemeConceptsView(PaginatorView):
+
     template_name = "theme_concepts.html"
     model = Theme
 
-    def dispatch(self, request, *args, **kwargs):
-        self.theme_id = kwargs.pop('theme_id')
-        return super(ThemeConceptsView, self).dispatch(request, *args,
-                                                       **kwargs)
-
     def get_queryset(self):
-        self.theme = get_object_or_404(self.model, pk=self.theme_id)
+        pk = self.kwargs.get('theme_id')
+        self.theme = get_object_or_404(self.model, pk=pk)
         self.theme.set_attributes(self.langcode, ['prefLabel'])
         self.concepts = self.theme.get_children(self.langcode)
         return super(ThemeConceptsView, self).get_queryset(self.theme)
