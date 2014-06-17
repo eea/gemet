@@ -303,6 +303,7 @@ class SuperGroup(Concept):
 
 
 class InspireTheme(Concept):
+    siblings_relations = []
 
     class Meta:
         proxy = True

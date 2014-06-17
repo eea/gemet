@@ -16,7 +16,7 @@
     <div id="left-box">
       {% for theme in themes|half:0 %}
         <li>
-          <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.name }}</a>
+          <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>
         </li>
       {% endfor %}
     </div>
@@ -24,7 +24,7 @@
     <div id="right-box">
       {% for theme in themes|half:1 %}
         <li>
-          <a href="{% url 'theme_concepts' language.code theme.id %}">{{ theme.name }}</a>
+          <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>
         </li>
       {% endfor %}
     </div>

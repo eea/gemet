@@ -58,6 +58,7 @@ class ThemesView(LanguageMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
+    theme_url = 'theme_concepts'
 
     def _get_themes_by_langcode(self, langcode):
         return (
@@ -81,13 +82,18 @@ class ThemesView(LanguageMixin, TemplateView):
             themes = self._get_themes_by_langcode(DEFAULT_LANGCODE)
             context.update({"language_warning": True})
 
-        context.update({"themes": themes, "page_title": self.page_title})
+        context.update({
+            "themes": themes,
+            "page_title": self.page_title,
+            "theme_url": self.theme_url,
+        })
         return context
 
 
 class InspireThemesView(ThemesView):
     model_cls = InspireTheme
     page_title = 'INSPIRE Spatial Data Themes'
+    theme_url = 'inspire-theme'
 
 
 class GroupsView(LanguageMixin, TemplateView):
