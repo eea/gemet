@@ -40,6 +40,16 @@
  }
 },
 {
+ "pk": 5, 
+ "model": "thesaurus.namespace", 
+ "fields": {
+  "url": "http://inspire.ec.europa.eu/theme/", 
+  "type_url": "", 
+  "version": "GEMET - INSPIRE themes, version 1.0, 2008-06-01", 
+  "heading": "Inspire Themes"
+ }
+},
+{
  "pk": "ar", 
  "model": "thesaurus.language", 
  "fields": {
