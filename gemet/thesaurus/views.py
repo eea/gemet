@@ -737,11 +737,8 @@ def old_concept_redirect(request):
             'Inspire Themes': 'inspire-theme'
         }
         concept_types = {
-            '1': Term,
-            '2': SuperGroup,
-            '3': Group,
-            '4': Theme,
-            '5': InspireTheme,
+            str(model.objects.get_ns().id): model for model in
+            [Term, Group, SuperGroup, Theme, InspireTheme]
         }
         concept_type = concept_types.get(ns)
         if concept_type:

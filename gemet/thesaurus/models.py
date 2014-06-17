@@ -248,17 +248,17 @@ class ConceptManager(Manager):
         self.ns = None
         super(ConceptManager, self).__init__()
 
-    def _get_ns(self):
+    def get_ns(self):
         if self.ns is None:
             self.ns = Namespace.objects.get(heading=self.namespace)
         return self.ns
 
     def get_queryset(self):
-        ns = self._get_ns()
+        ns = self.get_ns()
         return self.model.base_manager.filter(namespace=ns)
 
     def create(self, **kwargs):
-        ns = self._get_ns()
+        ns = self.get_ns()
         kwargs.setdefault('namespace', ns)
         return super(ConceptManager, self).create(**kwargs)
 
