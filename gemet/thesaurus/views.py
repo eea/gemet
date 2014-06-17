@@ -178,7 +178,6 @@ class RelationsView(LanguageMixin, TemplateView):
         context.update({
             'group_id': self.group_id,
             'group': group,
-            'get_params': self.request.GET.urlencode(),
             'expand_list': expand_list,
         })
         return context
@@ -196,7 +195,7 @@ class ConceptView(LanguageMixin, DetailView):
         concept.set_parents(self.langcode)
         concept.translations = (
             concept.properties
-            .filter(name='prefLabel')
+            .filter(name='prefLabel')\
             .order_by('language__name')
         )
         concept.set_attributes(self.langcode,
@@ -326,7 +325,6 @@ class PaginatorView(LanguageMixin, ListView):
         context.update({
             'letters': self.letters,
             'letter': self.letter_index,
-            'get_params': self.request.GET.urlencode(),
             'visible_pages': range(
                 max(1, page_number - distance_number),
                 min(page_number + distance_number + 1, total_pages + 1)
