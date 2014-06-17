@@ -111,6 +111,6 @@ urlpatterns = patterns(
     ),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
-    url(r'^gemet/concept/$', old_concept_redirect,
+    url(r'^concept/$', old_concept_redirect,
         name='old_concept_redirect'),
 )

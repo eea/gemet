@@ -733,13 +733,15 @@ def old_concept_redirect(request):
             'Concepts': 'concept',
             'Themes': 'theme',
             'Groups': 'group',
-            'Super groups': 'supergroup'
+            'Super groups': 'supergroup',
+            'Inspire Themes': 'inspire-theme'
         }
         concept_types = {
             '1': Term,
             '2': SuperGroup,
             '3': Group,
-            '4': Theme
+            '4': Theme,
+            '5': InspireTheme,
         }
         concept_type = concept_types.get(ns)
         if concept_type:
