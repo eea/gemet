@@ -300,3 +300,12 @@ class SuperGroup(Concept):
 
     objects = ConceptManager('Super groups')
     base_manager = Manager()
+
+
+class InspireTheme(Concept):
+
+    class Meta:
+        proxy = True
+
+    objects = ConceptManager('Inspire Themes')
+    base_manager = Manager()
