@@ -5,14 +5,13 @@ import sys
 
 from config import *
 
-LOCAL_TEST = True
-
 
 class ApiTester(object):
     request_url = 'http://www.eionet.europa.eu/gemet/'
 
-    def __init__(self, xmlrpc_url=''):
+    def __init__(self, xmlrpc_url='', local=False):
         self.xmlrpc_url = xmlrpc_url
+        self.LOCAL_TEST = local
 
     def get_full_path(self, relative_path=''):
         return self.request_url + relative_path
@@ -128,7 +127,7 @@ class TestGetConcept(unittest.TestCase):
         self.assertEqual(result["preferredLabel"]["string"], "space travel")
         self.assertEqual(result['thesaurus'],
                          apiTester.get_full_path('concept/'))
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual(result['uri'],
                              apiTester.get_full_path('concept/7970'))
 
@@ -141,7 +140,7 @@ class TestGetConcept(unittest.TestCase):
         self.assertEqual(result["preferredLabel"]["string"], "viaje espacial")
         self.assertEqual(result['thesaurus'],
                          apiTester.get_full_path('concept/'))
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual(result['uri'],
                              apiTester.get_full_path('concept/7970'))
 
@@ -319,7 +318,7 @@ class TestGetSupportedLanguages(unittest.TestCase):
         result = apiTester.doXmlRpc('getSupportedLanguages',
                                     apiTester.get_full_path('concept/'))
 
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             self.assertEqual(sorted(result), sorted(TEST_SUPPORTED_LANGUAGES))
         else:
             self.assertEqual(sorted(result), sorted(
@@ -329,7 +328,7 @@ class TestGetSupportedLanguages(unittest.TestCase):
 class TestGetAvailableThesauri(unittest.TestCase):
     def test_getSupportedLanguages(self):
         result = apiTester.doXmlRpc('getAvailableThesauri')
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             self.assertEqual(result, THESAURI)
         else:
             self.assertEqual(result, THESAURI + THESAURI_EXTENSION)
@@ -343,7 +342,7 @@ class TestFetchThemes(unittest.TestCase):
 
         self.assertEqual([r['preferredLabel'] for r in result],
                          THEMES_PREF_LABEL)
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual([r['uri'] for r in result], THEMES_URI)
         self.assertEqual([r['thesaurus'] for r in result], THEMES_THESAURUS)
 
@@ -355,7 +354,7 @@ class TestFetchThemes(unittest.TestCase):
             'turismo',
             sorted([r['preferredLabel']['string']for r in result])[-1]
             )
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual(apiTester.get_full_path('theme/9'),
                              (sorted([r['uri'] for r in result])[-1]))
         self.assertEqual(apiTester.get_full_path('theme/'),
@@ -370,7 +369,7 @@ class TestFetchGroups(unittest.TestCase):
 
         self.assertEqual([r['preferredLabel'] for r in result],
                          GROUPS_PREF_LABEL)
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual([r['uri'] for r in result], GROUPS_URI)
         self.assertEqual([r['thesaurus'] for r in result], GROUPS_THESAURUS)
 
@@ -381,7 +380,7 @@ class TestFetchGroups(unittest.TestCase):
         self.assertEqual(u'T\xc9RMINOS GENERALES',
                          sorted([r['preferredLabel']['string']
                                  for r in result])[-1])
-        if not LOCAL_TEST:
+        if not apiTester.LOCAL_TEST:
             self.assertEqual(apiTester.get_full_path('group/96'),
                              (sorted([r['uri'] for r in result])[-1]))
         self.assertEqual(apiTester.get_full_path('group/'),
@@ -463,7 +462,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(SUPERGROUP_RELATIVES))
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             pass
         else:
             for i in range(0, len(received_relations)):
@@ -481,7 +480,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             pass
         else:
             self.assertEqual(received_relations[-1].split(' ')[0],
@@ -508,7 +507,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             pass
         else:
             for relation in received_relations:
@@ -530,7 +529,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(CONCEPT_RELATIVES))
-        if LOCAL_TEST:
+        if apiTester.LOCAL_TEST:
             pass
         else:
             for i in range(0, len(received_relations)):
@@ -544,9 +543,9 @@ if __name__ == '__main__':
     argv = sys.argv
 
     if options.public:
-        apiTester = ApiTester('http://www.eionet.europa.eu/gemet/')
+        apiTester = ApiTester('http://www.eionet.europa.eu/gemet/', True)
         argv.remove('--public')
     else:
-        apiTester = ApiTester('http://localhost:8000/gemet/')
+        apiTester = ApiTester('http://localhost:8000/gemet/', False)
 
     unittest.main(argv=argv)

@@ -1,5 +1,7 @@
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from xmlrpclib import Fault
+from inspect import getargspec
+from exceptions import ValueError
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -26,10 +28,44 @@ dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 
 class ApiView(View):
 
+    functions = {}
+
+    @classmethod
+    def register_function(cls, function, name):
+        dispatcher.register_function(function, name)
+        cls.functions.update({name: function})
+
+    def dispatch(self, request, *args, **kwargs):
+        self.method_name = kwargs.pop('method_name')
+        return super(ApiView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request):
+
+        def has_get_param(name):
+            return True if name in request.GET else False
+
+        def get_param(name, optional=False, optional_value=None):
+            if name in request.GET:
+                return request.GET.get(name)
+            else:
+                if not optional:
+                    raise Fault(-1, 'Invalid GET parameter(s)')
+                else:
+                    return optional_value
+
+        function = self.functions.get(self.method_name)
         response = HttpResponse()
-        response.write("<b>This is an XML-RPC Service.</b><br>")
-        response.write("You need to invoke it using an XML-RPC Client!<br>")
+        defaults = getargspec(function).defaults
+        args = getargspec(function).args
+
+        if defaults:
+            required_args = args[:-len(defaults)]
+            optional_args = args[-len(defaults):]
+            optional_args = [arg for arg in optional_args if has_get_param(arg)]
+            args = required_args + optional_args
+
+        arguments = map(get_param, args)
+        response.write(function(*arguments))
         return response
 
     def post(self, request):
@@ -152,8 +188,8 @@ def get_concept(thesaurus_uri, concept_id, langcode):
     return concept
 
 
-def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
-    get_language(langcode)
+def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
+    get_language(language)
     ns = get_namespace(thesaurus_uri)
     model = get_model(thesaurus_uri)
     all_concepts = model.objects.values_list('id', flat=True)
@@ -167,23 +203,23 @@ def getTopmostConcepts(thesaurus_uri, langcode=DEFAULT_LANGCODE):
 
     concepts = []
     for concept_id in concepts_id:
-        concept = get_concept(thesaurus_uri, concept_id, langcode)
+        concept = get_concept(thesaurus_uri, concept_id, language)
         concepts.append(concept)
 
     return sorted(concepts,
                   key=lambda x: x['preferredLabel']['string'].lower())
 
 
-def getAllConceptRelatives(concept_uri, target_namespace=None,
+def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
                            relation_uri=None):
     concept_id = get_concept_id(concept_uri)
 
     relations = Relation.objects.filter(source_id=concept_id)
     if relation_uri:
         relations = relations.filter(property_type__uri=relation_uri)
-    if target_namespace:
+    if target_thesaurus_uri:
         relations = relations.filter(
-            target__namespace__url=target_namespace
+            target__namespace__url=target_thesaurus_uri
         )
     relations = relations.values(
         'property_type__uri',
@@ -204,7 +240,7 @@ def getAllConceptRelatives(concept_uri, target_namespace=None,
     return relatives
 
 
-def getRelatedConcepts(concept_uri, relation_uri, langcode=DEFAULT_LANGCODE):
+def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
     try:
         concept_id = get_concept_id(concept_uri)
     except Fault:
@@ -218,16 +254,16 @@ def getRelatedConcepts(concept_uri, relation_uri, langcode=DEFAULT_LANGCODE):
     relatives = []
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
     for related_id in related_concepts:
-        relatives.append(get_concept(thesaurus_uri, related_id, langcode))
+        relatives.append(get_concept(thesaurus_uri, related_id, language))
     return relatives
 
 
-def getConcept(concept_uri, langcode=DEFAULT_LANGCODE):
-    get_language(langcode)
+def getConcept(concept_uri, language=DEFAULT_LANGCODE):
+    get_language(language)
     concept_id = get_concept_id(concept_uri)
 
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
-    return get_concept(thesaurus_uri, concept_id, langcode)
+    return get_concept(thesaurus_uri, concept_id, language)
 
 
 def hasConcept(concept_uri):
@@ -269,32 +305,36 @@ def getAllTranslationsForConcept(concept_uri, property_uri):
     return result
 
 
-def getConceptsMatchingKeyword(keyword, searchmode, thesaurus_uri,
-                               langcode=DEFAULT_LANGCODE):
+def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri,
+                               language=DEFAULT_LANGCODE):
 
-    language = get_language(langcode)
+    language = get_language(language)
     ns = get_namespace(thesaurus_uri)
-    if not searchmode in range(5):
+    try:
+        search_mode = int(search_mode)
+        if not search_mode in range(5):
+            raise ValueError
+    except ValueError:
         raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
 
-    concepts = search_queryset(keyword, language, searchmode, ns.heading,
+    concepts = search_queryset(keyword, language, search_mode, ns.heading,
                                True)
     results = []
     for concept in concepts:
-        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+        results.append(get_concept(thesaurus_uri, concept['id'], language.code))
 
     return results
 
 
 def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
-                                        langcode=DEFAULT_LANGCODE):
-    language = get_language(langcode)
+                                        language=DEFAULT_LANGCODE):
+    language = get_language(language)
     ns = get_namespace(thesaurus_uri)
 
     concepts = regex_search(regex, language, ns.heading)
     results = []
     for concept in concepts:
-        results.append(get_concept(thesaurus_uri, concept['id'], langcode))
+        results.append(get_concept(thesaurus_uri, concept['id'], language.code))
 
     return results
 
@@ -306,6 +346,7 @@ def getAvailableLanguages(concept_uri):
         concept_id=concept_id,
         name='prefLabel',
     ).values_list('language', flat=True)
+
     return [] or sorted(languages)
 
 
@@ -326,33 +367,34 @@ def getAvailableThesauri():
             'uri': ns['url'],
             'version': ns['version'],
         })
+
     return result
 
 
-def fetchThemes(langcode=DEFAULT_LANGCODE):
-    return getTopmostConcepts(ENDPOINT_URI + 'theme/', langcode)
+def fetchThemes(language=DEFAULT_LANGCODE):
+    return getTopmostConcepts(ENDPOINT_URI + 'theme/', language)
 
 
-def fetchGroups(langcode=DEFAULT_LANGCODE):
-    return getTopmostConcepts(ENDPOINT_URI + 'group/', langcode)
+def fetchGroups(language=DEFAULT_LANGCODE):
+    return getTopmostConcepts(ENDPOINT_URI + 'supergroup/', language)
 
 
 dispatcher.register_introspection_functions()
-dispatcher.register_function(getTopmostConcepts, 'getTopmostConcepts')
-dispatcher.register_function(getAllConceptRelatives, 'getAllConceptRelatives')
-dispatcher.register_function(getRelatedConcepts, 'getRelatedConcepts')
-dispatcher.register_function(getConcept, 'getConcept')
-dispatcher.register_function(hasConcept, 'hasConcept')
-dispatcher.register_function(hasRelation, 'hasRelation')
-dispatcher.register_function(getAllTranslationsForConcept,
-                             'getAllTranslationsForConcept')
-dispatcher.register_function(getConceptsMatchingKeyword,
-                             'getConceptsMatchingKeyword')
-dispatcher.register_function(getConceptsMatchingRegexByThesaurus,
-                             'getConceptsMatchingRegexByThesaurus')
-dispatcher.register_function(getAvailableLanguages, 'getAvailableLanguages')
-dispatcher.register_function(getSupportedLanguages, 'getSupportedLanguages')
-dispatcher.register_function(getAvailableThesauri, 'getAvailableThesauri')
-dispatcher.register_function(fetchThemes, 'fetchThemes')
-dispatcher.register_function(fetchGroups, 'fetchGroups')
+ApiView.register_function(getTopmostConcepts, 'getTopmostConcepts')
+ApiView.register_function(getAllConceptRelatives, 'getAllConceptRelatives')
+ApiView.register_function(getRelatedConcepts, 'getRelatedConcepts')
+ApiView.register_function(getConcept, 'getConcept')
+ApiView.register_function(hasConcept, 'hasConcept')
+ApiView.register_function(hasRelation, 'hasRelation')
+ApiView.register_function(getAllTranslationsForConcept,
+                          'getAllTranslationsForConcept')
+ApiView.register_function(getConceptsMatchingKeyword,
+                          'getConceptsMatchingKeyword')
+ApiView.register_function(getConceptsMatchingRegexByThesaurus,
+                          'getConceptsMatchingRegexByThesaurus')
+ApiView.register_function(getAvailableLanguages, 'getAvailableLanguages')
+ApiView.register_function(getSupportedLanguages, 'getSupportedLanguages')
+ApiView.register_function(getAvailableThesauri, 'getAvailableThesauri')
+ApiView.register_function(fetchThemes, 'fetchThemes')
+ApiView.register_function(fetchGroups, 'fetchGroups')
 dispatcher.register_multicall_functions()
