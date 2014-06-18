@@ -2,6 +2,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from xmlrpclib import Fault
 from inspect import getargspec
 from exceptions import ValueError
+from json import JSONEncoder
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -66,7 +67,12 @@ class ApiViewGET(ApiView):
                 Fault(-1, 'Missing parameter: %s' % name)
 
         function = self.functions.get(self.method_name)
-        response = HttpResponse(content_type='application/json')
+        response = HttpResponse(
+            content_type='text/javascript' if (
+                has_get_param('jsonp') and get_param('jsonp') == 'callback'
+            )
+            else 'application/json'
+        )
         defaults = getargspec(function).defaults
         arguments = getargspec(function).args
         kwargs = {}
@@ -80,8 +86,7 @@ class ApiViewGET(ApiView):
                 kwargs.update({arg: get_param(arg)})
         else:
             args = map(get_param, arguments)
-
-        response.write(function(*args, **kwargs))
+        response.write(JSONEncoder().encode(function(*args, **kwargs)))
         return response
 
 

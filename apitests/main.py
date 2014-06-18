@@ -116,7 +116,6 @@ class TestGetConcept(unittest.TestCase):
     def test_one_concept_english(self):
         concept_uri = apiTester.get_full_path('concept/7970')
         language = 'en'
-
         result = apiTester.doXmlRpc('getConcept', concept_uri, language)
 
         self.assertEqual(result["definition"]["language"], language)
