@@ -8,6 +8,8 @@ from django.db.models import (
     Manager,
 )
 
+from gemet.thesaurus.utils import NS_VIEW_MAPPING
+
 
 class Namespace(Model):
     url = CharField(max_length=255)
@@ -136,11 +138,7 @@ class Concept(Model):
         )
 
     def get_concept_type(self):
-        mapping = {
-            'Concepts': 'concept', 'Groups': 'group', 'Themes': 'theme',
-            'Super groups': 'supergroup', 'Inspire Themes': 'inspire-theme',
-        }
-        return mapping.get(self.namespace.heading, 'concept')
+        return NS_VIEW_MAPPING.get(self.namespace.heading, 'concept')
 
     def get_about_url(self):
         # get the concept type, since we cannot rely on self.concept_type
