@@ -3,7 +3,7 @@
 {% load gemet_tags %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='themes' %}
+  {% include 'select_language.html' with languages=languages langcode=language.code view=view_name %}
 
   <h1>{{ page_title }}</h1>
   {% if language_warning %}

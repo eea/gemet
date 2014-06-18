@@ -63,6 +63,7 @@ class ThemesView(LanguageMixin, TemplateView):
     model_cls = Theme
     page_title = 'Themes'
     theme_url = 'theme_concepts'
+    view_name = 'themes'
 
     def _get_themes_by_langcode(self, langcode):
         return (
@@ -84,12 +85,13 @@ class ThemesView(LanguageMixin, TemplateView):
         themes = self._get_themes_by_langcode(self.langcode)
         if not themes:
             themes = self._get_themes_by_langcode(DEFAULT_LANGCODE)
-            context.update({"language_warning": True})
+            context.update({'language_warning': True})
 
         context.update({
-            "themes": themes,
-            "page_title": self.page_title,
-            "theme_url": self.theme_url,
+            'themes': themes,
+            'page_title': self.page_title,
+            'theme_url': self.theme_url,
+            'view_name': self.view_name,
         })
         return context
 
@@ -98,17 +100,17 @@ class InspireThemesView(ThemesView):
     model_cls = InspireTheme
     page_title = 'INSPIRE Spatial Data Themes'
     theme_url = 'inspire-theme'
+    view_name = 'inspire-themes'
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
-
         languages = [lang for lang in context['languages'] if
                      Property.objects.filter(
                          language_id=lang,
                          concept__namespace=self.model_cls.objects.get_ns(),
                      )]
 
-        context.update({"languages": languages})
+        context.update({'languages': languages})
         return context
 
 
