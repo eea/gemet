@@ -5,15 +5,6 @@ from models import Property
 
 SEPARATOR = '\t'
 
-NS_VIEW_MAPPING = {
-    'Concepts': 'concept',
-    'Themes': 'theme',
-    'Groups': 'group',
-    'Super groups': 'supergroup',
-    'Inspire Themes': 'inspire-theme',
-}
-
-
 def is_rdf(request):
     accepts = request.META.get('HTTP_ACCEPT', '*/*')
     parts = accepts.split(',')

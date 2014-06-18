@@ -8,7 +8,7 @@ from django.db.models import (
     Manager,
 )
 
-from gemet.thesaurus.utils import NS_VIEW_MAPPING
+from gemet.thesaurus import NS_VIEW_MAPPING
 
 
 class Namespace(Model):

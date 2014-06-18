@@ -27,13 +27,12 @@ from gemet.thesaurus.models import (
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
-from gemet.thesaurus.utils import (
-    search_queryset,
-    exp_decrypt,
-    is_rdf,
+from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
+from gemet.thesaurus import (
+    DEFAULT_LANGCODE,
+    NR_CONCEPTS_ON_PAGE,
     NS_VIEW_MAPPING,
 )
-from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 
 
 class LanguageMixin(object):
