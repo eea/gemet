@@ -29,13 +29,15 @@ from gemet.thesaurus.views import (
     GemetThesaurus,
     Skoscore,
 )
-from .api import ApiView
+from .api import ApiViewGET, ApiViewPOST
 
 
 urlpatterns = patterns(
     '',
     url(r'^$', ThemesView.as_view()),
-    url(r'^gemet/(?P<method_name>[a-zA-Z]+)$', ApiView.as_view(),
+    url(r'^gemet/(?P<method_name>[a-zA-Z]+)$', ApiViewGET.as_view(),
+        name='api_root'),
+    url(r'^gemet/$', ApiViewPOST.as_view(),
         name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^about/$', AboutView.as_view(), name='about'),

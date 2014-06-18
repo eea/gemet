@@ -39,22 +39,34 @@ class ApiView(View):
         self.method_name = kwargs.pop('method_name')
         return super(ApiView, self).dispatch(request, *args, **kwargs)
 
+    @classmethod
+    def as_view(cls, **initkwargs):
+        return csrf_exempt(super(ApiView, cls).as_view(**initkwargs))
+
+
+class ApiViewPOST(ApiView):
+
+    def post(self, request):
+        response = HttpResponse(content_type='text/xml')
+        response.write(dispatcher._marshaled_dispatch(request.body))
+        return response
+
+
+class ApiViewGET(ApiView):
+
     def get(self, request):
 
         def has_get_param(name):
             return name in request.GET
 
-        def get_param(name, optional=False, optional_value=None):
+        def get_param(name):
             if has_get_param(name):
                 return request.GET.get(name)
             else:
-                if not optional:
-                    raise Fault(-1, 'Invalid GET parameter(s)')
-                else:
-                    return optional_value
+                Fault(-1, 'Missing parameter: %s' % name)
 
         function = self.functions.get(self.method_name)
-        response = HttpResponse()
+        response = HttpResponse(content_type='application/json')
         defaults = getargspec(function).defaults
         arguments = getargspec(function).args
         kwargs = {}
@@ -71,15 +83,6 @@ class ApiView(View):
 
         response.write(function(*args, **kwargs))
         return response
-
-    def post(self, request):
-        response = HttpResponse(content_type='text/xml')
-        response.write(dispatcher._marshaled_dispatch(request.body))
-        return response
-
-    @classmethod
-    def as_view(cls, **initkwargs):
-        return csrf_exempt(super(ApiView, cls).as_view(**initkwargs))
 
 
 def split_concept_uri(concept_uri):
