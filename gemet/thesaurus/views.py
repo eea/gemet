@@ -99,6 +99,18 @@ class InspireThemesView(ThemesView):
     page_title = 'INSPIRE Spatial Data Themes'
     theme_url = 'inspire-theme'
 
+    def get_context_data(self, **kwargs):
+        context = super(InspireThemesView, self).get_context_data(**kwargs)
+
+        languages = [lang for lang in context['languages'] if
+                     Property.objects.filter(
+                         language_id=lang,
+                         concept__namespace=self.model_cls.objects.get_ns(),
+                     )]
+
+        context.update({"languages": languages})
+        return context
+
 
 class GroupsView(LanguageMixin, TemplateView):
     template_name = "groups.html"
