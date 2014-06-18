@@ -543,9 +543,9 @@ if __name__ == '__main__':
     argv = sys.argv
 
     if options.public:
-        apiTester = ApiTester('http://www.eionet.europa.eu/gemet/', True)
+        apiTester = ApiTester('http://www.eionet.europa.eu/gemet/', False)
         argv.remove('--public')
     else:
-        apiTester = ApiTester('http://localhost:8000/gemet/', False)
+        apiTester = ApiTester('http://localhost:8000/gemet/', True)
 
     unittest.main(argv=argv)

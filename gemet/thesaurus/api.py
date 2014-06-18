@@ -42,10 +42,10 @@ class ApiView(View):
     def get(self, request):
 
         def has_get_param(name):
-            return True if name in request.GET else False
+            return name in request.GET
 
         def get_param(name, optional=False, optional_value=None):
-            if name in request.GET:
+            if has_get_param(name):
                 return request.GET.get(name)
             else:
                 if not optional:
@@ -56,16 +56,20 @@ class ApiView(View):
         function = self.functions.get(self.method_name)
         response = HttpResponse()
         defaults = getargspec(function).defaults
-        args = getargspec(function).args
+        arguments = getargspec(function).args
+        kwargs = {}
 
         if defaults:
-            required_args = args[:-len(defaults)]
-            optional_args = args[-len(defaults):]
-            optional_args = [arg for arg in optional_args if has_get_param(arg)]
-            args = required_args + optional_args
+            required_args = arguments[:-len(defaults)]
+            args = map(get_param, required_args)
+            optional_args = arguments[-len(defaults):]
+            optional_args = filter(has_get_param, optional_args)
+            for arg in optional_args:
+                kwargs.update({arg: get_param(arg)})
+        else:
+            args = map(get_param, arguments)
 
-        arguments = map(get_param, args)
-        response.write(function(*arguments))
+        response.write(function(*args, **kwargs))
         return response
 
     def post(self, request):
