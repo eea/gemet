@@ -1,17 +1,9 @@
 import factory
 
 from gemet.thesaurus.models import (
-    Concept, Property, Language, Namespace, Relation, PropertyType, Term,
-    Group, SuperGroup, Theme, DefinitionSource,
+    Concept, Property, Language, Relation, PropertyType, Term, Group,
+    SuperGroup, Theme, DefinitionSource
 )
-
-
-class NamespaceFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Namespace
-    FACTORY_DJANGO_GET_OR_CREATE = ('heading',)
-
-    id = 4
-    heading = 'Themes'
 
 
 class LanguageFactory(factory.django.DjangoModelFactory):
