@@ -320,7 +320,6 @@ def getAllTranslationsForConcept(concept_uri, property_uri):
 
 def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri,
                                language=DEFAULT_LANGCODE):
-
     language = get_language(language)
     ns = get_namespace(thesaurus_uri)
     try:
@@ -329,7 +328,6 @@ def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri,
             raise ValueError
     except ValueError:
         raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
-
     concepts = search_queryset(keyword, language, search_mode, ns.heading,
                                True)
     results = []
@@ -368,7 +366,6 @@ def getSupportedLanguages(thesaurus_uri):
     languages = Property.objects.filter(
         concept__namespace=ns,
     ).values_list('language', flat=True)
-
     return [] or sorted(set(languages))
 
 

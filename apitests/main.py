@@ -4,21 +4,22 @@ from urllib import urlencode
 import xmlrpclib
 import unittest
 import sys
-
-from config import *
 import requests
 
 
-class ApiTester(object):
-    request_url = 'http://www.eionet.europa.eu/gemet/'
+from config import *
 
-    def __init__(self, xmlrpc_url='', local=False, get=False):
-        self.xmlrpc_url = xmlrpc_url
+
+class ApiTester(object):
+    output_url = 'http://www.eionet.europa.eu/gemet/'
+
+    def __init__(self, request_url='', local=False, get=False):
+        self.request_url = request_url
         self.LOCAL_TEST = local
         self.GET_TEST = get
 
     def get_full_path(self, relative_path=''):
-        return self.request_url + relative_path
+        return self.output_url + relative_path
 
     def request(self, method, *args):
         if self.GET_TEST:
@@ -30,10 +31,12 @@ class ApiTester(object):
         url = self.request_url + method + '?'
         url += urlencode(kwargs)
         result = requests.get(url)
-        return json.loads(result.text)
+        if result.ok:
+            return json.loads(result.text)
+        return "ERROR"
 
     def doXmlRpc(self, method, *args):
-        server = xmlrpclib.ServerProxy(self.xmlrpc_url, allow_none=True)
+        server = xmlrpclib.ServerProxy(self.request_url, allow_none=True)
         return getattr(server, method)(*args)
 
 
@@ -41,7 +44,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
     def test_terms(self):
         top_concepts = api_tester.request(
             'getTopmostConcepts',
-            'concept_uri', api_tester.get_full_path('concept/'),
+            'thesaurus_uri', api_tester.get_full_path('concept/'),
             'language', 'en'
         )
 
@@ -53,7 +56,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
     def test_groups(self):
         top_groups = api_tester.request(
             'getTopmostConcepts',
-            'concept_uri', api_tester.get_full_path('group/'),
+            'thesaurus_uri', api_tester.get_full_path('group/'),
             'language', 'en'
         )
 
@@ -65,7 +68,7 @@ class TestGetTopmostConcepts(unittest.TestCase):
     def test_themes(self):
         top_themes = api_tester.request(
             'getTopmostConcepts',
-            'concept_uri', api_tester.get_full_path('theme/'),
+            'thesaurus_uri', api_tester.get_full_path('theme/'),
             'language', 'en'
         )
 
@@ -112,15 +115,23 @@ class TestGetRelatedConcepts(unittest.TestCase):
                          [u'lluvia \xe1cida', u'acidificaci\xf3n de suelo'])
 
     def test_no_language(self):
-
-        self.assertRaises(
-            xmlrpclib.Fault,
-            api_tester.request,
-            'getRelatedConcepts',
-            'concept_uri', api_tester.get_full_path('concept/42'),
-            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
-            'language', 'no_language'
-        )
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request('getRelatedConcepts', *(
+                                 api_tester.get_full_path('concept/42'),
+                                 'http://www.w3.org/2004/02/skos/core#related',
+                                 'no_language'
+                             ))
+            )
+        else:
+            self.assertRaises(
+                xmlrpclib.Fault,
+                api_tester.request,
+                'getRelatedConcepts',
+                'concept_uri', api_tester.get_full_path('concept/42'),
+                'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
+                'language', 'no_language'
+            )
 
 
 class TestGetConcept(unittest.TestCase):
@@ -128,10 +139,15 @@ class TestGetConcept(unittest.TestCase):
     def test_no_concept(self):
         concept_uri = api_tester.get_full_path('concept/999999999')
         language = 'en'
-
-        self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
-                          'concept_uri', concept_uri,
-                          'language', language)
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request(
+                                 'getConcept', *(concept_uri, language)
+                             ))
+        else:
+            self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
+                              'concept_uri', concept_uri,
+                              'language', language)
 
     def test_one_concept_english(self):
         concept_uri = api_tester.get_full_path('concept/7970')
@@ -168,9 +184,14 @@ class TestGetConcept(unittest.TestCase):
     def test_no_language(self):
         concept_uri = api_tester.get_full_path('concept/7970')
         language = 'no_language'
-
-        self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
-                          'concept_uri', concept_uri, 'language', language)
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request(
+                                 'getConcept', *(concept_uri, language)
+                             ))
+        else:
+            self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
+                              'concept_uri', concept_uri, 'language', language)
 
 
 class TestHasConcept(unittest.TestCase):
@@ -361,7 +382,7 @@ class TestGetAvailableLanguages(unittest.TestCase):
 class TestGetSupportedLanguages(unittest.TestCase):
 
     def test_getSupportedLanguages(self):
-        result = api_tester.request('getSupportedLanguages', 'concept_uri',
+        result = api_tester.request('getSupportedLanguages', 'thesaurus_uri',
                                     api_tester.get_full_path('concept/'))
 
         if api_tester.LOCAL_TEST:
@@ -383,8 +404,8 @@ class TestGetAvailableThesauri(unittest.TestCase):
 class TestFetchThemes(unittest.TestCase):
 
     def test_fetchThemes_english(self):
-        lang = 'en'
-        result = api_tester.request('fetchThemes', 'lang', lang)
+        language = 'en'
+        result = api_tester.request('fetchThemes', 'language', language)
 
         self.assertEqual([r['preferredLabel'] for r in result],
                          THEMES_PREF_LABEL)
@@ -393,13 +414,13 @@ class TestFetchThemes(unittest.TestCase):
         self.assertEqual([r['thesaurus'] for r in result], THEMES_THESAURUS)
 
     def test_fetchThemes_spanish(self):
-        lang = 'es'
-        result = api_tester.request('fetchThemes', 'lang', lang)
+        language = 'es'
+        result = api_tester.request('fetchThemes', 'language', language)
 
         self.assertEqual(
             'turismo',
-            sorted([r['preferredLabel']['string']for r in result])[-1]
-            )
+            sorted([r['preferredLabel']['string'] for r in result])[-1]
+        )
         if not api_tester.LOCAL_TEST:
             self.assertEqual(api_tester.get_full_path('theme/9'),
                              (sorted([r['uri'] for r in result])[-1]))
@@ -410,8 +431,8 @@ class TestFetchThemes(unittest.TestCase):
 class TestFetchGroups(unittest.TestCase):
 
     def test_fetchGroups_english(self):
-        lang = 'en'
-        result = api_tester.request('fetchGroups', 'lang', lang)
+        language = 'en'
+        result = api_tester.request('fetchGroups', 'language', language)
         self.assertEqual([r['preferredLabel'] for r in result],
                          GROUPS_PREF_LABEL)
         if not api_tester.LOCAL_TEST:
@@ -419,8 +440,8 @@ class TestFetchGroups(unittest.TestCase):
         self.assertEqual([r['thesaurus'] for r in result], GROUPS_THESAURUS)
 
     def test_fetchGroups_spanish(self):
-        lang = 'es'
-        result = api_tester.request('fetchGroups', 'lang', lang)
+        language = 'es'
+        result = api_tester.request('fetchGroups', 'language', language)
 
         self.assertEqual(u'T\xc9RMINOS GENERALES',
                          sorted([r['preferredLabel']['string']
