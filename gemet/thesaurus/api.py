@@ -2,7 +2,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from xmlrpclib import Fault
 from inspect import getargspec
 from exceptions import ValueError
-from json import JSONEncoder
+import json
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -37,7 +37,7 @@ class ApiView(View):
         cls.functions.update({name: function})
 
     def dispatch(self, request, *args, **kwargs):
-        self.method_name = kwargs.pop('method_name')
+        self.method_name = kwargs.pop('method_name', None)
         return super(ApiView, self).dispatch(request, *args, **kwargs)
 
     @classmethod
@@ -86,7 +86,7 @@ class ApiViewGET(ApiView):
                 kwargs.update({arg: get_param(arg)})
         else:
             args = map(get_param, arguments)
-        response.write(JSONEncoder().encode(function(*args, **kwargs)))
+        response.write(json.dumps(function(*args, **kwargs)))
         return response
 
 
@@ -253,6 +253,7 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
 
 
 def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
+    get_language(language)
     try:
         concept_id = get_concept_id(concept_uri)
     except Fault:
@@ -388,7 +389,7 @@ def fetchThemes(language=DEFAULT_LANGCODE):
 
 
 def fetchGroups(language=DEFAULT_LANGCODE):
-    return getTopmostConcepts(ENDPOINT_URI + 'supergroup/', language)
+    return getTopmostConcepts(ENDPOINT_URI + 'group/', language)
 
 
 dispatcher.register_introspection_functions()
