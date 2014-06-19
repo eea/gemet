@@ -85,8 +85,7 @@ be run as an unprivileged user in the product directory::
     # Replace [user] and [password] with your MySQL credentials and [db_name]
     # with the name of the database:
 
-    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET
-    utf8 COLLATE utf8_general_ci;'
+    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
    **The database charset MUST be utf8.**
 
@@ -162,7 +161,7 @@ Data Import
 seaparate database::
 
     mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
-    mysql [db_name] < gemet.sql
+    mysql -u[user] -p[password] [db_name] < gemet.sql
 
 2. Update the ``import`` section from ``DATABASES`` dict in the local
 configuration file with the name of the database used for import
