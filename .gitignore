@@ -6,3 +6,4 @@ test_settings.py
 docs/api/build/*
 docs/overview/build/*
 fabfile/env.ini
+gemet.sql
