@@ -1,6 +1,4 @@
 from django.core.management.base import BaseCommand
-from datetime import datetime
-
 from gemet.thesaurus.models import Property, Concept, Language
 from gemet.thesaurus.utils import SEPARATOR
 
@@ -57,7 +55,7 @@ class Command(BaseCommand):
         if new_properties:
             self.stdout.write(
                 'Inserting {0} new rows into Property table...'
-                .format(len(new_properties), datetime.now())
+                .format(len(new_properties))
             )
         else:
             self.stdout.write('No rows to insert.')
