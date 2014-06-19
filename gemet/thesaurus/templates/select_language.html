@@ -1,12 +1,30 @@
-<div class="well well-sm">
-  Select language:
+<div class="box">
+  <label for="language">Select language</label>
+  <!-- mobile -->
+  <select name="language" class="select-language">
   {% for lang in languages %}
-    {% if lang == langcode %}
-      <span class="btn btn-primary btn-xs selected-elm" disabled="disabled">{{ lang }}</span>
-    {% else %}
-    <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}" class="btn btn-primary btn-xs active" role="button">
-      {{ lang }}
-    </a>
-    {% endif %}
+    <option 
+      value="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}"
+
+      {% if lang == langcode %}
+      selected
+      {% endif %}
+    >Add long name {{ lang }}
+    </option>
   {% endfor %}
+  </select>
+  <!-- desktop -->
+  <!-- <ul class="hidden-mobile list-inline">
+    {% for lang in languages %}
+    <li>
+      {% if lang == langcode %}
+        <span class="btn btn-primary btn-xs selected-elm" disabled="disabled">{{ lang }}</span>
+      {% else %}
+      <a href="{% if id %}{% url view lang id %}{% else %}{% url view lang %}{% endif %}" class="btn btn-primary btn-xs active" role="button">
+        {{ lang }}
+      </a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul> -->
 </div>

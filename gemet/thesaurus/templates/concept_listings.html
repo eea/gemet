@@ -9,37 +9,25 @@
   {% endblock %}
 
   <ul class="concepts {% if language.rtl %}direction-rtl{% endif %}">
-    <div id="left-box">
-      {% for concept in concepts|half:0 %}
-        <li>
-          {% if concept.name %}
-            <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
-          {% else %}
-            <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
-          {% endif %}
-        </li>
-      {% endfor %}
-    </div>
-
-    <div id="right-box">
-      {% for concept in concepts|half:1 %}
-        <li>
-          {% if concept.name %}
-            <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
-          {% else %}
-            <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
-          {% endif %}
-        </li>
-      {% endfor %}
-    </div>
+    {% for concept in concepts %}
+    <li>
+      {% if concept.name %}
+        <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
+      {% else %}
+        <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
+      {% endif %}
+    </li>
+    {% endfor %}
   </ul>
 
   <div class="pagination">
     <span class="step-links">
+      <!-- prev -->
       {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}&letter={{ letter }}">previous</a>
       {% endif %}
 
+      <!-- pages -->
       {% for page_number in visible_pages %}
         {% if page_number == page_obj.number %}
           {{ page_number }}
@@ -48,6 +36,7 @@
         {% endif %}
       {% endfor %}
 
+      <!-- next -->
       {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}&letter={{ letter }}">next</a>
       {% endif %}
