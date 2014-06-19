@@ -64,6 +64,7 @@ class Command(BaseCommand):
                        for c in Concept.objects.all()}
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
+            row['is_resource'] = row['is_resource'] or 0
 
         self.import_rows(rows, Property)
         self.warn_ignored_rows(cursor, 'property', len(rows))
