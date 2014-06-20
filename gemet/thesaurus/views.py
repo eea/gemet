@@ -261,6 +261,17 @@ class TermView(ConceptView):
     concept_type = 'concept'
     context_object_name = 'concept'
 
+    def get_context_data(self, **kwargs):
+        context = super(ConceptView, self).get_context_data(**kwargs)
+
+        try:
+            source = self.object.properties.get(name='source').value
+        except Property.DoesNotExist:
+            source = '-'
+
+        context.update({"source": source})
+        return context
+
 
 class InspireThemeView(ConceptView):
     template_name = "inspire-theme.html"

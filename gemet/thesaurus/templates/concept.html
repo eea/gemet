@@ -27,6 +27,7 @@
   {% else %}
   <p>
     {{ concept.definition }}
+    <span>(Source: {{ source }})</span>
   </p>
   {% endif %}
 
@@ -84,7 +85,7 @@
     </ul>
   </div>
   {% endif %}
-  
+
   <!-- Narrower -->
   {% if concept.narrower_concepts %}
   <div class=" dl-inline">
