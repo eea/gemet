@@ -2,56 +2,39 @@
 
 {% block content %}
     {% include 'select_language.html' with languages=languages langcode=language.code view='definition_sources' %}
+
     
+    <h3 class="h3">Definition Sources</h3>
     {% if definitions %}
+    <ol id="definition-sources">
         {% for definition in definitions %}
-        <table>
-        <thead></thead>
-        <tbody>
-            <tr>
-                <td>Abbreviation:</td>
-                <td>{{definition.abbr}}</td>
-            </tr>
+        <li>
+            <strong>{{definition.abbr}}</strong>
+            {% if definition.url %}
+            <a href="{{definition.url}}">{{definition.url}}</a>
+            {% endif %}
+            <small>
             {% if definition.author %}
-            <tr>
-                <td>Author:</td>
-                <td>{{definition.author}}</td>
-            </tr>
+                {{definition.author}} - 
             {% endif %}
             {% if definition.title %}
-            <tr>
-                <td>Title:</td>
-                <td>{{definition.title}}</td>
-            </tr>
-            {% endif %}
-            {% if definition.url %}
-            <tr>
-                <td>URL:</td>
-                <td>{{definition.url}}</td>
-            </tr>
+                {{definition.title}},
             {% endif %}
             {% if definition.publication %}
-            <tr>
-                <td>Publication:</td>
-                <td>{{definition.publication}}</td>
-            </tr>
+                {{definition.publication}},
             {% endif %}
             {% if definition.place %}
-                <tr>
-                    <td>Place:</td>
-                    <td>{{definition.place}}</td>
-                </tr>
+                {{definition.place}},
             {% endif %}
             {% if definition.year %}
-                <tr>
-                    <td>Year:</td>
-                    <td>{{definition.year}}</td>
-                </tr>
+                {{definition.year}}
             {% endif %}
-        </tbody>
-        </table>
-        <br/>
+            </small>
+        </li>
         {% endfor %}
+    </ol>
+    {% else %}
+    <p class="alert">Definition sources are not available.</p>
     {% endif %}
 
 {% endblock %}
