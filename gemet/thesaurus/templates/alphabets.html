@@ -3,20 +3,20 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='alphabets' %}
 
-  <h1>{{ language.name }}'s alphabet</h1>
+  <h1>{{ language.name }} alphabet</h1>
 
-  <ol class="letter {% if language.rtl %}direction-rtl{% endif %}">
-    {% if letters %}
+  {% if letters %}
+    <ol class="alphabet-letters clearfix {% if language.rtl %}direction-rtl{% endif %}">
       {% for letter in letters %}
         <li>
           {% for l in letter %}
-            {{ l }}
+            <span class="alphabet-letter">{{ l }}</span>
           {% endfor %}
         </li>
       {% endfor %}
-    {% else %}
-      The alphabet information is not available.
-    {% endif %}
-  </ol>
+    </ol>
+  {% else %}
+    <p class="alert">The alphabet information is not available.</p>
+  {% endif %}
 
 {% endblock %}

@@ -306,6 +306,45 @@ a.btn, .pagination a, .letter-pagination a {
 		min-width: 240px;
 	}
 
+	/* alphabet-letters */
+	.alphabet-letters {
+		margin: 1em 0 1em 0!important;
+		font-family: monospace;
+		font-size: larger;
+		position: relative;
+		list-style-type: none;
+		counter-reset: letter;
+	}
+	.alphabet-letters > li {
+		float: left;
+		white-space: nowrap;
+		margin-right: -1px;
+		text-align: center;
+		min-width: 1em;
+	}
+	.alphabet-letters.direction-rtl > li {
+		float: right;
+		margin-right: auto;
+		margin-left: -1px;
+	}
+	/* list counter */
+	/*.alphabet-letters > li:before {
+		counter-increment: letter;
+		font-size: smaller;
+		content: counter(letter);
+		display: block;
+		color: #aaa;
+	}*/
+	.alphabet-letters .alphabet-letter {
+		display: block;
+		/*display: inline-block;
+		*display: inline;
+		*zoom: 1;*/
+		padding: 1px 3px;
+		border: 1px solid #ddd;
+		margin-bottom: -1px;
+	}
+
 	/* listing */
 	.concepts:before,
 	.concepts:after {
@@ -333,10 +372,6 @@ a.btn, .pagination a, .letter-pagination a {
 	.about-links {
 		text-decoration: none;
 	}
-
-
-	/* pagination */
-
 
 	/* #workarea */
 	#workarea:before,
