@@ -230,7 +230,7 @@ class ConceptView(LanguageMixin, DetailView):
         )
         concept.set_attributes(self.langcode,
                                ['prefLabel', 'definition', 'scopeNote'])
-        concept.url = concept.get_about_url()
+        concept.url = self.request.build_absolute_uri(concept.get_about_url())
 
         return concept
 
