@@ -4,7 +4,7 @@ from gemet.thesaurus.models import Language
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField(max_length=255)
+    query = forms.CharField(max_length=255, required=False)
     langcode = forms.CharField(max_length=10, widget=forms.HiddenInput())
 
 

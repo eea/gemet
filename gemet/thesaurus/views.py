@@ -35,6 +35,13 @@ from gemet.thesaurus import (
 )
 
 
+class SearchFormMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(SearchFormMixin, self).get_context_data(**kwargs)
+        context.update({"form": SearchForm({'langcode': self.langcode})})
+        return context
+
+
 class LanguageMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
@@ -44,21 +51,22 @@ class LanguageMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(LanguageMixin, self).get_context_data(**kwargs)
-        context.update({"language": self.language,
-                        "languages": Language.objects.values_list('code',
-                                                                  flat=True)})
+        context.update({
+            "language": self.language,
+            "languages": Language.objects.values_list('code', flat=True)
+        })
         return context
 
 
-class AboutView(LanguageMixin, TemplateView):
+class AboutView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "about.html"
 
 
-class ChangesView(LanguageMixin, TemplateView):
+class ChangesView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "changes.html"
 
 
-class ThemesView(LanguageMixin, TemplateView):
+class ThemesView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
@@ -114,7 +122,7 @@ class InspireThemesView(ThemesView):
         return context
 
 
-class GroupsView(LanguageMixin, TemplateView):
+class GroupsView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
@@ -136,7 +144,7 @@ class GroupsView(LanguageMixin, TemplateView):
         return context
 
 
-class DefinitionSourcesView(LanguageMixin, TemplateView):
+class DefinitionSourcesView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "definition_sources.html"
 
     def get_context_data(self, **kwargs):
@@ -148,7 +156,7 @@ class DefinitionSourcesView(LanguageMixin, TemplateView):
         return context
 
 
-class AlphabetsView(LanguageMixin, TemplateView):
+class AlphabetsView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "alphabets.html"
 
     def get_context_data(self, **kwargs):
@@ -189,7 +197,7 @@ class SearchView(LanguageMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RelationsView(LanguageMixin, TemplateView):
+class RelationsView(LanguageMixin, SearchFormMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
@@ -214,7 +222,7 @@ class RelationsView(LanguageMixin, TemplateView):
         return context
 
 
-class ConceptView(LanguageMixin, DetailView):
+class ConceptView(LanguageMixin, SearchFormMixin, DetailView):
 
     pk_url_kwarg = 'concept_id'
 
@@ -295,7 +303,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(LanguageMixin, ListView):
+class PaginatorView(LanguageMixin, SearchFormMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
@@ -712,7 +720,7 @@ class GemetThesaurus(XMLTemplateView):
     template_name = 'downloads/gemetThesaurus.xml'
 
 
-class DownloadView(LanguageMixin, FormView):
+class DownloadView(LanguageMixin, SearchFormMixin, FormView):
     template_name = "downloads/download.html"
     form_class = ExportForm
 
@@ -790,11 +798,12 @@ def concept_redirect(request, concept_type, concept_code):
 
 
 def render_rdf(request, obj):
-    context = {}
-    context['concept'] = obj
-    context['base_url'] = request.build_absolute_uri('/')[:-1]
-    context['relations'] = obj.source_relations.order_by('property_type__uri')
-    context['properties'] = obj.properties.order_by('name')
+    context = {
+        'concept': obj,
+        'base_url': request.build_absolute_uri('/')[:-1],
+        'relations': obj.source_relations.order_by('property_type__uri'),
+        'properties': obj.properties.order_by('name')
+    }
     return render(request, 'concept.rdf', context,
                   content_type='application/rdf+xml')
 

@@ -19,7 +19,14 @@
               <li><a href="{% url 'inspire-themes' language.code %}">INSPIRE Spatial Data Themes</a></li>
               <li><a href="{% url 'groups' language.code %}">Hierarchical Listings</a></li>
               <li><a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a></li>
-              <li><a href="{% url 'search' language.code %}">Search Thesaurus</a></li>
+              <li>
+                <form method="post" action='{% url 'search' language.code %}' id='search-form'>
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <p>Selected language: {{ language.name }}</p>
+                  <input type="submit" value="Search"/>
+                </form>
+              </li>
             </ul>
           </div>
         </div>
