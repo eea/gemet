@@ -223,7 +223,13 @@
 		border-bottom: 2px solid #ddd;
 	}
 
-	/*  */
+	/* hr */
+	hr {
+		margin: 1em auto;
+		border: 0;
+		height: 1px;
+		background: #ddd;
+	}
 
 	/* letter-pagination */
 	.letter-pagination {
@@ -306,6 +312,12 @@
 			float: none;
 			margin-left: auto;
 		}
+	}
+
+	/* download */
+	#download [type="submit"] {
+		display: block;
+		width: 100%;
 	}
 
 	/* translations */

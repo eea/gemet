@@ -5,12 +5,12 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='groups' %}
 
-  <h1>Groups list</h1>
+  <h1>Groups</h1>
 
   <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% for supergroup in supergroups %}
       <li>
-      <h3 class="h3">{{ supergroup.name }}</h3>
+      <h3 class="h5">{{ supergroup.name }}</h3>
 
         <ul class="groups">
           {% get_children supergroup.id language.code as supergroup_children %}
