@@ -6,9 +6,9 @@
 
   <h1>Relations</h1>
 
-  <h3 {% if language.rtl %}class="direction-rtl"{% endif %}>{{ group.name }}</h3>
+  <h3 class="h5 {% if language.rtl %}direction-rtl{% endif %}">{{ group.name }}</h3>
 
-  <ul class="groupMembers {% if language.rtl %}direction-rtl{% endif %}">
+  <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% get_children group.id language.code as group_children %}
     {% for concept in group_children %}
       {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=language.code %}

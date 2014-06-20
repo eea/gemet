@@ -9,11 +9,10 @@
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
-    <h6 class="no-margin-top">Translations:</h6>
+    <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}
       <li class="clearfix">
-        <!-- add href review -->
         <div class="dt">{{ translation.language.name }}</div>
         <div class="dd">{{ translation.value }}</div>
       </li>
@@ -23,7 +22,7 @@
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
   {% if not concept.definition %}
-  <p class="alert">No definition available.</p>
+  <p class="alert">Definition is not available.</p>
   {% else %}
   <p>
     {{ concept.definition }}
@@ -37,7 +36,7 @@
    <!-- Themes -->
   {% if concept.themes %}
   <h5 class="h5">Themes</h5>
-  <ul>
+  <ul class="listing">
     {% for theme in concept.themes %}
     <li>
       <a href="{% url 'theme' language.code theme.id %}">{{ theme.name }}</a>
@@ -49,7 +48,7 @@
   <!-- Groups -->
   {% if concept.groups %}
     <h5 class="h5">Groups</h5>
-      <ul class="infotext">
+      <ul class="listing">
       {% for group in concept.groups %}
         <li>
           <a href="{% url 'group' language.code group.id %}">{{ group.name }}</a>
@@ -63,7 +62,7 @@
 
   <!-- Broader -->
   {% if concept.broader_concepts %}
-  <div class=" dl-inline">
+  <div class="dl-inline">
     <h6 class="dt">Broader</h6>
     <ul class="dd no-list">
       {% for cp in concept.broader_concepts %}
@@ -106,16 +105,21 @@
   <ul class="dl-inline no-list">
     {% for relation in concept.visible_foreign_relations %}
     <li class="">
-      <span class="dt">{{ relation.property_type.label }}</span>
-      <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
+      <div class="dt">{{ relation.property_type.label }}</div>
+      <div class="dd">
+      <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
+    </li>
+
     {% endfor %}
   </ul>
 
-  <!-- Scope ??? -->
+  <!-- Scope -->
   <h5 class="h5">Scope note</h5>
-  <p>
-    {{ concept.scopeNote|default:"scope note is not available" }}
-  </p>
+  {% if not concept.scopeNote %}
+    <p class="alert">Scope note is not available.</p>
+  {% else %}
+    <p>{{ concept.scopeNote }}</p>
+  {% endif %}
 
   <!-- Concept URL -->
   <h5 class="h5">Concept URL</h5>

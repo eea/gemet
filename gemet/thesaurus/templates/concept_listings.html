@@ -8,7 +8,12 @@
   {% block header %}
   {% endblock %}
 
-  <ul class="concepts {% if language.rtl %}direction-rtl{% endif %}">
+  <div class="letter-pagination">
+    {% block letter_pagination %}
+    {% endblock %}
+  </div>
+
+  <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}
     <li>
       {% if concept.name %}
@@ -20,14 +25,21 @@
     {% endfor %}
   </ul>
 
-  <div class="pagination">
-    <span class="step-links">
-      <!-- prev -->
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}&letter={{ letter }}">previous</a>
-      {% endif %}
+  <div class="pagination clearfix">
+      <div class="float-right">
+        <!-- prev -->
+        {% if page_obj.has_previous %}
+          <a class="no-visit" href="?page={{ page_obj.previous_page_number }}&letter={{ letter }}">Previous</a>
+        {% endif %}
+        &ensp;
+        <!-- next -->
+        {% if page_obj.has_next %}
+          <a class="no-visit" href="?page={{ page_obj.next_page_number }}&letter={{ letter }}">Next</a>
+        {% endif %}
+      </div>
 
       <!-- pages -->
+      Pages:
       {% for page_number in visible_pages %}
         {% if page_number == page_obj.number %}
           {{ page_number }}
@@ -35,16 +47,5 @@
           <a href="?page={{ page_number }}&letter={{ letter }}">{{ page_number }}</a>
         {% endif %}
       {% endfor %}
-
-      <!-- next -->
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&letter={{ letter }}">next</a>
-      {% endif %}
-    </span>
-  </div>
-
-  <div class="letter-pagination">
-    {% block letter_pagination %}
-    {% endblock %}
   </div>
 {% endblock %}

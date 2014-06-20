@@ -1,53 +1,51 @@
 {% extends layout_template %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='download'%}
+	{% include 'select_language.html' with languages=languages langcode=language.code view='download'%}
 
-    <h2> Download GEMET</h2>
+	<h1>Download GEMET</h1>
 
-    <h4>General structure</h4>
-    <div>
-        <a href="{% url 'gemet-backbone.html'%}">Themes and groups relationships as simple HTML importable into MS-Access</a>
-    </div>
-    <div>
-        <a href="{% url 'gemet-backbone.rdf' %}">Themes and groups relationships as RDF</a>
-    </div>
-    <div>
-        <a href="{% url 'gemet-definitions.html'%}">Labels and definitions as simple HTML table importable into MS-Access</a>
-     </div>
-    <div>
-        <a href="{% url 'gemet-groups.html'%}">Supergroups, groups and themes as simple HTML tables importable into MS-Access</a>
-     </div>
-    <div>
-        <a href="{% url 'gemet-relations.html' %}">Relations in simple HTML importable into MS-Access</a>
-     </div>
-    <div>
-        <a href="{% url 'gemet-skoscore.rdf' %}">SKOS broader and narrower relations as RDF</a>
-     </div>
-    <div>
-        <a href="{% url 'gemetThesaurus' %}">An object for the Concept Scheme</a>
-     </div>
+	<!-- Download -->
+	<div id="download" class="side-bar box">
+		<h3 class="h6 no-margin-top">Labels and definitions in RDF</h3>
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" name="type" value="definitions">Download labels and definitions</button>
+		</form>
+		<hr />
+		<h3 class="h6">Supergroups, groups and themes in RDF</h3>
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" name="type" value="groups">Download groups and themes</button>
+		</form>
+	</div>
 
-    <p>
-        <p><b>Labels and definitions in RDF</b></p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
+	<!-- General structure -->
+	<h3 class="h3">General structure</h3>
+	<ul class="listing">
+		<li>
+			<a href="{% url 'gemet-backbone.html'%}">Themes and groups relationships as simple HTML importable into MS-Access</a>
+		</li>
+		<li>
+			<a href="{% url 'gemet-backbone.rdf' %}">Themes and groups relationships as RDF</a>
+		</li>
+		<li>
+			<a href="{% url 'gemet-definitions.html'%}">Labels and definitions as simple HTML table importable into MS-Access</a>
+		</li>
+		<li>
+			<a href="{% url 'gemet-groups.html'%}">Supergroups, groups and themes as simple HTML tables importable into MS-Access</a>
+		</li>
+		<li>
+			<a href="{% url 'gemet-relations.html' %}">Relations in simple HTML importable into MS-Access</a>
+		 </li>
+		<li>
+			<a href="{% url 'gemet-skoscore.rdf' %}">SKOS broader and narrower relations as RDF</a>
+		 </li>
+		<li>
+			<a href="{% url 'gemetThesaurus' %}">An object for the Concept Scheme</a>
+		</li>
+	</ul>
 
-            <button type="submit" name="type" value="definitions">
-                Get labels and definitios
-            </button>
-        </form>
-    </p>
-    <br/>
-    <p>
-        <p><b>Supergroups, groups and themes in RDF</b></p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" name="type" value="groups">
-                Get groups and themes
-            </button>
-        </form>
-    </p>
 {% endblock %}

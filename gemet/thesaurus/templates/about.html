@@ -4,20 +4,22 @@
   {% include 'select_language.html' with languages=languages langcode=language.code view='about'%}
 
 <h1>About GEMET - GEneral Multilingual Environmental Thesaurus</h1>
-<h2>CONTENTS</h2>
-<ul>
-<li><a class="about-links" href="#preface" title="Preface to the 2004 version of GEMET">Preface: Preface to the 2004 version of GEMET</a></li>
-<li><a class="about-links" href="#chapter-I" title="Introduction">Chapter I: Introduction</a></li>
-<li><a class="about-links" href="#chapter-II" title="Criteria for the allocation of terms to the groups and themes of GEMET">Chapter II: Criteria for the allocation of terms to the groups and themes of GEMET</a></li>
-<li><a class="about-links" href="#chapter-III" title="How to use the Thesaurus">Chapter III: How to use the Thesaurus</a></li>
-<li><a class="about-links" href="#chapter-IV" title="List of Groups">Chapter VI: List of Groups</a></li>
-<li><a class="about-links" href="#chapter-V" title="List of Themes">Chapter V: List of Themes</a></li>
-<li><a class="about-links" href="#chapter-VI" title="Presentation of GEMET Version 2001">Chapter VI: Presentation of GEMET Version 2001</a></li>
-<li><a class="about-links" href="#chapter-VII" title="Essential References">Chapter VII: Essential References</a></li>
-</ul>
+<div class="side-bar box">
+    <h2 class="h6 no-margin-top">Contents</h2>
+    <ul>
+    <li><a class="about-links" href="#preface-2004" title="Preface to the 2004 version of GEMET">Preface: Preface to the 2004 version of GEMET</a></li>
+    <li><a class="about-links" href="#preface-2001" title="Preface to the 2001 version">Preface: Preface to the 2001 version</a></li>
+    <li><a class="about-links" href="#chapter-I" title="Introduction">Chapter I: Introduction</a></li>
+    <li><a class="about-links" href="#chapter-II" title="Criteria for the allocation of terms to the groups and themes of GEMET">Chapter II: Criteria for the allocation of terms to the groups and themes of GEMET</a></li>
+    <li><a class="about-links" href="#chapter-III" title="How to use the Thesaurus">Chapter III: How to use the Thesaurus</a></li>
+    <li><a class="about-links" href="#chapter-IV" title="List of Groups">Chapter VI: List of Groups</a></li>
+    <li><a class="about-links" href="#chapter-V" title="List of Themes">Chapter V: List of Themes</a></li>
+    <li><a class="about-links" href="#chapter-VI" title="Presentation of GEMET Version 2001">Chapter VI: Presentation of GEMET Version 2001</a></li>
+    <li><a class="about-links" href="#chapter-VII" title="Essential References">Chapter VII: Essential References</a></li>
+    </ul>
+</div>
 
-
-<h2 id="preface" class="about-header">Preface to the 2004 version of GEMET</h2>
+<h3 id="preface-2004" class="h3">Preface to the 2004 version of GEMET</h2>
 
 <p class="about-text">
 This version of GEMET is an extension of the
@@ -37,7 +39,7 @@ in the WIKI set of Internet services (Wiktionary ...).
 how GEMET was built, which will inform you about usage and limitations.
 </p>
 
-<h3>Preface of the 2001 version:</h3>
+<h3 id="preface-2001" class="h3">Preface of the 2001 version</h3>
 <p class="about-text">For the 6th time since 1996 there is a new
 edition of GEMET, being the reference vocabulary of the European
 Environment Agency (EEA) and its Network (Eionet). The present version
@@ -64,7 +66,7 @@ in the years to come as well as to perform a thorough evaluation of
 the content.
 </p>
 
-<h2 id="chapter-I" class="about-header">1. Introduction to GEMET</h2>
+<h2 id="chapter-I" class="h3">1. Introduction to GEMET</h2>
 <p class="about-text">
 GEMET, the GEneral Multilingual Environmental
 Thesaurus, has been developed as an indexing, retrieval and control tool
@@ -285,7 +287,7 @@ the filing language.</td>
 
 
 
-<h2 id="chapter-II" class="about-header">2. Criteria for the allocation of terms to the groups and themes of GEMET</h2>
+<h2 id="chapter-II" class="h3">2. Criteria for the allocation of terms to the groups and themes of GEMET</h2>
 <p class="about-text">GEMET has two systems for arranging the descriptors:
 </p>
 
@@ -308,27 +310,25 @@ a condition of poly-hierarchy.
 </p>
 
 <p class="about-text">Example:</p>
-
-<table>
-<col style="width: 4em"/>
-<col style="width: 2em"/>
-<col style="width: 11em"/>
-<tr>
-    <td colspan="3">trees</td>
-</tr>
-<tr>
-    <td>&nbsp;</td><td>NT</td><td>deciduous trees</td>
-</tr>
-<tr>
-    <td>&nbsp;</td><td>NT</td><td>conifers</td>
-</tr>
-</table>
+    <table>
+    <col style="width: 4em"/>
+    <col style="width: 2em"/>
+    <col style="width: 11em"/>
+    <tr>
+        <td colspan="3">trees</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td><td>NT</td><td>deciduous trees</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td><td>NT</td><td>conifers</td>
+    </tr>
+    </table>
 
 <p class="about-text"> or whole-part relationships (the narrower term must be part of the broader term)
 </p>
 
-<p class="about-text">Example:
-</p>
+<p class="about-text">Example:</p>
 
 <table>
 <col style="width: 4em"/>
@@ -507,7 +507,7 @@ performance of the indexers when preparing input for the CDS and will
 allow easier access to the data for the users via the descriptors.
 </p>
 
-<p class="about-text"><strong>Important Note.</strong> The
+<p class="about-text important">The
 classification scheme of GEMET, by groups, themes and hierarchies,
 should be considered merely as a mean to control the thesaurus terms
 and the semantic relations between them; in other words, as a way to
@@ -519,7 +519,7 @@ can be fruitfully used for such purpose.
 </p>
 
 
-<h2 id="chapter-III" class="about-header"> 3. How to use the Thesaurus</h2>
+<h2 id="chapter-III" class="h3"> 3. How to use the Thesaurus</h2>
 
 <p class="about-text"> To find the appropriate term, the user has
 several chances to navigate in the different parts of GEMET:
@@ -682,471 +682,486 @@ italics.
 </table>
 
 
-<h2 id="chapter-IV" class="about-text"> 4. List of Groups</h2>
-<h3 class="about-header"><i> No.* Abbreviation Name of the Super-group/Group</i></h3>
+<h2 id="chapter-IV" class="h3"> 4. List of Groups</h2>
+<h3 class="h6"><i> No.* Abbreviation Name of the Super-group/Group</i></h3>
+<p class="caption"> * Neutral number</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Supergroup</th>
+            <th>1</th>
+            <th>Natural Environment, Anthropic environment</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>1</td>
+    <td><strong>ENV</strong></td>
+    <td>ENVIRONMENT (natural environment, anthropic environment)</td>
+    </tr>
+    <tr>
+    <td>2</td>
+    <td><strong>TIM</strong></td>
+    <td>TIME</td>
+    </tr>
+    <tr>
+    <td>3</td>
+    <td><strong>SPA</strong></td>
+    <td>SPACE</td>
+    </tr>
+    <tr>
+    <td>4</td>
+    <td><strong>ATM</strong></td>
+    <td>ATMOSPHERE (air, climate)</td>
+    </tr>
+    <tr>
+    <td>5</td>
+    <td><strong>HYD</strong></td>
+    <td>HYDROSPHERE (freshwater, marine water, waters)</td>
+    </tr>
+    <tr>
+    <td>6</td>
+    <td><strong>LIT</strong></td>
+    <td>LITHOSPHERE (soil, geological processes)</td>
+    </tr>
+    <tr>
+    <td>7</td>
+    <td><strong>LAN</strong></td>
+    <td>LAND (landscape, geography)</td>
+    </tr>
+    <tr>
+    <td>8</td>
+    <td><strong>BIO</strong></td>
+    <td>BIOSPHERE (organisms, ecosystems)</td>
+    </tr>
+    <tr>
+    <td>9</td>
+    <td><strong>ANT</strong></td>
+    <td>ANTHROPOSPHERE (built environment, human settlements)</td>
+    </tr>
+    </tbody>
+</table>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Supergroup</th>
+            <th>2</th>
+            <th>Human activities and products, Effects on the environment</th>
+        </tr>
+    </thead>
+<tbody>
+    <tr>
+    <td>10</td>
+    <td><strong>CHE</strong></td>
+    <td>CHEMISTRY, SUBSTANCES, PROCESSES</td>
+    </tr>
+    <tr>
+    <td>11</td>
+    <td><strong>PHY</strong></td>
+    <td>PHYSICAL ASPECTS, NOISE, VIBRATIONS, RADIATIONS</td>
+    </tr>
+    <tr>
+    <td>12</td>
+    <td><strong>ENE</strong></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>13</td>
+    <td><strong>RSC</strong></td>
+    <td>RESOURCES (utilisation of resources)</td>
+    </tr>
+    <tr>
+    <td>14</td>
+    <td><strong>PRD</strong></td>
+    <td>PRODUCTS, MATERIALS</td>
+    </tr>
+    <tr>
+    <td>15</td>
+    <td><strong>AGR</strong></td>
+    <td>AGRICULTURE, FORESTRY; ANIMAL HUSBANDRY; FISHERY</td>
+    </tr>
+    <tr>
+    <td>16</td>
+    <td><strong>IND</strong></td>
+    <td>INDUSTRY, CRAFTS; TECHNOLOGY; EQUIPMENTS</td>
+    </tr>
+    <tr>
+    <td>17</td>
+    <td><strong>SER</strong></td>
+    <td>TRADE, SERVICES</td>
+    </tr>
+    <tr>
+    <td>18</td>
+    <td><strong>TRA</strong></td>
+    <td>TRAFFIC, TRANSPORTATION</td>
+    </tr>
+    <tr>
+    <td>19</td>
+    <td><strong>REC</strong></td>
+    <td>RECREATION, TOURISM</td>
+    </tr>
+    <tr>
+    <td>20</td>
+    <td><strong>WAS</strong></td>
+    <td>WASTES, POLLUTANTS, POLLUTION</td>
+    </tr>
+    <tr>
+    <td>21</td>
+    <td><strong>EFF</strong></td>
+    <td>EFFECTS, IMPACTS</td>
+    </tr>
+    </table>
+</tbody>
 
-<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;NATURAL ENVIRONMENT, ANTHROPIC ENVIRONMENT
-</p>
+<table class="table">
+<thead>
+    <tr>
+        <th>Supergroup</th>
+        <th>3</th>
+        <th>Social aspects, Environmental policy measures</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+    <td>22</td>
+    <td><strong>ECO</strong></td>
+    <td>ECONOMICS, FINANCE</td>
+    </tr>
+    <tr>
+    <td>23</td>
+    <td><strong>LEG</strong></td>
+    <td>LEGISLATION, NORMS, CONVENTIONS</td>
+    </tr>
+    <tr>
+    <td>24</td>
+    <td><strong>ADM</strong></td>
+    <td>ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING</td>
+    </tr>
+    <tr>
+    <td>25</td>
+    <td><strong>ENP</strong></td>
+    <td>ENVIRONMENTAL POLICY</td>
+    </tr>
+    <tr>
+    <td>26</td>
+    <td><strong>INF</strong></td>
+    <td>INFORMATION, EDUCATION, CULTURE, ENVIRONMENTAL AWARENESS</td>
+    </tr>
+    <tr>
+    <td>27</td>
+    <td><strong>RES</strong></td>
+    <td>RESEARCH, SCIENCES</td>
+    </tr>
+    <tr>
+    <td>28</td>
+    <td><strong>HEA</strong></td>
+    <td>HEALTH, NUTRITION</td>
+    </tr>
+    <tr>
+    <td>29</td>
+    <td><strong>SAF</strong></td>
+    <td>RISKS, SAFETY</td>
+    </tr>
+    <tr>
+    <td>30</td>
+    <td><strong>SOC</strong></td>
+    <td>SOCIETY</td>
+    </tr>
+</tbody>
+</table>
 
-<table border="0" width="90%" cellspacing="0">
-<tr>
-<td width="10%">1</td>
-<td width="20%"><strong>ENV</strong></td>
-<td width="*">ENVIRONMENT (natural environment, anthropic environment)</td>
-</tr>
-<tr>
-<td>2</td>
-<td><strong>TIM</strong></td>
-<td>TIME</td>
-</tr>
-<tr>
-<td>3</td>
-<td><strong>SPA</strong></td>
-<td>SPACE</td>
-</tr>
-<tr>
-<td>4</td>
-<td><strong>ATM</strong></td>
-<td>ATMOSPHERE (air, climate)</td>
-</tr>
-<tr>
-<td>5</td>
-<td><strong>HYD</strong></td>
-<td>HYDROSPHERE (freshwater, marine water, waters)</td>
-</tr>
-<tr>
-<td>6</td>
-<td><strong>LIT</strong></td>
-<td>LITHOSPHERE (soil, geological processes)</td>
-</tr>
-<tr>
-<td>7</td>
-<td><strong>LAN</strong></td>
-<td>LAND (landscape, geography)</td>
-</tr>
-<tr>
-<td>8</td>
-<td><strong>BIO</strong></td>
-<td>BIOSPHERE (organisms, ecosystems)</td>
-</tr>
-<tr>
-<td>9</td>
-<td><strong>ANT</strong></td>
-<td>ANTHROPOSPHERE (built environment, human settlements)</td>
-</tr>
+<table class="table auto">
+<thead>
+    <tr>
+        <th colspan="2">Accessory Groups</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+    <td><strong>GEN</strong></td>
+    <td>GENERAL TERMS</td>
+    </tr>
+    <tr>
+    <td><strong>FUN</strong></td>
+    <td>FUNCTIONAL TERMS</td>
+    </tr>
+    <tr>
+    <td><strong>PER</strong></td>
+    <td>PERSONNEL</td>
+    </tr>
+    <tr>
+    <td><strong>ACT</strong></td>
+    <td>ACTS</td>
+    </tr>
+    <tr>
+    <td><strong>PRO</strong></td>
+    <td>PROGRAMMES</td>
+    </tr>
+</tbody>
 </table>
 
 
-<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;HUMAN ACTIVITIES AND PRODUCTS, EFFECTS ON THE ENVIRONMENT
-</p>
 
-<table border="0" width="90%" cellspacing="0">
-<tr>
-<td width="10%">10</td>
-<td width="20%"><strong>CHE</strong></td>
-<td width="*">CHEMISTRY, SUBSTANCES, PROCESSES</td>
-</tr>
-<tr>
-<td>11</td>
-<td><strong>PHY</strong></td>
-<td>PHYSICAL ASPECTS, NOISE, VIBRATIONS, RADIATIONS</td>
-</tr>
-<tr>
-<td>12</td>
-<td><strong>ENE</strong></td>
-<td></td>
-</tr>
-<tr>
-<td>13</td>
-<td><strong>RSC</strong></td>
-<td>RESOURCES (utilisation of resources)</td>
-</tr>
-<tr>
-<td>14</td>
-<td><strong>PRD</strong></td>
-<td>PRODUCTS, MATERIALS</td>
-</tr>
-<tr>
-<td>15</td>
-<td><strong>AGR</strong></td>
-<td>AGRICULTURE, FORESTRY; ANIMAL HUSBANDRY; FISHERY</td>
-</tr>
-<tr>
-<td>16</td>
-<td><strong>IND</strong></td>
-<td>INDUSTRY, CRAFTS; TECHNOLOGY; EQUIPMENTS</td>
-</tr>
-<tr>
-<td>17</td>
-<td><strong>SER</strong></td>
-<td>TRADE, SERVICES</td>
-</tr>
-<tr>
-<td>18</td>
-<td><strong>TRA</strong></td>
-<td>TRAFFIC, TRANSPORTATION</td>
-</tr>
-<tr>
-<td>19</td>
-<td><strong>REC</strong></td>
-<td>RECREATION, TOURISM</td>
-</tr>
-<tr>
-<td>20</td>
-<td><strong>WAS</strong></td>
-<td>WASTES, POLLUTANTS, POLLUTION</td>
-</tr>
-<tr>
-<td>21</td>
-<td><strong>EFF</strong></td>
-<td>EFFECTS, IMPACTS</td>
-</tr>
+<h2 id="chapter-V" class="h3"> 5. List of Themes</h2>
+<p class="caption"> * Neutral number
+</p>
+<table class="table">
+<thead>
+    <tr>
+        <th>No.*</th>
+        <th>Abbr.</th>
+        <th>Theme</th>
+        <th>Scope Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+    <td>1</td>
+    <td>adm</td>
+    <td>Administration</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>2</td>
+    <td>agr</td>
+    <td>Agriculture</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>3</td>
+    <td>air</td>
+    <td>Air</td>
+    <td>air, air pollution (acidification, stratospheric ozone, tropospheric oxidants), air pollution control</td>
+    </tr>
+    <tr>
+    <td>4</td>
+    <td>bio</td>
+    <td>Biology</td>
+    <td>Organisms (also genetically modified organisms), biological properties, processes, biosystems</td>
+    </tr>
+    <tr>
+    <td>5</td>
+    <td>bui</td>
+    <td>Building</td>
+    <td>buildings, built-up area, infrastructure</td>
+    </tr>
+    <tr>
+    <td>6</td>
+    <td>che</td>
+    <td>Chemistry</td>
+    <td>chemical substances, properties and processes</td>
+    </tr>
+    <tr>
+    <td>7</td>
+    <td>cli</td>
+    <td>Climate</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>8</td>
+    <td>dyn</td>
+    <td>natural dynamics</td>
+    <td>natural hazards, geophysical processes</td>
+    </tr>
+    <tr>
+    <td>9</td>
+    <td>eco</td>
+    <td>Economics</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>10</td>
+    <td>ene</td>
+    <td>Energy</td>
+    <td>energy and power, energy sources and consumption</td>
+    </tr>
+    <tr>
+    <td>11</td>
+    <td>enp</td>
+    <td>Environmental policy</td>
+    <td>Environmental information, e.g. CDS; land cover, remote sensing, environmental impact assessment (EIA), environmental auditing, target setting, environmental expenditures</td>
+    </tr>
+    <tr>
+    <td>12</td>
+    <td>fis</td>
+    <td>Fishery</td>
+    <td>industry, resources</td>
+    </tr>
+    <tr>
+    <td>13</td>
+    <td>fod</td>
+    <td>food, drinking water</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>14</td>
+    <td>for</td>
+    <td>Forestry</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>15</td>
+    <td>gen</td>
+    <td>General</td>
+    <td>no special theme</td>
+    </tr>
+    <tr>
+    <td>16</td>
+    <td>geo</td>
+    <td>Geography</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>17</td>
+    <td>hea</td>
+    <td>human health</td>
+    <td>nutrition, medical aspects, safety</td>
+    </tr>
+    <tr>
+    <td>18</td>
+    <td>hus</td>
+    <td>animal husbandry</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>19</td>
+    <td>ind</td>
+    <td>Industry</td>
+    <td>industry, mining, handicraft, technology, technical procedures and equipment</td>
+    </tr>
+    <tr>
+    <td>20</td>
+    <td>inf</td>
+    <td>Information</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>21</td>
+    <td>leg</td>
+    <td>Legislation</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>22</td>
+    <td>mil</td>
+    <td>military aspects</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>23</td>
+    <td>nat</td>
+    <td>natural areas, landscape, ecosystems </td>
+    <td>natural reserves, parks, landforms</td>
+    </tr>
+    <tr>
+    <td>24</td>
+    <td>noi</td>
+    <td>noise, vibrations</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>25</td>
+    <td>phy</td>
+    <td>Physics</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>26</td>
+    <td>pll</td>
+    <td>Pollution</td>
+    <td>pollution, pollution control, general pollutants (not special substances)</td>
+    </tr>
+    <tr>
+    <td>27</td>
+    <td>prd</td>
+    <td>materials, products, equipments </td>
+    <td>materials, raw materials and products, physical properties and processes, state of matter</td>
+    </tr>
+    <tr>
+    <td>28</td>
+    <td>rad</td>
+    <td>Radiations</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>29</td>
+    <td>rec</td>
+    <td>Tourism</td>
+    <td>Recreation and tourism</td>
+    </tr>
+    <tr>
+    <td>30</td>
+    <td>res</td>
+    <td>Research</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>31</td>
+    <td>rsc</td>
+    <td>Resources</td>
+    <td>use of resources (not special materials as resources)</td>
+    </tr>
+    <tr>
+    <td>32</td>
+    <td>saf</td>
+    <td>disasters, accidents, risk, safety </td>
+    <td>Contaminated sites, chemical risk, technical hazards, safety control</td>
+    </tr>
+    <tr>
+    <td>33</td>
+    <td>ser</td>
+    <td>trade, services</td>
+    <td></td>
+    </tr>
+    <tr>
+    <td>34</td>
+    <td>soc</td>
+    <td>social aspects, population</td>
+    <td>social aspects, production, consumption, culture, education, household, labour</td>
+    </tr>
+    <tr>
+    <td>35</td>
+    <td>soi</td>
+    <td>Soil</td>
+    <td>soil, soil pollution, soil pollution control</td>
+    </tr>
+    <tr>
+    <td>36</td>
+    <td>spa</td>
+    <td>Space</td>
+    <td>Interplanetary space</td>
+    </tr>
+    <tr>
+    <td>37</td>
+    <td>tra</td>
+    <td>Transportation, traffic </td>
+    <td>traffic and transportation</td>
+    </tr>
+    <tr>
+    <td>38</td>
+    <td>urb</td>
+    <td>urban environment, urban stress</td>
+    <td>Settlements</td>
+    </tr>
+    <tr>
+    <td>39</td>
+    <td>was</td>
+    <td>Waste</td>
+    <td>waste, waste treatment, waste control</td>
+    </tr>
+    <tr>
+    <td>40</td>
+    <td>wat</td>
+    <td>Water</td>
+    <td>Hydrosphere, water, waters, waste water</td>
+    </tr>
 </table>
 
 
-<p class="about-text"> Supergroup&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;SOCIAL ASPECTS, ENVIRONMENTAL POLICY MEASURES
-</p>
-<table border="0" width="90%" cellspacing="0">
-<tr>
-<td width="10%">22</td>
-<td width="20%"><strong>ECO</strong></td>
-<td width="*">ECONOMICS, FINANCE</td>
-</tr>
-<tr>
-<td>23</td>
-<td><strong>LEG</strong></td>
-<td>LEGISLATION, NORMS, CONVENTIONS</td>
-</tr>
-<tr>
-<td>24</td>
-<td><strong>ADM</strong></td>
-<td>ADMINISTRATION, MANAGEMENT, POLICY, POLITICS, INSTITUTIONS, PLANNING</td>
-</tr>
-<tr>
-<td>25</td>
-<td><strong>ENP</strong></td>
-<td>ENVIRONMENTAL POLICY</td>
-</tr>
-<tr>
-<td>26</td>
-<td><strong>INF</strong></td>
-<td>INFORMATION, EDUCATION, CULTURE, ENVIRONMENTAL AWARENESS</td>
-</tr>
-<tr>
-<td>27</td>
-<td><strong>RES</strong></td>
-<td>RESEARCH, SCIENCES</td>
-</tr>
-<tr>
-<td>28</td>
-<td><strong>HEA</strong></td>
-<td>HEALTH, NUTRITION</td>
-</tr>
-<tr>
-<td>29</td>
-<td><strong>SAF</strong></td>
-<td>RISKS, SAFETY</td>
-</tr>
-<tr>
-<td>30</td>
-<td><strong>SOC</strong></td>
-<td>SOCIETY</td>
-</tr>
-</table>
-
-<p class="about-text"> Accessory Groups
-</p>
-
-<table class="about-envelope" border="0" width="40%" cellspacing="0">
-<tr>
-<td width="20%"><strong>GEN</strong></td>
-<td width="*">GENERAL TERMS</td>
-</tr>
-<tr>
-<td><strong>FUN</strong></td>
-<td>FUNCTIONAL TERMS</td>
-</tr>
-<tr>
-<td><strong>PER</strong></td>
-<td>PERSONNEL</td>
-</tr>
-<tr>
-<td><strong>ACT</strong></td>
-<td>ACTS</td>
-</tr>
-<tr>
-<td><strong>PRO</strong></td>
-<td>PROGRAMMES</td>
-</tr>
-</table>
-
-<p class="about-text"> * Neutral number</p>
 
 
-
-<h2 id="chapter-V" class="about-header"> 5. List of Themes</h2>
-
-<table border="0" width="90%" cellspacing="0">
-<tr>
-<td width="5%" valign="top"><i> No</i></td>
-<td width="10%" valign="top"><i>Abbr.</i></td>
-<td width="40%" valign="top"><i>Theme</i></td>
-<td width="*"><i>Scope Notes</i></td>
-</tr>
-<tr>
-<td valign="top">*</td>
-<td valign="top"></td>
-<td valign="top"></td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">1</td>
-<td valign="top">adm</td>
-<td valign="top">Administration</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">2</td>
-<td valign="top">agr</td>
-<td valign="top">Agriculture</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">3</td>
-<td valign="top">air</td>
-<td valign="top">Air</td>
-<td>air, air pollution (acidification, stratospheric ozone, tropospheric oxidants), air pollution control</td>
-</tr>
-<tr>
-<td valign="top">4</td>
-<td valign="top">bio</td>
-<td valign="top">Biology</td>
-<td>Organisms (also genetically modified organisms), biological properties, processes, biosystems</td>
-</tr>
-<tr>
-<td valign="top">5</td>
-<td valign="top">bui</td>
-<td valign="top">Building</td>
-<td>buildings, built-up area, infrastructure</td>
-</tr>
-<tr>
-<td valign="top">6</td>
-<td valign="top">che</td>
-<td valign="top">Chemistry</td>
-<td>chemical substances, properties and processes</td>
-</tr>
-<tr>
-<td valign="top">7</td>
-<td valign="top">cli</td>
-<td valign="top">Climate</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">8</td>
-<td valign="top">dyn</td>
-<td valign="top">natural dynamics</td>
-<td>natural hazards, geophysical processes</td>
-</tr>
-<tr>
-<td valign="top">9</td>
-<td valign="top">eco</td>
-<td valign="top">Economics</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">10</td>
-<td valign="top">ene</td>
-<td valign="top">Energy</td>
-<td>energy and power, energy sources and consumption</td>
-</tr>
-<tr>
-<td valign="top">11</td>
-<td valign="top">enp</td>
-<td valign="top">Environmental policy</td>
-<td>Environmental information, e.g. CDS; land cover, remote sensing, environmental impact assessment (EIA), environmental auditing, target setting, environmental expenditures</td>
-</tr>
-<tr>
-<td valign="top">12</td>
-<td valign="top">fis</td>
-<td valign="top">Fishery</td>
-<td>industry, resources</td>
-</tr>
-<tr>
-<td valign="top">13</td>
-<td valign="top">fod</td>
-<td valign="top">food, drinking water</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">14</td>
-<td valign="top">for</td>
-<td valign="top">Forestry</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">15</td>
-<td valign="top">gen</td>
-<td valign="top">General</td>
-<td>no special theme</td>
-</tr>
-<tr>
-<td valign="top">16</td>
-<td valign="top">geo</td>
-<td valign="top">Geography</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">17</td>
-<td valign="top">hea</td>
-<td valign="top">human health</td>
-<td>nutrition, medical aspects, safety</td>
-</tr>
-<tr>
-<td valign="top">18</td>
-<td valign="top">hus</td>
-<td valign="top">animal husbandry</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">19</td>
-<td valign="top">ind</td>
-<td valign="top">Industry</td>
-<td>industry, mining, handicraft, technology, technical procedures and equipment</td>
-</tr>
-<tr>
-<td>20</td>
-<td>inf</td>
-<td>Information</td>
-<td></td>
-</tr>
-<tr>
-<td>21</td>
-<td>leg</td>
-<td>Legislation</td>
-<td></td>
-</tr>
-<tr>
-<td>22</td>
-<td>mil</td>
-<td>military aspects</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">23</td>
-<td valign="top">nat</td>
-<td valign="top">natural areas, landscape, ecosystems </td>
-<td>natural reserves, parks, landforms</td>
-</tr>
-<tr>
-<td>24</td>
-<td>noi</td>
-<td>noise, vibrations</td>
-<td></td>
-</tr>
-<tr>
-<td>25</td>
-<td>phy</td>
-<td>Physics</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">26</td>
-<td valign="top">pll</td>
-<td valign="top">Pollution</td>
-<td>pollution, pollution control, general pollutants (not special substances)</td>
-</tr>
-<tr>
-<td valign="top">27</td>
-<td valign="top">prd</td>
-<td valign="top">materials, products, equipments </td>
-<td>materials, raw materials and products, physical properties and processes, state of matter</td>
-</tr>
-<tr>
-<td>28</td>
-<td>rad</td>
-<td>Radiations</td>
-<td></td>
-</tr>
-<tr>
-<td>29</td>
-<td>rec</td>
-<td>Tourism</td>
-<td>Recreation and tourism</td>
-</tr>
-<tr>
-<td>30</td>
-<td>res</td>
-<td>Research</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">31</td>
-<td valign="top">rsc</td>
-<td valign="top">Resources</td>
-<td>use of resources (not special materials as resources)</td>
-</tr>
-<tr>
-<td valign="top">32</td>
-<td valign="top">saf</td>
-<td valign="top">disasters, accidents, risk, safety </td>
-<td>Contaminated sites, chemical risk, technical hazards, safety control</td>
-</tr>
-<tr>
-<td>33</td>
-<td>ser</td>
-<td>trade, services</td>
-<td></td>
-</tr>
-<tr>
-<td valign="top">34</td>
-<td valign="top">soc</td>
-<td valign="top">social aspects, population</td>
-<td>social aspects, production, consumption, culture, education, household, labour</td>
-</tr>
-<tr>
-<td valign="top">35</td>
-<td valign="top">soi</td>
-<td valign="top">Soil</td>
-<td>soil, soil pollution, soil pollution control</td>
-</tr>
-<tr>
-<td>36</td>
-<td>spa</td>
-<td>Space</td>
-<td>Interplanetary space</td>
-</tr>
-<tr>
-<td valign="top">37</td>
-<td valign="top">tra</td>
-<td valign="top">Transportation, traffic </td>
-<td>traffic and transportation</td>
-</tr>
-<tr>
-<td>38</td>
-<td>urb</td>
-<td>urban environment, urban stress</td>
-<td>Settlements</td>
-</tr>
-<tr>
-<td valign="top">39</td>
-<td valign="top">was</td>
-<td valign="top">Waste</td>
-<td>waste, waste treatment, waste control</td>
-</tr>
-<tr>
-<td valign="top">40</td>
-<td valign="top">wat</td>
-<td valign="top">Water</td>
-<td>Hydrosphere, water, waters, waste water</td>
-</tr>
-</table>
-
-<p class="about-text"> * Neutral number
-</p>
-
-
-<h2 id="chapter-VI" class="about-header"> 6. Presentation of GEMET Version 2001</h2>
+<h2 id="chapter-VI" class="h3"> 6. Presentation of GEMET Version 2001</h2>
 
 <p class="about-text"> After the distribution of different intermediate
 versions, GEMET versions 0.5, 1.0 and 1.5 have been subjected to
@@ -1189,55 +1204,51 @@ English.</li>
 <p class="about-text">The following table summarises the structural elements of GEMET.
 </p>
 
-<table>
-<tr>
-<td width="70%"><i>Structure elements</i></td>
-<td width="*"><i>No</i></td>
-</tr>
-<tr>
-<td>Super Groups</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Groups</td>
-<td>30</td>
-</tr>
-<tr>
-<td>Accessory Groups</td>
-<td>5</td>
-</tr>
-<tr>
-<td>Themes</td>
-<td>40</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td></td>
-</tr>
-<tr>
-<td>Top Terms (TT)</td>
-<td>109</td>
-</tr>
-<tr>
-<td>Narrower Terms (NT)</td>
-<td>5.189</td>
-</tr>
-<tr>
-<td>Total descriptors (TT + NT)</td>
-<td>5.298</td>
-</tr>
-<tr>
-<td>Total non-descriptors</td>
-<td>1.264</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td></td>
-</tr>
-<tr>
-<td>Total records</td>
-<td>6.562</td>
-</tr>
+<table class="table auto">
+    <thead>
+        <tr>
+            <th>Structure elements</th>
+            <th>No</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>Super Groups</td>
+        <td>3</td>
+        </tr>
+        <tr>
+        <td>Groups</td>
+        <td>30</td>
+        </tr>
+        <tr>
+        <td>Accessory Groups</td>
+        <td>5</td>
+        </tr>
+        <tr>
+        <td>Themes</td>
+        <td>40</td>
+        </tr>
+        <tr>
+        <td>Top Terms (TT)</td>
+        <td>109</td>
+        </tr>
+        <tr>
+        <td>Narrower Terms (NT)</td>
+        <td>5.189</td>
+        </tr>
+        <tr>
+        <td>Total descriptors (TT + NT)</td>
+        <td>5.298</td>
+        </tr>
+        <tr>
+        <td>Total non-descriptors</td>
+        <td>1.264</td>
+        </tr>
+        <tr>
+        <td>Total records</td>
+        <td>6.562</td>
+        </tr>
+</tbody>
 </table>
 
 <p class="about-text">Due to the lack of a complete list of equivalents
@@ -1248,7 +1259,7 @@ Separate lists for the other languages will be available by the EEA on request.
 </p>
 
 
-<h2 id="chapter-VII" class="about-header">7. Essential References</h2>
+<h2 id="chapter-VII" class="h3">7. Essential References</h2>
 <dl>
 <dt>de Lavieter, L. (Ed.)</dt>
 <dd><i>Multilingual Environmental Thesaurus. Part 1, English; Part 2, Fran&ccedil;ais; Part 3, Deutsch; Part 4, Nederlands; Part 5, Italiano; Part 6, Norsk; Part 7, Dansk; Part 8, Espa&ntilde;ol.</i></dd>

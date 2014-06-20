@@ -1,7 +1,7 @@
 {% load gemet_tags %}
 <li>
   {% get_expand concept.id expand_list as expand %}
-  <a href="{% url 'relations' language.code group_id %}?exp={{ expand.param }}">
+  <a class="toggle-collapse" href="{% url 'relations' language.code group_id %}?exp={{ expand.param }}">
     {% if expand.status %}
     -
     {% else %}
@@ -13,7 +13,7 @@
   {% else %}
     <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
   {% endif %}
-  <ul>
+  <ul class="listing no-list">
     {% if expand.status %}
       {% get_children concept.id language.code as concept_children %}
       {% for concept in concept_children %}

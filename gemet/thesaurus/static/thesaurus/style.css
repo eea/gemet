@@ -14,18 +14,12 @@
 #right-box {
 		margin-left: 51%;
 }
-
-.pagination {
-		margin-top: 25px;
-}
-a.btn, .pagination a, .letter-pagination a {
-		text-decoration: none;
-}
 .selected-elm {
 		font-weight: bold;
+		color: black;
 }
 .unavailable-letter {
-		color: gray;
+		color: #aaa;
 }
 
 
@@ -97,6 +91,9 @@ a.btn, .pagination a, .letter-pagination a {
 	.dl-inline .dt:after {
 		content: ":";
 	}
+	.dl-inline .dd a {
+		text-decoration: none!important;
+	}
 	.dl-inline .dd {
 		margin-left: 120px!important; /* .dt width+margin; override eionet style */
 		margin-top: 0!important;
@@ -110,29 +107,150 @@ a.btn, .pagination a, .letter-pagination a {
 	.dl-inline .dd > li:last-child:after {
 		content: "";
 	}
+	ul.dl-inline > li {
+		overflow: auto;
+	}
+
+	/* no-visit */
+	.no-visit a:visited,
+	a.no-visit:visited {
+		color: #2a6495;
+	}
+
+	/* alert */
+	.alert {
+		/*padding: 0.25em 0.5em;*/
+		/*border-left: 3px solid #00446a;
+		background: #C4DCE9;*/
+		font-style: italic;
+		color: #aaa;
+	}
+
+	/* caption */
+	.caption {
+		font-size: smaller;
+		font-style: italic;
+	}
+
+	/* example */
+	.example {
+		padding: 0.25em;
+		border: 1px dotted #ddd;
+		background-color: #f6f6f6;
+	}
+	.example:before {
+		content: "Example";
+		display: block;
+		font-style: italic;
+		font-size: smaller;
+		margin-bottom: 0.25em;
+		color: #aaa;
+	}
+
+	/* important-note */
+	.important {
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+	}
+	.important:before {
+		content: "Important Note! ";
+		font-weight: bold;
+		display: block;
+	}
 
 	/* headings */
-	h6 {
+	#workarea h6, h6 
+	#workarea .h6, .h6 {
 		font-size: 14px;
 		font-weight: bold;
 		margin-bottom: 8px;
+		border: 0!important;
+		padding: 0!important;
+		background: none!important;
 	}
-	.h5 {
+	#workarea .h5, .h5 {
 		font-size: 16px;
 		font-weight: bold;
 		padding-bottom: 2px;
 		border-bottom: 1px solid #ddd;
 		margin-bottom: 9px;
+		border-top: 0!important;
+		padding: 0 0 6px 0!important;
+		background: none!important;
 	}
-	#workarea h3.h3 {
+	#workarea .h3, .h3 {
+		font-size: 20px;
+		font-weight: bold;
+		padding: 0 0 6px 0!important;
+		border-bottom: 1px solid #ddd!important;
+		border-top: 0!important;
+		margin-bottom: 12px;
+		background: none!important;
+	}
+	#workarea .h2, .h2,
+	#workarea .about-header, .about-header {
 		font-size: 24px;
 		font-weight: bold;
-		padding: 0;
-		padding-bottom: 6px;
-		border-bottom: 1px solid #ddd;
-		border-top: 0;
+		padding: 0 0 6px 0!important;
+		border-bottom: 1px solid #ddd!important;
+		border-top: 0!important;
 		margin-bottom: 12px;
-		background: none;
+		background: none!important;
+	}
+
+	/* table */
+	.table {
+		empty-cells: show;
+		border-collapse: collapse;
+		width: 100%;
+		border: 1px solid #ddd;
+		margin-bottom: 1em;
+	}
+	.table.auto {
+		width: auto;
+	}
+	.table th {
+		text-align: left;
+		padding: 0.5em 1em;
+		/*background-color: #f6f6f6;*/
+	}
+	.table td {
+		vertical-align: top;
+		padding: 0.5em 1em;
+		border-top: 1px solid #ddd;
+	}
+	.table tbody tr:first-child td {
+		border-top: 2px solid #ddd;
+	}
+	.table tbody tr:last-child td {
+		border-bottom: 2px solid #ddd;
+	}
+
+	/* hr */
+	hr {
+		margin: 1em auto;
+		border: 0;
+		height: 1px;
+		background: #ddd;
+	}
+
+	/* letter-pagination */
+	.letter-pagination {
+
+	}
+	.letter-pagination a {
+		text-decoration: none;
+	}
+	.letter-pagination a:visited {
+		color: #2a6495;
+	}
+
+	/* pagination */
+	.pagination {
+		margin: 1em auto;
+	}
+	.pagination a {
+		text-decoration: none; 
 	}
 
 	/* no-list */
@@ -140,6 +258,7 @@ a.btn, .pagination a, .letter-pagination a {
 		list-style-type: none!important;
 		list-style-image: none!important;
 		padding-left: 0!important;
+		margin-left: 0!important
 	}
 
 	/* floats */
@@ -181,13 +300,6 @@ a.btn, .pagination a, .letter-pagination a {
 		}
 	}
 
-	/* select-language */
-	.select-language {
-		/*display: block;
-		width: 100%;*/
-		min-width: 240px;
-	}
-
 	/* side-bar */
 	.side-bar {
 		float: right;
@@ -205,6 +317,12 @@ a.btn, .pagination a, .letter-pagination a {
 		}
 	}
 
+	/* download */
+	#download [type="submit"] {
+		display: block;
+		width: 100%;
+	}
+
 	/* translations */
 	#translations > li {
 		margin-bottom: 0.25em;
@@ -219,29 +337,111 @@ a.btn, .pagination a, .letter-pagination a {
 		margin-left: 84px!important;
 	}
 
+	/* definition-sources */
+	#definition-sources > li {
+		margin-bottom: 0.25em;
+	}
+	#definition-sources a{
+		text-decoration: none;
+	}
+
+	/* select-language */
+	.select-language {
+		/*display: block;
+		width: 100%;*/
+		min-width: 240px;
+	}
+
+	/* alphabet-letters */
+	.alphabet-letters {
+		margin: 1em 0 1em 0!important;
+		font-family: monospace;
+		font-size: larger;
+		position: relative;
+		list-style-type: none;
+		counter-reset: letter;
+	}
+	.alphabet-letters > li {
+		float: left;
+		white-space: nowrap;
+		margin-right: -1px;
+		text-align: center;
+		min-width: 1em;
+	}
+	.alphabet-letters.direction-rtl > li {
+		float: right;
+		margin-right: auto;
+		margin-left: -1px;
+	}
+	/* list counter */
+	/*.alphabet-letters > li:before {
+		counter-increment: letter;
+		font-size: smaller;
+		content: counter(letter);
+		display: block;
+		color: #aaa;
+	}*/
+	.alphabet-letters .alphabet-letter {
+		display: block;
+		padding: 1px 3px;
+		border: 1px solid #ddd;
+		margin-bottom: -1px;
+	}
+
 	/* listing */
-	.concepts:before,
-	.concepts:after {
-		display: table;
-		content: "";
+	.listing a {
+		text-decoration: none;
 	}
-	.concepts:after {
-		clear: both;
+	.listing a:hover {
+		text-decoration: underline;
 	}
-	.concepts > li {
+	.listing.columns > li {
 		width: 50%;
 		float: left;
 	}
-	.concepts a {
+	#workarea .listing .listing {
+		margin-left: 1.5em!important;
+	}
+	.columns:before,
+	.columns:after {
+		display: table;
+		content: "";
+	}
+	.columns:after {
+		clear: both;
+	}
+	.columns.direction-rtl > li {
+		float: right;
+	}
+
+	/* toggle-collapse */
+	.toggle-collapse {
+		display: block;
+		float: left;
+		margin-top: 0.25em;
+		margin-right: 0.5em;
+		height: 0.8em;
+		width: 0.8em;
+		line-height: 0.8em;
+		text-align: center;
+		border: 1px solid #ccc;
+		color: black!important;
+		text-decoration: none!important;
+	}
+	.toggle-collapse:hover {
+		border-color: #aaa;
+		background-color: #eee;
+	}
+	.direction-rtl .toggle-collapse {
+		float: right;
+		margin-left: 0.5em;
+		margin-right: auto;
+	}
+
+	/* about-links */
+	.about-links {
 		text-decoration: none;
 	}
-	.concepts a:hover {
-		text-decoration: underline;
-	}
-
-
-	/* pagination */
-
 
 	/* #workarea */
 	#workarea:before,

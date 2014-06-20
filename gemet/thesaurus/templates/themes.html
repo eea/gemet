@@ -7,26 +7,14 @@
 
   <h1>{{ page_title }}</h1>
   {% if language_warning %}
-    <p>
-      * There are no themes available for the current language so these are listed in English
-    </p>
+    <p class="alert">There are no themes available for the current language so these are listed in English.</p>
   {% endif %}
 
-  <ul class="themes {% if language.rtl %}direction-rtl{% endif %}">
-    <div id="left-box">
-      {% for theme in themes|half:0 %}
-        <li>
-          <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>
-        </li>
-      {% endfor %}
-    </div>
-
-    <div id="right-box">
-      {% for theme in themes|half:1 %}
-        <li>
-          <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>
-        </li>
-      {% endfor %}
-    </div>
+  <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
+    {% for theme in themes %}
+    <li>
+      <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>
+    </li>
+    {% endfor %}
   </ul>
 {% endblock %}

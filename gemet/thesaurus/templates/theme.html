@@ -4,39 +4,52 @@
 {% block content %}
   {% include 'select_language.html' with languages=languages langcode=language.code view='theme' id=theme.id %}
 
-  <h3>{{ theme.name }}</h3>
-  <h4>Definiton:</h4>
-  <span class="infotext">
-    {% if not theme.definition %}
-      <span>Definition is not available</span>
-    {% else %}
-      {{ theme.definition }}
-    {% endif %}
-  </span>
-
-  <h4>Scope note:</h4>
-  <span class="infotext">
-    {{ theme.scopeNote|default:"scope note is not available" }}
-  </span>
-
-  {% if theme.themeMember_concepts %}
-    <h4>Concepts:</h4>
-    <ul>
-      {% for cp in theme.themeMember_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+  <!-- Theme -->
+  <h3 class="h3">{{ theme.name }}</h3>
+  <!-- Side bar -->
+  <div class="side-bar box">
+    <!-- Translations -->
+    <h6 class="no-margin-top">Translations</h6>
+    <ul id="translations" class="dl-inline no-list">
+      {% for translation in theme.translations %}
+      <li class="clearfix">
+        <div class="dt">{{ translation.language.name }}</div>
+        <div class="dd">{{ translation.value }}</div>
       </li>
       {% endfor %}
     </ul>
+  </div>
+  <!-- Definition -->
+  <h5 class="h5 hidden-desktop">Definiton</h5>
+  {% if not theme.definition %}
+    <p class="alert">Definition is not available.</p>
+  {% else %}
+    <p>{{ theme.definition }}</p>
   {% endif %}
 
-  <h4>Translations:</h4>
-  <ul>
-    {% for translation in theme.translations %}
-      <li>{{ translation.language.name }}: {{ translation.value }}</li>
+  <!-- Scope -->
+  <h5 class="h5">Scope note</h5>
+  {% if not theme.scopeNote %}
+    <p class="alert">Scope note is not available.</p>
+  {% else %}
+    <p>{{ theme.scopeNote }}</p>
+  {% endif %}
+
+  <!-- Concepts -->
+  {% if theme.themeMember_concepts %}
+  <h5 class="h5">Concepts</h5>
+  <ul class="listing">
+    {% for cp in theme.themeMember_concepts %}
+    <li>
+      <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+    </li>
     {% endfor %}
   </ul>
+  {% endif %}
 
-  <h4>Concept URL: &lt;{{ theme.url }}&gt;</h4>
+  
+  <!-- Concept URL -->
+  <h5 class="h5">Concept URL</h5>
+  <p><a rel="nofollow" href="{{ theme.url }}">{{ theme.url }}</a></p>
 
 {% endblock %}
