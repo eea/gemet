@@ -7,10 +7,10 @@
 
   <h1>Groups list</h1>
 
-  <ul class="supergroups {% if language.rtl %}direction-rtl{% endif %}">
+  <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% for supergroup in supergroups %}
       <li>
-      <h2>{{ supergroup.name }}</h2>
+      <h3 class="h3">{{ supergroup.name }}</h3>
 
         <ul class="groups">
           {% get_children supergroup.id language.code as supergroup_children %}

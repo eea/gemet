@@ -14,17 +14,12 @@
 #right-box {
 		margin-left: 51%;
 }
-.pagination {
-		margin-top: 25px;
-}
-a.btn, .pagination a, .letter-pagination a {
-		text-decoration: none;
-}
 .selected-elm {
 		font-weight: bold;
+		color: black;
 }
 .unavailable-letter {
-		color: gray;
+		color: #aaa;
 }
 
 
@@ -111,6 +106,12 @@ a.btn, .pagination a, .letter-pagination a {
 	}
 	ul.dl-inline > li {
 		overflow: auto;
+	}
+
+	/* no-visit */
+	.no-visit a:visited,
+	a.no-visit:visited {
+		color: #2a6495;
 	}
 
 	/* alert */
@@ -222,11 +223,33 @@ a.btn, .pagination a, .letter-pagination a {
 		border-bottom: 2px solid #ddd;
 	}
 
+	/*  */
+
+	/* letter-pagination */
+	.letter-pagination {
+
+	}
+	.letter-pagination a {
+		text-decoration: none;
+	}
+	.letter-pagination a:visited {
+		color: #2a6495;
+	}
+
+	/* pagination */
+	.pagination {
+		margin: 1em auto;
+	}
+	.pagination a {
+		text-decoration: none; 
+	}
+
 	/* no-list */
 	#workarea .no-list {
 		list-style-type: none!important;
 		list-style-image: none!important;
 		padding-left: 0!important;
+		margin-left: 0!important
 	}
 
 	/* floats */
@@ -351,26 +374,53 @@ a.btn, .pagination a, .letter-pagination a {
 	}
 
 	/* listing */
-	.concepts:before,
-	.concepts:after {
+	.listing:before,
+	.listing:after {
 		display: table;
 		content: "";
 	}
-	.concepts:after {
+	.listing:after {
 		clear: both;
 	}
-	.concepts a {
+	.listing a {
 		text-decoration: none;
 	}
-	.concepts a:hover {
+	.listing a:hover {
 		text-decoration: underline;
 	}
-	.concepts.columns > li {
+	.listing.columns > li {
 		width: 50%;
 		float: left;
 	}
-	.concepts.columns > li:nth(2n) {
+	.listing.columns.direction-rtl > li {
 		float: right;
+	}
+	#workarea .listing .listing {
+		margin-left: 1.5em!important;
+	}
+
+	/* toggle-collapse */
+	.toggle-collapse {
+		display: block;
+		float: left;
+		margin-top: 0.25em;
+		margin-right: 0.5em;
+		height: 0.8em;
+		width: 0.8em;
+		line-height: 0.8em;
+		text-align: center;
+		border: 1px solid #ccc;
+		color: black!important;
+		text-decoration: none!important;
+	}
+	.toggle-collapse:hover {
+		border-color: #aaa;
+		background-color: #eee;
+	}
+	.direction-rtl .toggle-collapse {
+		float: right;
+		margin-left: 0.5em;
+		margin-right: auto;
 	}
 
 	/* about-links */
