@@ -2,23 +2,54 @@
 {{ header_text }}
 {% endautoescape %}
 
-<div id="search-bar">
-    <a href="{% url 'themes' language.code %}">Thematic Listings</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'inspire-themes' language.code %}">INSPIRE Spatial Data Themes</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'search' language.code %}">Search Thesaurus</a>
+<!-- header -->
+<div class="gemet-header">
+  <!-- title -->
+  <div class="header-title">
+    <h1>GEMET</h1>
+    <small>General Multilingual Environmental Thesaurus</small> 
+  </div>
+  <div class="header-actions">
+    <!-- search -->
+    <div class="header-search">
+      <label for="search-query">Search</label>
+      <div class="clearfix">
+        <input type="search" name="search-query" placeholder="Concepts, Groups, Themes..." />
+        <input type="submit" value="Search" />
+      </div>
+    </div>
+    <!-- language -->
+    <div class="header-language">
+      <label for="select-language">Select language</label>
+      <select name="select-language" id="js-change-language">
+        <option value="">English</option>
+        <option value="">Mandarin</option>
+      </select>
+    </div>
+  </div>
+
 </div>
+
+<!-- menu -->
+<div class="gemet-menu">
+  <a href="{% url 'themes' language.code %}">Thematic Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a href="{% url 'inspire-themes' language.code %}">INSPIRE Spatial Data Themes</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
+</div>
+<!--/header -->
 
 <div class="content">
   {% block content %}
   {% endblock %}
 </div>
 
+<!-- footer -->
 <div class="footer-menu">
   <a href="{% url 'download' language.code %}">Download</a>
   &nbsp;|&nbsp;

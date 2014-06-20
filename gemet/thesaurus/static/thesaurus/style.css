@@ -14,9 +14,7 @@
 #right-box {
 		margin-left: 51%;
 }
-.footer-menu {
-		margin-top: 20px;
-}
+
 .pagination {
 		margin-top: 25px;
 }
@@ -183,10 +181,6 @@ a.btn, .pagination a, .letter-pagination a {
 		}
 	}
 
-	.content {
-		clear: both;
-	}
-
 	/* select-language */
 	.select-language {
 		/*display: block;
@@ -201,6 +195,14 @@ a.btn, .pagination a, .letter-pagination a {
 		padding: 12px;
 		font-size: smaller;
 		margin-left: 24px;
+		margin-bottom: 1em;
+	}
+	@media (max-width: 700px) {
+		.side-bar {
+			width: auto;
+			float: none;
+			margin-left: auto;
+		}
 	}
 
 	/* translations */
@@ -249,4 +251,185 @@ a.btn, .pagination a, .letter-pagination a {
 	}
 	#workarea:after {
 		clear: both;
+	}
+
+	/* header */
+	.gemet-header {
+		margin-bottom: 1em;
+		line-height: 1.5em;
+	}
+	.gemet-header:before,
+	.gemet-header:after {
+		display: table;
+		content: "";
+	}
+	.gemet-header:after {
+		clear: both;
+	}
+	.gemet-header,
+	.gemet-header > * {
+		-webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	.gemet-header input[type="search"],
+	.gemet-header input[type="text"],
+	.gemet-header input[type="submit"],
+	.gemet-header select {
+		display: block;
+		-webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	  height: 2em;
+	}
+
+	/* header-title */
+	.header-title {
+		float: left;
+	}
+	.header-title h1 {
+		margin: 0;
+		padding: 0!important;
+		line-height: inherit;
+	}
+	.header-title small {
+		line-height: 2em; /* same as input height */
+	}
+
+	/* header-actions */
+	.header-actions {
+		float: right;
+	}
+	.header-actions:before,
+	.header-actions:after {
+		display: table;
+		content: "";
+	}
+	.header-actions:after {
+		clear: both;
+	}
+
+	/* header-search */
+	.header-search {
+		float: right;
+	}
+	.header-search label {
+		display: block;
+		font-size: smaller;
+		color: #999;
+	}
+	.header-search input[type="search"],
+	.header-search input[type="text"] {
+		float: left;
+		margin: 0;
+		min-width: 150px;
+	}
+	.header-search input[type="submit"] {
+		float: left;
+		text-align: center;
+		width: 64px;
+	}
+
+	/* header-language */
+	.header-language {
+		float: right;
+		-webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+		margin-right: 1em;
+	}
+	.header-language label {
+		display: block;
+		font-size: smaller;
+		color: #999;
+	}
+	.header-language select {
+	  min-width: 96px;
+		max-width: 120px;
+		width: 100%;
+	}
+
+	/* header mobile */
+	@media (max-width: 700px) {
+		.header-actions {
+			width: 100%;
+		}
+		.header-search {
+			float: left;
+		}
+		.header-language {
+			margin-right: 0;
+		}
+	}
+
+	/* menu */
+	.gemet-menu {
+		list-style-type: none!important;
+		list-style-image: none!important;
+		padding-left: 0!important;
+		text-align: center;
+		font-size: smaller;
+		margin-bottom: 1em;
+	}
+	.gemet-menu,
+	.gemet-menu > * {
+		-webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	.gemet-menu:before,
+	.gemet-menu:after {
+		display: table;
+		content: "";
+	}
+	.gemet-menu:after {
+		clear: both;
+	}
+	.gemet-menu > a {
+		display: block;
+		float: left;
+		width: 25%;
+		height: 3em;
+		padding: 0.25em 0.5em;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+		border-left: 1px solid #ddd;
+		border-right: 1px solid transparent;
+	}
+	.gemet-menu > a:first-child {
+		border-radius: 3px 0 0 3px;
+		border-left: 1px solid #ddd;
+	}
+	.gemet-menu > a:last-child {
+		border-radius: 0 3px 3px 0;
+		border-right: 1px solid #ddd;
+	}
+	.gemet-menu > a:hover {
+		border: 1px solid #bbb;
+		background-color: #f6f6f6;
+	}
+	.gemet-menu a,
+	.gemet-menu a:visited {
+		color: inherit;
+		text-decoration: none;
+	}
+
+
+	/* footer */
+	.footer-menu {
+		font-size: smaller;
+		clear: both;
+		padding-top: 1em;
+		border-top: 1px solid #ddd;
+		margin-top: 1em;
+	}
+	.footer-menu a {
+		text-decoration: none;
+		color: inherit;
+	}
+	.footer-menu a:hover {
+		text-decoration: underline;
+	}
+	.footer-menu a:visited {
+		color: inherit;
 	}
