@@ -47,13 +47,13 @@ class TestConceptView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
+        self.assertEqual(resp.pyquery('p:eq(2)').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
+        self.assertEqual(resp.pyquery('p:eq(3)').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.infotext:eq(2)').text(),
+        self.assertEqual(resp.pyquery('ul:eq(3) li a').text(),
                          "Group Parent")
-        self.assertEqual(resp.pyquery('.infotext:eq(3)').text(),
+        self.assertEqual(resp.pyquery('ul:eq(2) li a').text(),
                          "Theme Parent")
 
     def test_concept_two_themes(self):
@@ -88,13 +88,13 @@ class TestConceptView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
+        self.assertEqual(resp.pyquery('p:eq(2)').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.infotext:eq(1)').text(),
+        self.assertEqual(resp.pyquery('p:eq(3)').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.infotext:eq(2)').text(),
+        self.assertEqual(resp.pyquery('ul:eq(3)').text(),
                          "Group Parent")
-        themes = resp.pyquery('.infotext:eq(3)').text().split()
+        themes = resp.pyquery('ul:eq(2) li a').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")

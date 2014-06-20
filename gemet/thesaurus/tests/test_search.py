@@ -108,7 +108,7 @@ class TestSearchView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.content form p:last').text(),
+        self.assertEqual(resp.pyquery('form p:last').text(),
                          'Selected language: English')
 
     def test_regex_search(self):

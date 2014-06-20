@@ -24,14 +24,13 @@ class TestThemeView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(0)').text(),
-                         "Definition is not available")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(1)').text(),
-                         "scope note is not available")
-        self.assertEqual(resp.pyquery('.content  ul').size(), 1)
-        self.assertEqual(resp.pyquery('.content ul').children().size(), 1)
-        self.assertEqual(resp.pyquery('.content ul li').text(),
-                         "English: some prefLabel")
+        self.assertEqual(resp.pyquery('p:eq(2)').text(),
+                         "Definition is not available.")
+        self.assertEqual(resp.pyquery('p:eq(3)').text(),
+                         "Scope note is not available.")
+        self.assertEqual(resp.pyquery('ul:eq(1)').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+                         "English some prefLabel")
 
     def test_theme_one_concept(self):
         concept = TermFactory()
@@ -51,19 +50,16 @@ class TestThemeView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(0)').text(),
-                         "Definition is not available")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(1)').text(),
-                         "scope note is not available")
-        self.assertEqual(resp.pyquery('.content  ul').size(), 2)
-        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(),
-                         1)
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+        self.assertEqual(resp.pyquery('p:eq(2)').text(),
+                         "Definition is not available.")
+        self.assertEqual(resp.pyquery('p:eq(3)').text(),
+                         "Scope note is not available.")
+        self.assertEqual(resp.pyquery('ul:eq(2) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(2) li').text(),
                          "concept prefLabel")
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(),
-                         1)
-        self.assertEqual(resp.pyquery('.content ul:eq(1) li').text(),
-                         "English: some prefLabel")
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+                         "English some prefLabel")
 
     def test_theme_two_concepts(self):
         concept1 = TermFactory()
@@ -92,29 +88,25 @@ class TestThemeView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(0)').text(),
-                         "Definition is not available")
-        self.assertEqual(resp.pyquery('.content .infotext:eq(1)').text(),
-                         "scope note is not available")
-        self.assertEqual(resp.pyquery('.content  ul').size(), 2)
-        self.assertEqual(resp.pyquery('.content ul:eq(0)').children().size(),
-                         2)
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('p:eq(2)').text(),
+                         "Definition is not available.")
+        self.assertEqual(resp.pyquery('p:eq(3)').text(),
+                         "Scope note is not available.")
+        self.assertEqual(resp.pyquery('ul:eq(2) li').size(), 2)
+        self.assertEqual(resp.pyquery('ul:eq(2) li:eq(0)').text(),
                          "concept1 prefLabel")
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
+        self.assertEqual(resp.pyquery('ul:eq(2) li:eq(1)').text(),
                          "concept2 prefLabel")
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().size(),
-                         1)
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').children().text(),
-                         "English: some prefLabel")
+        self.assertEqual(resp.pyquery('ul:eq(1)').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1)').text(),
+                         "English some prefLabel")
 
     def test_redirect(self):
         url = reverse('theme', kwargs={'concept_id': self.theme.id,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-
-        url = resp.pyquery('h4:eq(3)').text().split('<')[1].split('>')[0]
+        url = resp.pyquery('p:eq(4)').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
