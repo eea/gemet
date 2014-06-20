@@ -110,6 +110,18 @@ a.btn, .pagination a, .letter-pagination a {
 	.dl-inline .dd > li:last-child:after {
 		content: "";
 	}
+	ul.dl-inline > li {
+		overflow: auto;
+	}
+	
+	/* alert */
+	.alert {
+		/*padding: 0.25em 0.5em;*/
+		/*border-left: 3px solid #00446a;
+		background: #C4DCE9;*/
+		font-style: italic;
+		color: #aaa;
+	}
 
 	/* headings */
 	h6 {
@@ -181,13 +193,6 @@ a.btn, .pagination a, .letter-pagination a {
 		}
 	}
 
-	/* select-language */
-	.select-language {
-		/*display: block;
-		width: 100%;*/
-		min-width: 240px;
-	}
-
 	/* side-bar */
 	.side-bar {
 		float: right;
@@ -219,6 +224,13 @@ a.btn, .pagination a, .letter-pagination a {
 		margin-left: 84px!important;
 	}
 
+	/* select-language */
+	.select-language {
+		/*display: block;
+		width: 100%;*/
+		min-width: 240px;
+	}
+
 	/* listing */
 	.concepts:before,
 	.concepts:after {
@@ -228,15 +240,18 @@ a.btn, .pagination a, .letter-pagination a {
 	.concepts:after {
 		clear: both;
 	}
-	.concepts > li {
-		width: 50%;
-		float: left;
-	}
 	.concepts a {
 		text-decoration: none;
 	}
 	.concepts a:hover {
 		text-decoration: underline;
+	}
+	.concepts.columns > li {
+		width: 50%;
+		float: left;
+	}
+	.concepts.columns > li:nth(2n) {
+		float: right;
 	}
 
 
