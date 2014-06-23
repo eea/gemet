@@ -35,5 +35,10 @@ def prepare_html(html):
     html = html.replace('src="/', 'src="' + ZOPE_URL + '/')
     css_url = '<link rel="stylesheet" href="' + static('thesaurus/style.css') \
               + '" />'
+    js_url = '<script src="' + static('thesaurus/main.js') + '" />'
+    jquery_url = '<script src=' + \
+        '"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"' + \
+        '></script>'
     html = html.replace('</head>', css_url + '</head>')
+    html = html.replace('</body>', jquery_url + js_url + '</body>')
     return html
