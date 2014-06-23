@@ -32,6 +32,16 @@ List Views - displays a list of entries from the database
 * **RelationsView**
     Displays the existing relations inside a group, given as a parameter.
 
+* **PaginatorView**
+    A helper view, that paginates the concepts of the site. Can filter by the first letter of the concept.
+
+* **ThemeConceptsView**
+    Extends the PaginatorView, for presenting the concepts that are included in a specific Theme.
+
+* **AlphabeticView**
+    Extends the PaginatorView and presents a list of concepts in alphabetic order.
+
+
 Detail View - displays the details of a single entry from the database
 ----------------------------------------------------------------------
 
@@ -50,15 +60,6 @@ Detail View - displays the details of a single entry from the database
 * **SuperGroupView**
     Extends the ConceptView and presents the details of a specific SuperGroup. It presents the definition, the groups that are included in this SuperGroup and the available translations.
 
-* **PaginatorView**
-    A helper view, that paginates the concepts of the site. Can filter by the first letter of the concept.
-
-* **ThemeConceptsView**
-    Extends the PaginatorView, for presenting the concepts that are included in a specific Theme.
-
-* **AlphabeticView**
-    Extends the PaginatorView and presents a list of concepts in alphabetic order.
-
 * **GemetRelationsView**
     A view, that presents the existing relations between concepts and the type of the relationship.
 
@@ -69,6 +70,7 @@ Detail View - displays the details of a single entry from the database
     A view, allowing to download labels, definitions, supergroups, groups and themes in available languages in RDF format.
 
 * **SearchView**
+
 
 XML Views - displays data in XML format
 ---------------------------------------
