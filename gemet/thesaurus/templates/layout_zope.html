@@ -14,8 +14,12 @@
     <div class="header-search">
       <label for="search-query">Search</label>
       <div class="clearfix">
-        <input type="search" name="search-query" placeholder="Concepts, Groups, Themes..." />
-        <input type="submit" value="Search" />
+        <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <p>Selected language: {{ language.name }}</p>
+          <input type="submit" value="Search"/>
+        </form>
       </div>
     </div>
     <!-- language -->
@@ -39,8 +43,6 @@
   <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
   <!-- &nbsp;|&nbsp; -->
   <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-  <!-- &nbsp;|&nbsp; -->
-  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
 </div>
 <!--/header -->
 
