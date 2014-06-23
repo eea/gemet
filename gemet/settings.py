@@ -76,6 +76,8 @@ USE_ZOPE_LAYOUT = False
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static/')
+
 LOCAL_INSTALLED_APPS = ()
 try:
     from local_settings import *
