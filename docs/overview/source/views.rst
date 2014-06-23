@@ -41,6 +41,12 @@ List Views - displays a list of entries from the database
 * **AlphabeticView**
     Extends the PaginatorView and presents a list of concepts in alphabetic order.
 
+* **DefinitionsView**
+    Presents all the term definitions available on the GEMET.
+
+* **GemetGroupsView**
+    Presents all the supergroups, groups and themes available on the GEMET.
+
 
 Detail View - displays the details of a single entry from the database
 ----------------------------------------------------------------------
@@ -53,6 +59,9 @@ Detail View - displays the details of a single entry from the database
 
 * **ThemeView**
     Extends the ConceptView and presents the details of a specific Theme. It presents the definition, the scope note and the concepts that are included in this Theme.
+
+* **InspireThemeView**
+    Extends the ConceptView and presents the details of a specific InspireTheme.
 
 * **GroupView**
     Extends the ConceptView and presents the details of a specific Group. It presents the definition, the SuperGroup to which belongs and the concepts that are included in this Group.
@@ -83,4 +92,11 @@ XML Views - displays data in XML format
 
 * **Skoscore**
     Extends the XMLTemplateView and presents the existing relations between concepts.
+
+* **DefinitionsByLanguage**
+    Extends the XMLTempalteView and presents the existing definitions on the GEMET in a specific language in RDF format.
+
+* **DefinitionsByLanguage**
+    Extends the XMLTempalteView and presents the existing supergroups, groups and themes on the GEMET in a specific language in RDF format.
+
 
