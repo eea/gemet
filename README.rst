@@ -158,7 +158,7 @@ Data Import
 -----------
 
 1. Considering you have a dump of the old database (``gemet.sql``), import it in a
-seaparate database::
+**separate** database::
 
     mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
     mysql -u[user] -p[password] [db_name] < gemet.sql
