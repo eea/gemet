@@ -70,7 +70,7 @@ class TestSearchView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(len(resp.pyquery('li')), 2)
+        self.assertEqual(len(resp.pyquery('.content ul > li')), 2)
         self.assertEqual(resp.pyquery('.content li:eq(0) a').text(),
                          'something')
         self.assertEqual(resp.pyquery('.content li:eq(1) a').text(),
@@ -85,10 +85,15 @@ class TestSearchView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.content .broader-context:eq(0)').text(),
-                         'broader context: broader 1')
-        self.assertEqual(resp.pyquery('.content .broader-context:eq(1)').text(),
-                         'broader context: broader 2.1; broader 2.2')
+        self.assertEqual(resp.pyquery('.content ul > li').size(), 2)
+        self.assertEqual(
+            resp.pyquery('.content ul > li:eq(0) .broader-context').text(),
+            'broader context: broader 1'
+        )
+        self.assertEqual(
+            resp.pyquery('.content ul > li:eq(1) .broader-context').text(),
+            'broader context: broader 2.1; broader 2.2'
+        )
 
     def test_number_of_results_found(self):
         url = reverse('search', kwargs={'langcode': 'en'})
@@ -112,7 +117,7 @@ class TestSearchView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.content form p:last').text(),
+        self.assertEqual(resp.pyquery('form p:last').text(),
                          'Selected language: English')
 
     def test_regex_search(self):
@@ -124,7 +129,7 @@ class TestSearchView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(len(resp.pyquery('li')), 3)
+        self.assertEqual(len(resp.pyquery('.content li')), 3)
         self.assertEqual(resp.pyquery('.content li:eq(0) a').text(),
                          'another somefling')
         self.assertEqual(resp.pyquery('.content li:eq(1) a').text(),
@@ -142,7 +147,11 @@ class TestSearchView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 2)
-        self.assertEqual(resp.pyquery('.content .other-names:eq(0)').text(),
-                         'other names: not; hiddenLabel')
-        self.assertEqual(resp.pyquery('.content .other-names:eq(1)').text(),
-                         'other names: altLabel')
+        self.assertEqual(
+            resp.pyquery('.content ul > li:eq(0) .other-names').text(),
+            'other names: not; hiddenLabel'
+        )
+        self.assertEqual(
+            resp.pyquery('.content ul > li:eq(1) .other-names').text(),
+            'other names: altLabel'
+        )
