@@ -35,12 +35,13 @@ class TestThemeConceptsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1)').length, 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0)').length, 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'Concept value')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'Concept value')
 
     def test_one_theme_two_concepts(self):
         concept1 = TermFactory(id=1, code="1")
@@ -63,17 +64,20 @@ class TestThemeConceptsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept1.id}
-                                 )
-                         )
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'Concept 1')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept2.id})
-                         )
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(), 'Concept 2')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept1.id})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'Concept 1')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept2.id})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
+                         'Concept 2')
 
     def test_letter_selected_filter_one_language(self):
         concept1 = TermFactory(id=1, code="1")
@@ -96,14 +100,16 @@ class TestThemeConceptsView(GemetTest):
                                           'theme_id': self.theme.id}),
                       letter=1)
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'A_CONCEPT')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept1.id})
-                         )
+        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'A_CONCEPT')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept1.id})
+        )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
         english_concept = TermFactory(id=1, code="1")
@@ -132,14 +138,15 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'A_EN_CONCEPT')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
-                         reverse('concept',
-                                 kwargs={'langcode': 'en',
-                                         'concept_id': english_concept.id})
-                         )
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': english_concept.id})
+        )
 
     def test_letter_selected_filter_one_concept_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
@@ -160,14 +167,15 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'A_EN_CONCEPT')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
-                         reverse('concept',
-                                 kwargs={'langcode': 'en',
-                                         'concept_id': concept.id})
-                         )
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept.id})
+        )
 
     def test_404_error_letter_out_of_range(self):
         concept = TermFactory()
@@ -200,4 +208,4 @@ class TestThemeConceptsView(GemetTest):
                                                 'theme_id': concept.id})
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())
+        self.assertEqual(ERROR_404, resp.pyquery('.content .error404').text())

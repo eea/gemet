@@ -23,9 +23,9 @@ class TestGroupsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('h3').text(), 'Super Group')
-        self.assertEqual(resp.pyquery('.groups li').size(), 0)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content h3').text(), 'Super Group')
+        self.assertEqual(resp.pyquery('.content .groups li').size(), 0)
 
     def test_one_supergroup_one_group(self):
         group = GroupFactory()
@@ -43,14 +43,15 @@ class TestGroupsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li').size(), 1)
-        self.assertEqual(resp.pyquery('h3').text(), 'Super Group')
-        self.assertEqual(resp.pyquery('.groups li').size(), 1)
-        self.assertEqual(resp.pyquery('.groups li a').attr('href'),
+        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(), 1)
+        self.assertEqual(resp.pyquery('.content .listing.no-list h3').text(),
+                         'Super Group')
+        self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
+        self.assertEqual(resp.pyquery('.content .groups li a').attr('href'),
                          reverse('relations', kwargs={'langcode': 'en',
                                                       'group_id': group.id})
                          )
-        self.assertEqual(resp.pyquery('.groups li a').text(), 'Group')
+        self.assertEqual(resp.pyquery('.content .groups li a').text(), 'Group')
 
     def test_more_supergroups_no_group(self):
         superGroup = SuperGroupFactory(id=5, code="5")
@@ -61,12 +62,17 @@ class TestGroupsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li').size(), 2)
-        self.assertEqual(resp.pyquery('.groups li').size(), 0)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) h3').text(),
-                         'Super Group')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) h3').text(),
-                         'Super Group 2')
+        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
+                         2)
+        self.assertEqual(resp.pyquery('.content .groups li').size(), 0)
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(0) h3').text(),
+            'Super Group'
+        )
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(1) h3').text(),
+            'Super Group 2'
+        )
 
     def test_more_supergroups_one_group(self):
         superGroup = SuperGroupFactory(id=5, code="5")
@@ -87,15 +93,22 @@ class TestGroupsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li').size(), 2)
-        self.assertEqual(resp.pyquery('.groups li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) h3').text(),
-                         'Super Group')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) h3').text(),
-                         'Super Group 2')
-        self.assertEqual(resp.pyquery('.groups li:eq(0)').text(), 'Group')
-        self.assertEqual(resp.pyquery('.groups li:eq(0) a').attr('href'),
-                         reverse('relations', kwargs={'langcode': 'en',
-                                                      'group_id': group.id})
-                         )
-        self.assertEqual(resp.pyquery('.groups li:eq(1)').text(), '')
+        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
+                         2)
+        self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(0) h3').text(),
+            'Super Group'
+        )
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(1) h3').text(),
+            'Super Group 2'
+        )
+        self.assertEqual(resp.pyquery('.content .groups li:eq(0)').text(),
+                         'Group')
+        self.assertEqual(
+            resp.pyquery('.content .groups li:eq(0) a').attr('href'),
+            reverse('relations', kwargs={'langcode': 'en',
+                                         'group_id': group.id})
+        )
+        self.assertEqual(resp.pyquery('.content .groups li:eq(1)').text(), '')

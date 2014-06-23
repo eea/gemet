@@ -18,7 +18,7 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li"), [])
+        self.assertEqual(resp.pyquery('.content li').size(), 0)
 
     def test_one_concept(self):
         concept = TermFactory()
@@ -29,10 +29,11 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'administration')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a')
+                         .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )
@@ -48,16 +49,18 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 2)
-
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'Concept1')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'Concept1')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a')
+                         .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id})
                          )
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          'Concept2')
-        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1) a')
+                         .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept2.id})
                          )
@@ -72,12 +75,12 @@ class TestAlphabeticView(GemetTest):
               .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
                       letter=1)
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'A_Concept')
-        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'A_Concept')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id})
                          )
@@ -96,13 +99,12 @@ class TestAlphabeticView(GemetTest):
               .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
                       letter=1)
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'A_EN_Concept')
-        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': 1})
                          )
@@ -119,12 +121,12 @@ class TestAlphabeticView(GemetTest):
               .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
                       letter=1)
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'A_EN_Concept')
-        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'A_EN_Concept')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )

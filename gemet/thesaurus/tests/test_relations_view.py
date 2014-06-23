@@ -23,9 +23,8 @@ class TestRelationsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-
-        self.assertEqual(resp.pyquery('h3').text(), 'Group')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li').size(), 0)
+        self.assertEqual(resp.pyquery('.content h3').text(), 'Group')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > li').size(), 0)
 
     def test_group_with_one_member(self):
         concept = TermFactory()
@@ -43,10 +42,9 @@ class TestRelationsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-
-        self.assertEqual(resp.pyquery('h3').text(), 'Group')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li').size(), 1)
-        self.assertEqual(resp.pyquery('ul:eq(1) > li a:eq(0)').attr('href'),
+        self.assertEqual(resp.pyquery('.content h3').text(), 'Group')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(0)').attr('href'),
                          u'{url}?exp={exp}'.
                          format(url=reverse('relations',
                                             kwargs={
@@ -56,12 +54,14 @@ class TestRelationsView(GemetTest):
                                 exp=exp_encrypt(str(concept.id))
                                 )
                          )
-        self.assertEqual(resp.pyquery('ul:eq(1) > li a:eq(0)').text(), '+')
-        self.assertEqual(resp.pyquery('ul:eq(1) > li a:eq(1)').attr('href'),
-                         reverse('concept',
-                                 kwargs={'langcode': 'en',
-                                         'concept_id': concept.id}))
-        self.assertEqual(resp.pyquery('ul:eq(1) > li a:eq(1)').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(0)').text(),
+                         '+')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) > li a:eq(1)').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept.id})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(1)').text(),
                          "Concept")
 
     def test_404_error(self):

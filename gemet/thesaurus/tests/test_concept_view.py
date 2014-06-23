@@ -46,14 +46,14 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('p:eq(2)').text(),
+        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('p:eq(3)').text(),
+        self.assertEqual(resp.pyquery('.content p:eq(1)').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('ul:eq(3) li a').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(1) li a').text(),
                          "Group Parent")
-        self.assertEqual(resp.pyquery('ul:eq(2) li a').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').text(),
                          "Theme Parent")
 
     def test_concept_two_themes(self):
@@ -87,14 +87,14 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('p:eq(2)').text(),
+        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('p:eq(3)').text(),
+        self.assertEqual(resp.pyquery('.content p:eq(1)').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('ul:eq(3)').text(),
+        self.assertEqual(resp.pyquery('.content ul:eq(1)').text(),
                          "Group Parent")
-        themes = resp.pyquery('ul:eq(2) li a').text().split()
+        themes = resp.pyquery('.content ul:eq(0) li a').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
@@ -103,8 +103,7 @@ class TestConceptView(GemetTest):
         url = reverse('concept', kwargs={'concept_id': self.concept.id,
                                          'langcode': 'en'})
         resp = self.app.get(url)
-
-        url = resp.pyquery('p:eq(4)').text()
+        url = resp.pyquery('.content p:eq(2)').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
