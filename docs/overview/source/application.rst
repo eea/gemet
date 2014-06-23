@@ -31,24 +31,25 @@ project::
     ├── local_settings.py
     ├── settings.py
     ├── test_settings.py
-    ├── thesaurus
-    │   ├── admin.py
-    │   ├── api.py
-    │   ├── collation_charts.py
-    │   ├── fixtures/
-    │   ├── forms.py
-    │   ├── management/
-    │   │   └── commands/
-    │   ├── models.py
-    │   ├── static/
-    │   ├── templates/
-    │   ├── templatetags/
-    │   ├── tests/
-    │   ├── urls.py
-    │   ├── utils.py
-    │   └── views.py
     ├── urls.py
-    └── wsgi.py
+    ├── wsgi.py
+    └── thesaurus
+        ├── admin.py
+        ├── api.py
+        ├── collation_charts.py
+        ├── fixtures/
+        ├── forms.py
+        ├── models.py
+        ├── static/
+        ├── templates/
+        ├── templatetags/
+        ├── tests/
+        ├── urls.py
+        ├── utils.py
+        ├── views.py
+        └── management/
+            └── commands/
+
 
 A few words about the files and directories found in **gemet** folder:
 
