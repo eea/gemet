@@ -22,7 +22,7 @@ class TestRelationsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), 'Group')
         self.assertEqual(resp.pyquery('.content ul:eq(0) > li').size(), 0)
 
@@ -41,7 +41,7 @@ class TestRelationsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), 'Group')
         self.assertEqual(resp.pyquery('.content ul:eq(0) > li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(0)').attr('href'),

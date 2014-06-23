@@ -17,7 +17,7 @@ class TestThemesView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
 
         self.assertEqual(resp.pyquery('.themes').find("li"), [])
 
@@ -29,7 +29,7 @@ class TestThemesView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.listing.columns li').length, 1)
 
         self.assertEqual(resp.pyquery('.listing.columns li a').attr('href'),
@@ -50,7 +50,7 @@ class TestThemesView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.listing.columns li').length, 2)
 
         self.assertEqual(resp.pyquery('.listing.columns li:eq(0) a').attr('href'),

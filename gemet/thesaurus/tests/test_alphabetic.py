@@ -17,7 +17,7 @@ class TestAlphabeticView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content li').size(), 0)
 
     def test_one_concept(self):
@@ -28,7 +28,7 @@ class TestAlphabeticView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'administration')
@@ -48,7 +48,7 @@ class TestAlphabeticView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 2)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'Concept1')
@@ -76,7 +76,7 @@ class TestAlphabeticView(GemetTest):
                       letter=1)
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'A_Concept')
@@ -100,7 +100,7 @@ class TestAlphabeticView(GemetTest):
                       letter=1)
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'A_EN_Concept')
@@ -122,7 +122,7 @@ class TestAlphabeticView(GemetTest):
                       letter=1)
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'A_EN_Concept')

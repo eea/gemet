@@ -23,9 +23,9 @@ class TestGroupView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
@@ -57,9 +57,9 @@ class TestGroupView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('.content ul').size(), 3)
         self.assertEqual(resp.pyquery('.listing:eq(1)').size(), 1)
@@ -68,15 +68,15 @@ class TestGroupView(GemetTest):
         self.assertEqual(resp.pyquery('.listing:eq(0)').size(), 1)
         self.assertEqual(resp.pyquery('.listing:eq(0)').text(),
                          "supergroup prefLabel")
-        self.assertEqual(resp.pyquery('.content .clearfix').size(), 1)
-        self.assertEqual(resp.pyquery('.content .clearfix').text(),
+        self.assertEqual(resp.pyquery('.content li.clearfix').size(), 1)
+        self.assertEqual(resp.pyquery('.content li.clearfix').text(),
                          "English some prefLabel")
 
     def test_redirect(self):
         url = reverse('group', kwargs={'concept_id': self.group.id,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-        url = resp.pyquery('.content p:eq(1)').text()
+        url = resp.pyquery('.content p#concept-url').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):

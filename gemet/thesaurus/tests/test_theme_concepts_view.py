@@ -34,7 +34,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0)').length, 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
@@ -63,7 +63,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
@@ -101,7 +101,7 @@ class TestThemeConceptsView(GemetTest):
                       letter=1)
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'A_CONCEPT')
@@ -138,7 +138,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'A_EN_CONCEPT')
@@ -167,7 +167,7 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'A_EN_CONCEPT')

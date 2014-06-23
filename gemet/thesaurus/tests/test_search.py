@@ -56,7 +56,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 0)
         self.assertEqual(resp.pyquery('.content .results-nr').text(),
                          '0 results found.')
@@ -69,7 +69,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content ul > li')), 2)
         self.assertEqual(resp.pyquery('.content li:eq(0) a').text(),
                          'something')
@@ -84,7 +84,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul > li').size(), 2)
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(0) .broader-context').text(),
@@ -103,7 +103,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 2)
         self.assertEqual(resp.pyquery('.content .results-nr').text(),
                          '2 results found.')
@@ -116,7 +116,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('form p:last').text(),
                          'Selected language: English')
 
@@ -128,7 +128,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 3)
         self.assertEqual(resp.pyquery('.content li:eq(0) a').text(),
                          'another somefling')
@@ -145,7 +145,7 @@ class TestSearchView(GemetTest):
         resp = form.submit()
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 2)
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(0) .other-names').text(),

@@ -21,7 +21,7 @@ class TestSuperGroupView(GemetTest):
                                             'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
                          "Definition is not available")
@@ -47,7 +47,7 @@ class TestSuperGroupView(GemetTest):
                                             'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
                          "Definition is not available")
@@ -89,7 +89,7 @@ class TestSuperGroupView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('.infotext:eq(0)').text(),
                          "Definition is not available")

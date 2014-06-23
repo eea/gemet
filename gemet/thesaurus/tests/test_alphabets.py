@@ -15,7 +15,7 @@ class TestAlphabetsView(WebTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ol').children().size(), 26)
         letters = resp.pyquery('ol').text().split()
         self.assertEqual(letters[0], 'a')

@@ -22,7 +22,7 @@ class TestGroupsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
         self.assertEqual(resp.pyquery('.content h3').text(), 'Super Group')
         self.assertEqual(resp.pyquery('.content .groups li').size(), 0)
@@ -42,7 +42,7 @@ class TestGroupsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(), 1)
         self.assertEqual(resp.pyquery('.content .listing.no-list h3').text(),
                          'Super Group')
@@ -61,7 +61,7 @@ class TestGroupsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
                          2)
         self.assertEqual(resp.pyquery('.content .groups li').size(), 0)
@@ -92,7 +92,7 @@ class TestGroupsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
                          2)
         self.assertEqual(resp.pyquery('.content .groups li').size(), 1)

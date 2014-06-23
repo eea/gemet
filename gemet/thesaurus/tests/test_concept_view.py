@@ -45,11 +45,11 @@ class TestConceptView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content p#definition').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.content p:eq(1)').text(),
+        self.assertEqual(resp.pyquery('.content p#scope-note').text(),
                          "some scope note")
         self.assertEqual(resp.pyquery('.content ul:eq(1) li a').text(),
                          "Group Parent")
@@ -86,11 +86,11 @@ class TestConceptView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.context['langcode'], 'en')
+        self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p:eq(0)').text(),
+        self.assertEqual(resp.pyquery('.content p#definition').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.content p:eq(1)').text(),
+        self.assertEqual(resp.pyquery('.content p#scope-note').text(),
                          "some scope note")
         self.assertEqual(resp.pyquery('.content ul:eq(1)').text(),
                          "Group Parent")
