@@ -104,7 +104,7 @@ class TestConceptView(GemetTest):
                                          'langcode': 'en'})
         resp = self.app.get(url)
 
-        url = resp.pyquery('h4:eq(3)').text().split('<')[1].split('>')[0]
+        url = resp.pyquery('p:eq(4)').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):

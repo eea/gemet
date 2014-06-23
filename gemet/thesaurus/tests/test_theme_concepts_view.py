@@ -35,13 +35,12 @@ class TestThemeConceptsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('.concepts li').length, 1)
-        self.assertEqual(resp.pyquery('.concepts li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1)').length, 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )
-        self.assertEqual(resp.pyquery('.concepts li:eq(0)').text(),
-                         u'Concept value')
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'Concept value')
 
     def test_one_theme_two_concepts(self):
         concept1 = TermFactory(id=1, code="1")
@@ -64,20 +63,17 @@ class TestThemeConceptsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery('#left-box li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id}
                                  )
                          )
-        self.assertEqual(resp.pyquery('#left-box li:eq(0)').text(),
-                         u'Concept 1')
-        self.assertEqual(resp.pyquery('#right-box li:eq(0) a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'Concept 1')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept2.id}
-                                 )
+                                                    'concept_id': concept2.id})
                          )
-        self.assertEqual(resp.pyquery('#right-box li:eq(0)').text(),
-                         u'Concept 2')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(), 'Concept 2')
 
     def test_letter_selected_filter_one_language(self):
         concept1 = TermFactory(id=1, code="1")
@@ -102,9 +98,9 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
-        self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
-        self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'A_CONCEPT')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id})
                          )
@@ -136,9 +132,10 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
-        self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
-        self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+                         'A_EN_CONCEPT')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept',
                                  kwargs={'langcode': 'en',
                                          'concept_id': english_concept.id})
@@ -163,9 +160,10 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(resp.pyquery('.concepts').find("li").size(), 1)
-        self.assertEqual(resp.pyquery('.concepts li a').text()[0], 'A')
-        self.assertEqual(resp.pyquery('.concepts li a').attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
+                         'A_EN_CONCEPT')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept',
                                  kwargs={'langcode': 'en',
                                          'concept_id': concept.id})

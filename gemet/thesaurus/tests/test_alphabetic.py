@@ -29,10 +29,10 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li").size(), 1)
-        self.assertEqual(resp.pyquery(".concepts li a").text(),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(),
                          'administration')
-        self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )
@@ -48,17 +48,16 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li").size(), 2)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 2)
 
-        self.assertEqual(resp.pyquery("#left-box li:eq(0) a").text(),
-                         'Concept1')
-        self.assertEqual(resp.pyquery("#left-box li:eq(0) a").attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0)').text(), 'Concept1')
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(0) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id})
                          )
-        self.assertEqual(resp.pyquery("#right-box li:eq(0) a").text(),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1)').text(),
                          'Concept2')
-        self.assertEqual(resp.pyquery("#right-box li:eq(0) a").attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li:eq(1) a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept2.id})
                          )
@@ -76,10 +75,9 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li").size(), 1)
-        self.assertEqual(resp.pyquery(".concepts li a").text(),
-                         'A_Concept')
-        self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'A_Concept')
+        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept1.id})
                          )
@@ -101,13 +99,12 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li").size(), 1)
-        self.assertEqual(resp.pyquery(".concepts li a").text(),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(),
                          'A_EN_Concept')
-        self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
-                         u'{url}'.format(url=reverse('concept',
-                                                     kwargs={'langcode': 'en',
-                                                             'concept_id': 1}))
+        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
+                         reverse('concept', kwargs={'langcode': 'en',
+                                                    'concept_id': 1})
                          )
 
     def test_letter_selected_filter_one_concept_two_languages(self):
@@ -125,10 +122,9 @@ class TestAlphabeticView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['langcode'], 'en')
-        self.assertEqual(resp.pyquery(".concepts").find("li").size(), 1)
-        self.assertEqual(resp.pyquery(".concepts li a").text(),
-                         'A_EN_Concept')
-        self.assertEqual(resp.pyquery(".concepts li a").attr('href'),
+        self.assertEqual(resp.pyquery('ul:eq(1) li').size(), 1)
+        self.assertEqual(resp.pyquery('ul:eq(1) li').text(), 'A_EN_Concept')
+        self.assertEqual(resp.pyquery('ul:eq(1) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
                                                     'concept_id': concept.id})
                          )
