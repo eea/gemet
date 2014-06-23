@@ -114,7 +114,7 @@ class InspireThemesView(ThemesView):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
         languages = [lang for lang in context['languages'] if
                      Property.objects.filter(
-                         language_id=lang,
+                         language_id=lang.get('code'),
                          concept__namespace=self.model_cls.objects.get_ns(),
                      )]
 
@@ -245,8 +245,10 @@ class ConceptView(LanguageMixin, SearchFormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ConceptView, self).get_context_data(**kwargs)
 
-        languages = [
-            p.language.code
+        languages = [{
+            'code': p.language.code,
+            'name': p.language.name,
+        }
             for p in context[self.context_object_name].properties.filter(
                 name='prefLabel',
                 value__isnull=False,
