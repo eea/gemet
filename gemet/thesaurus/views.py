@@ -53,7 +53,7 @@ class LanguageMixin(object):
         context = super(LanguageMixin, self).get_context_data(**kwargs)
         context.update({
             "language": self.language,
-            "languages": Language.objects.values_list('code', flat=True)
+            "languages": Language.objects.values('code', 'name')
         })
         return context
 

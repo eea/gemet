@@ -2,7 +2,7 @@
 {% load gemet_tags %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='concept' id=concept.id %}
+  {% include 'header.html' with view='concept' id=concept.id %}
 
   <!-- Concept -->
   <h3 class="h3">{{ concept.name }}</h3>

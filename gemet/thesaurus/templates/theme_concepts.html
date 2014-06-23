@@ -2,7 +2,7 @@
 {% load gemet_tags %}
 
 {% block language_selector %}
-  {% include 'select_language.html' with langcode=language.code view='theme_concepts' id=theme.id %}
+  {% include 'header.html' with view='theme_concepts' id=theme.id %}
 {% endblock %}
 
 {% block header %}

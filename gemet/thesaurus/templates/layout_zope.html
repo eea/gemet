@@ -2,50 +2,6 @@
 {{ header_text }}
 {% endautoescape %}
 
-<!-- header -->
-<div class="gemet-header">
-  <!-- title -->
-  <div class="header-title">
-    <h1>GEMET</h1>
-    <small>General Multilingual Environmental Thesaurus</small> 
-  </div>
-  <div class="header-actions">
-    <!-- search -->
-    <div class="header-search">
-      <label for="search-query">Search</label>
-      <div class="clearfix">
-        <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <p>Selected language: {{ language.name }}</p>
-          <input type="submit" value="Search"/>
-        </form>
-      </div>
-    </div>
-    <!-- language -->
-    <div class="header-language">
-      <label for="select-language">Select language</label>
-      <select name="select-language" id="js-change-language">
-        <option value="">English</option>
-        <option value="">Mandarin</option>
-      </select>
-    </div>
-  </div>
-
-</div>
-
-<!-- menu -->
-<div class="gemet-menu">
-  <a href="{% url 'themes' language.code %}">Thematic Listings</a>
-  <!-- &nbsp;|&nbsp; -->
-  <a href="{% url 'inspire-themes' language.code %}">INSPIRE Spatial Data Themes</a>
-  <!-- &nbsp;|&nbsp; -->
-  <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
-  <!-- &nbsp;|&nbsp; -->
-  <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-</div>
-<!--/header -->
-
 <div class="content">
   {% block content %}
   {% endblock %}

@@ -1,7 +1,7 @@
 {% extends layout_template %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='group' id=group.id %}
+  {% include 'header.html' with view='group' id=group.id %}
 
   <!-- Group -->
   <h3 class="h3">{{ group.name }}</h3>

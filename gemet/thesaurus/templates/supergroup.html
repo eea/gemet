@@ -1,7 +1,7 @@
 {% extends layout_template %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='supergroup' id=supergroup.id %}
+  {% include 'header.html' with view='supergroup' id=supergroup.id %}
 
   <h3>{{ supergroup.name }}</h3>
 

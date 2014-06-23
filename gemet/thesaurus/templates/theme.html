@@ -2,7 +2,7 @@
 {% load gemet_tags %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='theme' id=theme.id %}
+  {% include 'header.html' with view='theme' id=theme.id %}
 
   <!-- Theme -->
   <h3 class="h3">{{ theme.name }}</h3>

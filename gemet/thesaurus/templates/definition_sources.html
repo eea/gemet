@@ -1,9 +1,9 @@
 {% extends layout_template %}
 
 {% block content %}
-    {% include 'select_language.html' with languages=languages langcode=language.code view='definition_sources' %}
+    {% include 'header.html' with view='definition_sources' %}
 
-    
+
     <h1>Definition Sources</h1>
     {% if definitions %}
     <ol id="definition-sources">
@@ -15,7 +15,7 @@
             {% endif %}
             <small>
             {% if definition.author %}
-                {{definition.author}} - 
+                {{definition.author}} -
             {% endif %}
             {% if definition.title %}
                 {{definition.title}},

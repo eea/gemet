@@ -1,7 +1,7 @@
 {% extends layout_template %}
 
 {% block content %}
-  {% include 'select_language.html' with languages=languages langcode=language.code view='alphabets' %}
+  {% include 'header.html' with view='alphabets' %}
 
   <h1>{{ language.name }} alphabet</h1>
 
