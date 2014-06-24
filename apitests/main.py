@@ -395,10 +395,7 @@ class TestGetSupportedLanguages(unittest.TestCase):
 class TestGetAvailableThesauri(unittest.TestCase):
     def test_getSupportedLanguages(self):
         result = api_tester.request('getAvailableThesauri')
-        if api_tester.LOCAL_TEST:
-            self.assertEqual(result, THESAURI)
-        else:
-            self.assertEqual(result, THESAURI + THESAURI_EXTENSION)
+        self.assertEqual(result, THESAURI)
 
 
 class TestFetchThemes(unittest.TestCase):
