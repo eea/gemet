@@ -8,15 +8,13 @@
   <div class="header-actions">
     <!-- search -->
     <div class="header-search">
-      <label for="search-query">Search</label>
-      <div class="clearfix">
-        <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <p>Selected language: {{ language.name }}</p>
+      <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
+        {% csrf_token %}
+        <div class="clearfix">
+          {{ form }}
           <input type="submit" value="Search"/>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
     <!-- language -->
     <div class="header-language">
