@@ -28,7 +28,8 @@ class Command(BaseCommand):
         ns_ids = Namespace.objects.values_list('id', flat=True)
         ns_str = ', '.join([str(id) for id in ns_ids])
 
-        langcodes = Language.objects.values_list('code', flat=True)
+        langcodes = (
+            list(Language.objects.values_list('code', flat=True)) + ['zh'])
         langcodes_str = ', '.join(["'{0}'".format(code) for code in langcodes])
 
         cursor = connections['import'].cursor()
@@ -65,6 +66,8 @@ class Command(BaseCommand):
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
             row['is_resource'] = row['is_resource'] or 0
+            if row['language_id'] == 'zh':
+                row['language_id'] = 'zh-CN'
 
         self.import_rows(rows, Property)
         self.warn_ignored_rows(cursor, 'property', len(rows))
