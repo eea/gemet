@@ -201,10 +201,12 @@ Running unit tests
 
 2. For the API::
 
-    python apitests/api_tests.py
+    python apitests/main.py
 
-An optional ``--public`` parameter exists, which runs the tests
-against the production website.
+Two optional parameters exist:
+
+* ``--public``, which runs the tests against the production website;
+* ``--get``, which calls the API methods through GET requests.
 
 
 Contacts
