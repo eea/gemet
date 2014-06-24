@@ -64,7 +64,7 @@ class ApiViewGET(ApiView):
             if has_get_param(name):
                 return request.GET.get(name)
             else:
-                Fault(-1, 'Missing parameter: %s' % name)
+                raise Fault(-1, 'Missing parameter: %s' % name)
 
         function = self.functions.get(self.method_name)
         response = HttpResponse(
