@@ -35,38 +35,32 @@ from gemet.thesaurus import (
 )
 
 
-class SearchFormMixin(object):
-    def get_context_data(self, **kwargs):
-        context = super(SearchFormMixin, self).get_context_data(**kwargs)
-        context.update({"form": SearchForm({'langcode': self.langcode})})
-        return context
-
-
-class LanguageMixin(object):
+class HeaderMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         self.langcode = kwargs.pop("langcode", DEFAULT_LANGCODE)
         self.language = get_object_or_404(Language, pk=self.langcode)
-        return super(LanguageMixin, self).dispatch(request, *args, **kwargs)
+        return super(HeaderMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(LanguageMixin, self).get_context_data(**kwargs)
+        context = super(HeaderMixin, self).get_context_data(**kwargs)
         context.update({
-            "language": self.language,
-            "languages": Language.objects.values('code', 'name')
+            'language': self.language,
+            'languages': Language.objects.values('code', 'name'),
+            'form': SearchForm(),
         })
         return context
 
 
-class AboutView(LanguageMixin, SearchFormMixin, TemplateView):
+class AboutView(HeaderMixin, TemplateView):
     template_name = "about.html"
 
 
-class ChangesView(LanguageMixin, SearchFormMixin, TemplateView):
+class ChangesView(HeaderMixin, TemplateView):
     template_name = "changes.html"
 
 
-class ThemesView(LanguageMixin, SearchFormMixin, TemplateView):
+class ThemesView(HeaderMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
@@ -122,7 +116,7 @@ class InspireThemesView(ThemesView):
         return context
 
 
-class GroupsView(LanguageMixin, SearchFormMixin, TemplateView):
+class GroupsView(HeaderMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
@@ -144,7 +138,7 @@ class GroupsView(LanguageMixin, SearchFormMixin, TemplateView):
         return context
 
 
-class DefinitionSourcesView(LanguageMixin, SearchFormMixin, TemplateView):
+class DefinitionSourcesView(HeaderMixin, TemplateView):
     template_name = "definition_sources.html"
 
     def get_context_data(self, **kwargs):
@@ -156,7 +150,7 @@ class DefinitionSourcesView(LanguageMixin, SearchFormMixin, TemplateView):
         return context
 
 
-class AlphabetsView(LanguageMixin, SearchFormMixin, TemplateView):
+class AlphabetsView(HeaderMixin, TemplateView):
     template_name = "alphabets.html"
 
     def get_context_data(self, **kwargs):
@@ -168,15 +162,12 @@ class AlphabetsView(LanguageMixin, SearchFormMixin, TemplateView):
         return context
 
 
-class SearchView(LanguageMixin, FormView):
+class SearchView(HeaderMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
     query = ''
     concepts = []
-
-    def get_initial(self):
-        return {'langcode': self.langcode}
 
     def get_success_url(self):
         return reverse('search', kwargs={'langcode': self.langcode})
@@ -197,7 +188,7 @@ class SearchView(LanguageMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RelationsView(LanguageMixin, SearchFormMixin, TemplateView):
+class RelationsView(HeaderMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
@@ -222,7 +213,7 @@ class RelationsView(LanguageMixin, SearchFormMixin, TemplateView):
         return context
 
 
-class ConceptView(LanguageMixin, SearchFormMixin, DetailView):
+class ConceptView(HeaderMixin, DetailView):
 
     pk_url_kwarg = 'concept_id'
 
@@ -305,7 +296,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(LanguageMixin, SearchFormMixin, ListView):
+class PaginatorView(HeaderMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
@@ -663,7 +654,7 @@ class Skoscore(GemetRelationsMixin, XMLTemplateView):
         return context
 
 
-class DefinitionsByLanguage(LanguageMixin, XMLTemplateView):
+class DefinitionsByLanguage(HeaderMixin, XMLTemplateView):
     template_name = 'downloads/language_definitions.rdf'
 
     def get_context_data(self, **kwargs):
@@ -693,7 +684,7 @@ class DefinitionsByLanguage(LanguageMixin, XMLTemplateView):
         return context
 
 
-class GroupsByLanguage(LanguageMixin, XMLTemplateView):
+class GroupsByLanguage(HeaderMixin, XMLTemplateView):
     template_name = 'downloads/language_groups.rdf'
 
     def get_context_data(self, **kwargs):
@@ -722,7 +713,7 @@ class GemetThesaurus(XMLTemplateView):
     template_name = 'downloads/gemetThesaurus.xml'
 
 
-class DownloadView(LanguageMixin, SearchFormMixin, FormView):
+class DownloadView(HeaderMixin, FormView):
     template_name = "downloads/download.html"
     form_class = ExportForm
 
