@@ -1,4 +1,4 @@
-from api_tests import ApiTester
+from main import ApiTester
 
 
 HOST = ApiTester().get_full_path()
@@ -191,10 +191,7 @@ THESAURI = [
         'name': 'Themes',
         'uri': HOST + 'theme/',
         'version': 'GEMET - Themes, version 2.4, 2010-01-13'
-    }
-]
-
-THESAURI_EXTENSION = [
+    },
     {
         'name': 'Inspire Themes',
         'uri': 'http://inspire.ec.europa.eu/theme/',

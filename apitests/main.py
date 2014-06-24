@@ -1,33 +1,50 @@
 from argparse import ArgumentParser
+import json
+from urllib import urlencode
 import xmlrpclib
 import unittest
 import sys
+import requests
 
 from config import *
 
-LOCAL_TEST = True
-
 
 class ApiTester(object):
-    request_url = 'http://www.eionet.europa.eu/gemet/'
+    output_url = 'http://www.eionet.europa.eu/gemet/'
 
-    def __init__(self, xmlrpc_url=''):
-        self.xmlrpc_url = xmlrpc_url
+    def __init__(self, request_url='', local=False, get=False):
+        self.request_url = request_url
+        self.LOCAL_TEST = local
+        self.GET_TEST = get
 
     def get_full_path(self, relative_path=''):
-        return self.request_url + relative_path
+        return self.output_url + relative_path
+
+    def request(self, method, *args):
+        if self.GET_TEST:
+            arg = iter(args)
+            return self.doGetReq(method, **dict(zip(arg, arg)))
+        return self.doXmlRpc(method, *args[1::2])
+
+    def doGetReq(self, method, **kwargs):
+        url = self.request_url + method + '?'
+        url += urlencode(kwargs)
+        result = requests.get(url)
+        if result.ok:
+            return json.loads(result.text)
+        return "ERROR"
 
     def doXmlRpc(self, method, *args):
-        server = xmlrpclib.ServerProxy(self.xmlrpc_url, allow_none=True)
+        server = xmlrpclib.ServerProxy(self.request_url, allow_none=True)
         return getattr(server, method)(*args)
 
 
 class TestGetTopmostConcepts(unittest.TestCase):
     def test_terms(self):
-        top_concepts = apiTester.doXmlRpc(
+        top_concepts = api_tester.request(
             'getTopmostConcepts',
-            apiTester.get_full_path('concept/'),
-            'en'
+            'thesaurus_uri', api_tester.get_full_path('concept/'),
+            'language', 'en'
         )
 
         result = [top_concept['preferredLabel']['string']
@@ -36,10 +53,10 @@ class TestGetTopmostConcepts(unittest.TestCase):
         self.assertEqual(result, TOPMOST_TERMS)
 
     def test_groups(self):
-        top_groups = apiTester.doXmlRpc(
+        top_groups = api_tester.request(
             'getTopmostConcepts',
-            apiTester.get_full_path('group/'),
-            'en'
+            'thesaurus_uri', api_tester.get_full_path('group/'),
+            'language', 'en'
         )
 
         result = [top_group['preferredLabel']['string']
@@ -48,10 +65,10 @@ class TestGetTopmostConcepts(unittest.TestCase):
         self.assertEqual(result, TOPMOST_GROUPS)
 
     def test_themes(self):
-        top_themes = apiTester.doXmlRpc(
+        top_themes = api_tester.request(
             'getTopmostConcepts',
-            apiTester.get_full_path('theme/'),
-            'en'
+            'thesaurus_uri', api_tester.get_full_path('theme/'),
+            'language', 'en'
         )
 
         result = [top_theme['preferredLabel']['string']
@@ -62,29 +79,33 @@ class TestGetTopmostConcepts(unittest.TestCase):
 class TestGetRelatedConcepts(unittest.TestCase):
 
     def test_no_concept(self):
-        relatives = apiTester.doXmlRpc(
+        relatives = api_tester.request(
             'getRelatedConcepts',
-            apiTester.get_full_path('concept/99999999'),
-            'http://www.w3.org/2004/02/skos/core#related')
+            'concept_uri', api_tester.get_full_path('concept/99999999'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related'
+        )
 
         self.assertEqual(relatives, [])
 
     def test_one_concept_english(self):
-        relatives = apiTester.doXmlRpc(
+        relatives = api_tester.request(
             'getRelatedConcepts',
-            apiTester.get_full_path('concept/42'),
-            'http://www.w3.org/2004/02/skos/core#related')
+            'concept_uri', api_tester.get_full_path('concept/42'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
+            'language', 'en'
+        )
         result = [relative['preferredLabel']['string']
                   for relative in relatives]
 
         self.assertEqual(result, ['acid rain', 'soil acidification'])
 
     def test_one_concept_spanish(self):
-        relatives = apiTester.doXmlRpc(
+        relatives = api_tester.request(
             'getRelatedConcepts',
-            apiTester.get_full_path('concept/42'),
-            'http://www.w3.org/2004/02/skos/core#related',
-            'es')
+            'concept_uri', api_tester.get_full_path('concept/42'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
+            'language', 'es'
+        )
 
         result = [relative['preferredLabel']['string']
                   for relative in relatives]
@@ -93,32 +114,44 @@ class TestGetRelatedConcepts(unittest.TestCase):
                          [u'lluvia \xe1cida', u'acidificaci\xf3n de suelo'])
 
     def test_no_language(self):
-        relation = 'http://www.w3.org/2004/02/skos/core#related'
-        language = 'no_language'
-
-        self.assertRaises(xmlrpclib.Fault, apiTester.doXmlRpc,
-                          'getRelatedConcepts',
-                          apiTester.get_full_path('concept/42'),
-                          relation,
-                          language
-                          )
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request('getRelatedConcepts', *(
+                                 api_tester.get_full_path('concept/42'),
+                                 'http://www.w3.org/2004/02/skos/core#related',
+                                 'no_language'
+                             )))
+        else:
+            self.assertRaises(
+                xmlrpclib.Fault,
+                api_tester.request,
+                'getRelatedConcepts',
+                'concept_uri', api_tester.get_full_path('concept/42'),
+                'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
+                'language', 'no_language'
+            )
 
 
 class TestGetConcept(unittest.TestCase):
 
     def test_no_concept(self):
-        concept_uri = apiTester.get_full_path('concept/999999999')
+        concept_uri = api_tester.get_full_path('concept/999999999')
         language = 'en'
-
-        self.assertRaises(xmlrpclib.Fault,
-                          apiTester.doXmlRpc, 'getConcept', concept_uri,
-                          language)
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request(
+                                 'getConcept', *(concept_uri, language)
+                             ))
+        else:
+            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+                              'getConcept', 'concept_uri', concept_uri,
+                              'language', language)
 
     def test_one_concept_english(self):
-        concept_uri = apiTester.get_full_path('concept/7970')
+        concept_uri = api_tester.get_full_path('concept/7970')
         language = 'en'
-
-        result = apiTester.doXmlRpc('getConcept', concept_uri, language)
+        result = api_tester.request('getConcept', 'concept_uri', concept_uri,
+                                    'language', language)
 
         self.assertEqual(result["definition"]["language"], language)
         self.assertEqual(result["definition"]["string"],
@@ -127,114 +160,143 @@ class TestGetConcept(unittest.TestCase):
         self.assertEqual(result["preferredLabel"]["language"], language)
         self.assertEqual(result["preferredLabel"]["string"], "space travel")
         self.assertEqual(result['thesaurus'],
-                         apiTester.get_full_path('concept/'))
-        if not LOCAL_TEST:
+                         api_tester.get_full_path('concept/'))
+        if not api_tester.LOCAL_TEST:
             self.assertEqual(result['uri'],
-                             apiTester.get_full_path('concept/7970'))
+                             api_tester.get_full_path('concept/7970'))
 
     def test_one_concept_spanish(self):
-        concept_uri = apiTester.get_full_path('concept/7970')
+        concept_uri = api_tester.get_full_path('concept/7970')
         language = 'es'
-        result = apiTester.doXmlRpc('getConcept', concept_uri, language)
+        result = api_tester.request('getConcept', 'concept_uri', concept_uri,
+                                    'language', language)
 
         self.assertEqual(result["preferredLabel"]["language"], language)
         self.assertEqual(result["preferredLabel"]["string"], "viaje espacial")
         self.assertEqual(result['thesaurus'],
-                         apiTester.get_full_path('concept/'))
-        if not LOCAL_TEST:
+                         api_tester.get_full_path('concept/'))
+        if not api_tester.LOCAL_TEST:
             self.assertEqual(result['uri'],
-                             apiTester.get_full_path('concept/7970'))
+                             api_tester.get_full_path('concept/7970'))
 
     def test_no_language(self):
-        concept_uri = apiTester.get_full_path('concept/7970')
+        concept_uri = api_tester.get_full_path('concept/7970')
         language = 'no_language'
-
-        self.assertRaises(xmlrpclib.Fault, apiTester.doXmlRpc, 'getConcept',
-                          concept_uri, language)
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR',
+                             api_tester.request(
+                                 'getConcept', *(concept_uri, language)
+                             ))
+        else:
+            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+                              'getConcept', 'concept_uri', concept_uri,
+                              'language', language)
 
 
 class TestHasConcept(unittest.TestCase):
 
     def test_concept_1(self):
-        concept_uri = apiTester.get_full_path('concept/7970')
+        concept_uri = api_tester.get_full_path('concept/7970')
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasConcept', concept_uri))
+        self.assertEqual(True, api_tester.request(
+            'hasConcept', 'concept_uri', concept_uri
+        ))
 
     def test_concept_2(self):
-        concept_uri = apiTester.get_full_path('theme/33')
+        concept_uri = api_tester.get_full_path('theme/33')
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasConcept', concept_uri))
+        self.assertEqual(True, api_tester.request(
+            'hasConcept', 'concept_uri', concept_uri
+        ))
 
     def test_no_concept(self):
-        concept_uri = apiTester.get_full_path('concept/99999999')
+        concept_uri = api_tester.get_full_path('concept/99999999')
 
-        self.assertEqual(False, apiTester.doXmlRpc('hasConcept', concept_uri))
+        self.assertEqual(False, api_tester.request(
+            'hasConcept', 'concept_uri', concept_uri
+        ))
 
     def test_bad_url(self):
         bad_uri = 'sdfughkdjfng BAD URI! dduidbnJsdfsj'
 
-        self.assertEqual(False, apiTester.doXmlRpc('hasConcept', bad_uri))
+        self.assertEqual(False, api_tester.request(
+            'hasConcept', 'concept_uri', bad_uri
+        ))
 
 
 class TestHasRelation(unittest.TestCase):
 
     def test_broader(self):
-        relation = (apiTester.get_full_path('concept/100'),
-                    'http://www.w3.org/2004/02/skos/core#broader',
-                    apiTester.get_full_path('concept/13292'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/100'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#broader',
+            'object_uri', api_tester.get_full_path('concept/13292')
+        )
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(True, api_tester.request('hasRelation', *relation))
 
     def test_relation(self):
-        relation = (apiTester.get_full_path('concept/100'),
-                    'http://www.w3.org/2004/02/skos/core#narrower',
-                    apiTester.get_full_path('concept/661'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/100'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#narrower',
+            'object_uri', api_tester.get_full_path('concept/661')
+        )
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(True, api_tester.request('hasRelation', *relation))
 
     def test_related(self):
-        relation = (apiTester.get_full_path('concept/42'),
-                    'http://www.w3.org/2004/02/skos/core#related',
-                    apiTester.get_full_path('concept/51'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/42'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related',
+            'object_uri', api_tester.get_full_path('concept/51')
+        )
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(True, api_tester.request('hasRelation', *relation))
 
     def test_theme(self):
-        relation = (apiTester.get_full_path('concept/100'),
-                    apiTester.get_full_path('2004/06/gemet-schema.rdf#theme'),
-                    apiTester.get_full_path('theme/1'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/100'),
+            'relation_uri',
+            api_tester.get_full_path('2004/06/gemet-schema.rdf#theme'),
+            'object_uri', api_tester.get_full_path('theme/1')
+        )
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(True, api_tester.request('hasRelation', *relation))
 
     def test_groupMember(self):
         relation = (
-            apiTester.get_full_path('group/96'),
-            apiTester.get_full_path('2004/06/gemet-schema.rdf#groupMember'),
-            apiTester.get_full_path('concept/21')
+            'concept_uri', api_tester.get_full_path('group/96'),
+            'relation_uri',
+            api_tester.get_full_path('2004/06/gemet-schema.rdf#groupMember'),
+            'object_uri', api_tester.get_full_path('concept/21')
         )
 
-        self.assertEqual(True, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(True, api_tester.request('hasRelation', *relation))
 
     def test_no_concept(self):
-        relation = (apiTester.get_full_path('concept/999999'),
-                    'http://www.w3.org/2004/02/skos/core#broader',
-                    apiTester.get_full_path('concept/100'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/999999'),
+            'relation_uri', 'http://www.w3.org/2004/02/skos/core#broader',
+            'object_uri', api_tester.get_full_path('concept/100')
+        )
 
-        self.assertEqual(False, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(False, api_tester.request('hasRelation', *relation))
 
     def test_no_relation(self):
-        relation = (apiTester.get_full_path('concept/100'),
-                    'bad_relation',
-                    apiTester.get_full_path('concept/13292'))
+        relation = (
+            'concept_uri', api_tester.get_full_path('concept/100'),
+            'relation_uri', 'bad_relation',
+            'object_uri', api_tester.get_full_path('concept/13292')
+        )
 
-        self.assertEqual(False, apiTester.doXmlRpc('hasRelation', *relation))
+        self.assertEqual(False, api_tester.request('hasRelation', *relation))
 
 
 class TestGetAllTranslationsForConcept(unittest.TestCase):
 
     def test_getAllTranslationsForConcept(self):
         concept = {
-            'uri': apiTester.get_full_path('concept/7970'),
+            'uri': api_tester.get_full_path('concept/7970'),
             'properties': {
                 'http://www.w3.org/2004/02/skos/core#prefLabel': {},
                 'http://www.w3.org/2004/02/skos/core#definition': {},
@@ -243,8 +305,9 @@ class TestGetAllTranslationsForConcept(unittest.TestCase):
 
         translations = {}
         for prop_uri, prop_values in concept['properties'].iteritems():
-            result = apiTester.doXmlRpc('getAllTranslationsForConcept',
-                                        concept['uri'], prop_uri)
+            result = api_tester.request('getAllTranslationsForConcept',
+                                        'concept_uri', concept['uri'],
+                                        'property_uri', prop_uri)
 
             for value in result:
                 translations[value['language']] = unicode(value['string'])
@@ -256,9 +319,11 @@ class TestGetAllTranslationsForConcept(unittest.TestCase):
 class TestGetConceptsMatchingKeyword(unittest.TestCase):
 
     def search(self, keyword, mode):
-        result = apiTester.doXmlRpc(
-            'getConceptsMatchingKeyword', keyword, mode,
-            apiTester.get_full_path('concept/'), 'en')
+        result = api_tester.request(
+            'getConceptsMatchingKeyword', 'keyword', keyword, 'search_mode',
+            mode, 'thesaurus_uri', api_tester.get_full_path('concept/'),
+            'language', 'en'
+        )
 
         return set(concept['preferredLabel']['string']
                    for concept in result)
@@ -307,8 +372,8 @@ class TestGetConceptsMatchingKeyword(unittest.TestCase):
 class TestGetAvailableLanguages(unittest.TestCase):
 
     def test_getAvailableLanguages(self):
-        concept_uri = apiTester.get_full_path('concept/7970')
-        result = apiTester.doXmlRpc('getAvailableLanguages', concept_uri)
+        result = api_tester.request('getAvailableLanguages', 'concept_uri',
+                                    api_tester.get_full_path('concept/7970'))
 
         self.assertEqual(sorted(result), TEST_AVAILABLE_LANGUAGES)
 
@@ -316,10 +381,10 @@ class TestGetAvailableLanguages(unittest.TestCase):
 class TestGetSupportedLanguages(unittest.TestCase):
 
     def test_getSupportedLanguages(self):
-        result = apiTester.doXmlRpc('getSupportedLanguages',
-                                    apiTester.get_full_path('concept/'))
+        result = api_tester.request('getSupportedLanguages', 'thesaurus_uri',
+                                    api_tester.get_full_path('concept/'))
 
-        if LOCAL_TEST:
+        if api_tester.LOCAL_TEST:
             self.assertEqual(sorted(result), sorted(TEST_SUPPORTED_LANGUAGES))
         else:
             self.assertEqual(sorted(result), sorted(
@@ -328,63 +393,59 @@ class TestGetSupportedLanguages(unittest.TestCase):
 
 class TestGetAvailableThesauri(unittest.TestCase):
     def test_getSupportedLanguages(self):
-        result = apiTester.doXmlRpc('getAvailableThesauri')
-        if LOCAL_TEST:
-            self.assertEqual(result, THESAURI)
-        else:
-            self.assertEqual(result, THESAURI + THESAURI_EXTENSION)
+        result = api_tester.request('getAvailableThesauri')
+        self.assertEqual(result, THESAURI)
 
 
 class TestFetchThemes(unittest.TestCase):
 
     def test_fetchThemes_english(self):
-        lang = 'en'
-        result = apiTester.doXmlRpc('fetchThemes', lang)
+        language = 'en'
+        result = api_tester.request('fetchThemes', 'language', language)
 
         self.assertEqual([r['preferredLabel'] for r in result],
                          THEMES_PREF_LABEL)
-        if not LOCAL_TEST:
+        if not api_tester.LOCAL_TEST:
             self.assertEqual([r['uri'] for r in result], THEMES_URI)
         self.assertEqual([r['thesaurus'] for r in result], THEMES_THESAURUS)
 
     def test_fetchThemes_spanish(self):
-        lang = 'es'
-        result = apiTester.doXmlRpc('fetchThemes', lang)
+        language = 'es'
+        result = api_tester.request('fetchThemes', 'language', language)
 
         self.assertEqual(
             'turismo',
-            sorted([r['preferredLabel']['string']for r in result])[-1]
-            )
-        if not LOCAL_TEST:
-            self.assertEqual(apiTester.get_full_path('theme/9'),
+            sorted([r['preferredLabel']['string'] for r in result])[-1]
+        )
+        if not api_tester.LOCAL_TEST:
+            self.assertEqual(api_tester.get_full_path('theme/9'),
                              (sorted([r['uri'] for r in result])[-1]))
-        self.assertEqual(apiTester.get_full_path('theme/'),
+        self.assertEqual(api_tester.get_full_path('theme/'),
                          (sorted([r['thesaurus'] for r in result])[-1]))
 
 
 class TestFetchGroups(unittest.TestCase):
 
     def test_fetchGroups_english(self):
-        lang = 'en'
-        result = apiTester.doXmlRpc('fetchGroups', lang)
-
+        language = 'en'
+        result = api_tester.request('fetchGroups', 'language', language)
         self.assertEqual([r['preferredLabel'] for r in result],
                          GROUPS_PREF_LABEL)
-        if not LOCAL_TEST:
+        if not api_tester.LOCAL_TEST:
             self.assertEqual([r['uri'] for r in result], GROUPS_URI)
         self.assertEqual([r['thesaurus'] for r in result], GROUPS_THESAURUS)
 
     def test_fetchGroups_spanish(self):
-        lang = 'es'
-        result = apiTester.doXmlRpc('fetchGroups', lang)
+        language = 'es'
+        result = api_tester.request('fetchGroups', 'language', language)
 
         self.assertEqual(u'T\xc9RMINOS GENERALES',
                          sorted([r['preferredLabel']['string']
                                  for r in result])[-1])
-        if not LOCAL_TEST:
-            self.assertEqual(apiTester.get_full_path('group/96'),
+        if not api_tester.LOCAL_TEST:
+            self.assertEqual(api_tester.get_full_path('group/96'),
                              (sorted([r['uri'] for r in result])[-1]))
-        self.assertEqual(apiTester.get_full_path('group/'),
+        self.assertEqual(api_tester.get_full_path('group/'),
                          (sorted([r['thesaurus'] for r in result])[-1]))
 
 
@@ -399,39 +460,39 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
     def test_begins_with(self):
         query = {
             'regexp': '^space t',
-            'namespace': apiTester.get_full_path('concept/'),
+            'namespace': api_tester.get_full_path('concept/'),
             'language': 'en',
         }
-        match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
-                                   query['regexp'],
-                                   query['namespace'],
-                                   query['language'])
+        match = api_tester.request('getConceptsMatchingRegexByThesaurus',
+                                   'regex', query['regexp'],
+                                   'thesaurus_uri', query['namespace'],
+                                   'language', query['language'])
         names = self.get_match_names(match)
         self.assertEqual(names, ['space transportation', 'space travel'])
 
     def test_all_operators(self):
         query = {
             'regexp': '^air.+pol.+$',
-            'namespace': apiTester.get_full_path('concept/'),
+            'namespace': api_tester.get_full_path('concept/'),
             'language': 'en',
         }
-        match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
-                                   query['regexp'],
-                                   query['namespace'],
-                                   query['language'])
+        match = api_tester.request('getConceptsMatchingRegexByThesaurus',
+                                   'regex', query['regexp'],
+                                   'thesaurus_uri', query['namespace'],
+                                   'language', query['language'])
         names = self.get_match_names(match)
         self.assertEqual(names, ['air pollutant', 'air pollution'])
 
     def test_no_operator(self):
         query = {
             'regexp': 'so',
-            'namespace': apiTester.get_full_path('theme/'),
+            'namespace': api_tester.get_full_path('theme/'),
             'language': 'en',
         }
-        match = apiTester.doXmlRpc('getConceptsMatchingRegexByThesaurus',
-                                   query['regexp'],
-                                   query['namespace'],
-                                   query['language'])
+        match = api_tester.request('getConceptsMatchingRegexByThesaurus',
+                                   'regex', query['regexp'],
+                                   'thesaurus_uri', query['namespace'],
+                                   'language', query['language'])
         names = self.get_match_names(match)
         self.assertEqual(names, ['resources', 'social aspects, population',
                                  'soil'])
@@ -440,7 +501,8 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
 class TestGetAllConceptRelatives(unittest.TestCase):
     def setUp(self):
         skos_uri = 'http://www.w3.org/2004/02/skos/core#'
-        gemet_schema_uri = apiTester.get_full_path('2004/06/gemet-schema.rdf#')
+        gemet_schema_uri = api_tester.get_full_path(
+            '2004/06/gemet-schema.rdf#')
         self.relations = {
             'narrower': skos_uri + 'narrower',
             'broader': skos_uri + 'broader',
@@ -452,10 +514,10 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         }
 
     def test_random_supergroup(self):
-        supergroup_uri = apiTester.get_full_path('supergroup/4044')
+        supergroup_uri = api_tester.get_full_path('supergroup/4044')
 
-        relatives = apiTester.doXmlRpc('getAllConceptRelatives',
-                                       supergroup_uri)
+        relatives = api_tester.request('getAllConceptRelatives',
+                                       'concept_uri', supergroup_uri)
         received_relations = []
         for relative in relatives:
             received_relations.append('%s %s' % (relative['relation'],
@@ -463,7 +525,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(SUPERGROUP_RELATIVES))
-        if LOCAL_TEST:
+        if api_tester.LOCAL_TEST:
             pass
         else:
             for i in range(0, len(received_relations)):
@@ -471,9 +533,10 @@ class TestGetAllConceptRelatives(unittest.TestCase):
                                  SUPERGROUP_RELATIVES[i])
 
     def test_random_group(self):
-        group_uri = apiTester.get_full_path('group/96')
+        group_uri = api_tester.get_full_path('group/96')
 
-        relatives = apiTester.doXmlRpc('getAllConceptRelatives', group_uri)
+        relatives = api_tester.request('getAllConceptRelatives',
+                                       'concept_uri', group_uri)
         received_relations = []
         for relative in relatives:
             received_relations.append('%s %s' % (relative['relation'],
@@ -481,26 +544,27 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if LOCAL_TEST:
+        if api_tester.LOCAL_TEST:
             pass
         else:
             self.assertEqual(received_relations[-1].split(' ')[0],
                              self.relations['broader'])
             self.assertEqual(received_relations[-1].split(' ')[1],
-                             apiTester.get_full_path('supergroup/2894'))
+                             api_tester.get_full_path('supergroup/2894'))
 
             for relation in received_relations[:-2]:
                 self.assertEqual(self.relations['groupMember'],
                                  relation.split(' ')[0])
             self.assertEqual(received_relations[0].split(' ')[1],
-                             apiTester.get_full_path('concept/100'))
+                             api_tester.get_full_path('concept/100'))
             self.assertEqual(received_relations[-2].split(' ')[1],
-                             apiTester.get_full_path('concept/95'))
+                             api_tester.get_full_path('concept/95'))
 
     def test_random_theme(self):
-        theme_uri = apiTester.get_full_path('theme/1')
+        theme_uri = api_tester.get_full_path('theme/1')
 
-        relatives = apiTester.doXmlRpc('getAllConceptRelatives', theme_uri)
+        relatives = api_tester.request('getAllConceptRelatives',
+                                       'concept_uri', theme_uri)
         received_relations = []
         for relative in relatives:
             received_relations.append('%s %s' % (relative['relation'],
@@ -508,21 +572,22 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if LOCAL_TEST:
+        if api_tester.LOCAL_TEST:
             pass
         else:
             for relation in received_relations:
                 self.assertEqual(self.relations['themeMember'],
                                  relation.split(' ')[0])
             self.assertEqual(received_relations[0].split(' ')[1],
-                             apiTester.get_full_path('concept/100'))
+                             api_tester.get_full_path('concept/100'))
             self.assertEqual(received_relations[-1].split(' ')[1],
-                             apiTester.get_full_path('concept/95'))
+                             api_tester.get_full_path('concept/95'))
 
     def test_random_concept(self):
-        concept_uri = apiTester.get_full_path('concept/100')
+        concept_uri = api_tester.get_full_path('concept/100')
 
-        relatives = apiTester.doXmlRpc('getAllConceptRelatives', concept_uri)
+        relatives = api_tester.request('getAllConceptRelatives',
+                                       'concept_uri', concept_uri)
         received_relations = []
         for relative in relatives:
             received_relations.append('%s %s' % (relative['relation'],
@@ -530,7 +595,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(CONCEPT_RELATIVES))
-        if LOCAL_TEST:
+        if api_tester.LOCAL_TEST:
             pass
         else:
             for i in range(0, len(received_relations)):
@@ -540,13 +605,18 @@ class TestGetAllConceptRelatives(unittest.TestCase):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--public', action='store_true')
+    parser.add_argument('--get', action='store_true')
     options = parser.parse_args()
     argv = sys.argv
 
+    local = not options.public
+    get = options.get
+    url = ('http://localhost:8000/gemet/' if local else
+           'http://www.eionet.europa.eu/gemet/')
+    api_tester = ApiTester(url, local, get)
     if options.public:
-        apiTester = ApiTester('http://www.eionet.europa.eu/gemet/')
         argv.remove('--public')
-    else:
-        apiTester = ApiTester('http://localhost:8000/gemet/')
+    if options.get:
+        argv.remove('--get')
 
     unittest.main(argv=argv)
