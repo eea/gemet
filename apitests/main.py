@@ -26,7 +26,7 @@ class ApiTester(object):
             arg = iter(args)
             return self.doGetReq(method, **dict(zip(arg, arg)))
         return self.doXmlRpc(method, *args[1::2])
-    
+
     def doGetReq(self, method, **kwargs):
         url = self.request_url + method + '?'
         url += urlencode(kwargs)
@@ -121,8 +121,7 @@ class TestGetRelatedConcepts(unittest.TestCase):
                                  api_tester.get_full_path('concept/42'),
                                  'http://www.w3.org/2004/02/skos/core#related',
                                  'no_language'
-                             ))
-            )
+                             )))
         else:
             self.assertRaises(
                 xmlrpclib.Fault,
@@ -145,8 +144,8 @@ class TestGetConcept(unittest.TestCase):
                                  'getConcept', *(concept_uri, language)
                              ))
         else:
-            self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
-                              'concept_uri', concept_uri,
+            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+                              'getConcept', 'concept_uri', concept_uri,
                               'language', language)
 
     def test_one_concept_english(self):
@@ -190,8 +189,9 @@ class TestGetConcept(unittest.TestCase):
                                  'getConcept', *(concept_uri, language)
                              ))
         else:
-            self.assertRaises(xmlrpclib.Fault, api_tester.request, 'getConcept',
-                              'concept_uri', concept_uri, 'language', language)
+            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+                              'getConcept', 'concept_uri', concept_uri,
+                              'language', language)
 
 
 class TestHasConcept(unittest.TestCase):
@@ -505,7 +505,8 @@ class TestGetConceptsMatchingRegexByThesaurus(unittest.TestCase):
 class TestGetAllConceptRelatives(unittest.TestCase):
     def setUp(self):
         skos_uri = 'http://www.w3.org/2004/02/skos/core#'
-        gemet_schema_uri = api_tester.get_full_path('2004/06/gemet-schema.rdf#')
+        gemet_schema_uri = api_tester.get_full_path(
+            '2004/06/gemet-schema.rdf#')
         self.relations = {
             'narrower': skos_uri + 'narrower',
             'broader': skos_uri + 'broader',
