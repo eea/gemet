@@ -75,18 +75,14 @@ class ApiViewGET(ApiView):
         )
         defaults = getargspec(function).defaults
         arguments = getargspec(function).args
-        kwargs = {}
 
         if defaults:
             required_args = arguments[:-len(defaults)]
-            args = map(get_param, required_args)
-            optional_args = arguments[-len(defaults):]
-            optional_args = filter(has_get_param, optional_args)
-            for arg in optional_args:
-                kwargs.update({arg: get_param(arg)})
-        else:
-            args = map(get_param, arguments)
-        response.write(json.dumps(function(*args, **kwargs)))
+            optional_args = filter(has_get_param, arguments[-len(defaults):])
+            arguments = required_args + optional_args
+
+        kwargs = {arg: get_param(arg) for arg in arguments}
+        response.write(json.dumps(function(**kwargs)))
         return response
 
 
