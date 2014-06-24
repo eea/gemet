@@ -1,5 +1,6 @@
 from itertools import chain
 from collections import OrderedDict
+from exceptions import KeyError
 
 from django.http import Http404
 from django.shortcuts import (
@@ -24,6 +25,7 @@ from gemet.thesaurus.models import (
     DefinitionSource,
     Relation,
     InspireTheme,
+    ForeignRelation,
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -595,10 +597,24 @@ class GemetRelationsMixin(TemplateView):
         self.relations = Relation.objects.filter(
             source__namespace__heading='Concepts',
             target__namespace__heading='Concepts',
+            property_type__name__in=[
+                'broader', 'narrower', 'related',
+            ]
         ).values(
             'source__code',
             'target__code',
-            'property_type__label',
+            'property_type__name',
+        )
+
+        self.foreign_relations = (
+            ForeignRelation.objects
+            .filter(
+                concept__in=Term.objects.all(),
+                property_type__name__in=[
+                    'broadMatch', 'closeMatch', 'exactMatch', 'narrowMatch',
+                    'relatedMatch',
+                ]
+            )
         )
 
         return context
@@ -606,25 +622,28 @@ class GemetRelationsMixin(TemplateView):
 
 class GemetRelationsView(GemetRelationsMixin):
     template_name = 'downloads/gemet-relations.html'
-    translate = {
-        'narrower term': 'Narrower',
-        'broader term': 'Broader',
-        'related': 'Related',
-        'relatedMatch': 'Relatedmatch',
-        'exactMatch': 'Exactmatch',
-        'closeMatch': 'Closematch',
-        'narrowMatch': 'Narrowmatch',
-        'broadMatch': 'BroadMatch',
-    }
 
     def get_context_data(self, **kwargs):
         context = super(GemetRelationsView, self).get_context_data(**kwargs)
+        self.foreign_relations = (
+            self.foreign_relations
+            .filter(
+                show_in_html=True,
+            ).order_by(
+                'label',
+            ).values(
+                'concept__code', 'property_type__name', 'uri',
+            )
+        )
+        for r in list(chain(self.relations, self.foreign_relations)):
+            r['property_type__name'] = (
+                r['property_type__name'].lower().capitalize()
+            )
 
-        for r in self.relations:
-            r['property_type__label'] = self.translate[
-                r['property_type__label']
-            ]
-        context.update({'relations': self.relations})
+        context.update({
+            'relations': self.relations,
+            'foreign_relations': self.foreign_relations,
+        })
 
         return context
 
@@ -636,19 +655,35 @@ class Skoscore(GemetRelationsMixin, XMLTemplateView):
         context = super(Skoscore, self).get_context_data(**kwargs)
 
         relations = {}
+
+        def _add_relation(code, d):
+            try:
+                relations[code].append(d)
+            except KeyError:
+                relations[code] = [d]
+
+        self.foreign_relations = (
+            self.foreign_relations
+            .order_by('label',)
+            .values('concept__code', 'property_type__name', 'uri',)
+        )
         for r in self.relations:
-            label = r['property_type__label']
-            target_code = r['target__code']
-            d = {
-                'target__code':
-                ('' if 'Matc' in label else 'concept/') + target_code,
-                'property_type__label': label.split(' ')[0]
-            }
             source_code = r['source__code']
-            if source_code in relations:
-                relations[source_code].append(d)
-            else:
-                relations[source_code] = [d]
+            name = r['property_type__name']
+            target_code = (
+                ('' if 'Match' in name else 'concept/') +
+                r['target__code']
+            )
+            _add_relation(source_code, {'target__code': target_code,
+                                        'property_type__name': name})
+
+        for r in self.foreign_relations:
+            source_code = r['concept__code']
+            name = r['property_type__name']
+            target_code = r['uri']
+            _add_relation(source_code, {'target__code': target_code,
+                                        'property_type__name': name})
+
         context.update({'concept_relations': relations})
 
         return context

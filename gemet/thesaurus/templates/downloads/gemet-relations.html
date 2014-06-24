@@ -24,8 +24,15 @@
             {% for relation in relations %}
             <tr>
               <td>{{ relation.source__code }}</td>
-              <td>{{ relation.property_type__label }}</td>
+              <td>{{ relation.property_type__name }}</td>
               <td>{{ relation.target__code  }}</td>
+            </tr>
+            {% endfor %}
+            {% for relation in foreign_relations %}
+            <tr>
+              <td>{{ relation.concept__code }}</td>
+              <td>{{ relation.property_type__name }}</td>
+              <td>{{ relation.uri }}</td>
             </tr>
             {% endfor %}
         </tbody>

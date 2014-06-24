@@ -12,7 +12,7 @@
     <skos:Concept rdf:about="concept/{{ concept }}">
     <skos:inScheme rdf:resource="gemetThesaurus"/>
     {% for relation in relations %}
-    <skos:{{ relation.property_type__label }} rdf:resource="{{ relation.target__code }}" />
+    <skos:{{ relation.property_type__name }} rdf:resource="{{ relation.target__code }}" />
     {% endfor %}
     </skos:Concept>
 {% endfor %}
