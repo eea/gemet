@@ -422,6 +422,10 @@
 	.columns:after {
 		clear: both;
 	}
+	.columns.direction-rtl {
+		margin-left: auto!important;
+		margin-right: 1.5em!important;
+	}
 	.columns.direction-rtl > li {
 		float: right;
 	}
