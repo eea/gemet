@@ -16,6 +16,7 @@ from gemet.thesaurus.models import (
     Theme,
     Group,
     SuperGroup,
+    InspireTheme,
     Property,
     Relation,
     PropertyType,
@@ -24,6 +25,7 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 from gemet.thesaurus.utils import search_queryset, regex_search
 
 ENDPOINT_URI = 'http://www.eionet.europa.eu/gemet/'
+ENDPOINT_URI_2 = 'http://inspire.ec.europa.eu/theme/'
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 
 
@@ -102,6 +104,7 @@ def has_thesaurus_uri(thesaurus_uri):
         ENDPOINT_URI + 'theme/',
         ENDPOINT_URI + 'group/',
         ENDPOINT_URI + 'supergroup/',
+        ENDPOINT_URI_2,
     )
     return thesaurus_uri in all_thesaurus
 
@@ -126,6 +129,7 @@ def get_model(thesaurus_uri):
         ENDPOINT_URI + 'theme/': Theme,
         ENDPOINT_URI + 'group/': Group,
         ENDPOINT_URI + 'supergroup/': SuperGroup,
+        ENDPOINT_URI_2: InspireTheme,
     }
 
     return thesaurus_to_model.get(thesaurus_uri)
@@ -137,17 +141,25 @@ def get_reverse_name(heading):
         'Themes': 'theme',
         'Groups': 'group',
         'Super groups': 'supergroup',
+        'Inspire Themes': 'inspire-theme',
     }
 
     return heading_to_urlname.get(heading)
 
 
-def get_concept_uri(view_name, concept_id, langcode):
-    host = ENDPOINT_URI.split('/gemet/')[0]
-    return host + reverse(view_name, kwargs={
-        'langcode': langcode,
-        'concept_id': concept_id,
-    })
+def get_concept_uri(heading, concept_id, langcode):
+    view_name = get_reverse_name(heading)
+    if heading == 'Inspire Themes':
+        return (
+            ENDPOINT_URI_2 +
+            get_model(ENDPOINT_URI_2).objects.get(pk=concept_id).code
+        )
+    else:
+        return (
+            ENDPOINT_URI.split('/gemet/')[0] +
+            reverse(view_name, kwargs={'langcode': langcode,
+                                       'concept_id': concept_id, })
+        )
 
 
 def get_concept_id(concept_uri):
@@ -166,9 +178,7 @@ def get_concept_id(concept_uri):
 
 
 def get_concept(thesaurus_uri, concept_id, langcode):
-    reverse_name = get_reverse_name(
-        Namespace.objects.get(url=thesaurus_uri).heading
-    )
+    heading = Namespace.objects.get(url=thesaurus_uri).heading
 
     names = {
         'prefLabel': 'preferredLabel',
@@ -189,7 +199,7 @@ def get_concept(thesaurus_uri, concept_id, langcode):
             'language': langcode,
         }
     concept.update({
-        'uri': get_concept_uri(reverse_name, concept_id, langcode),
+        'uri': get_concept_uri(heading, concept_id, langcode),
         'thesaurus': thesaurus_uri,
     })
 
@@ -237,13 +247,10 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
     relatives = []
     for relation in relations:
         target_id = relation['target_id']
-        reverse_name = get_reverse_name(
-            relation['target__namespace__heading']
-        )
+        heading = relation['target__namespace__heading']
         relatives.append({
             'relation': relation['property_type__uri'],
-            'target': get_concept_uri(reverse_name, target_id,
-                                      DEFAULT_LANGCODE),
+            'target': get_concept_uri(heading, target_id, DEFAULT_LANGCODE),
         })
     return relatives
 
