@@ -117,6 +117,16 @@
 		color: #2a6495;
 	}
 
+	/* muted */
+	.muted {
+		color: #aaa;
+	}
+	
+	/* small */
+	.small {
+		font-size: smaller;
+	}
+
 	/* alert */
 	.alert {
 		/*padding: 0.25em 0.5em;*/

@@ -10,22 +10,25 @@
       <span class="results-nr">{{ concepts|length }} results found.</span>
       <span>Searched for '<b>{{ query }}</b>'</span>
     </div>
-
-    <ul>
+    {% if concepts|length %}
+    <hr>
+    <ul class="listing columns">
       {% for concept in concepts %}
         <li>
             {% get_concept_names concept.search_text as names %}
             <a href="{% url 'concept' language.code concept.id %}">{{ names.concept_name }}</a>
-            {% if names.other_names %}
-              <p class="other-names"><b>other names:</b> {{ names.other_names }}</p>
-            {% endif %}
-            <p class="broader-context">
-              <b>broader context:</b>
+            <p class="no-margin-top small">
+              {% if names.other_names %}
+                <span class="muted">other names:</span>
+                {{ names.other_names }}&ensp;
+              {% endif %}
+              <span class="muted">broader context:</span>
               {% broader_context concept.id language.code %}
             </p>
         </li>
       {% endfor %}
     </ul>
+    {% endif %}
   {% endif %}
 
 {% endblock %}
