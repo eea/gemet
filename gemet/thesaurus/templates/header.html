@@ -23,7 +23,7 @@
       <select name="select-language" id="js-change-language">
         {% for lang in languages %}
           <option value="{{ lang.code }}"
-          href="{% if id %}{% url view lang.code id %}{% else %}{% url view lang.code %}{% endif %}"
+          href="{% if id %}{% url view lang.code id %}{% else %}{% url view lang.code %}{% endif %}{% if get_params %}?{{ get_params }}{%  endif %}"
           {% if language.code == lang.code%}selected="selected"{% endif %}
             >{{ lang.name }}</option>
         {% endfor %}

@@ -211,6 +211,7 @@ class RelationsView(HeaderMixin, TemplateView):
             'group_id': group.id,
             'group': group,
             'expand_list': expand_list,
+            'get_params': self.request.GET.urlencode(),
         })
         return context
 
