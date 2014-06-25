@@ -31,7 +31,13 @@ class Concept(Model):
 
     @property
     def visible_foreign_relations(self):
-        return self.foreign_relations.filter(show_in_html=True)
+        result = {}
+        for label in self.foreign_relations.values_list('property_type__label', flat=True).distinct():
+            result[label]  = self.foreign_relations.filter(
+                show_in_html=True,
+                property_type__label=label
+            )
+        return result
 
     @property
     def name(self):
