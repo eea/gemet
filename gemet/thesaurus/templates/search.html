@@ -20,10 +20,10 @@
             <p class="no-margin-top small">
               {% if names.other_names %}
                 <span class="muted">other names:</span>
-                {{ names.other_names }}&ensp;
+                <span class="py-other-names">{{ names.other_names }}</span>&ensp;
               {% endif %}
               <span class="muted">broader context:</span>
-              {% broader_context concept.id language.code %}
+              <span class="py-broader">{% broader_context concept.id language.code %}</span>
             </p>
         </li>
       {% endfor %}
