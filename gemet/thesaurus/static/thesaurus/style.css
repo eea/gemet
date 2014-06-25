@@ -495,7 +495,9 @@
 		line-height: inherit;
 	}
 	.header-title small {
-		line-height: 2em; /* same as input height */
+		display: block;
+		font-size: 60%;
+		margin-top: 0.2em;
 	}
 
 	/* header-actions */
@@ -572,6 +574,8 @@
 		text-align: center;
 		font-size: smaller;
 		margin-bottom: 1em;
+		-webkit-box-shadow: 0 5px 2px -3px #dddddd;
+		box-shadow: 0 5px 2px -3px #dddddd;
 	}
 	.gemet-menu,
 	.gemet-menu > * {
@@ -591,29 +595,31 @@
 		display: block;
 		float: left;
 		width: 25%;
-		height: 3em;
 		padding: 0.25em 0.5em;
-		border-top: 1px solid #ddd;
-		border-bottom: 1px solid #ddd;
-		border-left: 1px solid #ddd;
+		border-top: 1px solid #ccc;
+		border-bottom: 1px solid #ccc;
+		border-left: 1px solid #ccc;
 		border-right: 1px solid transparent;
 	}
 	.gemet-menu > a:first-child {
 		border-radius: 3px 0 0 3px;
-		border-left: 1px solid #ddd;
+		border-left: 1px solid #ccc;
 	}
 	.gemet-menu > a:last-child {
 		border-radius: 0 3px 3px 0;
-		border-right: 1px solid #ddd;
-	}
-	.gemet-menu > a:hover {
-		border: 1px solid #bbb;
-		background-color: #f6f6f6;
+		border-right: 1px solid #ccc;
 	}
 	.gemet-menu a,
 	.gemet-menu a:visited {
 		color: inherit;
 		text-decoration: none;
+	}
+	.gemet-menu > a:hover {
+		position: relative;
+		z-index: 10;
+		color: #094272;
+		border-color: #2a6495;
+		background-color: #DDECF8;
 	}
 
 
