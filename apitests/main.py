@@ -10,7 +10,8 @@ from config import *
 
 
 class ApiTester(object):
-    output_url = 'http://www.eionet.europa.eu/gemet/'
+    namespace_url = 'http://www.eionet.europa.eu/gemet/'
+    inspire_url = 'http://inspire.ec.europa.eu/theme/'
 
     def __init__(self, request_url='', local=False, get=False):
         self.request_url = request_url
@@ -18,7 +19,7 @@ class ApiTester(object):
         self.GET_TEST = get
 
     def get_full_path(self, relative_path=''):
-        return self.output_url + relative_path
+        return self.namespace_url + relative_path
 
     def request(self, method, *args):
         if self.GET_TEST:
@@ -74,6 +75,17 @@ class TestGetTopmostConcepts(unittest.TestCase):
         result = [top_theme['preferredLabel']['string']
                   for top_theme in top_themes]
         self.assertEqual(result, TOPMOST_THEMES)
+
+    def test_inspire(self):
+        top_inspire = api_tester.request(
+            'getTopmostConcepts',
+            'thesaurus_uri', api_tester.inspire_url,
+            'language', 'en'
+        )
+        result = [top_theme['preferredLabel']['string']
+                  for top_theme in top_inspire]
+
+        self.assertEqual(result, TOPMOST_INSPIRE)
 
 
 class TestGetRelatedConcepts(unittest.TestCase):

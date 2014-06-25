@@ -110,6 +110,24 @@ TOPMOST_THEMES = [
     'urban environment, urban stress', 'waste', 'water'
 ]
 
+TOPMOST_INSPIRE = [
+    'Addresses', 'Administrative units',
+    'Agricultural and aquaculture facilities',
+    'Area management/restriction/regulation zones and reporting units',
+    'Atmospheric conditions', 'Bio-geographical regions', 'Buildings',
+    'Cadastral parcels', 'Coordinate reference systems', 'Elevation',
+    'Energy resources', 'Environmental monitoring facilities',
+    'Geographical grid systems', 'Geographical names', 'Geology',
+    'Habitats and biotopes', 'Human health and safety', 'Hydrography',
+    'Land cover', 'Land use', 'Meteorological geographical features',
+    'Mineral resources', 'Natural risk zones',
+    'Oceanographic geographical features', 'Orthoimagery',
+    u'Population distribution \u2014 demography',
+    'Production and industrial facilities', 'Protected sites', 'Sea regions',
+    'Soil', 'Species distribution', 'Statistical units', 'Transport networks',
+    'Utility and governmental services'
+]
+
 TEST_PREFFIX = {
     'waste air', 'emission to air', 'respiratory air', 'soil air', 'air'
 }
