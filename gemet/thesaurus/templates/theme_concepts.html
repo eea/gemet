@@ -20,8 +20,10 @@
 {% endblock %}
 
 {% block letter_pagination %}
+<div class="letter-pagination">
+  List by letters: 
   {% if letter == 0 %}
-    all
+    <span class="selected-elm">all</span>
   {% else %}
     <a href="{% url 'theme_concepts' language.code theme.id %}?letter=0">all</a>
   {% endif %}
@@ -39,4 +41,5 @@
   {% else %}
     <a href="{% url 'theme_concepts' language.code theme.id %}?letter=99">other</a>
   {% endif %}
+</div>  
 {% endblock %}
