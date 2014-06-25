@@ -1,14 +1,15 @@
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+# DEBUG = True
+# TEMPLATE_DEBUG = True
 
 # debug_toolbar app is needed only in development. Uncomment the section
 # below in development if you want to use the debug_toolbar.
-
 # LOCAL_INSTALLED_APPS = (
 #     'debug_toolbar',
 # )
+
+# Remove the line below in development
+ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
