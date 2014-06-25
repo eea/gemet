@@ -694,3 +694,20 @@
 	.footer-menu a:visited {
 		color: inherit;
 	}
+
+	/* 404 */
+	.error404 > * {
+		margin-bottom: 0;
+		font-size: 64px!important;
+		line-height: 1;
+		font-weight: bold;
+		padding: 0!important;
+		margin: 0!important;
+	}
+	.error404 a {
+		color: #2a6495;
+		text-decoration: none;
+	}
+	.error404 a:hover {
+		color: #a5ced1;
+	}
