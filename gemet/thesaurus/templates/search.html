@@ -12,7 +12,7 @@
     </div>
     {% if concepts|length %}
     <hr>
-    <ul class="listing columns">
+    <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
       {% for concept in concepts %}
         <li>
             {% get_concept_names concept.search_text as names %}

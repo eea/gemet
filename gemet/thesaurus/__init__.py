@@ -1,4 +1,4 @@
-NR_CONCEPTS_ON_PAGE = 30
+NR_CONCEPTS_ON_PAGE = 40
 DEFAULT_LANGCODE = 'en'
 NS_VIEW_MAPPING = {
     'Concepts': 'concept',

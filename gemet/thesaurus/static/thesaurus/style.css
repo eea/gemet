@@ -3,6 +3,11 @@
 		direction: rtl;
 		text-align: right !important;
 }
+.direction-rtl ul, 
+#workarea .direction-rtl ul {
+	margin-left: auto!important;
+	margin-right: 1.5em!important;
+}
 .results-nr {
 		float: right;
 }
@@ -251,7 +256,11 @@
 		border-bottom: 1px solid #ddd;
 	}
 	.letter-pagination a {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
 		text-decoration: none;
+		padding: 2px;
 	}
 	.letter-pagination a:visited {
 		color: #2a6495;
@@ -262,6 +271,10 @@
 		margin: 1em auto;
 	}
 	.pagination a {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
+		padding: 2px;
 		text-decoration: none; 
 	}
 
@@ -270,7 +283,8 @@
 		list-style-type: none!important;
 		list-style-image: none!important;
 		padding-left: 0!important;
-		margin-left: 0!important
+		margin-left: 0!important;
+		margin-right: 0!important;
 	}
 
 	/* floats */
@@ -401,18 +415,50 @@
 	}
 
 	/* listing */
+	.listing.direction-rtl {
+		margin-left: auto!important;
+		margin-right: 1.5em!important;
+	}
 	.listing a {
 		text-decoration: none;
 	}
 	.listing a:hover {
 		text-decoration: underline;
 	}
+	.listing.columns {
+		/*margin-bottom: -420px;*/
+		position: relative;
+	}
 	.listing.columns > li {
 		width: 50%;
 		float: left;
 	}
+	.listing.columns.direction-rtl > li {
+		float: right;
+	}
+	
+	/* vertical column listing */
+	.columns.vertical > li:nth-child(-n+20) {
+		clear: left;
+	}
+	.columns.vertical > li:nth-child(n+21) {
+		margin-left: 50%;
+		float: none;
+	}
+	.columns.vertical.direction-rtl > li:nth-child(-n+20) {
+		clear: right;
+	}
+	.columns.vertical.direction-rtl > li:nth-child(n+21) {
+		margin-left: auto;
+		margin-right: 50%;
+		float: none;
+	}
 	#workarea .listing .listing {
 		margin-left: 1.5em!important;
+	}
+	#workarea .listing.direction-rtl .listing {
+		margin-left: auto!important;
+		margin-right: 1.5em!important;
 	}
 	.columns:before,
 	.columns:after {
@@ -421,13 +467,6 @@
 	}
 	.columns:after {
 		clear: both;
-	}
-	.columns.direction-rtl {
-		margin-left: auto!important;
-		margin-right: 1.5em!important;
-	}
-	.columns.direction-rtl > li {
-		float: right;
 	}
 
 	/* toggle-collapse */

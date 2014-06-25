@@ -12,7 +12,7 @@
   {% endblock %}
   
   {% if concepts|length %}
-  <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
+  <ul class="listing columns vertical {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}
     <li>
       {% if concept.name %}
