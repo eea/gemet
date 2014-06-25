@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.core.urlresolvers import reverse
 from django.db.models import (
     Model,
@@ -31,7 +32,13 @@ class Concept(Model):
 
     @property
     def visible_foreign_relations(self):
-        return self.foreign_relations.filter(show_in_html=True)
+        result = OrderedDict()
+        relations = self.foreign_relations.filter(show_in_html=True)
+        for relation in relations:
+            if not relation.property_type.label in result:
+                result[relation.property_type.label] = []
+            result[relation.property_type.label].append(relation)
+        return result
 
     @property
     def name(self):
