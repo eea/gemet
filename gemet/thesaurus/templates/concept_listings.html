@@ -8,10 +8,9 @@
   {% block header %}
   {% endblock %}
 
-  <div class="letter-pagination">
-    {% block letter_pagination %}
-    {% endblock %}
-  </div>
+  {% block letter_pagination %}
+  {% endblock %}
+  
   {% if concepts|length %}
   <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}

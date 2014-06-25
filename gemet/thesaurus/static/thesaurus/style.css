@@ -236,7 +236,9 @@
 
 	/* letter-pagination */
 	.letter-pagination {
-
+		margin: 0.5em auto;
+		padding-bottom: 1em;
+		border-bottom: 1px solid #ddd;
 	}
 	.letter-pagination a {
 		text-decoration: none;
