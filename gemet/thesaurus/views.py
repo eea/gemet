@@ -49,7 +49,7 @@ class HeaderMixin(object):
         context.update({
             'language': self.language,
             'languages': Language.objects.values('code', 'name'),
-            'form': SearchForm(),
+            'search_form': SearchForm(),
         })
         return context
 

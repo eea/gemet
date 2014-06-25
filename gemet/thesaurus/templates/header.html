@@ -12,7 +12,7 @@
       <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
         {% csrf_token %}
         <div class="clearfix">
-          {{ form }}
+          {{ search_form }}
           <input type="submit" value="Search"/>
         </div>
       </form>
