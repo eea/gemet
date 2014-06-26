@@ -657,12 +657,6 @@ class Skoscore(GemetRelationsMixin, XMLTemplateView):
 
         relations = {}
 
-        def _add_relation(code, d):
-            try:
-                relations[code].append(d)
-            except KeyError:
-                relations[code] = [d]
-
         self.foreign_relations = (
             self.foreign_relations
             .order_by('label',)
@@ -675,15 +669,17 @@ class Skoscore(GemetRelationsMixin, XMLTemplateView):
                 ('' if 'Match' in name else 'concept/') +
                 r['target__code']
             )
-            _add_relation(source_code, {'target__code': target_code,
-                                        'property_type__name': name})
+            relations.setdefault(source_code, []).append(
+                {'target__code': target_code, 'property_type__name': name}
+            )
 
         for r in self.foreign_relations:
             source_code = r['concept__code']
             name = r['property_type__name']
             target_code = r['uri']
-            _add_relation(source_code, {'target__code': target_code,
-                                        'property_type__name': name})
+            relations.setdefault(source_code, []).append(
+                {'target__code': target_code, 'property_type__name': name}
+            )
 
         context.update({'concept_relations': relations})
 
