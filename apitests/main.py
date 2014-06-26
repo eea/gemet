@@ -33,7 +33,7 @@ class ApiTester(object):
         result = requests.get(url)
         if result.ok:
             return json.loads(result.text)
-        return "ERROR"
+        return 'ERROR'
 
     def doXmlRpc(self, method, *args):
         server = xmlrpclib.ServerProxy(self.request_url, allow_none=True)
@@ -612,6 +612,17 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         else:
             for i in range(0, len(received_relations)):
                 self.assertEqual(received_relations[i], CONCEPT_RELATIVES[i])
+
+
+class TestNamesConsistency(unittest.TestCase):
+
+    def test_get_params_names(self):
+        concept_uri = api_tester.get_full_path('concept/100')
+        if api_tester.GET_TEST:
+            self.assertEqual(
+                'ERROR',
+                api_tester.request('getConcept', 'BAD_NAME', concept_uri)
+            )
 
 
 if __name__ == '__main__':
