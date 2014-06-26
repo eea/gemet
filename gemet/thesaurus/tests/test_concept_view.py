@@ -111,4 +111,4 @@ class TestConceptView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(200, resp.status_int)
-        self.assertEqual(ERROR_404, resp.pyquery('.error404').text())
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
