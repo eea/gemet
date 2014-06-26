@@ -127,6 +127,7 @@ class TestGetRelatedConcepts(unittest.TestCase):
 
     def test_no_language(self):
         if api_tester.GET_TEST:
+            import pdb; pdb.set_trace()
             self.assertEqual('ERROR',
                              api_tester.request('getRelatedConcepts', *(
                                  api_tester.get_full_path('concept/42'),
@@ -537,9 +538,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(SUPERGROUP_RELATIVES))
-        if api_tester.LOCAL_TEST:
-            pass
-        else:
+        if not api_tester.LOCAL_TEST:
             for i in range(0, len(received_relations)):
                 self.assertEqual(received_relations[i],
                                  SUPERGROUP_RELATIVES[i])
@@ -556,9 +555,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if api_tester.LOCAL_TEST:
-            pass
-        else:
+        if not api_tester.LOCAL_TEST:
             self.assertEqual(received_relations[-1].split(' ')[0],
                              self.relations['broader'])
             self.assertEqual(received_relations[-1].split(' ')[1],
@@ -584,9 +581,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(296, len(received_relations))
-        if api_tester.LOCAL_TEST:
-            pass
-        else:
+        if not api_tester.LOCAL_TEST:
             for relation in received_relations:
                 self.assertEqual(self.relations['themeMember'],
                                  relation.split(' ')[0])
@@ -607,9 +602,7 @@ class TestGetAllConceptRelatives(unittest.TestCase):
         received_relations = sorted(received_relations)
 
         self.assertEqual(len(received_relations), len(CONCEPT_RELATIVES))
-        if api_tester.LOCAL_TEST:
-            pass
-        else:
+        if not api_tester.LOCAL_TEST:
             for i in range(0, len(received_relations)):
                 self.assertEqual(received_relations[i], CONCEPT_RELATIVES[i])
 
