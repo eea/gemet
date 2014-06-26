@@ -91,7 +91,7 @@
 		margin-bottom: 0;
 		margin-right: 12px;
 		font-family: "Nimbus sans L", Helvetica, Arial, Verdana, sans-serif;
-	  font-weight: normal;
+	        font-weight: normal;
 	}
 	.dl-inline .dt:after {
 		content: ":";
@@ -114,6 +114,7 @@
 	}
 	ul.dl-inline > li {
 		overflow: auto;
+                margin-bottom: .5em;
 	}
 
 	/* no-visit */
