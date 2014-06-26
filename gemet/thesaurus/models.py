@@ -34,9 +34,7 @@ class Concept(Model):
         result = {}
         relations = self.foreign_relations.filter(show_in_html=True)
         for relation in relations:
-            if not relation.property_type.label in result:
-                result[relation.property_type.label] = []
-            result[relation.property_type.label].append(relation)
+            result.setdefault(relation.property_type.label, []).append(relation)
         return result
 
     @property
