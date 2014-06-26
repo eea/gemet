@@ -29,12 +29,14 @@
   <!-- Other relations -->
   <h5 class="h5">Other relations</h5>
   <ul class="dl-inline no-list">
-    {% for relation in inspire_theme.visible_foreign_relations %}
+    {% for type, relations in inspire_theme.visible_foreign_relations.items %}
     <li>
-      <div class="dt">{{ relation.property_type.label }}</div>
-      <div class="dd">
-        <a href="{{ relation.uri }}">{{ relation.label }}</a>
-      </div>
+      <div class="dt">{{ type }}</div>
+      {% for relation in relations %}
+        <div class="dd">
+            <a href="{{ relation.uri }}">{{ relation.label }}</a>
+        </div>
+      {% endfor %}
     </li>
     {% endfor %}
   </ul>

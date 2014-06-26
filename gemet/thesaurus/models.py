@@ -31,7 +31,14 @@ class Concept(Model):
 
     @property
     def visible_foreign_relations(self):
-        return self.foreign_relations.filter(show_in_html=True)
+        result = {}
+        relations = self.foreign_relations.filter(show_in_html=True)
+        for relation in relations:
+            (
+                result.setdefault(relation.property_type.label, [])
+                .append(relation)
+            )
+        return result
 
     @property
     def name(self):
