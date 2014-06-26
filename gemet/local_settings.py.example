@@ -6,6 +6,7 @@
 # below in development if you want to use the debug_toolbar.
 # LOCAL_INSTALLED_APPS = (
 #     'debug_toolbar',
+#     'django_nose',
 # )
 
 # Remove the line below in development
@@ -32,3 +33,11 @@ DATABASES = {
         'PORT': 'db_port',
     }
 }
+
+
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# NOSE_ARGS = [
+#     '--with-coverage',
+#     '--cover-package=gemet',
+# ]

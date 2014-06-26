@@ -208,6 +208,12 @@ Two optional parameters exist:
 * ``--public``, which runs the tests against the production website;
 * ``--get``, which calls the API methods through GET requests.
 
+3. Running tests with coverage measurement
+
+    Add to your local_settings.py TEST_RUNNER and NOSE_ARGS from local_settings.example and run:
+
+    ./manage.py test
+
 
 Contacts
 ========
