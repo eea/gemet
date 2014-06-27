@@ -244,12 +244,12 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
                            relation_uri=None):
     concept_id = get_concept_id(concept_uri)
 
-    relations = Relation.objects.filter(source_id=concept_id)
+    relations = Relation.objects.filter(source_id=concept_id,)
     if relation_uri:
-        relations = relations.filter(property_type__uri=relation_uri)
+        relations = relations.filter(property_type__uri=relation_uri,)
     if target_thesaurus_uri:
         relations = relations.filter(
-            target__namespace__url=target_thesaurus_uri
+            target__namespace__url=target_thesaurus_uri,
         )
     relations = relations.values(
         'property_type__uri',
@@ -261,6 +261,7 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
         target_id = relation['target_id']
         heading = relation['target__namespace__heading']
         relatives.append({
+            'source': concept_uri,
             'relation': relation['property_type__uri'],
             'target': get_concept_uri(heading, target_id, DEFAULT_LANGCODE),
         })
