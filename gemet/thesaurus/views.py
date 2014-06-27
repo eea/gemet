@@ -171,9 +171,6 @@ class SearchView(HeaderMixin, FormView):
     query = ''
     concepts = []
 
-    def get_success_url(self):
-        return reverse('search', kwargs={'langcode': self.langcode})
-
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
@@ -756,16 +753,18 @@ class DownloadView(HeaderMixin, FormView):
     def get_initial(self):
         return {'language_names': self.language}
 
+    def get_success_url(self):
+        return reverse(self.reverse_name, kwargs={'langcode': self.langcode})
+
     def form_valid(self, form):
         if self.request.POST['type'] == 'definitions':
-            reverse_name = 'gemet-definitions.rdf'
+            self.reverse_name = 'gemet-definitions.rdf'
         elif self.request.POST['type'] == 'groups':
-            reverse_name = 'gemet-groups.rdf'
+            self.reverse_name = 'gemet-groups.rdf'
         else:
             raise Http404
-
-        langcode = form.cleaned_data['language_names'].code
-        return redirect(reverse_name, langcode=langcode)
+        self.langcode = form.cleaned_data['language_names'].code
+        return super(DownloadView, self).form_valid(form=form)
 
 
 def redirect_old_urls(request, view_name):
