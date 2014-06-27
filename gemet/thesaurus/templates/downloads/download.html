@@ -8,14 +8,14 @@
 	<!-- Download -->
 	<div id="download" class="side-bar box">
 		<h3 class="h6 no-margin-top">Labels and definitions in RDF</h3>
-		<form method="post">
+		<form id="definitions-form" method="post">
 			{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit" name="type" value="definitions">Download labels and definitions</button>
 		</form>
 		<hr />
 		<h3 class="h6">Supergroups, groups and themes in RDF</h3>
-		<form method="post">
+		<form id="groups-form" method="post">
 			{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit" name="type" value="groups">Download groups and themes</button>
