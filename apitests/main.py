@@ -127,7 +127,6 @@ class TestGetRelatedConcepts(unittest.TestCase):
 
     def test_no_language(self):
         if api_tester.GET_TEST:
-            import pdb; pdb.set_trace()
             self.assertEqual('ERROR',
                              api_tester.request('getRelatedConcepts', *(
                                  api_tester.get_full_path('concept/42'),

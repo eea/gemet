@@ -109,11 +109,15 @@ def has_thesaurus_uri(thesaurus_uri):
     return thesaurus_uri in all_thesaurus
 
 
-def get_language(langcode):
-    try:
-        return Language.objects.get(pk=langcode)
-    except Language.DoesNotExist:
+def has_language(langcode):
+    if not langcode in Language.objects.values_list('code', flat=True):
         raise Fault(-1, 'Language not found: %s' % langcode)
+    return True
+
+
+def get_language(langcode):
+    if has_language(langcode):
+        return Language.objects.get(pk=langcode)
 
 
 def get_namespace(thesaurus_uri):
@@ -207,7 +211,7 @@ def get_concept(thesaurus_uri, concept_id, langcode):
 
 
 def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
-    get_language(language)
+    has_language(language)
     ns = get_namespace(thesaurus_uri)
     all_concepts = (
         Property.objects.filter(
@@ -264,7 +268,7 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
 
 
 def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
-    get_language(language)
+    has_language(language)
     try:
         concept_id = get_concept_id(concept_uri)
     except Fault:
@@ -283,7 +287,7 @@ def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
 
 
 def getConcept(concept_uri, language=DEFAULT_LANGCODE):
-    get_language(language)
+    has_language(language)
     concept_id = get_concept_id(concept_uri)
 
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
