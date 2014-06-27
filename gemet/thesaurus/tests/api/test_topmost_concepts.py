@@ -12,6 +12,7 @@ from gemet.thesaurus.tests.factories import (
     LanguageFactory,
 )
 from gemet.thesaurus.tests import GemetTest
+from gemet.thesaurus import DEFAULT_LANGCODE
 
 
 class TestTopmostConcepts(GemetTest):
@@ -34,11 +35,13 @@ class TestTopmostConcepts(GemetTest):
         self.assertEqual(200, status)
         self.assertEqual(content_type, 'application/json')
 
-    def test_default_parameter(self):
+    def test_default_language_parameter(self):
         resp = self.app.get(
             self.url + urlencode({'thesaurus_uri': self.term.namespace.url})
         )
         self._response_valid(resp.status_int, resp.content_type)
+        self.assertEqual(resp.json.pop()['preferredLabel']['language'],
+                         DEFAULT_LANGCODE)
 
     def test_invalid_language(self):
         self.assertRaises(

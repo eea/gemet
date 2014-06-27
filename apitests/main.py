@@ -91,13 +91,18 @@ class TestGetTopmostConcepts(unittest.TestCase):
 class TestGetRelatedConcepts(unittest.TestCase):
 
     def test_no_concept(self):
-        relatives = api_tester.request(
-            'getRelatedConcepts',
-            'concept_uri', api_tester.get_full_path('concept/99999999'),
-            'relation_uri', 'http://www.w3.org/2004/02/skos/core#related'
-        )
-
-        self.assertEqual(relatives, [])
+        if api_tester.GET_TEST:
+            self.assertEqual('ERROR', api_tester.request(
+                'getRelatedConcepts',
+                'concept_uri', api_tester.get_full_path('concept/99999999'),
+                'relation_uri', 'http://www.w3.org/2004/02/skos/core#related'
+            ))
+        else:
+            self.assertRaises(
+                xmlrpclib.Fault, api_tester.request, 'getRelatedConcepts',
+                'concept_uri', api_tester.get_full_path('concept/99999999'),
+                'relation_uri', 'http://www.w3.org/2004/02/skos/core#related'
+            )
 
     def test_one_concept_english(self):
         relatives = api_tester.request(

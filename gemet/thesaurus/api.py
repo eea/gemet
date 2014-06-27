@@ -269,15 +269,22 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
 
 def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
     has_language(language)
-    try:
-        concept_id = get_concept_id(concept_uri)
-    except Fault:
-        return []
+    concept_id = get_concept_id(concept_uri)
 
     related_concepts = Relation.objects.filter(
         source_id=concept_id,
         property_type__uri=relation_uri,
     ).values_list('target_id', flat=True)
+
+    related_concepts = (
+        Property.objects
+        .filter(
+            language__code=language,
+            concept_id__in=related_concepts,
+        ).values_list(
+            'concept_id', flat=True,
+        ).distinct()
+    )
 
     relatives = []
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
