@@ -9,6 +9,7 @@ from .factories import (
     ThemeFactory,
     GroupFactory,
     SuperGroupFactory,
+    ForeignRelationFactory,
 )
 from . import GemetTest
 
@@ -203,10 +204,15 @@ class TestExports(GemetTest):
         p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
         p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
         p3 = PropertyTypeFactory(id=3, name='related', label='related')
+        p4 = PropertyTypeFactory(id=4, name='exactMatch', label='exact match')
+        p5 = PropertyTypeFactory(id=5, name='closeMatch', label='close match')
         RelationFactory(property_type=p1, source=term1, target=term2)
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
         RelationFactory(property_type=p3, source=term3, target=term2)
+        ForeignRelationFactory(concept=term1, uri='concept_uri1', property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri2', property_type=p5)
+        ForeignRelationFactory(concept=term2, uri='concept_uri3', property_type=p4)
 
         resp = self.app.get(reverse('gemet-skoscore.rdf'))
 
@@ -218,6 +224,11 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('broader'), 1)
         self.assertEqual(resp.content.count('narrower'), 1)
         self.assertEqual(resp.content.count('related'), 2)
+        self.assertEqual(resp.content.count('exactMatch'), 2)
+        self.assertEqual(resp.content.count('closeMatch'), 1)
+        self.assertEqual(resp.content.count('concept_uri1'), 1)
+        self.assertEqual(resp.content.count('concept_uri2'), 1)
+        self.assertEqual(resp.content.count('concept_uri3'), 1)
 
     def test_label_and_definitions_rdf(self):
         term1 = TermFactory(id='1', code='11')
