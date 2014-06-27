@@ -2,9 +2,11 @@ import factory
 
 from gemet.thesaurus.models import (
     Concept, Property, Language, Relation, PropertyType, Term, Group,
-    SuperGroup, Theme, DefinitionSource, InspireTheme,
+    SuperGroup, Theme, DefinitionSource, InspireTheme, ForeignRelation
 )
 
+class ForeignRelationFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = ForeignRelation
 
 class LanguageFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Language
