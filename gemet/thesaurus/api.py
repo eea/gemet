@@ -209,8 +209,15 @@ def get_concept(thesaurus_uri, concept_id, langcode):
 def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
     get_language(language)
     ns = get_namespace(thesaurus_uri)
-    model = get_model(thesaurus_uri)
-    all_concepts = model.objects.values_list('id', flat=True)
+    all_concepts = (
+        Property.objects.filter(
+            language__code=language,
+            concept__namespace=ns,
+        ).values_list(
+            'concept__id', flat=True,
+        ).distinct()
+    )
+
     excluded_concepts = (
         Relation.objects
         .filter(property_type__name='narrower', target__namespace_id=ns.id)
@@ -223,7 +230,8 @@ def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
     for concept_id in concepts_id:
         concept = get_concept(thesaurus_uri, concept_id, language)
         concepts.append(concept)
-
+    if not all(['preferredLabel' in concept for concept in concepts]):
+        return concepts
     return sorted(concepts,
                   key=lambda x: x['preferredLabel']['string'].lower())
 
