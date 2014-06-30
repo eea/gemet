@@ -8,7 +8,7 @@ from .factories import (
     ThemeFactory,
     GroupFactory,
 )
-from . import GemetTest, ERROR_404
+from . import GemetTest
 
 
 class TestConceptView(GemetTest):
@@ -110,5 +110,4 @@ class TestConceptView(GemetTest):
         url = reverse('concept', kwargs={'concept_id': 2, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
-        self.assertEqual(200, resp.status_int)
-        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+        self.assertEqual(404, resp.status_int)
