@@ -6,6 +6,7 @@ from .factories import (
     ThemeFactory,
     GroupFactory,
     SuperGroupFactory,
+    ConceptFactory,
 )
 from . import GemetTest, ERROR_404
 
@@ -109,6 +110,20 @@ class TestOldConceptRedirectView(GemetTest):
                       ns=concept.namespace.id,
                       cp=concept.code,
                       lang='ESP')
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+    def test_404_no_concept_type(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept)
+
+        url = "{url}?langcode={lang}&ns={ns}&cp={cp}"\
+              .format(url=reverse('old_concept_redirect'),
+                      ns=7,
+                      cp=concept.code,
+                      lang='en')
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(200, resp.status_int)
