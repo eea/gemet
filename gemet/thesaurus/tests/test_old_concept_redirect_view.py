@@ -7,7 +7,7 @@ from .factories import (
     GroupFactory,
     SuperGroupFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestOldConceptRedirectView(GemetTest):
@@ -85,6 +85,7 @@ class TestOldConceptRedirectView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
     def test_404_no_concept(self):
         concept = TermFactory()
@@ -97,6 +98,7 @@ class TestOldConceptRedirectView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
     def test_404_no_language(self):
         concept = TermFactory()
@@ -110,3 +112,18 @@ class TestOldConceptRedirectView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+    def test_404_no_concept_type(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept)
+
+        url = "{url}?langcode={lang}&ns={ns}&cp={cp}"\
+              .format(url=reverse('old_concept_redirect'),
+                      ns=7,
+                      cp=concept.code,
+                      lang='en')
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
