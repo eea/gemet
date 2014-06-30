@@ -835,4 +835,6 @@ def render_rdf(request, obj):
 
 def error404(request):
     language = Language.objects.get(pk=DEFAULT_LANGCODE)
-    return render(request, '404.html', {'language': language})
+    response = render(request, '404.html', {'language': language})
+    response.status_code = 404
+    return response
