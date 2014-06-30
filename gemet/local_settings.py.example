@@ -34,6 +34,8 @@ DATABASES = {
     }
 }
 
+# Use the line below in order to run django in a subpath (http://example.com/gemet)
+# FORCE_SCRIPT_NAME = '/gemet'
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 

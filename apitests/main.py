@@ -631,7 +631,7 @@ if __name__ == '__main__':
 
     local = not options.public
     get = options.get
-    url = ('http://localhost:8000/gemet/' if local else
+    url = ('http://127.0.0.1:8000/' if local else
            'http://www.eionet.europa.eu/gemet/')
     api_tester = ApiTester(url, local, get)
     if options.public:

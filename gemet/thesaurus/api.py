@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 
 from gemet.thesaurus.models import (
     Namespace,
@@ -40,22 +41,22 @@ class ApiView(View):
 
     def dispatch(self, request, *args, **kwargs):
         self.method_name = kwargs.pop('method_name', None)
+        if request.method == 'GET' and not self.method_name:
+            return redirect(
+                'themes',
+                permanent=True,
+                langcode=DEFAULT_LANGCODE,
+            )
         return super(ApiView, self).dispatch(request, *args, **kwargs)
 
     @classmethod
     def as_view(cls, **initkwargs):
         return csrf_exempt(super(ApiView, cls).as_view(**initkwargs))
 
-
-class ApiViewPOST(ApiView):
-
     def post(self, request):
         response = HttpResponse(content_type='text/xml')
         response.write(dispatcher._marshaled_dispatch(request.body))
         return response
-
-
-class ApiViewGET(ApiView):
 
     def get(self, request):
 
