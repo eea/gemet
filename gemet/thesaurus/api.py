@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 from gemet.thesaurus.models import (
     Namespace,
     Language,
+    Concept,
     Term,
     Theme,
     Group,
@@ -342,21 +343,36 @@ def getAllTranslationsForConcept(concept_uri, property_uri):
     return result
 
 
-def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri,
+def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri='',
                                language=DEFAULT_LANGCODE):
-    language = get_language(language)
-    ns = get_namespace(thesaurus_uri)
     try:
         search_mode = int(search_mode)
         if not search_mode in range(5):
             raise ValueError
     except ValueError:
         raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
-    concepts = search_queryset(keyword, language, search_mode, ns.heading,
-                               True)
+
+    language = get_language(language)
+
+    if thesaurus_uri:
+        ns = get_namespace(thesaurus_uri)
+        headings = [ns.heading]
+    else:
+        headings = Namespace.objects.values_list('heading', flat=True)
+
+    concepts = search_queryset(keyword, language, search_mode, headings, True)
     results = []
-    for concept in concepts:
-        results.append(get_concept(thesaurus_uri, concept['id'], language.code))
+
+    if thesaurus_uri:
+        for concept in concepts:
+            results.append(get_concept(thesaurus_uri, concept['id'], language.code))
+    else:
+        for concept in concepts:
+            results.append(get_concept(
+                Concept.objects.get(pk=concept['id']).namespace.url,
+                concept['id'],
+                language.code
+            ))
 
     return results
 

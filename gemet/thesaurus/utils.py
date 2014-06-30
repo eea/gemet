@@ -5,6 +5,7 @@ from models import Property
 
 SEPARATOR = '\t'
 
+
 def is_rdf(request):
     accepts = request.META.get('HTTP_ACCEPT', '*/*')
     parts = accepts.split(',')
@@ -38,7 +39,6 @@ def regex_search(query, language, heading):
 
 def search_queryset(query, language, search_mode=1, heading='Concepts',
                     api_call=False):
-
     if api_call:
         if search_mode == 4:
             values = (
@@ -55,7 +55,7 @@ def search_queryset(query, language, search_mode=1, heading='Concepts',
     return values
 
 
-def api_search(query, language, search_mode, heading):
+def api_search(query, language, search_mode, headings):
     search_types = {
         0: [query],
         1: [query + '%%'],
@@ -69,7 +69,7 @@ def api_search(query, language, search_mode, heading):
         .filter(
             name='prefLabel',
             language__code=language.code,
-            concept__namespace__heading=heading,
+            concept__namespace__heading__in=headings,
         )
         .extra(
             where=['value like convert(_utf8%s using utf8)'],
