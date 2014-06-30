@@ -409,7 +409,7 @@ class TestGetSupportedLanguages(unittest.TestCase):
 
 
 class TestGetAvailableThesauri(unittest.TestCase):
-    def test_getSupportedLanguages(self):
+    def test_getAvailableThesauri(self):
         result = api_tester.request('getAvailableThesauri')
         self.assertEqual(result, THESAURI)
 
