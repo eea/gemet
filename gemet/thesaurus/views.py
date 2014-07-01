@@ -1,8 +1,9 @@
 from itertools import chain
 from collections import OrderedDict
-from exceptions import KeyError
+import sys
+from xmlrpclib import Fault
 
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import (
     render,
     get_object_or_404,
@@ -836,4 +837,19 @@ def error404(request):
     language = Language.objects.get(pk=DEFAULT_LANGCODE)
     response = render(request, '404.html', {'language': language})
     response.status_code = 404
+    return response
+
+
+def error500(request):
+    error_type, error_message, _ = sys.exc_info()
+    if error_type == Fault:
+        context = {'error_message': error_message.faultString}
+        template = '400.html'
+        status_code = 400
+    else:
+        context = {}
+        template = '500.html'
+        status_code = 500
+    response = render(request, template, context)
+    response.status_code = status_code
     return response
