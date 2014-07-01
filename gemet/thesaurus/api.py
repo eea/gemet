@@ -69,7 +69,10 @@ class ApiView(View):
             else:
                 raise Fault(-1, 'Missing parameter: %s' % name)
 
-        function = self.functions.get(self.method_name)
+        try:
+            function = self.functions[self.method_name]
+        except KeyError:
+            raise Fault(-1, 'Invalid method name: %s' % self.method_name)
         response = HttpResponse(
             content_type='text/javascript' if (
                 has_get_param('jsonp') and get_param('jsonp') == 'callback'
