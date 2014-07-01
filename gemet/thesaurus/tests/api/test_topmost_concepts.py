@@ -19,7 +19,7 @@ class TestTopmostConcepts(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
         self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
-        self.url = reverse('api_root') + 'getTopmostConcepts?'
+        self.url = reverse('api_root', args=['getTopmostConcepts']) + '?'
         self.term = TermFactory()
         self._initialize(self.term, 'prefLabel1', 'definition1', self.english)
 

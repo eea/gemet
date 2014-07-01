@@ -14,7 +14,7 @@ class TestHasConcept(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
-        self.url = reverse('api_root') + 'hasConcept?'
+        self.url = reverse('api_root', args=['hasConcept']) + '?'
         self.term = TermFactory()
         self._initialize(self.term, 'prefLabel1', 'definition1', self.english)
 

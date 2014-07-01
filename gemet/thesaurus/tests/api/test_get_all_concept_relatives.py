@@ -20,7 +20,7 @@ class TestAllConceptRelatives(GemetTest):
         self.english = LanguageFactory()
         self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
-        self.url = reverse('api_root') + 'getAllConceptRelatives?'
+        self.url = reverse('api_root', args=['getAllConceptRelatives']) + '?'
         self.term = TermFactory()
 
     def _response_valid(self, status, content_type):

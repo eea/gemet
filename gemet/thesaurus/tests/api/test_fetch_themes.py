@@ -15,7 +15,7 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestFetchThemes(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.url = reverse('api_root') + 'fetchThemes?'
+        self.url = reverse('api_root', args=['fetchThemes']) + '?'
         self.theme = ThemeFactory()
         self._initialize(self.theme, 'prefLabel1', 'definition1', self.english)
 

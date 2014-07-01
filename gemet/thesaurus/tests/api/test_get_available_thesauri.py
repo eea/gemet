@@ -5,7 +5,7 @@ from gemet.thesaurus.tests import GemetTest
 
 class TestGetAvailablethesauri(GemetTest):
     def setUp(self):
-        self.url = reverse('api_root') + 'getAvailableThesauri'
+        self.url = reverse('api_root', args=['getAvailableThesauri'])
 
     def test_get_available_thesauri(self):
         host = 'http://www.eionet.europa.eu/gemet/'

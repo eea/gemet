@@ -15,7 +15,7 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestFetchGroups(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.url = reverse('api_root') + 'fetchGroups?'
+        self.url = reverse('api_root', args=['fetchGroups']) + '?'
         self.group = GroupFactory()
         self._initialize(self.group, 'prefLabel1', 'definition1', self.english)
 

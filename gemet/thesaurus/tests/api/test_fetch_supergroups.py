@@ -15,9 +15,10 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestFetchSuperGroups(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.url = reverse('api_root') + 'fetchSuperGroups?'
+        self.url = reverse('api_root', args=['fetchSuperGroups']) + '?'
         self.supergroup = SuperGroupFactory()
-        self._initialize(self.group, 'prefLabel1', 'definition1', self.english)
+        self._initialize(self.supergroup, 'prefLabel1', 'definition1',
+                         self.english)
 
     def _initialize(self, concept, preflabel, definition, lang):
         PropertyFactory(

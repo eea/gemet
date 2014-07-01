@@ -17,7 +17,7 @@ class TestGetConcept(GemetTest):
         self.english = LanguageFactory()
         self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
-        self.url = reverse('api_root') + 'getConcept?'
+        self.url = reverse('api_root', args=['getConcept']) + '?'
         self.term = TermFactory()
         self._initialize(self.term, 'prefLabel1', 'definition1', self.english)
 
