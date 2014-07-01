@@ -195,6 +195,15 @@ Configure deploy
 Running unit tests
 ------------------
 
+0. Before running the tests make sure you have configured the test database
+parameters::
+
+    cd gemet/
+    cp test_settings.py.example test_settings.py
+
+    # Parameters values should match the ones used for the 'default' database
+    # entry in local_settings.py
+
 1. For the GEMET web application::
 
     ./manage.py test
@@ -210,7 +219,8 @@ Two optional parameters exist:
 
 3. Running tests with coverage measurement
 
-    Add to your local_settings.py TEST_RUNNER and NOSE_ARGS from local_settings.example and run:
+Add to your local_settings.py TEST_RUNNER and NOSE_ARGS from
+local_settings.example and run::
 
     ./manage.py test
 
