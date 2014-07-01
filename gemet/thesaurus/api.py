@@ -430,6 +430,10 @@ def fetchGroups(language=DEFAULT_LANGCODE):
     return getTopmostConcepts(ENDPOINT_URI + 'group/', language)
 
 
+def fetchSuperGroups(language=DEFAULT_LANGCODE):
+    return getTopmostConcepts(ENDPOINT_URI + 'supergroup/', language)
+
+
 dispatcher.register_introspection_functions()
 ApiView.register_function(getTopmostConcepts, 'getTopmostConcepts')
 ApiView.register_function(getAllConceptRelatives, 'getAllConceptRelatives')
@@ -448,4 +452,5 @@ ApiView.register_function(getSupportedLanguages, 'getSupportedLanguages')
 ApiView.register_function(getAvailableThesauri, 'getAvailableThesauri')
 ApiView.register_function(fetchThemes, 'fetchThemes')
 ApiView.register_function(fetchGroups, 'fetchGroups')
+ApiView.register_function(fetchSuperGroups, 'fetchSuperGroups')
 dispatcher.register_multicall_functions()
