@@ -5,6 +5,7 @@ from .factories import (
     LanguageFactory,
 )
 
+
 class TestDownloadView(GemetTest):
     def setUp(self):
         LanguageFactory()
@@ -41,8 +42,7 @@ class TestDownloadView(GemetTest):
     def test_form_unknown(self):
         resp = self.app.get(self.url)
         resp.forms['groups-form'].get('type').force_value('unknown')
-        resp = resp.forms['groups-form'].submit('type')
+        resp = resp.forms['groups-form'].submit('type', expect_errors=True)
 
-        self.assertEqual(200, resp.status_int)
+        self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
-
