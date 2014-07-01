@@ -40,9 +40,10 @@ def prepare_html(html):
         '"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"' + \
         '></script>'
     breadcrumbs = '<div class="breadcrumbitem eionetaccronym">' + \
-        '<a href="http://www.eionet.europa.eu">Eionet</a></div>' + \
+        '<a href="{zope_url}">Eionet</a></div>'.format(zope_url=ZOPE_URL) + \
         '<div class="breadcrumbitemlast">GEMET</div>'
-    breadcrumbs_old = '<div class="breadcrumbitemlast eionetaccronym">Eionet</div>'
+    breadcrumbs_old = '<div class="breadcrumbitemlast eionetaccronym">' + \
+        'Eionet</div>'
     html = html.replace(breadcrumbs_old, breadcrumbs)
     html = html.replace('</head>', css_url + '</head>')
     html = html.replace('</body>', jquery_url + js_url + '</body>')
