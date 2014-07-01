@@ -390,12 +390,13 @@ def getConceptsMatchingRegexByThesaurus(regex, thesaurus_uri,
 
 
 def getAvailableLanguages(concept_uri):
+    thesaurus_uri, _ = split_concept_uri(concept_uri)
+    ns = get_namespace(thesaurus_uri)
     concept_id = get_concept_id(concept_uri)
-
     languages = Property.objects.filter(
         concept_id=concept_id,
-        name='prefLabel',
-    ).values_list('language', flat=True)
+        concept__namespace=ns,
+    ).values_list('language', flat=True).distinct()
 
     return [] or sorted(languages)
 
