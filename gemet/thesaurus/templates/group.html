@@ -57,3 +57,6 @@
   <p id="concept-url"><a rel="nofollow" href="{{ group.url }}">{{ group.url }}</a></p>
 
 {% endblock %}
+{% block version %}
+    {% include 'version.html' with version=ns_version %}
+{% endblock %}

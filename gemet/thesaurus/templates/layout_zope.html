@@ -19,6 +19,10 @@
   &nbsp;|&nbsp;
   <a href="{% url 'changes' language.code %}">History of changes</a>
 </div>
+
+{% block version %}
+{% endblock %}
+
 {% autoescape off %}
 {{ footer_text }}
 {% endautoescape %}
