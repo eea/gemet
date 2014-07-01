@@ -850,6 +850,4 @@ def error500(request):
         context = {}
         template = '500.html'
         status_code = 500
-    response = render(request, template, context)
-    response.status_code = status_code
-    return response
+    return render(request, template, context, status=status_code)
