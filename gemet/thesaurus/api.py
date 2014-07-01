@@ -21,7 +21,6 @@ from gemet.thesaurus.models import (
     InspireTheme,
     Property,
     Relation,
-    PropertyType,
 )
 from gemet.thesaurus import DEFAULT_LANGCODE
 from gemet.thesaurus.utils import search_queryset, regex_search
@@ -137,7 +136,6 @@ def get_model(thesaurus_uri):
         ENDPOINT_URI + 'supergroup/': SuperGroup,
         ENDPOINT_URI_2: InspireTheme,
     }
-
     return thesaurus_to_model.get(thesaurus_uri)
 
 
@@ -149,7 +147,6 @@ def get_reverse_name(heading):
         'Super groups': 'supergroup',
         'Inspire Themes': 'inspire-theme',
     }
-
     return heading_to_urlname.get(heading)
 
 
@@ -319,12 +316,12 @@ def hasRelation(concept_uri, relation_uri, object_uri):
     except Fault:
         return False
 
-    property_type_id = Relation.objects.filter(
+    property_type_uri = Relation.objects.filter(
         source_id=source_id,
         target_id=target_id,
-    ).values_list('property_type_id', flat=True).first()
+    ).values_list('property_type__uri', flat=True).first()
 
-    return relation_uri == PropertyType.objects.get(pk=property_type_id).uri
+    return relation_uri == property_type_uri
 
 
 def getAllTranslationsForConcept(concept_uri, property_uri):
@@ -365,7 +362,9 @@ def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri='',
 
     if thesaurus_uri:
         for concept in concepts:
-            results.append(get_concept(thesaurus_uri, concept['id'], language.code))
+            results.append(
+                get_concept(thesaurus_uri, concept['id'], language.code)
+            )
     else:
         for concept in concepts:
             results.append(get_concept(
