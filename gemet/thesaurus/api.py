@@ -405,7 +405,8 @@ def getSupportedLanguages(thesaurus_uri):
     ns = get_namespace(thesaurus_uri)
     languages = Property.objects.filter(
         concept__namespace=ns,
-    ).values_list('language', flat=True)
+    ).values_list('language', flat=True).distinct()
+
     return [] or sorted(set(languages))
 
 

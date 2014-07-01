@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from gemet.thesaurus.tests.factories import (
     PropertyFactory,
     TermFactory,
+    ThemeFactory,
     LanguageFactory,
 )
 from gemet.thesaurus.tests import GemetTest
@@ -54,10 +55,10 @@ class TestGetAvailableLanguages(GemetTest):
         self.assertEqual(2, len(resp))
         self.assertEqual(resp, [u'en', u'es'])
 
-    def test_only_preflabel(self):
+    def test_two_namespaces(self):
+        theme = ThemeFactory(code='1')
         spanish = LanguageFactory(code='es', name='Spanish')
-        PropertyFactory(concept=self.term, name='definition',
-                        value='definition2', language=spanish)
+        self._initialize(theme, 'prefLabel2', 'definition2', spanish)
         resp = self.app.get(self.url + urlencode({
             'concept_uri': self.NS_ROOT + 'concept/' + self.term.code
         }))
