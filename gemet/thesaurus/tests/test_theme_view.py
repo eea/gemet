@@ -7,7 +7,7 @@ from .factories import (
     TermFactory,
     ThemeFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestThemeView(GemetTest):
@@ -114,3 +114,4 @@ class TestThemeView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())

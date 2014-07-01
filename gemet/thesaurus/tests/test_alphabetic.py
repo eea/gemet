@@ -5,7 +5,7 @@ from .factories import (
     PropertyFactory,
     TermFactory,
 )
-from . import GemetTest
+from . import GemetTest, ERROR_404
 
 
 class TestAlphabeticView(GemetTest):
@@ -137,3 +137,4 @@ class TestAlphabeticView(GemetTest):
                       letter=100)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
