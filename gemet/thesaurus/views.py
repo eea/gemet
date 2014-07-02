@@ -2,6 +2,7 @@ from itertools import chain
 from collections import OrderedDict
 import sys
 from xmlrpclib import Fault
+from urllib import urlencode
 
 from django.http import Http404
 from django.shortcuts import (
@@ -768,19 +769,33 @@ class DownloadView(HeaderMixin, FormView):
 
 
 def redirect_old_urls(request, view_name):
-    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     old_new_views = {
         'index_html': 'themes',
-        'groups': 'groups',
         'rdf': 'download',
         'inspire_themes': 'inspire-themes',
+        'relations': 'groups',
     }
     view = old_new_views.get(view_name, view_name)
+
+    kwargs = {}
     if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
-                'gemet-groups.rdf', 'inspire-themes']:
-        return redirect(view, permanent=True, langcode=langcode)
-    else:
-        return redirect(view, permanent=True)
+                'gemet-groups.rdf', 'inspire-themes', 'alphabets', 'about',
+                'definition_sources', 'changes', 'alphabetic', 'search',
+                'theme_concepts']:
+        langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
+        kwargs.update({'langcode': langcode})
+
+    if view_name == 'theme_concepts':
+        theme_code = request.GET.get('th')
+        theme = get_object_or_404(Theme, code=theme_code)
+        kwargs.update({'theme_id': theme.id})
+
+    url = reverse(view, kwargs=kwargs)
+    letter = request.GET.get('letter')
+    if letter:
+        url = '?'.join((url, urlencode({'letter': letter})))
+
+    return redirect(url, permanent=True)
 
 
 def old_concept_redirect(request):
