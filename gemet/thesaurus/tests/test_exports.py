@@ -178,19 +178,24 @@ class TestExports(GemetTest):
         p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
         p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
         p3 = PropertyTypeFactory(id=3, name='related', label='related')
+        p4 = PropertyTypeFactory(id=4, name='exactMatch', label='exact match')
+        p5 = PropertyTypeFactory(id=5, name='closeMatch', label='close match')
         RelationFactory(property_type=p1, source=term1, target=term2)
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
         RelationFactory(property_type=p3, source=term3, target=term2)
-
-        rows = ['11 Narrower 12', '12 Broader 11', '12 Related 13',
-                '13 Related 12']
+        ForeignRelationFactory(concept=term1, uri='concept_uri1', property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri2', property_type=p5)
+        ForeignRelationFactory(concept=term2, uri='concept_uri3', property_type=p4)
+        rows = ['11 Narrower 12', '11 Exactmatch concept_uri1',
+                '11 Closematch concept_uri2', '12 Broader 11', '12 Related 13',
+                '12 Closematch concept_uri3', '13 Related 12']
 
         resp = self.app.get(reverse('gemet-relations.html'))
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.pyquery('table').size(), 1)
-        self.assertEqual(resp.pyquery('tbody tr').size(), 4)
+        self.assertEqual(resp.pyquery('tbody tr').size(), 7)
         for i in range(0, 4):
             self.assertTrue(
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows

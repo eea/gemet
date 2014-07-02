@@ -15,7 +15,7 @@ class TestThemeConceptsView(GemetTest):
     def setUp(self):
         self.theme = ThemeFactory()
 
-        PropertyFactory(concept=self.theme)
+        PropertyFactory(concept=self.theme, name="propertyName")
         self.pt1 = PropertyTypeFactory(id=1, name="themeMember",
                                        label="Theme member")
         self.pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
@@ -44,6 +44,7 @@ class TestThemeConceptsView(GemetTest):
                          'Concept value')
 
     def test_one_theme_two_concepts(self):
+        PropertyFactory(concept=self.theme, name="prefLabel")
         concept1 = TermFactory(id=1, code="1")
         PropertyFactory(concept=concept1, value="Concept 1")
         RelationFactory(property_type=self.pt1, source=self.theme,
