@@ -68,7 +68,6 @@ class ThemesView(HeaderMixin, TemplateView):
     page_title = 'Themes'
     theme_url = 'theme_concepts'
     view_name = 'themes'
-    ns_version = Theme.objects.get_ns().version
 
     def _get_themes_by_langcode(self, langcode):
         return (
@@ -97,7 +96,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
-            'ns_version': self.ns_version
+            'ns_version': self.model_cls.objects.get_ns().version
         })
         return context
 
@@ -107,7 +106,6 @@ class InspireThemesView(ThemesView):
     page_title = 'INSPIRE Spatial Data Themes'
     theme_url = 'inspire-theme'
     view_name = 'inspire-themes'
-    ns_version = InspireTheme.objects.get_ns().version
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
@@ -123,7 +121,6 @@ class InspireThemesView(ThemesView):
 
 class GroupsView(HeaderMixin, TemplateView):
     template_name = "groups.html"
-    ns_version = Group.objects.get_ns().version
 
     def get_context_data(self, **kwargs):
         context = super(GroupsView, self).get_context_data(**kwargs)
@@ -142,7 +139,7 @@ class GroupsView(HeaderMixin, TemplateView):
 
         context.update({
             "supergroups": supergroups,
-            "ns_version": self.ns_version
+            "ns_version": Group.objects.get_ns().version
         })
         return context
 
@@ -173,7 +170,6 @@ class AlphabetsView(HeaderMixin, TemplateView):
 class SearchView(HeaderMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
-    ns_version = Term.objects.get_ns().version
 
     query = ''
     concepts = []
@@ -187,7 +183,7 @@ class SearchView(HeaderMixin, FormView):
         context.update({
             "query": self.query,
             "concepts": self.concepts,
-            "ns_version": self.ns_version
+            "ns_version": Term.objects.get_ns().version
         })
         return context
 
@@ -203,7 +199,6 @@ class SearchView(HeaderMixin, FormView):
 
 class RelationsView(HeaderMixin, TemplateView):
     template_name = "relations.html"
-    ns_version = Term.objects.get_ns().version
 
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get('group_id')
@@ -224,13 +219,12 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
-            'ns_version': self.ns_version
+            'ns_version': Term.objects.get_ns().version
         })
         return context
 
 
 class ConceptView(HeaderMixin, DetailView):
-    ns_version = Term.objects.get_ns().version
     pk_url_kwarg = 'concept_id'
 
     def get_object(self):
@@ -263,7 +257,7 @@ class ConceptView(HeaderMixin, DetailView):
 
         context.update({
             "languages": languages,
-            "ns_version": self.ns_version
+            "ns_version": self.model.objects.get_ns().version
         })
         return context
 
@@ -292,7 +286,6 @@ class InspireThemeView(ConceptView):
     model = InspireTheme
     concept_type = 'inspire-theme'
     context_object_name = 'inspire_theme'
-    ns_version = InspireTheme.objects.get_ns().version
 
 
 class ThemeView(ConceptView):
@@ -300,7 +293,6 @@ class ThemeView(ConceptView):
     model = Theme
     concept_type = 'theme'
     context_object_name = 'theme'
-    ns_version = Theme.objects.get_ns().version
 
 
 class GroupView(ConceptView):
@@ -308,7 +300,6 @@ class GroupView(ConceptView):
     model = Group
     concept_type = 'group'
     context_object_name = 'group'
-    ns_version = Group.objects.get_ns().version
 
 
 class SuperGroupView(ConceptView):
@@ -316,7 +307,6 @@ class SuperGroupView(ConceptView):
     model = SuperGroup
     concept_type = 'supergroup'
     context_object_name = 'supergroup'
-    ns_version = SuperGroup.objects.get_ns().version
 
 
 class PaginatorView(HeaderMixin, ListView):
@@ -407,7 +397,6 @@ class ThemeConceptsView(PaginatorView):
 
     template_name = "theme_concepts.html"
     model = Theme
-    ns_version = Term.objects.get_ns().version
 
     def get_queryset(self):
         pk = self.kwargs.get('theme_id')
@@ -423,7 +412,7 @@ class ThemeConceptsView(PaginatorView):
             context.update({'language_warning': True})
         context.update({
             'theme': self.theme,
-            'ns_version': self.ns_version
+            'ns_version': Term.objects.get_ns().version
         })
 
         return context
@@ -432,7 +421,6 @@ class ThemeConceptsView(PaginatorView):
 class AlphabeticView(PaginatorView):
     template_name = "alphabetic_listings.html"
     model = Property
-    ns_version = Term.objects.get_ns().version
 
     def get_queryset(self):
         self.concepts = (
@@ -451,7 +439,7 @@ class AlphabeticView(PaginatorView):
 
     def get_context_data(self, **kwargs):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
-        context.update({"ns_version": self.ns_version})
+        context.update({"ns_version": Term.objects.get_ns().version})
 
         return context
 
