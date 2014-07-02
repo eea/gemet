@@ -99,6 +99,7 @@ class TestConceptView(GemetTest):
         })
 
         self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
         self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
         self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
         self.assertEqual(resp.body.count('theme/' + str(self.theme.id)), 1)
@@ -132,6 +133,7 @@ class TestConceptView(GemetTest):
         })
 
         self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
         self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
         self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
         self.assertEqual(resp.body.count('theme/' + str(self.theme1.id)), 1)
