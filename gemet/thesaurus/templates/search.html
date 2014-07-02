@@ -29,6 +29,16 @@
       {% endfor %}
     </ul>
     {% endif %}
+  {% else %}
+    {% if form.errors %}
+      <div>
+        <span>{{ form.errors.query }}</span>
+      </div>
+    {% else %}
+      <div>
+        <span>Nothing to search for.</span>
+      </div>
+    {% endif %}
   {% endif %}
 
 {% endblock %}
