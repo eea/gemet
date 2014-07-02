@@ -12,7 +12,7 @@
 <body>
     <table>
         <caption>Concept to concept relations</caption>
-        <col style="width:4em"/><col style="width:8em"/><col style="width:4em"/>
+        <col style="width:4em"/><col style="width:8em"/><col style="width:12em"/>
         <thead>
             <tr>
               <th>Id</th>
@@ -24,15 +24,8 @@
             {% for relation in relations %}
             <tr>
               <td>{{ relation.source__code }}</td>
-              <td>{{ relation.property_type__name }}</td>
+              <td>{{ relation.property_type__name|lower|capfirst }}</td>
               <td>{{ relation.target__code  }}</td>
-            </tr>
-            {% endfor %}
-            {% for relation in foreign_relations %}
-            <tr>
-              <td>{{ relation.concept__code }}</td>
-              <td>{{ relation.property_type__name }}</td>
-              <td>{{ relation.uri }}</td>
             </tr>
             {% endfor %}
         </tbody>

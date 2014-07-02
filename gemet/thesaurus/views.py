@@ -3,7 +3,7 @@ from collections import OrderedDict
 import sys
 from xmlrpclib import Fault
 
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404
 from django.shortcuts import (
     render,
     get_object_or_404,
@@ -634,14 +634,17 @@ class GemetRelationsView(GemetRelationsMixin):
                 'concept__code', 'property_type__name', 'uri',
             )
         )
-        for r in list(chain(self.relations, self.foreign_relations)):
-            r['property_type__name'] = (
-                r['property_type__name'].lower().capitalize()
-            )
+        self.relations = list(self.relations)
+        for relation in self.foreign_relations:
+            d = {}
+            d['source__code'] = relation['concept__code']
+            d['property_type__name'] = relation['property_type__name']
+            d['target__code'] = relation['uri']
+            self.relations.append(d)
 
         context.update({
-            'relations': self.relations,
-            'foreign_relations': self.foreign_relations,
+            'relations': sorted(self.relations,
+                                key=lambda x: x['source__code']),
         })
 
         return context
