@@ -98,6 +98,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
+            'ns_version': self.model_cls.objects.get_ns().version
         })
         return context
 
@@ -138,7 +139,10 @@ class GroupsView(HeaderMixin, TemplateView):
             .values('id', 'name')
         )
 
-        context.update({"supergroups": supergroups})
+        context.update({
+            "supergroups": supergroups,
+            "ns_version": Group.objects.get_ns().version
+        })
         return context
 
 
@@ -161,7 +165,6 @@ class AlphabetsView(HeaderMixin, TemplateView):
         context = super(AlphabetsView, self).get_context_data(**kwargs)
 
         letters = unicode_character_map.get(self.langcode, [])
-
         context.update({"letters": letters})
         return context
 
@@ -176,7 +179,11 @@ class SearchView(HeaderMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        context.update({"query": self.query, "concepts": self.concepts})
+        context.update({
+            "query": self.query,
+            "concepts": self.concepts,
+            "ns_version": Term.objects.get_ns().version
+        })
         return context
 
     def form_valid(self, form):
@@ -211,12 +218,12 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
+            'ns_version': Term.objects.get_ns().version
         })
         return context
 
 
 class ConceptView(HeaderMixin, DetailView):
-
     pk_url_kwarg = 'concept_id'
 
     def get_object(self):
@@ -247,7 +254,10 @@ class ConceptView(HeaderMixin, DetailView):
                 value__isnull=False,
             )]
 
-        context.update({"languages": languages})
+        context.update({
+            "languages": languages,
+            "ns_version": self.model.objects.get_ns().version
+        })
         return context
 
     def get(self, request, *args, **kwargs):
@@ -399,7 +409,10 @@ class ThemeConceptsView(PaginatorView):
         if not hasattr(self.theme, 'prefLabel'):
             self.theme.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
             context.update({'language_warning': True})
-        context.update({'theme': self.theme})
+        context.update({
+            'theme': self.theme,
+            'ns_version': Term.objects.get_ns().version
+        })
 
         return context
 
@@ -423,6 +436,11 @@ class AlphabeticView(PaginatorView):
 
         return super(AlphabeticView, self).get_queryset()
 
+    def get_context_data(self, **kwargs):
+        context = super(AlphabeticView, self).get_context_data(**kwargs)
+        context.update({"ns_version": Term.objects.get_ns().version})
+
+        return context
 
 class BackboneView(TemplateView):
     template_name = 'downloads/backbone.html'

@@ -53,3 +53,6 @@
   <p id="concept-url"><a rel="nofollow" href="{{ theme.url }}">{{ theme.url }}</a></p>
 
 {% endblock %}
+{% block version %}
+    {% include 'version.html' with version=ns_version %}
+{% endblock %}
