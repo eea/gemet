@@ -419,11 +419,10 @@ class ThemeConceptsView(PaginatorView):
 
 class AlphabeticView(PaginatorView):
     template_name = "alphabetic_listings.html"
-    model = Property
 
     def get_queryset(self):
         self.concepts = (
-            self.model.objects.filter(
+            Property.objects.filter(
                 name='prefLabel',
                 language__code=self.langcode,
                 concept__namespace__heading='Concepts'
