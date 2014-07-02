@@ -100,6 +100,30 @@ class TestOldConceptRedirectView(GemetTest):
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
+    def test_404_no_ns_parameter(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept)
+
+        url = "{url}?cp={cp}"\
+              .format(url=reverse('old_concept_redirect'),
+                      cp=concept.id)
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+    def test_404_no_cp_parameter(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept)
+
+        url = "{url}?ns={ns}"\
+              .format(url=reverse('old_concept_redirect'),
+                      ns=concept.namespace.id)
+        resp = self.app.get(url, expect_errors=True)
+
+        self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
     def test_404_no_language(self):
         concept = TermFactory()
         PropertyFactory(concept=concept)
