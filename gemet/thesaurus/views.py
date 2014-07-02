@@ -636,10 +636,9 @@ class GemetRelationsView(GemetRelationsMixin):
         )
         self.relations = list(self.relations)
         for relation in self.foreign_relations:
-            d = {}
-            d['source__code'] = relation['concept__code']
-            d['property_type__name'] = relation['property_type__name']
-            d['target__code'] = relation['uri']
+            d = {'source__code': relation['concept__code'],
+                 'property_type__name': relation['property_type__name'],
+                 'target__code': relation['uri']}
             self.relations.append(d)
 
         context.update({
