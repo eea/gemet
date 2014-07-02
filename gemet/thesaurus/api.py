@@ -73,12 +73,7 @@ class ApiView(View):
             function = self.functions[self.method_name]
         except KeyError:
             raise Fault(-1, 'Invalid method name: %s' % self.method_name)
-        response = HttpResponse(
-            content_type='text/javascript' if (
-                has_get_param('jsonp') and get_param('jsonp') == 'callback'
-            )
-            else 'application/json'
-        )
+        response = HttpResponse(content_type='application/json')
         defaults = getargspec(function).defaults
         arguments = getargspec(function).args
 
@@ -88,7 +83,15 @@ class ApiView(View):
             arguments = required_args + optional_args
 
         kwargs = {arg: get_param(arg) for arg in arguments}
-        response.write(json.dumps(function(**kwargs)))
+        d = json.dumps(function(**kwargs))
+        try:
+            jsonp = get_param('jsonp')
+            if jsonp:
+                response.write(jsonp + '(' + d + ')')
+            else:
+                response.write(d)
+        except Fault:
+            response.write(d)
         return response
 
 
