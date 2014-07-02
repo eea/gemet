@@ -7,12 +7,7 @@
 
 {% block header %}
   <h1>
-    Concepts list for
-    {% if language_warning %}
-      <i>{{ theme.name }}</i>
-    {% else %}
-      {{ theme.name }}
-    {% endif %}
+    Concepts list for <i>{{ theme.name }}</i>
   </h1>
   {% if language_warning %}
     <p>* Note: Theme name is not available for the current language</p>
