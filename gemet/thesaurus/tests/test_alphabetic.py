@@ -85,6 +85,20 @@ class TestAlphabeticView(GemetTest):
                                                     'concept_id': concept1.id})
                          )
 
+    def test_wrong_letter_selected(self):
+        concept1 = TermFactory(id=1, code="1")
+        PropertyFactory(concept=concept1, value="A_Concept")
+        concept2 = TermFactory(id=2, code="2")
+        PropertyFactory(concept=concept2, value="B_Concept")
+
+        url = '{url}?letter={letter}'\
+              .format(url=reverse('alphabetic', kwargs={'langcode': 'en'}),
+                      letter='lw')
+
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(404, resp.status_int)
+        self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
     def test_letter_selected_filter_two_concepts_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
 
