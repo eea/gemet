@@ -64,6 +64,10 @@ class ChangesView(HeaderMixin, TemplateView):
     template_name = "changes.html"
 
 
+class WebServicesView(HeaderMixin, TemplateView):
+    template_name = 'webservices.html'
+
+
 class ThemesView(HeaderMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
@@ -440,6 +444,7 @@ class AlphabeticView(PaginatorView):
         context.update({"ns_version": Term.objects.get_ns().version})
 
         return context
+
 
 class BackboneView(TemplateView):
     template_name = 'downloads/backbone.html'

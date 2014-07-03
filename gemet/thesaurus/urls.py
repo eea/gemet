@@ -30,6 +30,7 @@ from gemet.thesaurus.views import (
     Skoscore,
     InspireThemesView,
     InspireThemeView,
+    WebServicesView,
 )
 from .api import ApiView
 
@@ -93,6 +94,7 @@ urlpatterns = patterns(
         url(r'^search/$', SearchView.as_view(), name='search'),
         url(r'^definition-sources/$', DefinitionSourcesView.as_view(),
             name='definition_sources'),
+        url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html/$', BackboneView.as_view(),
