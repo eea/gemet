@@ -43,6 +43,9 @@ class TestGetAvailableLanguages(GemetTest):
             'concept_uri': self.NS_ROOT + 'concept/' + '9999'
         }))
 
+    def test_missing_concept_uri(self):
+        self.assertRaises(Fault, self.app.get, self.url )
+
     def test_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
         self._initialize(self.term, 'prefLabel2', 'definition2', spanish)

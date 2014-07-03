@@ -57,6 +57,12 @@ class TestGetTopmostConcepts(GemetTest):
                                   'language': self.english.code})
         )
 
+    def test_missing_thesaurus_uri(self):
+        self.assertRaises(
+            Fault, self.app.get,
+            self.url + urlencode({'language': self.english.code})
+        )
+
     def test_one_term(self):
         resp = self.app.get(
             self.url + urlencode({'thesaurus_uri': self.term.namespace.url})
