@@ -22,8 +22,14 @@
                 <span class="muted">other names:</span>
                 <span class="py-other-names">{{ names.other_names }}</span>&ensp;
               {% endif %}
-              <span class="muted">broader context:</span>
-              <span class="py-broader">{% broader_context concept.id language.code %}</span>
+
+              {% get_broader_context concept.id language.code as broader_context %}
+              {% if broader_context %}
+                <span class="muted">broader context:</span>
+                <span class="py-broader">{{ broader_context }}</span>
+              {% else %}
+                <span class="muted">top level concept</span>
+              {% endif %}
             </p>
         </li>
       {% endfor %}
