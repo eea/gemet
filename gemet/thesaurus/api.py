@@ -22,7 +22,7 @@ from gemet.thesaurus.models import (
     Property,
     Relation,
 )
-from gemet.thesaurus import DEFAULT_LANGCODE
+from gemet.thesaurus import DEFAULT_LANGCODE, NS_VIEW_MAPPING
 from gemet.thesaurus.utils import search_queryset, regex_search
 
 ENDPOINT_URI = 'http://www.eionet.europa.eu/gemet/'
@@ -146,14 +146,7 @@ def get_model(thesaurus_uri):
 
 
 def get_reverse_name(heading):
-    heading_to_urlname = {
-        'Concepts': 'concept',
-        'Themes': 'theme',
-        'Groups': 'group',
-        'Super groups': 'supergroup',
-        'Inspire Themes': 'inspire_theme',
-    }
-    return heading_to_urlname.get(heading)
+    return NS_VIEW_MAPPING.get(heading)
 
 
 def get_concept_uri(heading, concept_id, langcode):
