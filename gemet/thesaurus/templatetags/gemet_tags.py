@@ -56,16 +56,3 @@ def get_default_name(concept_id):
         )
         .value
     )
-
-
-@register.filter(name="half")
-def half(elements, arg):
-    half_len = int(round(float(len(elements)) / 2))
-    half_list = []
-
-    if arg == 0:
-        half_list = elements[:half_len]
-    elif arg == 1:
-        half_list = elements[half_len:]
-
-    return half_list
