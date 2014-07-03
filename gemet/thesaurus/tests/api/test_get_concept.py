@@ -56,6 +56,12 @@ class TestGetConcept(GemetTest):
                                   'language': self.english.code})
         )
 
+    def test_missing_concept_uri(self):
+        self.assertRaises(
+            Fault, self.app.get,
+            self.url + urlencode({'language': self.english.code})
+        )
+
     def test_concept(self):
         resp = self.app.get(self.url + urlencode({
             'concept_uri': self.NS_ROOT + 'concept/' + self.term.code,
