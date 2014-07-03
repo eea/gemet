@@ -5,5 +5,5 @@ NS_VIEW_MAPPING = {
     'Themes': 'theme',
     'Groups': 'group',
     'Super groups': 'supergroup',
-    'Inspire Themes': 'inspire-theme',
+    'Inspire Themes': 'inspire_theme',
 }

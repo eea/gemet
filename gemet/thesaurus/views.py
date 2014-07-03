@@ -110,8 +110,8 @@ class ThemesView(HeaderMixin, TemplateView):
 class InspireThemesView(ThemesView):
     model_cls = InspireTheme
     page_title = 'INSPIRE Spatial Data Themes'
-    theme_url = 'inspire-theme'
-    view_name = 'inspire-themes'
+    theme_url = 'inspire_theme'
+    view_name = 'inspire_themes'
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
@@ -285,9 +285,9 @@ class TermView(ConceptView):
 
 
 class InspireThemeView(ConceptView):
-    template_name = "inspire-theme.html"
+    template_name = "inspire_theme.html"
     model = InspireTheme
-    concept_type = 'inspire-theme'
+    concept_type = 'inspire_theme'
     context_object_name = 'inspire_theme'
 
 
@@ -793,16 +793,15 @@ def redirect_old_urls(request, view_name):
     old_new_views = {
         'index_html': 'themes',
         'rdf': 'download',
-        'inspire_themes': 'inspire-themes',
         'relations': 'groups',
     }
     view = old_new_views.get(view_name, view_name)
 
     kwargs = {}
     if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
-                'gemet-groups.rdf', 'inspire-themes', 'alphabets', 'about',
-                'definition_sources', 'changes', 'alphabetic', 'search',
-                'theme_concepts', 'webservices']:
+                'gemet-groups.rdf', 'alphabets', 'about', 'definition_sources',
+                'changes', 'alphabetic', 'search', 'theme_concepts',
+                'webservices']:
         langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
         kwargs.update({'langcode': langcode})
 

@@ -151,7 +151,7 @@ def get_reverse_name(heading):
         'Themes': 'theme',
         'Groups': 'group',
         'Super groups': 'supergroup',
-        'Inspire Themes': 'inspire-theme',
+        'Inspire Themes': 'inspire_theme',
     }
     return heading_to_urlname.get(heading)
 

@@ -150,7 +150,7 @@ class Concept(Model):
     def get_about_url(self):
         # get the concept type, since we cannot rely on self.concept_type
         concept_type = self.get_concept_type()
-        if concept_type == 'inspire-theme':
+        if concept_type == 'inspire_theme':
             return self.namespace.url + self.code
         return reverse('concept_redirect',
                        kwargs={'concept_type': concept_type,
