@@ -5,9 +5,12 @@ from django.core.urlresolvers import reverse
 
 from gemet.thesaurus.tests.factories import (
     TermFactory,
+    PropertyFactory,
+    InspireThemeFactory,
     LanguageFactory,
 )
 from gemet.thesaurus.tests import GemetTest
+from gemet.thesaurus import DEFAULT_LANGCODE
 
 
 class TestOthers(GemetTest):
@@ -46,3 +49,44 @@ class TestOthers(GemetTest):
             self.app.get(url_jsonp).body,
             'callback(' + self.app.get(url).body + ')',
         )
+
+    def test_inspire_theme_case(self):
+        url = reverse('api_root', args=['getConcept']) + '?'
+        inspire = InspireThemeFactory()
+        resp = self.app.get(url + urlencode({
+            'concept_uri': 'http://inspire.ec.europa.eu/theme/' + inspire.code,
+        }))
+
+        self.assertEqual(200, resp.status_code)
+
+    def test_home_redirect(self):
+        url = reverse('api_root', args=[''])
+        resp = self.app.get(url)
+
+        self.assertEqual(resp.status_code, 301)
+        resp = resp.follow()
+        self.assertEqual(resp.status_code, 200)
+        redirect_url = resp.request.url
+        home_url = reverse('themes', args=[DEFAULT_LANGCODE])
+        self.assertTrue(redirect_url.endswith(home_url))
+
+    def test_topmost_concepts_null_pref_label(self):
+        PropertyFactory(concept=self.term, name='definition',
+                        value='definition', language=self.english)
+        ENDPOINT_URI = 'http://www.eionet.europa.eu'
+        url = reverse('api_root', args=['getTopmostConcepts']) + '?'
+        resp = self.app.get(
+            url + urlencode({'thesaurus_uri': self.term.namespace.url})
+        )
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        resp = resp.json
+        self.assertEqual(len(resp), 1)
+        self.assertEqual(resp[0]['definition']['string'], 'definition')
+        self.assertEqual(resp[0]['definition']['language'], self.english.code)
+        self.assertEqual(resp[0]['uri'], ENDPOINT_URI + reverse(
+            'concept', args=(self.english.code, self.term.id))
+        )
+        self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
+        self.assertFalse(['preferredLabel'] in resp[0].keys())
