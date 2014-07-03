@@ -28,6 +28,7 @@ from gemet.thesaurus.models import (
     Relation,
     InspireTheme,
     ForeignRelation,
+    Concept,
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -35,7 +36,7 @@ from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
 from gemet.thesaurus import (
     DEFAULT_LANGCODE,
     NR_CONCEPTS_ON_PAGE,
-    NS_VIEW_MAPPING,
+    NS_ID_VIEW_MAPPING,
 )
 
 
@@ -822,24 +823,10 @@ def old_concept_redirect(request):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     ns = request.GET.get('ns')
     cp = request.GET.get('cp')
-    if ns and cp:
-        concept_types = {
-            str(model.objects.get_ns().id): model for model in
-            [Term, Group, SuperGroup, Theme, InspireTheme]
-        }
-        concept_type = concept_types.get(ns)
-        if concept_type:
-            namespace = get_object_or_404(Namespace, id=ns)
-            concept = get_object_or_404(concept_type, namespace=namespace,
-                                        code=cp)
-            get_object_or_404(Language, pk=langcode)
-            return redirect(NS_VIEW_MAPPING.get(namespace.heading),
-                            langcode=langcode,
-                            concept_id=concept.id)
-        else:
-            raise Http404
-    else:
-        raise Http404
+    concept = get_object_or_404(Concept, namespace__id=ns, code=cp)
+    return redirect(NS_ID_VIEW_MAPPING.get(ns),
+                    langcode=langcode,
+                    concept_id=concept.id)
 
 
 def concept_redirect(request, concept_type, concept_code):

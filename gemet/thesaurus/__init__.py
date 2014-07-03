@@ -7,3 +7,10 @@ NS_VIEW_MAPPING = {
     'Super groups': 'supergroup',
     'Inspire Themes': 'inspire_theme',
 }
+NS_ID_VIEW_MAPPING = {
+    '1': 'concept',
+    '4': 'theme',
+    '3': 'group',
+    '2': 'supergroup',
+    '5': 'inspire_theme',
+}

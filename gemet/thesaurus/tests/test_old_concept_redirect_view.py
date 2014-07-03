@@ -135,6 +135,9 @@ class TestOldConceptRedirectView(GemetTest):
                       lang='ESP')
         resp = self.app.get(url, expect_errors=True)
 
+        self.assertEqual(302, resp.status_int)
+        resp = resp.follow(expect_errors=True)
+
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
