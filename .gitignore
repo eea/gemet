@@ -5,5 +5,6 @@ local_settings.py
 test_settings.py
 docs/api/build/*
 docs/overview/build/*
+docs/new_api/build/*
 fabfile/env.ini
 gemet.sql
