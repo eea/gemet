@@ -223,7 +223,7 @@ Add to your local_settings.py TEST_RUNNER and NOSE_ARGS from
 local_settings.example and run::
 
     ./manage.py test
-
+    # Note: In gemet/gemet/thesaurus/views.py only classes are covered by tests
 
 Contacts
 ========
