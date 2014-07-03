@@ -802,7 +802,7 @@ def redirect_old_urls(request, view_name):
     if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
                 'gemet-groups.rdf', 'inspire-themes', 'alphabets', 'about',
                 'definition_sources', 'changes', 'alphabetic', 'search',
-                'theme_concepts']:
+                'theme_concepts', 'webservices']:
         langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
         kwargs.update({'langcode': langcode})
 

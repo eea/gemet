@@ -59,7 +59,8 @@ urlpatterns = patterns(
         'search|'
         'alphabetic|'
         'theme_concepts|'
-        'relations'
+        'relations|'
+        'webservices'
         ')$',
         redirect_old_urls,
         name='redirects'
