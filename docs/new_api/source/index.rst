@@ -29,7 +29,7 @@ make GEMET part of the Semantic Web and browsable as
 Linked Data.
 What this means is that is you visit a concept URI with
 a webbrowser, you'll see a webpage. If you use a `linked data <http://wifo5-03.informatik.uni-mannheim.de/bizer/pub/LinkedDataTutorial/>`_
-browser, with an Accept-header of application/rdf+xml, then an RDF document should be returned.
+browser, with an **Accept-header** of ``application/rdf+xml``, then an RDF document will be returned.
 
 Using the API as a ReST service
 ===============================
@@ -73,12 +73,10 @@ XML/RPC. A combination of such function calls ensure the full retrieval of
 GEMET's content.
 
 WebService API methods
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 
 .. function:: getTopmostConcepts(URI thesaurus_uri[, String language='en'])
-
-    :func:`getTopmostConcepts` Get the top concepts of a thesaurus.
 
     :param thesaurus_uri: The thesaurus URI from which to retrieve concepts
     :param language: The language in which the concepts are returned
@@ -91,18 +89,21 @@ WebService API methods
 
     A URI is a subclass of string, potentially with some methods to manipulate the URI.
 
-
     Examples:
 
-        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en
-        |   `Try link <http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en>`_
+        ::
 
-        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&language=en
+            http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en
+        |   `Try link <http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en>`_
+        |
+        ::
+
+            http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&language=en>`_
 
-.. function:: getAllConceptRelatives(URI concept_uri[, URI target_thesaurus_uri, URI relation_uri])
+    |
 
-    :func:`getAllConceptRelatives` Get a list of all concept relatives.
+.. function:: getAllConceptRelatives(URI concept_uri[, URI target_thesaurus_uri, URI relation_uri])
 
     :param concept_uri: A URI for the concept
     :param target_thesaurus_uri: A URI for the target with which exist relations
@@ -125,19 +126,24 @@ WebService API methods
 
     Examples:
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps>`_
 
+    |
 
 .. function:: getRelatedConcepts(URI concept_uri, URI relation_uri[, String language='en'])
-
-    :func:`getAllConceptRelatives` Get a list of all concept with a given relation to the object.
 
     :param concept_uri: A URI for the concept
     :param relation_uri: A URI for the relation
@@ -150,42 +156,48 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913
-        |   &relation_uri=http://www.w3.org/2004/02/skos/core%23broader&language=fr
+        ::
+
+           http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&language=fr
         |   `Try link <http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&language=fr>`_
 
+    |
 
 .. function:: hasRelation(URI concept_uri, URI relation_uri, URI object_uri)
-
-    :func:`hasRelation` Tests if the given *concept_uri* is in the relation *relation_uri* with the *object_uri*
 
     :param concept_uri: A URI for the concept representing the source
     :param relation_uri: A URI for the relation
     :param object_uri: A URI for the concept representing the target
     :rtype: A boolean - True or False
 
+    |   Tests if the given *concept_uri* is in the relation *relation_uri* with the *object_uri*
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100
-        |   &relation_uri=http://www.w3.org/2004/02/skos/core%23broader&object_uri=http://www.eionet.europa.eu/gemet/concept/13292
+        ::
+
+            http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&object_uri=http://www.eionet.europa.eu/gemet/concept/13292
         |   `Try link <http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&object_uri=http://www.eionet.europa.eu/gemet/concept/13292>`_
 
+    |
 
 .. function:: hasConcept(URI concept_uri)
-
-    :func:`hasConcept` Tests if the given concept_uri represents a Concept or not.
 
     :param concept_uri: A URI for the concept
     :rtype: A boolean - True or False
 
+    |   This function tests if the given concept_uri represents a valid concept or not, returning true or false.
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970
+        ::
+
+            http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970
         |   `Try link <http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970>`_
 
-.. function:: getConcept(URI concept_uri[, String language='en'])
+    |
 
-    :func:`getConcept` Get a concept by a known URI.
+.. function:: getConcept(URI concept_uri[, String language='en'])
 
     :param concept_uri: A URI for the concept
     :param language: The language in which the concepts are returned
@@ -195,27 +207,29 @@ WebService API methods
 
     Examples:
 
-        |   \http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&language=de
+        ::
+
+            http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&language=de
         |   `Try link <http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&language=de>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&language=en>`_
 
-.. function:: getAllTranslationsForConcept(URI concept_uri, String property_uri)
+    |
 
-    Given a valid *concept_uri* and a valid *property_uri* the :func:`getAllTranslationsForConcept()` retrieves all available translations for that concept’s property within GEMET information database
+.. function:: getAllTranslationsForConcept(URI concept_uri, String property_uri)
 
     :param concept_uri: A URI for the concept
     :param language: The language in which the concepts are returned
     :rtype: A list of dictionaries representing the concepts
 
     |   Returns all translations for a property of a given concept.
-    |   The property is either a SKOS property URI, or an attribute name from
-    |   the Concept class. Currently these are: definition, prefLabel, scopeNote,
-    |   acronymLabel, and example. It is possible for a compliant server to have
-    |   more information about a concept. These will show up as extra attributes
-    |   in Concept objects, and it is legal for a client to ask about translations
-    |   for any attribute of type LanguageString.
+    |   The property is either a SKOS property URI, or an attribute name from the Concept class.
+    |   Currently these are: definition, prefLabel, scopeNote, acronymLabel, and example.
+    |   It is possible for a compliant server to have more information about a concept.
+    |   These will show up as extra attributes in Concept objects, and it is legal for a client to ask about translations for any attribute of type LanguageString.
 
     +-------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
     |                                 Property URI                                  |                                      Concept attribute                                         |
@@ -238,7 +252,9 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126& property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126& property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126&property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel>`_
 
     |   **Note**: when constructing a GET request of this type, the property URI must
@@ -246,8 +262,6 @@ WebService API methods
     |   meaning in a URI).
 
 .. function:: getConceptsMatchingKeyword(String keyword, int search_mode[, URI thesaurus_uri, String language])
-
-    :func:`getConceptsMatchingKeyword` Get a list of concepts matching a keyword for a particular thesaurus.
 
     :param keyword: A string representing the keyword to search for
     :param search_mode: An integer in the range 0 – 4 inclusive:
@@ -261,18 +275,22 @@ WebService API methods
     :param language: The language is used both for specifying what language the keyword is and for returning the concept in the correct language
     :rtype: A list of dictionaries representing the found concepts
 
+    |   The function retrieves a list of concepts matching a keyword for a particular thesaurus.
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en>`_
 
 
     .. versionadded:: 2.1
        The *language* parameter is now set default to **'en'**.
 
-.. function:: getConceptsMatchingRegexByThesaurus(String regex, URI thesaurus_uri[, String language])
+    |
 
-    :func:`getConceptsMatchingRegexByThesaurus` Gets a list of concepts matching a keyword for a particular thesaurus.
+.. function:: getConceptsMatchingRegexByThesaurus(String regex, URI thesaurus_uri[, String language])
 
     :param regex: A string representing the regex to search for
     :param thesaurus_uri: Indicates which thesaurus to search in
@@ -284,20 +302,23 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&­thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&­thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en>`_
 
 
     .. versionadded:: 2.1
        The *language* parameter is now set default to **'en'**.
 
-.. function:: getAvailableLanguages(URI concept_uri)
+    |
 
-    :func:`getAvailableLanguages` Returns the languages a concept's preferred label is available in.
+.. function:: getAvailableLanguages(URI concept_uri)
 
     :param concept_uri: A URI for the concept
     :rtype: A list of strings representing the available languages (as codes)
 
+    |   This function returns the languages a concept's preferred label is available in.
     |   A concept must have a preferred label before it can have any other property in that language.
 
     Example:
@@ -307,83 +328,103 @@ WebService API methods
 
 .. function:: getSupportedLanguages(URI thesaurus_uri)
 
-    :func:`getSupportedLanguages` Retrieves a list containing the language codes for all the
-    languages supported by a certain namespace (concept, group, theme, etc.).
-    Its parameter, *thesaurus_uri*, specifies the URI for the wanted namespace.
-
     :param concept_uri: A URI for the thesaurus
     :rtype: A list of strings representing the available languages (as codes)
 
+    This function retrieves a list containing the language codes for all the
+    languages supported by a certain namespace (concept, group, theme, etc.).
+    Its parameter, *thesaurus_uri*, specifies the URI for the wanted namespace.
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/
+        ::
+
+            http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/
         |   `Try link <http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/>`_
 
-.. function:: getAvailableThesauri(URI concept_uri)
+    |
 
-    :func:`getAvailableThesauri` Return all the thesauri uris, the service knows of
+.. function:: getAvailableThesauri()
 
-    :param concept_uri: A URI for the concept
     :rtype: A list of strings representing the available thesauri
+
+    |   This function returns all the thesauri URIs the service knows of
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getAvailableThesauri
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAvailableThesauri
         |   `Try link <http://www.eionet.europa.eu/gemet/getAvailableThesauri>`_
 
-.. function:: fetchThemes([String language])
+    |
 
-    :func:`fetchThemes` Convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/theme/', language)
+.. function:: fetchThemes([String language])
 
     :param language: The language in which the themes are returned.
     :rtype: A list of dictionaries representing the fetched themes
 
+    |   This function retrieves all the themes the service knows of.
+    |   It is a convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/theme/', language)
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/fetchThemes?language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/fetchThemes?language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/fetchThemes?language=en>`_
 
     .. versionadded:: 2.1
         The *language* parameter is now set default to **'en'**.
 
-.. function:: fetchGroups([String language])
+    |
 
-    :func:`fetchGroups` Convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/group/', language)
+.. function:: fetchGroups([String language])
 
     :param language: The language in which the groups are returned.
     :rtype: A list of dictionaries representing the fetched themes
 
+    |   This function retrieves all the groups the service knows of.
+    |   It is a convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/group/', language)
+
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/fetchGroups?language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/fetchGroups?language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/fetchGroups?language=en>`_
 
     .. versionadded:: 2.1
         The *language* parameter is now set default to **'en'**.
+
+    |
 
 .. function:: fetchSuperGroups([String language])
 
     .. versionadded:: 2.1
         This is a new method.
 
-    :func:`fetchSuperGroups` Convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/supergroup/', language)
-
     :param language: The language in which super groups are returned.
     :rtype: A list of dictionaries representing the fetched themes
 
-    |   In principle all groups that don't have a broader definition would qualify
+    |   This function retrieves all the supergroups the service knows of.
+    |   In principle all groups that don't have a broader definition would qualify.
+    |   It is a convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/supergroup/', language)
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/fetchSuperGroups?language=en
+        ::
+
+            http://www.eionet.europa.eu/gemet/fetchSuperGroups?language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/fetchSupergroups?language=en>`_
 
-
+    |
 
 .. _knownrelations:
 
 **Known relations**
-~~~~~~~~~~~~~~~~~~~
+===================
+
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 |                                 Relation                               |                                      Description                                               |
 +========================================================================+================================================================================================+
@@ -408,3 +449,23 @@ WebService API methods
 **Note**: when using the RESTful API you have to encode the '#' as %23 in
 URLs, otherwise the webbrowser assumes you're referring to a fragment
 inside the result document.
+
+
+**Known thesauri**
+==================
+
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+|                                 Thesauri                               |                                      Description                                               |
++========================================================================+================================================================================================+
+| \http://www.eionet.europa.eu/gemet/concept/                            | thesaurus URI for Concepts                                                                     |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/theme/                              | thesaurus URI for Themes                                                                       |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/group/                              | thesaurus URI for Groups                                                                       |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/supergroup/                         | thesaurus URI for SuperGroups                                                                  |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://inspire.ec.europa.eu/theme/                                    | thesaurus URI for Inspire Themes                                                               |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+
+**Note**: To retrieve the available thesauri, use the function :func:`getAvailableThesauri()`
