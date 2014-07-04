@@ -36,19 +36,19 @@ Using the API as a ReST service
 
 The methods below are described as method calls in simplified Java with the public keyword implied.
 If you want to use it as a ReST api. You first need the URL where the API is implemented.
-In GEMET it is http://www.eionet.europa.eu/gemet/ Then you encode the parameters as a GET operation:
-\http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/theme/&language=es
+In GEMET it is http://www.eionet.europa.eu/gemet/ . Then you encode the parameters as a GET operation::
+
+    http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/theme/&language=es
+
 ReST has the constraint on the API that the arguments can only be text strings.
 I.e. you can't send structures over to the server.
 Likewise no `polymorphism <http://en.wikipedia.org/wiki/Type_polymorphism>`_ is possible.
-It is not yet known how to tell the ReST interface what format the result should be returned in. Possibly with an optional argument
-called format=json.
 
-The format of the output is `JSON <http://en.wikipedia.org/wiki/JSON>`_.
+Without specifying any additional parameter, the standard format of the output is `JSON <http://en.wikipedia.org/wiki/JSON>`_.
 
 All JSON responses can also be wrapped as JSONP if you provide a jsonp argument. I.e.::
 
-    \http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&language=es&jsonp=callback
+    http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&language=es&jsonp=callback
 
 will wrap the JSON response in callback method call.
 
@@ -61,11 +61,12 @@ application and GEMET database somewhere else (e.g. intranet) and then
 use it without being dependent on GEMET at http://www.eionet.europa.eu.
 I.e.::
 
-    \http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&language=es must be possible.
+    http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&language=es
 
+must be possible.
 
-Common RPC methods for GEMET API
-================================
+Common methods for GEMET API
+============================
 The following set of functions can be called by a Web application or Web page
 using either HTTP, where the parameters are specified in the query string or via
 XML/RPC. A combination of such function calls ensure the full retrieval of
@@ -83,20 +84,20 @@ WebService API methods
     :param language: The language in which the concepts are returned
     :rtype: A list of dictionaries representing the concepts
 
-    The result from the method will be a list of concept structs that are determined to be top concepts of the thesaurus.
-    |The purpose is to make the thesaurus browsable. In principle all concepts that don't have a broader definition would qualify.
-    |This method replaces *fetchTopConcepts*, *fetchThemes* and *fetchGroups*.
-    |To get the themes, you would call ``getTopmostConcepts('http://www.eionet.europa.eu/gemet/theme/', 'en')``.
+    |   The result from the method will be a list of concept structs that are determined to be top concepts of the thesaurus.
+    |   The purpose is to make the thesaurus browsable. In principle all concepts that don't have a broader definition would qualify.
+    |   This method replaces *fetchTopConcepts*, *fetchThemes* and *fetchGroups*.
+    |   To get the themes, you would call ``getTopmostConcepts('http://www.eionet.europa.eu/gemet/theme/', 'en')``.
 
     A URI is a subclass of string, potentially with some methods to manipulate the URI.
 
 
     Examples:
 
-        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts? thesaurus_uri= *http://www.eionet.europa.eu/gemet/group/&language=en
+        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&language=en>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts? thesaurus_uri= *http://inspire.ec.europa.eu/theme/&language=en
+        |   \http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&language=en>`_
 
 .. function:: getAllConceptRelatives(URI concept_uri[, URI target_thesaurus_uri, URI relation_uri])
@@ -124,13 +125,13 @@ WebService API methods
 
     Examples:
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives ?concept_uri= \http://www.eionet.europa.eu/gemet/group/234
+        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives ?concept_uri= \http://www.eionet.europa.eu/gemet/concept/6740
+        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740>`_
 
-        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives ?concept_uri= \http://inspire.ec.europa.eu/theme/ps
+        |   \http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps>`_
 
 
@@ -149,8 +150,8 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getRelatedConcepts ?concept_uri= \http://www.eionet.europa.eu/gemet/concept/913
-        |   &relation_uri= \http://www.w3.org/2004/02/skos/core%23broader&language=fr
+        |   \http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913
+        |   &relation_uri=http://www.w3.org/2004/02/skos/core%23broader&language=fr
         |   `Try link <http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&language=fr>`_
 
 
@@ -165,10 +166,8 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/hasRelation?
-        |   concept_uri=\http://www.eionet.europa.eu/gemet/concept/100
-        |   &relation_uri=\http://www.w3.org/2004/02/skos/core%23broader
-        |   &object_uri=\http://www.eionet.europa.eu/gemet/concept/13292
+        |   \http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100
+        |   &relation_uri=http://www.w3.org/2004/02/skos/core%23broader&object_uri=http://www.eionet.europa.eu/gemet/concept/13292
         |   `Try link <http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100&relation_uri=http://www.w3.org/2004/02/skos/core%23broader&object_uri=http://www.eionet.europa.eu/gemet/concept/13292>`_
 
 
@@ -181,8 +180,8 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=concept_uri=\http://www.eionet.europa.eu/gemet/concept/7970
-        |   `Try link <http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=concept_uri=http://www.eionet.europa.eu/gemet/concept/7970>`_
+        |   \http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970
+        |   `Try link <http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970>`_
 
 .. function:: getConcept(URI concept_uri[, String language='en'])
 
@@ -196,10 +195,10 @@ WebService API methods
 
     Examples:
 
-        |   http://inspire.ec.europa.eu/theme/ps&language=de
+        |   \http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&language=de
         |   `Try link <http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&language=de>`_
 
-        |   http://www.eionet.europa.eu/gemet/concept/95&language=en
+        |   \http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&language=en>`_
 
 .. function:: getAllTranslationsForConcept(URI concept_uri, String property_uri)
@@ -235,12 +234,11 @@ WebService API methods
     +-------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 
 
-    |   Why this business with property URIs? It is to provide an opportunity for
-    |   someone who thinks in RDF terms to use the API in a for him natural way.
+    |   Why this business with property URIs? It is to provide an opportunity for someone who thinks in RDF terms to use the API in a for him natural way.
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept? concept_uri=\http://www.eionet.europa.eu/gemet/concept/10126& property_uri=\http://www.w3.org/2004/02/skos/core%23prefLabel
+        |   \http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126& property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126&property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel>`_
 
     |   **Note**: when constructing a GET request of this type, the property URI must
@@ -265,7 +263,7 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0 &thesaurus_uri=\http://www.eionet.europa.eu/gemet/concept/&language=en
+        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&search_mode=0&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en>`_
 
 
@@ -286,7 +284,7 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&­thesaurus_uri=\http://www.eionet.europa.eu/gemet/concept/&language=en
+        |   \http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&­thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en
         |   `Try link <http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&language=en>`_
 
 
@@ -304,7 +302,7 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=\http://inspire.ec.europa.eu/theme/ps
+        |   \http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps
         |   `Try link <http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps>`_
 
 .. function:: getSupportedLanguages(URI thesaurus_uri)
@@ -318,7 +316,7 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=\http://www.eionet.europa.eu/gemet/concept/
+        |   \http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/
         |   `Try link <http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/>`_
 
 .. function:: getAvailableThesauri(URI concept_uri)
@@ -366,7 +364,7 @@ WebService API methods
 .. function:: fetchSuperGroups([String language])
 
     .. versionadded:: 2.1
-        This method is new for the new API.
+        This is a new method.
 
     :func:`fetchSuperGroups` Convenience method that calls getTopmostConcepts('\http://www.eionet.europa.eu/gemet/supergroup/', language)
 
