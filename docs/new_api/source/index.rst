@@ -118,11 +118,8 @@ WebService API methods
     |    See [:ref:`knownrelations`] for a list of known relations.
     |    Only thesauri that are stored in the database are included.
 
-    |    The properties *theme* and *hasConcept* are inverse of each
-    |    other. Meaning *<Concept A> theme <Theme B>* is the same as *<Theme B> hasConcept <Concept A>*.
-    |    Therefore hasConcept is not actually listed in
-    |    the database. Similarly are the properties *group* and *hasConcept*
-    |    inverse. As are *subGroupOf* and *subGroup*.
+    |    The properties *theme* and *hasConcept* are inverse of each other. Meaning *<Concept A> theme <Theme B>* is the same as *<Theme B> hasConcept <Concept A>*.
+    |    Therefore hasConcept is not actually listed in the database. Similarly are the properties *group* and *hasConcept* inverse. As are *subGroupOf* and *subGroup*.
 
     Examples:
 
@@ -248,7 +245,7 @@ WebService API methods
     +-------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 
 
-    |   Why this business with property URIs? It is to provide an opportunity for someone who thinks in RDF terms to use the API in a for him natural way.
+    |   Why this business with property URIs? It is to provide an opportunity for someone who thinks in RDF terms to use the API in a natural way.
 
     Example:
 
@@ -257,9 +254,7 @@ WebService API methods
             http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126& property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel
         |   `Try link <http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126&property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel>`_
 
-    |   **Note**: when constructing a GET request of this type, the property URI must
-    |   be URI-encoded, when it contains the "#" character (which has special
-    |   meaning in a URI).
+    |   **Note**: When constructing a GET request of this type, the property URI must be URI-encoded, when it contains the "#" character (which has special meaning in a URI).
 
 .. function:: getConceptsMatchingKeyword(String keyword, int search_mode[, URI thesaurus_uri, String language])
 
@@ -286,7 +281,7 @@ WebService API methods
 
 
     .. versionadded:: 2.1
-       The *language* parameter is now set default to **'en'**.
+       The *language* parameter is now set by default to **'en'**.
 
     |
 
@@ -323,8 +318,12 @@ WebService API methods
 
     Example:
 
-        |   \http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps
+        ::
+
+            http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps
         |   `Try link <http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps>`_
+
+    |
 
 .. function:: getSupportedLanguages(URI thesaurus_uri)
 
@@ -348,7 +347,7 @@ WebService API methods
 
     :rtype: A list of strings representing the available thesauri
 
-    |   This function returns all the thesauri URIs the service knows of
+    |   This function returns all the thesauri URIs the service knows of.
 
     Example:
 
@@ -437,7 +436,7 @@ WebService API methods
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme      | Theme relationship of a concept. Implemented in RDF, but it is unclear whether it is relevant. |
 |                                                                        | Equivalent to broader, but a theme is not a broader concept of a concept                       |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-| \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme      | Source is a theme or group, target is a concept, equivalent to *narrower*                      |
+| \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#hasConcept | Source is a theme or group, target is a concept, equivalent to *narrower*                      |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group      | Source is a concept, target is a group. Equivalent to *broader*                                |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
