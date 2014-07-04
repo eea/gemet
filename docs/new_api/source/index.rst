@@ -106,13 +106,13 @@ WebService API methods
 .. function:: getAllConceptRelatives(URI concept_uri[, URI target_thesaurus_uri, URI relation_uri])
 
     :param concept_uri: A URI for the concept
-    :param target_thesaurus_uri: A URI for the target with which exist relations
+    :param target_thesaurus_uri: A URI for a thesaurus representing the namespace in which to look for relatives
     :param relation_uri: A URI for the relation
     :rtype: A list of dictionaries  representing the concepts
 
     |    This method will return a listing of relations for the given concept.
     |    The relation can be any relationship, but only direct relationships.
-    |    The *thesaurus_uri* argument is optional. If it isn't provided the relations can be to concepts in all thesauri in the database.
+    |    The *target_thesaurus_uri* argument is optional. If it isn't provided the relations can be to concepts in all thesauri in the database.
     |    The *relation_uri* argument is optional. It makes it possible to get only one type of relationship.
     |    The relation argument takes a URI, e.g. http://www.w3.org/2004/02/skos/core#narrower.
     |    See [:ref:`knownrelations`] for a list of known relations.
