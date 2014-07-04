@@ -224,7 +224,6 @@ local_settings.example and run::
 
     ./manage.py test
 
-
 Contacts
 ========
 
