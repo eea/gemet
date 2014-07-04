@@ -436,18 +436,21 @@ WebService API methods
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme      | Theme relationship of a concept. Implemented in RDF, but it is unclear whether it is relevant. |
 |                                                                        | Equivalent to broader, but a theme is not a broader concept of a concept                       |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#themeMember| Theme member relationship of a concept.                                                        |
+|                                                                        | Equivalent to narrower, but a theme is not a narrower concept of a concept                     |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#hasConcept | Source is a theme or group, target is a concept, equivalent to *narrower*                      |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group      | Source is a concept, target is a group. Equivalent to *broader*                                |
++------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember| Source is a group, target is a concept. Equivalent to *narrower*                               |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroupOf | Source is a group, target is one of the four super groups. Equivalent to *broader*             |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 | \http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroup   | Source is one of the four super groups, target is a group. Equivalent to *narrower*            |
 +------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
 
-**Note**: when using the RESTful API you have to encode the '#' as %23 in
-URLs, otherwise the webbrowser assumes you're referring to a fragment
-inside the result document.
+**Note**: when using the RESTful API you have to encode the '#' as %23 in URLs, otherwise the webbrowser assumes you're referring to a fragment inside the result document.
 
 
 **Known thesauri**
