@@ -27,8 +27,8 @@ number. E.g. http://www.eionet.europa.eu/gemet/concept/7769.
 Currently it is just a string, but we want to
 make GEMET part of the Semantic Web and browsable as
 Linked Data.
-What this means is that is you visit a concept URI with
-a webbrowser, you'll see a webpage. If you use a `linked data <http://wifo5-03.informatik.uni-mannheim.de/bizer/pub/LinkedDataTutorial/>`_
+What this means is that if you visit a concept URI with a webbrowser, you'll see a webpage.
+If you use a `linked data <http://wifo5-03.informatik.uni-mannheim.de/bizer/pub/LinkedDataTutorial/>`_
 browser, with an **Accept-header** of ``application/rdf+xml``, then an RDF document will be returned.
 
 Using the API as a ReST service
