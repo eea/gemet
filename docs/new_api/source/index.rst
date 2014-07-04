@@ -52,8 +52,8 @@ All JSON responses can also be wrapped as JSONP if you provide a jsonp argument.
 
 will wrap the JSON response in callback method call.
 
-|   If you don't specify a valid method name for the API(see API methods below) you will receive a 405 Bad Request Error.
-|   If you don't specify all the required parameters for these methods you will also receive the same error.
+|   If you don't specify a valid method name for the API(see API methods below) you will receive a 400 Bad Request Error.
+|   If you don't specify all the required parameters for these methods you will receive the same error.
 
 When designing the API we have been careful not to mix up the URL of
 the method with the URL of the thesaurus. It is possible to install the
