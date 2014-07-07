@@ -47,7 +47,7 @@ def get_concept_names(search_text):
 
 
 @register.simple_tag
-def get_default_name(concept_id):
+def default_name(concept_id):
     return (
         Concept.objects.get(pk=concept_id)
         .properties.get(

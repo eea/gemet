@@ -11,7 +11,7 @@
   {% if concept.name %}
     <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
   {% else %}
-    <a href="{% url 'concept' language.code concept.id %}">{% get_default_name concept.id %}</a>[english]
+    <a href="{% url 'concept' language.code concept.id %}">{% default_name concept.id %}</a>[english]
   {% endif %}
   <ul class="listing no-list">
     {% if expand.status %}
