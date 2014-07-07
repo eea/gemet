@@ -38,6 +38,27 @@ class TestAlphabeticView(GemetTest):
                                                     'concept_id': concept.id})
                          )
 
+    def test_two_languages_one_preflabel(self):
+        concept = TermFactory()
+        spanish = LanguageFactory(code='es', name='Spanish')
+        PropertyFactory(concept=concept)
+        PropertyFactory(concept=concept, name='prefLabel', value='',
+                        language=spanish)
+
+        url = reverse('alphabetic', kwargs={'langcode': spanish.code})
+        resp = self.app.get(url)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.context['language'].code, spanish.code)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'administration [english]')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': spanish.code,
+                                       'concept_id': concept.id})
+        )
+
     def test_more_concepts(self):
         concept1 = TermFactory(id=1, code="1")
         PropertyFactory(concept=concept1, value="Concept1")
