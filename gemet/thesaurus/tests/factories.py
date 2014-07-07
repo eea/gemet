@@ -5,8 +5,10 @@ from gemet.thesaurus.models import (
     SuperGroup, Theme, DefinitionSource, InspireTheme, ForeignRelation
 )
 
+
 class ForeignRelationFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = ForeignRelation
+
 
 class LanguageFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Language

@@ -184,9 +184,12 @@ class TestExports(GemetTest):
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
         RelationFactory(property_type=p3, source=term3, target=term2)
-        ForeignRelationFactory(concept=term1, uri='concept_uri1', property_type=p4)
-        ForeignRelationFactory(concept=term1, uri='concept_uri2', property_type=p5)
-        ForeignRelationFactory(concept=term2, uri='concept_uri3', property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri1',
+                               property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri2',
+                               property_type=p5)
+        ForeignRelationFactory(concept=term2, uri='concept_uri3',
+                               property_type=p4)
         rows = ['11 Narrower 12', '11 Exactmatch concept_uri1',
                 '11 Closematch concept_uri2', '12 Broader 11', '12 Related 13',
                 '12 Closematch concept_uri3', '13 Related 12']
@@ -215,9 +218,12 @@ class TestExports(GemetTest):
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
         RelationFactory(property_type=p3, source=term3, target=term2)
-        ForeignRelationFactory(concept=term1, uri='concept_uri1', property_type=p4)
-        ForeignRelationFactory(concept=term1, uri='concept_uri2', property_type=p5)
-        ForeignRelationFactory(concept=term2, uri='concept_uri3', property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri1',
+                               property_type=p4)
+        ForeignRelationFactory(concept=term1, uri='concept_uri2',
+                               property_type=p5)
+        ForeignRelationFactory(concept=term2, uri='concept_uri3',
+                               property_type=p4)
 
         resp = self.app.get(reverse('gemet-skoscore.rdf'))
 

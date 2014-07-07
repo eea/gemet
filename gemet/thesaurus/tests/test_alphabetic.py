@@ -135,16 +135,18 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 2)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          '"A_Concept"')
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept1.id})
-                         )
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept1.id})
+        )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          '"B_Concept"')
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept2.id})
-                         )
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'concept_id': concept2.id})
+        )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')

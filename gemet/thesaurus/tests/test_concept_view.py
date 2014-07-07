@@ -147,8 +147,10 @@ class TestConceptView(GemetTest):
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_redirect_rdf(self):
-        url = reverse('concept_redirect', kwargs={'concept_type': 'concept',
-                                         'concept_code': self.concept.code})
+        url = reverse(
+            'concept_redirect', kwargs={'concept_type': 'concept',
+                                        'concept_code': self.concept.code}
+        )
         resp = self.app.get(url, extra_environ={
             'HTTP_ACCEPT': 'application/rdf+xml'
         })
@@ -156,8 +158,10 @@ class TestConceptView(GemetTest):
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
 
     def test_redirect_no_concept_type(self):
-        url = reverse('concept_redirect', kwargs={'concept_type': 'unknown',
-                                         'concept_code': self.concept.code})
+        url = reverse(
+            'concept_redirect', kwargs={'concept_type': 'unknown',
+                                        'concept_code': self.concept.code}
+        )
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())

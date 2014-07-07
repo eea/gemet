@@ -43,7 +43,8 @@ class TestGroupsView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(), 1)
+        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
+                         1)
         self.assertEqual(resp.pyquery('.content .listing.no-list h3').text(),
                          'Super Group')
         self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
