@@ -51,7 +51,11 @@ class HeaderMixin(object):
         context = super(HeaderMixin, self).get_context_data(**kwargs)
         context.update({
             'language': self.language,
-            'languages': Language.objects.values('code', 'name'),
+            'languages': (
+                Language.objects
+                .values('code', 'name')
+                .order_by('name')
+            ),
             'search_form': SearchForm(),
         })
         return context
