@@ -472,6 +472,10 @@ class XMLTemplateView(TemplateView):
                                        content_type="text/xml; charset=utf-8")
 
 
+class GemetSchemaView(XMLTemplateView):
+    template_name = 'gemet_schema.rdf'
+
+
 class BackboneRDFView(XMLTemplateView):
     template_name = 'downloads/backbone.rdf'
 

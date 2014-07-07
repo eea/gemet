@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE rdf:RDF [
+	<!ENTITY skos "http://www.w3.org/2004/02/skos/core#">
+	<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:dcterms="http://purl.org/dc/terms/" 
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+  <owl:Ontology rdf:about="">
+    <dcterms:title>GEMET schema</dcterms:title>
+    <dcterms:description>An RDF schema for encoding GEMET's structure</dcterms:description>
+    <dcterms:creator>S&#248;ren Roug</dcterms:creator>
+    <dcterms:creator rdf:resource="http://www.eionet.europa.eu/users/roug"/>
+    <dcterms:created rdf:datatype="&xsd;date">2004-06-17</dcterms:created>
+    <dcterms:modified rdf:datatype="&xsd;date">2011-04-09</dcterms:modified>
+  </owl:Ontology>
+
+
+<!-- This is the extension of SKOS-Core for the GEMET Thesaurus -->
+
+<rdfs:Class rdf:ID="SuperGroup">
+	<rdfs:label>GEMET Super Group</rdfs:label>
+	<rdfs:subClassOf rdf:resource="&skos;Collection"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Group">
+	<rdfs:label>GEMET Group</rdfs:label>
+	<rdfs:subClassOf rdf:resource="&skos;Collection"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Theme">
+	<rdfs:label>GEMET Theme</rdfs:label>
+	<rdfs:subClassOf rdf:resource="&skos;Collection"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Concept"> <!-- Unused -->
+	<rdfs:label>GEMET Concept</rdfs:label>
+	<rdfs:subClassOf rdf:resource="&skos;Concept"/>
+</rdfs:Class>
+
+<rdf:Property rdf:ID="acronymLabel">
+	<rdfs:label>Acronym</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&skos;altLabel"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="theme">
+	<rdfs:label>Theme</rdfs:label>
+	<rdfs:range rdf:resource="#Theme"/>
+	<owl:inverseOf rdf:resource="#themeMember"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="themeMember">
+	<rdfs:label>Theme member</rdfs:label>
+	<rdfs:domain rdf:resource="#Theme"/>
+	<rdfs:range rdf:resource="&skos;Concept"/>
+	<owl:inverseOf rdf:resource="#theme"/>
+	<rdfs:subPropertyOf rdf:resource="&skos;member"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="group">
+	<rdfs:label>Group</rdfs:label>
+	<rdfs:range rdf:resource="#Group"/>
+	<owl:inverseOf rdf:resource="#groupMember"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="groupMember">
+	<rdfs:label>Group member</rdfs:label>
+	<rdfs:domain rdf:resource="#Group"/>
+	<rdfs:range rdf:resource="&skos;Concept"/>
+	<owl:inverseOf rdf:resource="#group"/>
+	<rdfs:subPropertyOf rdf:resource="&skos;member"/>
+</rdf:Property>
+
+
+<rdf:Property rdf:ID="subGroupOf">
+	<rdfs:label>Sub-group of</rdfs:label>
+	<rdfs:domain rdf:resource="#Group"/>
+	<rdfs:range rdf:resource="#SuperGroup"/>
+	<owl:inverseOf rdf:resource="#subGroup"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="subGroup">
+	<rdfs:label>Sub-group</rdfs:label>
+	<rdfs:domain rdf:resource="#SuperGroup"/>
+	<rdfs:range rdf:resource="#Group"/>
+	<owl:inverseOf rdf:resource="#subGroupOf"/>
+</rdf:Property>
+
+
+</rdf:RDF>
