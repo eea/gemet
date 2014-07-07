@@ -219,8 +219,8 @@ WebService API methods
 .. function:: getAllTranslationsForConcept(URI concept_uri, String property_uri)
 
     :param concept_uri: A URI for the concept
-    :param language: The language in which the concepts are returned
-    :rtype: A list of dictionaries representing the concepts
+    :param property_uri: A URI for the property type one needs translations for
+    :rtype: A list of dictionaries containing the language and the property value
 
     |   Returns all translations for a property of a given concept.
     |   The property is either a SKOS property URI, or an attribute name from the Concept class.
@@ -304,7 +304,7 @@ WebService API methods
 
 
     .. versionadded:: 2.1
-       The *language* parameter is now set default to **'en'**.
+       The *language* parameter is now set by default to **'en'**.
 
     |
 
@@ -374,7 +374,7 @@ WebService API methods
         |   `Try link <http://www.eionet.europa.eu/gemet/fetchThemes?language=en>`_
 
     .. versionadded:: 2.1
-        The *language* parameter is now set default to **'en'**.
+        The *language* parameter is now set by default to **'en'**.
 
     |
 
@@ -394,7 +394,7 @@ WebService API methods
         |   `Try link <http://www.eionet.europa.eu/gemet/fetchGroups?language=en>`_
 
     .. versionadded:: 2.1
-        The *language* parameter is now set default to **'en'**.
+        The *language* parameter is now set by default to **'en'**.
 
     |
 
