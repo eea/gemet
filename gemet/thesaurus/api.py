@@ -7,7 +7,6 @@ import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
 from gemet.thesaurus.models import (
@@ -149,21 +148,6 @@ def get_reverse_name(heading):
     return NS_VIEW_MAPPING.get(heading)
 
 
-def get_concept_uri(heading, concept_id, langcode):
-    view_name = get_reverse_name(heading)
-    if heading == 'Inspire Themes':
-        return (
-            ENDPOINT_URI_2 +
-            get_model(ENDPOINT_URI_2).objects.get(pk=concept_id).code
-        )
-    else:
-        return (
-            ENDPOINT_URI.split('/gemet/')[0] +
-            reverse(view_name, kwargs={'langcode': langcode,
-                                       'concept_id': concept_id, })
-        )
-
-
 def get_concept_id(concept_uri):
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
 
@@ -180,32 +164,29 @@ def get_concept_id(concept_uri):
 
 
 def get_concept(thesaurus_uri, concept_id, langcode):
-    heading = Namespace.objects.get(url=thesaurus_uri).heading
-
     names = {
         'prefLabel': 'preferredLabel',
         'definition': 'definition',
     }
-
-    concept_properties = Property.objects.filter(
-        concept_id=concept_id,
+    concept = Concept.objects.get(pk=concept_id)
+    concept_properties = concept.properties.filter(
         language__code=langcode,
         name__in=['prefLabel', 'definition'],
     ).values_list('name', 'value')
 
-    concept = {}
+    json_concept = {}
     for name, value in concept_properties:
         key = names[name]
-        concept[key] = {
+        json_concept[key] = {
             'string': value,
             'language': langcode,
         }
-    concept.update({
-        'uri': get_concept_uri(heading, concept_id, langcode),
+    json_concept.update({
+        'uri': thesaurus_uri + concept.code,
         'thesaurus': thesaurus_uri,
     })
 
-    return concept
+    return json_concept
 
 
 def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
@@ -251,17 +232,16 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
         )
     relations = relations.values(
         'property_type__uri',
-        'target_id',
-        'target__namespace__heading',
+        'target__code',
+        'target__namespace__url',
     )
     relatives = []
     for relation in relations:
-        target_id = relation['target_id']
-        heading = relation['target__namespace__heading']
         relatives.append({
             'source': concept_uri,
             'relation': relation['property_type__uri'],
-            'target': get_concept_uri(heading, target_id, DEFAULT_LANGCODE),
+            'target':
+            relation['target__namespace__url'] + relation['target__code'],
         })
     return relatives
 
@@ -275,15 +255,14 @@ def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
         property_type__uri=relation_uri,
     ).values_list('target_id', flat=True)
 
-    related_concepts = (
-        Property.objects
-        .filter(
-            language__code=language,
-            concept_id__in=related_concepts,
-        ).values_list(
-            'concept_id', flat=True,
-        ).distinct()
-    )
+    related_concepts = [
+        r for r in related_concepts
+        if (
+            Concept.objects.get(pk=r)
+            .properties.filter(language__code=language)
+            .count()
+        ) > 0
+    ]
 
     relatives = []
     thesaurus_uri, concept_code = split_concept_uri(concept_uri)
