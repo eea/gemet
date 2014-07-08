@@ -30,8 +30,8 @@ def get_children(concept_id, langcode):
     return Concept.objects.get(pk=concept_id).get_children(langcode)
 
 
-@register.simple_tag
-def broader_context(concept_id, langcode):
+@register.assignment_tag
+def get_broader_context(concept_id, langcode):
     broader_concepts = Concept.objects.get(pk=concept_id).get_siblings(
         langcode, 'broader')
     return '; '.join([cp['name'] for cp in broader_concepts])
@@ -56,16 +56,3 @@ def get_default_name(concept_id):
         )
         .value
     )
-
-
-@register.filter(name="half")
-def half(elements, arg):
-    half_len = int(round(float(len(elements)) / 2))
-    half_list = []
-
-    if arg == 0:
-        half_list = elements[:half_len]
-    elif arg == 1:
-        half_list = elements[half_len:]
-
-    return half_list

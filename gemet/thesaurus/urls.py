@@ -30,6 +30,7 @@ from gemet.thesaurus.views import (
     Skoscore,
     InspireThemesView,
     InspireThemeView,
+    WebServicesView,
 )
 from .api import ApiView
 
@@ -50,23 +51,33 @@ urlpatterns = patterns(
         'gemetThesaurus|'
         'gemet-definitions\.rdf|'
         'gemet-groups\.rdf|'
-        'inspire_themes'
+        'inspire_themes|'
+        'alphabets|'
+        'about|'
+        'definition_sources|'
+        'changes|'
+        'search|'
+        'alphabetic|'
+        'theme_concepts|'
+        'relations|'
+        'webservices'
         ')$',
         redirect_old_urls,
         name='redirects'
     ),
+    url(r'^concept$', old_concept_redirect, name='old_concept_redirect'),
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^about/$', AboutView.as_view(), name='about'),
         url(r'^changes/$', ChangesView.as_view(), name='changes'),
         url(r'^themes/$', ThemesView.as_view(), name='themes'),
         url(r'^inspire-themes/$', InspireThemesView.as_view(),
-            name='inspire-themes'),
+            name='inspire_themes'),
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<concept_id>\d+)/$', TermView.as_view(),
             name='concept'),
-        url(r'^inspire-theme/(?P<concept_id>\d+)/$', InspireThemeView.as_view(),
-            name='inspire-theme'),
+        url(r'^inspire-theme/(?P<concept_id>\d+)/$',
+            InspireThemeView.as_view(), name='inspire_theme'),
         url(r'^theme/(?P<concept_id>\d+)/$', ThemeView.as_view(),
             name='theme'),
         url(r'^group/(?P<concept_id>\d+)/$', GroupView.as_view(),
@@ -82,8 +93,9 @@ urlpatterns = patterns(
         url(r'^alphabetic/$', AlphabeticView.as_view(), name='alphabetic'),
         url(r'^alphabets/$', AlphabetsView.as_view(), name='alphabets'),
         url(r'^search/$', SearchView.as_view(), name='search'),
-        url(r'^definition_sources/$', DefinitionSourcesView.as_view(),
+        url(r'^definition-sources/$', DefinitionSourcesView.as_view(),
             name='definition_sources'),
+        url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html/$', BackboneView.as_view(),
@@ -110,6 +122,4 @@ urlpatterns = patterns(
         ])),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
-    url(r'^concept/$', old_concept_redirect,
-        name='old_concept_redirect'),
 )

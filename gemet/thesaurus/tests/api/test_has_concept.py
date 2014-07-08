@@ -8,6 +8,7 @@ from gemet.thesaurus.tests.factories import (
     LanguageFactory,
 )
 from gemet.thesaurus.tests import GemetTest
+from xmlrpclib import Fault
 
 
 class TestHasConcept(GemetTest):
@@ -35,6 +36,9 @@ class TestHasConcept(GemetTest):
             self.url + urlencode({'concept_uri': 'BAD_THESAURUS_URI'})
         )
         self.assertEqual(False, resp.json)
+
+    def test_missing_concept_uri(self):
+        self.assertRaises(Fault, self.app.get, self.url)
 
     def test_has_true(self):
         resp = self.app.get(self.url + urlencode({

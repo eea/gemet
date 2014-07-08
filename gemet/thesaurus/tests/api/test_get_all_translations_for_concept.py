@@ -40,12 +40,11 @@ class TestGetAllTranslationsForConcept(GemetTest):
                                   'property_uri': 'prefLabel'})
         )
 
-    def test_invalid_concept_code(self):
+    def test_missing_concept_uri(self):
         self.assertRaises(
-            Fault, self.app.get, self.url + urlencode({
-                'concept_uri': self.NS_ROOT + 'concept/' + '9999',
-                'property_uri': 'prefLabel1'
-            }))
+            Fault, self.app.get,
+            self.url + urlencode({'property_uri': 'prefLabel'})
+        )
 
     def test_invalid_property_uri(self):
         resp = self.app.get(self.url + urlencode({
@@ -54,6 +53,12 @@ class TestGetAllTranslationsForConcept(GemetTest):
         }))
 
         self.assertEqual([], resp.json)
+
+    def test_missing_proeprty_uri(self):
+        self.assertRaises(
+            Fault, self.app.get, self.url + urlencode({
+                'concept_uri': self.NS_ROOT + 'concept/' + self.term.code
+            }))
 
     def test_two_translations(self):
         spanish = LanguageFactory(code='es', name='Spanish')

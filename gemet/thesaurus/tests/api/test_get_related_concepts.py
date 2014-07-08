@@ -52,11 +52,25 @@ class TestGetRelatedConcepts(GemetTest):
             })
         )
 
+    def test_missing_concept_uri(self):
+        self.assertRaises(
+            Fault, self.app.get, self.url + urlencode({
+                'relation_uri': 'relation'
+            })
+        )
+
     def test_invalid_concept_uri(self):
         self.assertRaises(
             Fault, self.app.get, self.url + urlencode({
                 'concept_uri': 'BAD_CONCEPT_URI',
                 'relation_uri': 'relation',
+            })
+        )
+
+    def test_missing_relation(self):
+        self.assertRaises(
+            Fault, self.app.get, self.url + urlencode({
+                'concept_uri': self.NS_ROOT + 'concept/' + self.term.code,
             })
         )
 

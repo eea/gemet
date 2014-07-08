@@ -23,5 +23,7 @@
       </li>
     {% endfor %}
   </ul>
-
+{% endblock %}
+{% block version %}
+    {% include 'version.html' with version=ns_version %}
 {% endblock %}

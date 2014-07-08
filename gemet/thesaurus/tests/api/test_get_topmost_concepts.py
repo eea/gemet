@@ -15,7 +15,7 @@ from gemet.thesaurus.tests import GemetTest
 from gemet.thesaurus import DEFAULT_LANGCODE
 
 
-class TestTopmostConcepts(GemetTest):
+class TestGetTopmostConcepts(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
         self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
@@ -55,6 +55,12 @@ class TestTopmostConcepts(GemetTest):
             Fault, self.app.get,
             self.url + urlencode({'thesaurus_uri': 'BAD_THESAURUS_URI',
                                   'language': self.english.code})
+        )
+
+    def test_missing_thesaurus_uri(self):
+        self.assertRaises(
+            Fault, self.app.get,
+            self.url + urlencode({'language': self.english.code})
         )
 
     def test_one_term(self):

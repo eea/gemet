@@ -2,6 +2,7 @@ from itertools import chain
 from collections import OrderedDict
 import sys
 from xmlrpclib import Fault
+from urllib import urlencode
 
 from django.http import Http404
 from django.shortcuts import (
@@ -27,6 +28,7 @@ from gemet.thesaurus.models import (
     Relation,
     InspireTheme,
     ForeignRelation,
+    Concept,
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -34,7 +36,7 @@ from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
 from gemet.thesaurus import (
     DEFAULT_LANGCODE,
     NR_CONCEPTS_ON_PAGE,
-    NS_VIEW_MAPPING,
+    NS_ID_VIEW_MAPPING,
 )
 
 
@@ -61,6 +63,10 @@ class AboutView(HeaderMixin, TemplateView):
 
 class ChangesView(HeaderMixin, TemplateView):
     template_name = "changes.html"
+
+
+class WebServicesView(HeaderMixin, TemplateView):
+    template_name = 'webservices.html'
 
 
 class ThemesView(HeaderMixin, TemplateView):
@@ -97,6 +103,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
+            'ns_version': self.model_cls.objects.get_ns().version
         })
         return context
 
@@ -104,8 +111,8 @@ class ThemesView(HeaderMixin, TemplateView):
 class InspireThemesView(ThemesView):
     model_cls = InspireTheme
     page_title = 'INSPIRE Spatial Data Themes'
-    theme_url = 'inspire-theme'
-    view_name = 'inspire-themes'
+    theme_url = 'inspire_theme'
+    view_name = 'inspire_themes'
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
@@ -137,7 +144,10 @@ class GroupsView(HeaderMixin, TemplateView):
             .values('id', 'name')
         )
 
-        context.update({"supergroups": supergroups})
+        context.update({
+            "supergroups": supergroups,
+            "ns_version": Group.objects.get_ns().version
+        })
         return context
 
 
@@ -160,7 +170,6 @@ class AlphabetsView(HeaderMixin, TemplateView):
         context = super(AlphabetsView, self).get_context_data(**kwargs)
 
         letters = unicode_character_map.get(self.langcode, [])
-
         context.update({"letters": letters})
         return context
 
@@ -175,7 +184,11 @@ class SearchView(HeaderMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        context.update({"query": self.query, "concepts": self.concepts})
+        context.update({
+            "query": self.query,
+            "concepts": self.concepts,
+            "ns_version": Term.objects.get_ns().version
+        })
         return context
 
     def form_valid(self, form):
@@ -210,12 +223,12 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
+            'ns_version': Term.objects.get_ns().version
         })
         return context
 
 
 class ConceptView(HeaderMixin, DetailView):
-
     pk_url_kwarg = 'concept_id'
 
     def get_object(self):
@@ -246,7 +259,10 @@ class ConceptView(HeaderMixin, DetailView):
                 value__isnull=False,
             )]
 
-        context.update({"languages": languages})
+        context.update({
+            "languages": languages,
+            "ns_version": self.model.objects.get_ns().version
+        })
         return context
 
     def get(self, request, *args, **kwargs):
@@ -270,9 +286,9 @@ class TermView(ConceptView):
 
 
 class InspireThemeView(ConceptView):
-    template_name = "inspire-theme.html"
+    template_name = "inspire_theme.html"
     model = InspireTheme
-    concept_type = 'inspire-theme'
+    concept_type = 'inspire_theme'
     context_object_name = 'inspire_theme'
 
 
@@ -398,18 +414,20 @@ class ThemeConceptsView(PaginatorView):
         if not hasattr(self.theme, 'prefLabel'):
             self.theme.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
             context.update({'language_warning': True})
-        context.update({'theme': self.theme})
+        context.update({
+            'theme': self.theme,
+            'ns_version': Term.objects.get_ns().version
+        })
 
         return context
 
 
 class AlphabeticView(PaginatorView):
     template_name = "alphabetic_listings.html"
-    model = Property
 
     def get_queryset(self):
         self.concepts = (
-            self.model.objects.filter(
+            Property.objects.filter(
                 name='prefLabel',
                 language__code=self.langcode,
                 concept__namespace__heading='Concepts'
@@ -421,6 +439,12 @@ class AlphabeticView(PaginatorView):
         )
 
         return super(AlphabeticView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(AlphabeticView, self).get_context_data(**kwargs)
+        context.update({"ns_version": Term.objects.get_ns().version})
+
+        return context
 
 
 class BackboneView(TemplateView):
@@ -636,10 +660,9 @@ class GemetRelationsView(GemetRelationsMixin):
         )
         self.relations = list(self.relations)
         for relation in self.foreign_relations:
-            d = {}
-            d['source__code'] = relation['concept__code']
-            d['property_type__name'] = relation['property_type__name']
-            d['target__code'] = relation['uri']
+            d = {'source__code': relation['concept__code'],
+                 'property_type__name': relation['property_type__name'],
+                 'target__code': relation['uri']}
             self.relations.append(d)
 
         context.update({
@@ -768,43 +791,42 @@ class DownloadView(HeaderMixin, FormView):
 
 
 def redirect_old_urls(request, view_name):
-    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     old_new_views = {
         'index_html': 'themes',
-        'groups': 'groups',
         'rdf': 'download',
-        'inspire_themes': 'inspire-themes',
+        'relations': 'groups',
     }
     view = old_new_views.get(view_name, view_name)
+
+    kwargs = {}
     if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
-                'gemet-groups.rdf', 'inspire-themes']:
-        return redirect(view, permanent=True, langcode=langcode)
-    else:
-        return redirect(view, permanent=True)
+                'gemet-groups.rdf', 'alphabets', 'about', 'definition_sources',
+                'changes', 'alphabetic', 'search', 'theme_concepts',
+                'webservices']:
+        langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
+        kwargs.update({'langcode': langcode})
+
+    if view_name == 'theme_concepts':
+        theme_code = request.GET.get('th')
+        theme = get_object_or_404(Theme, code=theme_code)
+        kwargs.update({'theme_id': theme.id})
+
+    url = reverse(view, kwargs=kwargs)
+    letter = request.GET.get('letter')
+    if letter:
+        url = '?'.join((url, urlencode({'letter': letter})))
+
+    return redirect(url, permanent=True)
 
 
 def old_concept_redirect(request):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     ns = request.GET.get('ns')
     cp = request.GET.get('cp')
-    if ns and cp:
-        concept_types = {
-            str(model.objects.get_ns().id): model for model in
-            [Term, Group, SuperGroup, Theme, InspireTheme]
-        }
-        concept_type = concept_types.get(ns)
-        if concept_type:
-            namespace = get_object_or_404(Namespace, id=ns)
-            concept = get_object_or_404(concept_type, namespace=namespace,
-                                        code=cp)
-            get_object_or_404(Language, pk=langcode)
-            return redirect(NS_VIEW_MAPPING.get(namespace.heading),
-                            langcode=langcode,
-                            concept_id=concept.id)
-        else:
-            raise Http404
-    else:
-        raise Http404
+    concept = get_object_or_404(Concept, namespace__id=ns, code=cp)
+    return redirect(NS_ID_VIEW_MAPPING.get(ns),
+                    langcode=langcode,
+                    concept_id=concept.id)
 
 
 def concept_redirect(request, concept_type, concept_code):

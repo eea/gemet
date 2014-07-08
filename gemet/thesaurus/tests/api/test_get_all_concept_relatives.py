@@ -34,6 +34,9 @@ class TestAllConceptRelatives(GemetTest):
             })
         )
 
+    def test_missing_concept_uri(self):
+        self.assertRaises(Fault, self.app.get, self.url)
+
     def test_bad_relation(self):
         term2 = TermFactory(id=2, code='2')
         p1 = PropertyTypeFactory(id=1, name='related', label='related',
@@ -52,25 +55,7 @@ class TestAllConceptRelatives(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    def test_no_relation(self):
-        term2 = TermFactory(id=2, code='2')
-        p1 = PropertyTypeFactory(id=1, name='related', label='related',
-                                 uri='in_relation')
-        p2 = PropertyTypeFactory(id=2, name='related', label='related',
-                                 uri='in_relation')
-        RelationFactory(property_type=p1, source=self.term, target=term2)
-        RelationFactory(property_type=p2, source=term2, target=self.term)
-
-        resp = self.app.get(
-            self.url + urlencode({
-                'concept_uri': self.NS_ROOT + 'concept/' + self.term.code,
-                'relation_uri': 'NO_RELATION',
-            })
-        )
-        resp = resp.json
-        self.assertEqual(len(resp), 0)
-
-    def test_no_thesaurus_uri(self):
+    def test_bad_thesaurus_uri(self):
         term2 = TermFactory(id=2, code='2')
         p1 = PropertyTypeFactory(id=1, name='related', label='related',
                                  uri='in_relation')
@@ -88,7 +73,7 @@ class TestAllConceptRelatives(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    def test_optional_parameters(self):
+    def test_all_3_parameters(self):
         term2 = TermFactory(id=2, code='2')
         p1 = PropertyTypeFactory(id=1, name='broader', label='broader term',
                                  uri='broader_uri')
@@ -134,7 +119,7 @@ class TestAllConceptRelatives(GemetTest):
             )
         )
 
-    def test_2_thesaurus_2_relations(self):
+    def test_optional_parameters(self):
         term2 = TermFactory(id=2, code='2')
         spanish = LanguageFactory(code='es', name='Spanish')
         PropertyFactory(concept=term2, language=spanish)

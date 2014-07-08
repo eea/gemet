@@ -2,12 +2,17 @@
 # DEBUG = True
 # TEMPLATE_DEBUG = True
 
-# debug_toolbar app is needed only in development. Uncomment the section
-# below in development if you want to use the debug_toolbar.
-# LOCAL_INSTALLED_APPS = (
-#     'debug_toolbar',
-#     'django_nose',
-# )
+LOCAL_INSTALLED_APPS = (
+# Use debug_toolbar in development for detailed debug info.
+#    'debug_toolbar',
+# Use django_nose in development to run tests with coverage option
+#    'django_nose',
+# The raven app is needed in production in order for sentry to work
+#    'raven.contrib.django',
+)
+
+# Fill in your DSN value:
+# SENTRY_DSN = ''
 
 # Remove the line below in development
 ALLOWED_HOSTS = ['*']

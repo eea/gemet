@@ -40,3 +40,6 @@
   <h4>Concept URL: &lt;{{ supergroup.url }}&gt;</h4>
 
 {% endblock %}
+{% block version %}
+    {% include 'version.html' with version=ns_version %}
+{% endblock %}

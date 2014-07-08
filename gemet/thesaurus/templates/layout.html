@@ -16,7 +16,7 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li><a href="{% url 'themes' language.code %}">Thematic Listings</a></li>
-              <li><a href="{% url 'inspire-themes' language.code %}">INSPIRE Spatial Data Themes</a></li>
+              <li><a href="{% url 'inspire_themes' language.code %}">INSPIRE Spatial Data Themes</a></li>
               <li><a href="{% url 'groups' language.code %}">Hierarchical Listings</a></li>
               <li><a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a></li>
               <li>
@@ -49,9 +49,10 @@
         <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
         &nbsp;|&nbsp;
         <a href="{% url 'changes' language.code %}">History of changes</a>
+        {% block version %}
+        {% endblock %}
       </div>
     </div>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
