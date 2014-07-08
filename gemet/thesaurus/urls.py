@@ -123,6 +123,6 @@ urlpatterns = patterns(
                 name='gemet-groups.rdf'),
             ])),
         ])),
-    url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
+    url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)/$', concept_redirect,
         name='concept_redirect'),
 )
