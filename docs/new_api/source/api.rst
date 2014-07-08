@@ -389,7 +389,10 @@ WebService API methods
         http://www.eionet.europa.eu/gemet/fetchSuperGroups?language=en
     |   `Try link <http://www.eionet.europa.eu/gemet/fetchSupergroups?language=en>`_
 
-    |
+    **Note**: To get the children (narrower groups), you can then cal for each of them::
+
+        getAllConceptRelatives(target_thesaurus_uri='http://www.eionet.europa.eu/gemet/group/')
+
 
 .. _knownrelations:
 
@@ -428,18 +431,18 @@ WebService API methods
 **Known thesauri**
 ==================
 
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-|                                 Thesauri                               |                                      Description                                               |
-+========================================================================+================================================================================================+
-| \http://www.eionet.europa.eu/gemet/concept/                            | thesaurus URI for Concepts                                                                     |
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-| \http://www.eionet.europa.eu/gemet/theme/                              | thesaurus URI for Themes                                                                       |
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-| \http://www.eionet.europa.eu/gemet/group/                              | thesaurus URI for Groups                                                                       |
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-| \http://www.eionet.europa.eu/gemet/supergroup/                         | thesaurus URI for SuperGroups                                                                  |
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
-| \http://inspire.ec.europa.eu/theme/                                    | thesaurus URI for Inspire Themes                                                               |
-+------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+
++---------------------------------------------------------+--------------------------------------------+
+|                       Thesauri                          |                Description                 |
++=========================================================+============================================+
+| \http://www.eionet.europa.eu/gemet/concept/             | thesaurus URI for Concepts                 |
++---------------------------------------------------------+--------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/theme/               | thesaurus URI for Themes                   |
++---------------------------------------------------------+--------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/group/               | thesaurus URI for Groups                   |
++---------------------------------------------------------+--------------------------------------------+
+| \http://www.eionet.europa.eu/gemet/supergroup/          | thesaurus URI for SuperGroups              |
++---------------------------------------------------------+--------------------------------------------+
+| \http://inspire.ec.europa.eu/theme/                     | thesaurus URI for Inspire Themes           |
++---------------------------------------------------------+--------------------------------------------+
 
 **Note**: To retrieve the available thesauri, use the function :func:`getAvailableThesauri()`
