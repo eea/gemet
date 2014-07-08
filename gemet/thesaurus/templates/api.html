@@ -1,0 +1,2090 @@
+<div class="documentwrapper">
+ <div class="bodywrapper">
+  <div class="body">
+   <div class="section" id="gemet-api-s-documentation">
+    <h1>
+     GEMET API’s documentation
+     <a class="headerlink" href="#gemet-api-s-documentation" title="Permalink to this headline">
+      ¶
+     </a>
+    </h1>
+    <p>
+     GEMET’s data is exposed through the Web for remote applications using XML
+(RDF/SKOS), HTTP and XML/RPC. The XML output is available at
+     <a class="reference external" href="http://www.eionet.europa.eu/gemet/rdf">
+      http://www.eionet.europa.eu/gemet/rdf
+     </a>
+     .
+    </p>
+    <div class="section" id="what-is-a-concept">
+     <h2>
+      What is a Concept?
+      <a class="headerlink" href="#what-is-a-concept" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <p>
+      GEMET is language neutral. The problem is that one language might use
+a single word to describe a concept. But in another language people
+use two or more terms to split the concept into several concepts. As
+they say; Eskimos have 40 different words for “snow”. In GEMET this
+extreme example would be 40 concepts, but the English terms would all be
+“snow”. Icelandic would have perhaps 15 words for snow, and therefore also
+some overlap. Since no language is so rich it has unique terms for all
+concepts, GEMET uses a number to distinguish the concepts from each other.
+     </p>
+     <p>
+      A concept URI is simply the thesaurus URI plus the concept
+number. E.g.
+      <a class="reference external" href="http://www.eionet.europa.eu/gemet/concept/7769">
+       http://www.eionet.europa.eu/gemet/concept/7769
+      </a>
+      .
+Currently it is just a string, but we want to
+make GEMET part of the Semantic Web and browsable as
+Linked Data.
+What this means is that if you visit a concept URI with a webbrowser, you’ll see a webpage.
+If you use a
+      <a class="reference external" href="http://wifo5-03.informatik.uni-mannheim.de/bizer/pub/LinkedDataTutorial/">
+       linked data
+      </a>
+      browser, with an
+      <strong>
+       Accept-header
+      </strong>
+      of
+      <tt class="docutils literal">
+       <span class="pre">
+        application/rdf+xml
+       </span>
+      </tt>
+      , then an RDF document will be returned.
+     </p>
+    </div>
+    <div class="section" id="using-the-api-as-a-rest-service">
+     <h2>
+      Using the API as a ReST service
+      <a class="headerlink" href="#using-the-api-as-a-rest-service" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <p>
+      The methods below are described as method calls in simplified Java with the public keyword implied.
+If you want to use it as a ReST api. You first need the URL where the API is implemented.
+In GEMET it is
+      <a class="reference external" href="http://www.eionet.europa.eu/gemet/">
+       http://www.eionet.europa.eu/gemet/
+      </a>
+      . Then you encode the parameters as a GET operation:
+     </p>
+     <div class="highlight-python">
+      <div class="highlight">
+       <pre>http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/theme/&amp;language=es
+</pre>
+      </div>
+     </div>
+     <p>
+      ReST has the constraint on the API that the arguments can only be text strings.
+I.e. you can’t send structures over to the server.
+Likewise no
+      <a class="reference external" href="http://en.wikipedia.org/wiki/Type_polymorphism">
+       polymorphism
+      </a>
+      is possible.
+     </p>
+     <p>
+      Without specifying any additional parameter, the standard format of the output is
+      <a class="reference external" href="http://en.wikipedia.org/wiki/JSON">
+       JSON
+      </a>
+      .
+     </p>
+     <p>
+      All JSON responses can also be wrapped as JSONP if you provide a jsonp argument. I.e.:
+     </p>
+     <div class="highlight-python">
+      <div class="highlight">
+       <pre>http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&amp;language=es&amp;jsonp=callback
+</pre>
+      </div>
+     </div>
+     <p>
+      will wrap the JSON response in callback method call.
+     </p>
+     <div class="line-block">
+      <div class="line">
+       If you don’t specify a valid method name for the API(see API methods below) you will receive a 400 Bad Request Error.
+      </div>
+      <div class="line">
+       If you don’t specify all the required parameters for these methods you will receive the same error.
+      </div>
+     </div>
+     <p>
+      When designing the API we have been careful not to mix up the URL of
+the method with the URL of the thesaurus. It is possible to install the
+application and GEMET database somewhere else (e.g. intranet) and then
+use it without being dependent on GEMET at
+      <a class="reference external" href="http://www.eionet.europa.eu">
+       http://www.eionet.europa.eu
+      </a>
+      .
+I.e.:
+     </p>
+     <div class="highlight-python">
+      <div class="highlight">
+       <pre>http://mydomain.info/getTopmostConcepts?thesaurus_uri=­http://www.eionet.europa.eu/gemet/theme/­&amp;language=es
+</pre>
+      </div>
+     </div>
+     <p>
+      must be possible.
+     </p>
+    </div>
+    <div class="section" id="common-methods-for-gemet-api">
+     <h2>
+      Common methods for GEMET API
+      <a class="headerlink" href="#common-methods-for-gemet-api" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <p>
+      The following set of functions can be called by a Web application or Web page
+using either HTTP, where the parameters are specified in the query string or via
+XML/RPC. A combination of such function calls ensure the full retrieval of
+GEMET’s content.
+     </p>
+    </div>
+    <div class="section" id="webservice-api-methods">
+     <h2>
+      WebService API methods
+      <a class="headerlink" href="#webservice-api-methods" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <dl class="function">
+      <dt id="getTopmostConcepts">
+       <tt class="descname">
+        getTopmostConcepts
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI thesaurus_uri
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        String language='en'
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getTopmostConcepts" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              thesaurus_uri
+             </strong>
+             – The thesaurus URI from which to retrieve concepts
+            </li>
+            <li>
+             <strong>
+              language
+             </strong>
+             – The language in which the concepts are returned
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries representing the concepts
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        The result from the method will be a list of concept structs that are determined to be top concepts of the thesaurus.
+The purpose is to make the thesaurus browsable. In principle all concepts that don’t have a broader definition would qualify.
+This method replaces
+        <em>
+         fetchTopConcepts
+        </em>
+        ,
+        <em>
+         fetchThemes
+        </em>
+        and
+        <em>
+         fetchGroups
+        </em>
+        .
+To get the themes, you would call
+        <tt class="docutils literal">
+         <span class="pre">
+          getTopmostConcepts('http://www.eionet.europa.eu/gemet/theme/',
+         </span>
+         <span class="pre">
+          'en')
+         </span>
+        </tt>
+        .
+       </p>
+       <p>
+        A URI is a subclass of string, potentially with some methods to manipulate the URI.
+       </p>
+       <p>
+        Examples:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&amp;language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://www.eionet.europa.eu/gemet/group/&amp;language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&amp;language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getTopmostConcepts?thesaurus_uri=http://inspire.ec.europa.eu/theme/&amp;language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getAllConceptRelatives">
+       <tt class="descname">
+        getAllConceptRelatives
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        URI target_thesaurus_uri
+       </em>
+       ,
+       <em>
+        URI relation_uri
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getAllConceptRelatives" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              concept_uri
+             </strong>
+             – A URI for the concept
+            </li>
+            <li>
+             <strong>
+              target_thesaurus_uri
+             </strong>
+             – A URI for a thesaurus representing the namespace in which to look for relatives
+            </li>
+            <li>
+             <strong>
+              relation_uri
+             </strong>
+             – A URI for the relation
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries  representing the concepts
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This method will return a listing of relations for the given concept.
+The relation can be any relationship, but only direct relationships.
+The
+        <em>
+         target_thesaurus_uri
+        </em>
+        argument is optional. If it isn’t provided the relations can be to concepts in all thesauri in the database.
+The
+        <em>
+         relation_uri
+        </em>
+        argument is optional. It makes it possible to get only one type of relationship.
+The relation argument takes a URI, e.g.
+        <a class="reference external" href="http://www.w3.org/2004/02/skos/core#narrower">
+         http://www.w3.org/2004/02/skos/core#narrower
+        </a>
+        .
+See [
+        <a class="reference internal" href="#knownrelations">
+         <em>
+          Known relations
+         </em>
+        </a>
+        ] for a list of known relations.
+Only thesauri that are stored in the database are included.
+       </p>
+       <p>
+        The properties
+        <em>
+         theme
+        </em>
+        and
+        <em>
+         hasConcept
+        </em>
+        are inverse of each other. Meaning
+        <em>
+         &lt;Concept A&gt; theme &lt;Theme B&gt;
+        </em>
+        is the same as
+        <em>
+         &lt;Theme B&gt; hasConcept &lt;Concept A&gt;
+        </em>
+        .
+Therefore hasConcept is not actually listed in the database. Similarly are the properties
+        <em>
+         group
+        </em>
+        and
+        <em>
+         hasConcept
+        </em>
+        inverse. As are
+        <em>
+         subGroupOf
+        </em>
+        and
+        <em>
+         subGroup
+        </em>
+        .
+       </p>
+       <p>
+        Examples:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/group/234">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://www.eionet.europa.eu/gemet/concept/6740">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAllConceptRelatives?concept_uri=http://inspire.ec.europa.eu/theme/ps">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getRelatedConcepts">
+       <tt class="descname">
+        getRelatedConcepts
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       ,
+       <em>
+        URI relation_uri
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        String language='en'
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getRelatedConcepts" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              concept_uri
+             </strong>
+             – A URI for the concept
+            </li>
+            <li>
+             <strong>
+              relation_uri
+             </strong>
+             – A URI for the relation
+            </li>
+            <li>
+             <strong>
+              language
+             </strong>
+             – The language in which the concepts are returned
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries representing the concepts
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This method will return related concepts for the given concept.
+The relation_uri is mandatory, and must be one of the known relations listed in
+        <a class="reference internal" href="#getAllConceptRelatives" title="getAllConceptRelatives">
+         <tt class="xref py py-func docutils literal">
+          <span class="pre">
+           getAllConceptRelatives()
+          </span>
+         </tt>
+        </a>
+        .
+See [
+        <a class="reference internal" href="#knownrelations">
+         <em>
+          Known relations
+         </em>
+        </a>
+        ] for a list of known relations.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913&amp;relation_uri=http://www.w3.org/2004/02/skos/core%23broader&amp;language=fr
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getRelatedConcepts?concept_uri=http://www.eionet.europa.eu/gemet/concept/913&amp;relation_uri=http://www.w3.org/2004/02/skos/core%23broader&amp;language=fr">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="hasRelation">
+       <tt class="descname">
+        hasRelation
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       ,
+       <em>
+        URI relation_uri
+       </em>
+       ,
+       <em>
+        URI object_uri
+       </em>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#hasRelation" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              concept_uri
+             </strong>
+             – A URI for the concept representing the source
+            </li>
+            <li>
+             <strong>
+              relation_uri
+             </strong>
+             – A URI for the relation
+            </li>
+            <li>
+             <strong>
+              object_uri
+             </strong>
+             – A URI for the concept representing the target
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A boolean - True or False
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Tests if the given
+        <em>
+         concept_uri
+        </em>
+        is in the relation
+        <em>
+         relation_uri
+        </em>
+        with the
+        <em>
+         object_uri
+        </em>
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100&amp;relation_uri=http://www.w3.org/2004/02/skos/core%23broader&amp;object_uri=http://www.eionet.europa.eu/gemet/concept/13292
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/hasRelation?concept_uri=http://www.eionet.europa.eu/gemet/concept/100&amp;relation_uri=http://www.w3.org/2004/02/skos/core%23broader&amp;object_uri=http://www.eionet.europa.eu/gemet/concept/13292">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="hasConcept">
+       <tt class="descname">
+        hasConcept
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#hasConcept" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            concept_uri
+           </strong>
+           – A URI for the concept
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A boolean - True or False
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function tests if the given concept_uri represents a valid concept or not, returning true or false.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/hasConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/7970">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getConcept">
+       <tt class="descname">
+        getConcept
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        String language='en'
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getConcept" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              concept_uri
+             </strong>
+             – A URI for the concept
+            </li>
+            <li>
+             <strong>
+              language
+             </strong>
+             – The language in which the concepts are returned
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A dictionary representing the concept
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Returns a Concept struct filled out with information from the requested language.
+       </p>
+       <p>
+        Examples:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&amp;language=de
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://inspire.ec.europa.eu/theme/ps&amp;language=de">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&amp;language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/95&amp;language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getAllTranslationsForConcept">
+       <tt class="descname">
+        getAllTranslationsForConcept
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       ,
+       <em>
+        String property_uri
+       </em>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getAllTranslationsForConcept" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              concept_uri
+             </strong>
+             – A URI for the concept
+            </li>
+            <li>
+             <strong>
+              property_uri
+             </strong>
+             – A URI for the property type one needs translations for
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries containing the language and the property value
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Returns all translations for a property of a given concept.
+The property is either a SKOS property URI, or an attribute name from the Concept class.
+Currently these are: definition, prefLabel, scopeNote, acronymLabel, and example.
+It is possible for a compliant server to have more information about a concept.
+These will show up as extra attributes in Concept objects, and it is legal for a client to ask about translations for any attribute of type LanguageString.
+       </p>
+       <table border="1" class="docutils">
+        <colgroup>
+         <col width="45%">
+         </col>
+         <col width="55%">
+         </col>
+        </colgroup>
+        <thead valign="bottom">
+         <tr class="row-odd">
+          <th class="head">
+           Property URI
+          </th>
+          <th class="head">
+           Concept attribute
+          </th>
+         </tr>
+        </thead>
+        <tbody valign="top">
+         <tr class="row-even">
+          <td>
+           http://www.w3.org/2004/02/skos/core#definition
+          </td>
+          <td>
+           definition
+          </td>
+         </tr>
+         <tr class="row-odd">
+          <td>
+           http://www.w3.org/2004/02/skos/core#prefLabel
+          </td>
+          <td>
+           preferredLabel
+          </td>
+         </tr>
+         <tr class="row-even">
+          <td>
+           http://www.w3.org/2004/02/skos/core#scopeNote
+          </td>
+          <td>
+           scopeNote
+          </td>
+         </tr>
+         <tr class="row-odd">
+          <td>
+           http://www.w3.org/2004/02/skos/core#altLabel
+          </td>
+          <td>
+           nonPreferredLabels
+          </td>
+         </tr>
+         <tr class="row-even">
+          <td>
+           http://www.w3.org/2004/02/skos/core#example
+          </td>
+          <td>
+           example
+          </td>
+         </tr>
+         <tr class="row-odd">
+          <td>
+           http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#acronymLabel
+          </td>
+          <td>
+           acronymLabel
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Why this business with property URIs? It is to provide an opportunity for someone who thinks in RDF terms to use the API in a natural way.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126&amp; property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAllTranslationsForConcept?concept_uri=http://www.eionet.europa.eu/gemet/concept/10126&amp;property_uri=http://www.w3.org/2004/02/skos/core%23prefLabel">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <strong>
+          Note
+         </strong>
+         : When constructing a GET request of this type, the property URI must be URI-encoded, when it contains the “#” character (which has special meaning in a URI).
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getConceptsMatchingKeyword">
+       <tt class="descname">
+        getConceptsMatchingKeyword
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        String keyword
+       </em>
+       ,
+       <em>
+        int search_mode
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        URI thesaurus_uri
+       </em>
+       ,
+       <em>
+        String language
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getConceptsMatchingKeyword" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              keyword
+             </strong>
+             – A string representing the keyword to search for
+            </li>
+            <li>
+             <strong>
+              search_mode
+             </strong>
+             –
+             <p>
+              An integer in the range 0 – 4 inclusive:
+             </p>
+             <div class="line-block">
+              <div class="line">
+               0 – no wildcarding of any type (‘accident’ becomes ‘^accident$’). SQL syntax: term = ‘accident’
+              </div>
+              <div class="line">
+               1 – suffix regex (‘accident’ becomes ‘^accident.+$’). SQL syntax: term LIKE ‘accident%’
+              </div>
+              <div class="line">
+               2 – prefix regex (‘accident’ becomes ‘^.+accident$’). SQL syntax: term LIKE ‘%accident’
+              </div>
+              <div class="line">
+               3 – prefix/suffix combined (‘accident’ becomes ‘^.+accident.+$’). SQL syntax: term LIKE ‘%accident%’
+              </div>
+              <div class="line">
+               4 – auto search: each of the previous four expansions is tried in ascending order until a match is found
+              </div>
+             </div>
+            </li>
+            <li>
+             <strong>
+              thesaurus_uri
+             </strong>
+             – Indicates which thesaurus to search in. If the argument is empty, all thesauri in the database are searched
+            </li>
+            <li>
+             <strong>
+              language
+             </strong>
+             – The language is used both for specifying what language the keyword is and for returning the concept in the correct language
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries representing the found concepts
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        The function retrieves a list of concepts matching a keyword for a particular thesaurus.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&amp;search_mode=0&amp;thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&amp;language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getConceptsMatchingKeyword?keyword=air&amp;search_mode=0&amp;thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&amp;language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="versionadded">
+        <p>
+         <span class="versionmodified">
+          New in version 2.1:
+         </span>
+         The
+         <em>
+          language
+         </em>
+         parameter is now set by default to
+         <strong>
+          ‘en’
+         </strong>
+         .
+        </p>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getConceptsMatchingRegexByThesaurus">
+       <tt class="descname">
+        getConceptsMatchingRegexByThesaurus
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        String regex
+       </em>
+       ,
+       <em>
+        URI thesaurus_uri
+       </em>
+       <span class="optional">
+        [
+       </span>
+       ,
+       <em>
+        String language
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getConceptsMatchingRegexByThesaurus" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <ul class="first simple">
+            <li>
+             <strong>
+              regex
+             </strong>
+             – A string representing the regex to search for
+            </li>
+            <li>
+             <strong>
+              thesaurus_uri
+             </strong>
+             – Indicates which thesaurus to search in
+            </li>
+            <li>
+             <strong>
+              language
+             </strong>
+             – The language is used both for specifying in what language to search for the regex and for returning the concept in the correct language
+            </li>
+           </ul>
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           <p class="first last">
+            A list of dictionaries representing the found concepts
+           </p>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Get a list of concepts matching a
+        <a class="reference external" href="http://en.wikipedia.org/wiki/Regular_expression">
+         regex
+        </a>
+        for a particular thesaurus.
+The language argument is used both for specifying what language to search in and for returning the concept in the correct language.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&amp;­thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&amp;language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getConceptsMatchingRegexByThesaurus?regex=^air$&amp;thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/&amp;language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="versionadded">
+        <p>
+         <span class="versionmodified">
+          New in version 2.1:
+         </span>
+         The
+         <em>
+          language
+         </em>
+         parameter is now set by default to
+         <strong>
+          ‘en’
+         </strong>
+         .
+        </p>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getAvailableLanguages">
+       <tt class="descname">
+        getAvailableLanguages
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI concept_uri
+       </em>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getAvailableLanguages" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            concept_uri
+           </strong>
+           – A URI for the concept
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of strings representing the available languages (as codes)
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function returns the languages a concept’s preferred label is available in.
+A concept must have a preferred label before it can have any other property in that language.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAvailableLanguages?concept_uri=http://inspire.ec.europa.eu/theme/ps">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getSupportedLanguages">
+       <tt class="descname">
+        getSupportedLanguages
+       </tt>
+       <big>
+        (
+       </big>
+       <em>
+        URI thesaurus_uri
+       </em>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getSupportedLanguages" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            concept_uri
+           </strong>
+           – A URI for the thesaurus
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of strings representing the available languages (as codes)
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function retrieves a list containing the language codes for all the
+languages supported by a certain namespace (concept, group, theme, etc.).
+Its parameter,
+        <em>
+         thesaurus_uri
+        </em>
+        , specifies the URI for the wanted namespace.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getSupportedLanguages?thesaurus_uri=http://www.eionet.europa.eu/gemet/concept/">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="getAvailableThesauri">
+       <tt class="descname">
+        getAvailableThesauri
+       </tt>
+       <big>
+        (
+       </big>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#getAvailableThesauri" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of strings representing the available thesauri
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function returns all the thesauri URIs the service knows of.
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/getAvailableThesauri
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/getAvailableThesauri">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="fetchThemes">
+       <tt class="descname">
+        fetchThemes
+       </tt>
+       <big>
+        (
+       </big>
+       <span class="optional">
+        [
+       </span>
+       <em>
+        String language
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#fetchThemes" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            language
+           </strong>
+           – The language in which the themes are returned.
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of dictionaries representing the fetched themes
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function retrieves all the themes the service knows of.
+It is a convenience method that calls
+        <tt class="docutils literal">
+         <span class="pre">
+          getTopmostConcepts('\http://www.eionet.europa.eu/gemet/theme/',
+         </span>
+         <span class="pre">
+          language)
+         </span>
+        </tt>
+        .
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/fetchThemes?language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/fetchThemes?language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="versionadded">
+        <p>
+         <span class="versionmodified">
+          New in version 2.1:
+         </span>
+         The
+         <em>
+          language
+         </em>
+         parameter is now set by default to
+         <strong>
+          ‘en’
+         </strong>
+         .
+        </p>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="fetchGroups">
+       <tt class="descname">
+        fetchGroups
+       </tt>
+       <big>
+        (
+       </big>
+       <span class="optional">
+        [
+       </span>
+       <em>
+        String language
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#fetchGroups" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            language
+           </strong>
+           – The language in which the groups are returned.
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of dictionaries representing the fetched themes
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function retrieves all the groups the service knows of.
+It is a convenience method that calls
+        <tt class="docutils literal">
+         <span class="pre">
+          getTopmostConcepts('\http://www.eionet.europa.eu/gemet/group/',
+         </span>
+         <span class="pre">
+          language)
+         </span>
+        </tt>
+        .
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/fetchGroups?language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/fetchGroups?language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <div class="versionadded">
+        <p>
+         <span class="versionmodified">
+          New in version 2.1:
+         </span>
+         The
+         <em>
+          language
+         </em>
+         parameter is now set by default to
+         <strong>
+          ‘en’
+         </strong>
+         .
+        </p>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <br/>
+        </div>
+       </div>
+      </dd>
+     </dl>
+     <dl class="function">
+      <dt id="fetchSuperGroups">
+       <tt class="descname">
+        fetchSuperGroups
+       </tt>
+       <big>
+        (
+       </big>
+       <span class="optional">
+        [
+       </span>
+       <em>
+        String language
+       </em>
+       <span class="optional">
+        ]
+       </span>
+       <big>
+        )
+       </big>
+       <a class="headerlink" href="#fetchSuperGroups" title="Permalink to this definition">
+        ¶
+       </a>
+      </dt>
+      <dd>
+       <div class="versionadded">
+        <p>
+         <span class="versionmodified">
+          New in version 2.1:
+         </span>
+         This is a new method.
+        </p>
+       </div>
+       <table class="docutils field-list" frame="void" rules="none">
+        <col class="field-name">
+        </col>
+        <col class="field-body">
+        </col>
+        <tbody valign="top">
+         <tr class="field-odd field">
+          <th class="field-name">
+           Parameters:
+          </th>
+          <td class="field-body">
+           <strong>
+            language
+           </strong>
+           – The language in which super groups are returned.
+          </td>
+         </tr>
+         <tr class="field-even field">
+          <th class="field-name">
+           Return type:
+          </th>
+          <td class="field-body">
+           A list of dictionaries representing the fetched themes
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        This function retrieves all the supergroups the service knows of.
+In principle all groups that don’t have a broader definition would qualify.
+It is a convenience method that calls
+        <tt class="docutils literal">
+         <span class="pre">
+          getTopmostConcepts('\http://www.eionet.europa.eu/gemet/supergroup/',
+         </span>
+         <span class="pre">
+          language)
+         </span>
+        </tt>
+        .
+       </p>
+       <p>
+        Example:
+       </p>
+       <div class="highlight-python">
+        <div class="highlight">
+         <pre>http://www.eionet.europa.eu/gemet/fetchSuperGroups?language=en
+</pre>
+        </div>
+       </div>
+       <div class="line-block">
+        <div class="line">
+         <a class="reference external" href="http://www.eionet.europa.eu/gemet/fetchSupergroups?language=en">
+          Try link
+         </a>
+        </div>
+       </div>
+       <p>
+        <strong>
+         Note
+        </strong>
+        : To get the children (narrower groups), you can then call for each of them
+        <tt class="docutils literal">
+         <span class="pre">
+          getAllConceptRelatives(target_thesaurus_uri='http://www.eionet.europa.eu/gemet/group/')
+         </span>
+        </tt>
+        .
+       </p>
+      </dd>
+     </dl>
+    </div>
+    <div class="section" id="known-relations">
+     <span id="knownrelations">
+     </span>
+     <h2>
+      <strong>
+       Known relations
+      </strong>
+      <a class="headerlink" href="#known-relations" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <table border="1" class="docutils">
+      <colgroup>
+       <col width="43%">
+       </col>
+       <col width="57%">
+       </col>
+      </colgroup>
+      <thead valign="bottom">
+       <tr class="row-odd">
+        <th class="head">
+         Relation
+        </th>
+        <th class="head">
+         Description
+        </th>
+       </tr>
+      </thead>
+      <tbody valign="top">
+       <tr class="row-even">
+        <td>
+         http://www.w3.org/2004/02/skos/core#narrower
+        </td>
+        <td>
+         Narrower concept
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.w3.org/2004/02/skos/core#broader
+        </td>
+        <td>
+         Broader concept
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://www.w3.org/2004/02/skos/core#related
+        </td>
+        <td>
+         Related, but not a synonym
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#theme
+        </td>
+        <td>
+         Theme relationship of a concept. Implemented in RDF, but it is unclear whether it is relevant.
+Equivalent to broader, but a theme is not a broader concept of a concept
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#themeMember
+        </td>
+        <td>
+         Theme member relationship of a concept.
+Equivalent to narrower, but a theme is not a narrower concept of a concept
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#hasConcept
+        </td>
+        <td>
+         Source is a theme or group, target is a concept, equivalent to
+         <em>
+          narrower
+         </em>
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#group
+        </td>
+        <td>
+         Source is a concept, target is a group. Equivalent to
+         <em>
+          broader
+         </em>
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#groupMember
+        </td>
+        <td>
+         Source is a group, target is a concept. Equivalent to
+         <em>
+          narrower
+         </em>
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroupOf
+        </td>
+        <td>
+         Source is a group, target is one of the four super groups. Equivalent to
+         <em>
+          broader
+         </em>
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#subGroup
+        </td>
+        <td>
+         Source is one of the four super groups, target is a group. Equivalent to
+         <em>
+          narrower
+         </em>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <p>
+      <strong>
+       Note
+      </strong>
+      : when using the RESTful API you have to encode the ‘#’ as %23 in URLs, otherwise the webbrowser assumes you’re referring to a fragment inside the result document.
+     </p>
+    </div>
+    <div class="section" id="known-thesauri">
+     <h2>
+      <strong>
+       Known thesauri
+      </strong>
+      <a class="headerlink" href="#known-thesauri" title="Permalink to this headline">
+       ¶
+      </a>
+     </h2>
+     <table border="1" class="docutils">
+      <colgroup>
+       <col width="56%">
+       </col>
+       <col width="44%">
+       </col>
+      </colgroup>
+      <thead valign="bottom">
+       <tr class="row-odd">
+        <th class="head">
+         Thesauri
+        </th>
+        <th class="head">
+         Description
+        </th>
+       </tr>
+      </thead>
+      <tbody valign="top">
+       <tr class="row-even">
+        <td>
+         http://www.eionet.europa.eu/gemet/concept/
+        </td>
+        <td>
+         thesaurus URI for Concepts
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/theme/
+        </td>
+        <td>
+         thesaurus URI for Themes
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://www.eionet.europa.eu/gemet/group/
+        </td>
+        <td>
+         thesaurus URI for Groups
+        </td>
+       </tr>
+       <tr class="row-odd">
+        <td>
+         http://www.eionet.europa.eu/gemet/supergroup/
+        </td>
+        <td>
+         thesaurus URI for SuperGroups
+        </td>
+       </tr>
+       <tr class="row-even">
+        <td>
+         http://inspire.ec.europa.eu/theme/
+        </td>
+        <td>
+         thesaurus URI for Inspire Themes
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <p>
+      <strong>
+       Note
+      </strong>
+      : To retrieve the available thesauri, use the function
+      <a class="reference internal" href="#getAvailableThesauri" title="getAvailableThesauri">
+       <tt class="xref py py-func docutils literal">
+        <span class="pre">
+         getAvailableThesauri()
+        </span>
+       </tt>
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>

@@ -28,10 +28,6 @@
 }
 
 
-
-
-
-
 /* helpers */
 
 	/* box */
@@ -712,3 +708,58 @@
 	.error404 a:hover {
 		color: #a5ced1;
 	}
+
+
+/* API docs */
+
+        .documentwrapper a.headerlink:link {
+            background: none!important;
+            color: #CEDCE0!important;
+        }
+
+        .documentwrapper a.headerlink:visited {
+            color: #CEDCE0!important;
+        }
+
+        .documentwrapper a.headerlink:hover {
+            color: #315076!important;
+        }
+
+        .documentwrapper th.field-name {
+            padding-left: 0;
+            white-space: nowrap;
+        }
+
+        .documentwrapper td.field-body ul {
+            margin-top: 0!important;
+        }
+
+        .documentwrapper td.field-body p {
+            margin-top: .2em;
+        }
+
+        .documentwrapper .function .descname {
+            font-size: 1.3em;
+        }
+
+        .documentwrapper table.docutils {
+            border-collapse: collapse;
+            margin-top: .4em;
+            margin-bottom: .4em;
+        }
+
+        .documentwrapper table.docutils tbody td {
+            padding: .2em .3em .2em .5em;
+        }
+
+        .documentwrapper table.docutils tr td:first-child {
+            white-space: nowrap;
+        }
+
+        .documentwrapper pre {
+            font-size: .9em;
+        }
+
+        .documentwrapper .pre {
+            font-size: 1.1em;
+        }
