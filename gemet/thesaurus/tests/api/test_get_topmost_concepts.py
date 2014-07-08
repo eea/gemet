@@ -18,7 +18,7 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestGetTopmostConcepts(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
+        self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.url = reverse('api_root', args=['getTopmostConcepts']) + '?'
         self.term = TermFactory()
         self._initialize(self.term, 'prefLabel1', 'definition1', self.english)
@@ -76,12 +76,9 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp['preferredLabel']['language'], 'en')
         self.assertEqual(resp['definition']['string'], 'definition1')
         self.assertEqual(resp['definition']['language'], 'en')
+
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, self.term.id)
-            )
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)
 
@@ -106,11 +103,7 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition1')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, self.term.id)
-            )
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)
 
@@ -134,11 +127,7 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp[0]['definition']['string'], 'definition1')
         self.assertEqual(resp[0]['definition']['language'], 'en')
         self.assertEqual(
-            resp[0]['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, self.term.id)
-            )
+            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
 
@@ -147,11 +136,7 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp[1]['definition']['string'], 'definition2')
         self.assertEqual(resp[1]['definition']['language'], 'en')
         self.assertEqual(
-            resp[1]['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, term2.id)
-            )
+            resp[1]['uri'], self.NS_ROOT + term2.get_about_url()[1:-1]
         )
         self.assertEqual(resp[1]['thesaurus'], term2.namespace.url)
 
@@ -173,10 +158,7 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition2')
         self.assertEqual(resp['definition']['language'], 'es')
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept', args=(spanish.code, term2.id)
-            )
+            resp['uri'], self.NS_ROOT + term2.get_about_url()[1:-1]
         )
         self.assertEqual(resp['thesaurus'], term2.namespace.url)
 
@@ -196,10 +178,6 @@ class TestGetTopmostConcepts(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition2')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'theme',
-                args=(self.english.code, theme.id)
-            )
+            resp['uri'], self.NS_ROOT + theme.get_about_url()[1:-1]
         )
         self.assertEqual(resp['thesaurus'], theme.namespace.url)

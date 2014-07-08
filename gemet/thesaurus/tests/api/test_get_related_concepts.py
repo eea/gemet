@@ -16,7 +16,6 @@ from gemet.thesaurus.tests import GemetTest
 class TestGetRelatedConcepts(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.url = reverse('api_root', args=['getRelatedConcepts']) + '?'
         self.term = TermFactory()
@@ -118,11 +117,7 @@ class TestGetRelatedConcepts(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition2')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, term2.id)
-            )
+            resp['uri'], self.NS_ROOT + term2.get_about_url()[1:-1]
         )
         self.assertEqual(resp['thesaurus'], term2.namespace.url)
 

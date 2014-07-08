@@ -16,7 +16,6 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestGetConceptsMatchingKeyword(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.url = reverse('api_root',
                            args=['getConceptsMatchingKeyword']) + '?'
@@ -116,11 +115,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition1')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, self.term.id)
-            )
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
 
     def test_missing_thesaurus_uri(self):
@@ -140,11 +135,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp[0]['definition']['string'], 'definition1')
         self.assertEqual(resp[0]['definition']['language'], 'en')
         self.assertEqual(
-            resp[0]['uri'],
-            self.ENDPOINT_URI + reverse(
-                'concept',
-                args=(self.english.code, self.term.id)
-            )
+            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
         self.assertEqual(resp[1]['preferredLabel']['string'], 'prefLabel2')
@@ -152,11 +143,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp[1]['definition']['string'], 'definition2')
         self.assertEqual(resp[1]['definition']['language'], 'en')
         self.assertEqual(
-            resp[1]['uri'],
-            self.ENDPOINT_URI + reverse(
-                'theme',
-                args=(self.english.code, theme.id)
-            )
+            resp[1]['uri'], self.NS_ROOT + theme.get_about_url()[1:-1]
         )
         self.assertEqual(resp[1]['thesaurus'], theme.namespace.url)
 

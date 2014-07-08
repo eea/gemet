@@ -15,7 +15,6 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestGetConcept(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.url = reverse('api_root', args=['getConcept']) + '?'
         self.term = TermFactory()
@@ -71,9 +70,9 @@ class TestGetConcept(GemetTest):
         resp = resp.json
         self.assertEqual(resp['preferredLabel']['string'], 'prefLabel1')
         self.assertEqual(resp['definition']['string'], 'definition1')
-        self.assertEqual(resp['uri'], self.ENDPOINT_URI + reverse(
-            'concept', args=(self.english.code, self.term.id),
-        ))
+        self.assertEqual(
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+        )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)
 
     def test_language(self):
@@ -88,7 +87,7 @@ class TestGetConcept(GemetTest):
         resp = resp.json
         self.assertEqual(resp['preferredLabel']['string'], 'prefLabel2')
         self.assertEqual(resp['definition']['string'], 'definition2')
-        self.assertEqual(resp['uri'], self.ENDPOINT_URI + reverse(
-            'concept', args=(spanish.code, self.term.id)
-        ))
+        self.assertEqual(
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+        )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)

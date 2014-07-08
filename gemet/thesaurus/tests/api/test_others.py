@@ -16,7 +16,6 @@ from gemet.thesaurus import DEFAULT_LANGCODE
 class TestOthers(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.term = TermFactory()
 
@@ -73,7 +72,6 @@ class TestOthers(GemetTest):
     def test_topmost_concepts_null_pref_label(self):
         PropertyFactory(concept=self.term, name='definition',
                         value='definition', language=self.english)
-        ENDPOINT_URI = 'http://www.eionet.europa.eu'
         url = reverse('api_root', args=['getTopmostConcepts']) + '?'
         resp = self.app.get(
             url + urlencode({'thesaurus_uri': self.term.namespace.url})
@@ -85,8 +83,8 @@ class TestOthers(GemetTest):
         self.assertEqual(len(resp), 1)
         self.assertEqual(resp[0]['definition']['string'], 'definition')
         self.assertEqual(resp[0]['definition']['language'], self.english.code)
-        self.assertEqual(resp[0]['uri'], ENDPOINT_URI + reverse(
-            'concept', args=(self.english.code, self.term.id))
+        self.assertEqual(
+            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
         self.assertFalse(['preferredLabel'] in resp[0].keys())

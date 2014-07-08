@@ -12,13 +12,11 @@ from gemet.thesaurus.tests.factories import (
     ThemeFactory,
 )
 from gemet.thesaurus.tests import GemetTest
-from gemet.thesaurus import DEFAULT_LANGCODE
 
 
 class TestAllConceptRelatives(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
         self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
         self.url = reverse('api_root', args=['getAllConceptRelatives']) + '?'
         self.term = TermFactory()
@@ -113,10 +111,7 @@ class TestAllConceptRelatives(GemetTest):
                          self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp['relation'], p3.uri)
         self.assertEqual(
-            resp['target'],
-            self.ENDPOINT_URI + reverse(
-                'theme', args=(self.english.code, theme.id)
-            )
+            resp['target'], self.NS_ROOT + theme.get_about_url()[1:-1]
         )
 
     def test_optional_parameters(self):
@@ -150,17 +145,11 @@ class TestAllConceptRelatives(GemetTest):
                          self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp[0]['relation'], p1.uri)
         self.assertEqual(
-            resp[0]['target'],
-            self.ENDPOINT_URI + reverse(
-                'concept', args=(DEFAULT_LANGCODE, term2.id)
-            )
+            resp[0]['target'], self.NS_ROOT + term2.get_about_url()[1:-1]
         )
-        self.assertEqual(resp[1]['source'],
-                         self.NS_ROOT + 'concept/' + self.term.code)
+        self.assertEqual(
+            resp[1]['source'], self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp[1]['relation'], p3.uri)
         self.assertEqual(
-            resp[1]['target'],
-            self.ENDPOINT_URI + reverse(
-                'theme', args=(DEFAULT_LANGCODE, theme.id)
-            )
+            resp[1]['target'], self.NS_ROOT + theme.get_about_url()[1:-1]
         )
