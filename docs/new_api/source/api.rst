@@ -389,9 +389,7 @@ WebService API methods
         http://www.eionet.europa.eu/gemet/fetchSuperGroups?language=en
     |   `Try link <http://www.eionet.europa.eu/gemet/fetchSupergroups?language=en>`_
 
-    **Note**: To get the children (narrower groups), you can then cal for each of them::
-
-        getAllConceptRelatives(target_thesaurus_uri='http://www.eionet.europa.eu/gemet/group/')
+    **Note**: To get the children (narrower groups), you can then call for each of them ``getAllConceptRelatives(target_thesaurus_uri='http://www.eionet.europa.eu/gemet/group/')``.
 
 
 .. _knownrelations:
