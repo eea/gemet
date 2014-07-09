@@ -1,5 +1,8 @@
 {% autoescape off %}
-{{ header_text }}
+{{ header_text_preffix }}
+{% block title %}
+{% endblock %}
+{{ header_text_suffix }}
 {% endautoescape %}
 
 <div class="content">

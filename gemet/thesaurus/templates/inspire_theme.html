@@ -1,6 +1,10 @@
 {% extends layout_template %}
 {% load gemet_tags %}
 
+{% block title %}
+{{ inspire_theme.name }}
+{% endblock %}
+
 {% block content %}
   {% include 'header.html' with view='inspire_theme' id=inspire_theme.id %}
 

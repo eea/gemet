@@ -1,6 +1,10 @@
 {% extends 'concept_listings.html' %}
 {% load gemet_tags %}
 
+{% block title %}
+Concepts list
+{% endblock %}
+
 {% block language_selector %}
   {% include 'header.html' with view='theme_concepts' id=theme.id %}
 {% endblock %}

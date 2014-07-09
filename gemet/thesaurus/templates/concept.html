@@ -1,6 +1,10 @@
 {% extends layout_template %}
 {% load gemet_tags %}
 
+{% block title %}
+{{ concept.name }}
+{% endblock %}
+
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.id %}
 

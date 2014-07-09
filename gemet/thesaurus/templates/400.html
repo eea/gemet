@@ -1,11 +1,19 @@
-<div class="error400 clearfix">
-  <h1>400: Bad Request</h1>
+<!doctype html>
+<html>
+  <head>
+    <title>Bad Request</title>
+  </head>
+  <body>
+  <div class="error400 clearfix">
+    <h1>400: Bad Request</h1>
 
-  An error was encountered while publishing this resource.
+    An error was encountered while publishing this resource.
 
-  <p><strong>{{ error_message }}</strong></p>
+    <p><strong>{{ error_message }}</strong></p>
 
-  <p>Make sure to specify all required parameters, and try the request again.</p>
+    <p>Make sure to specify all required parameters, and try the request again.</p>
 
-  <a href="{% url 'webservices' 'en' %}">click here</a> if you want to see how to use GEMET's Web Servies
-</div>
+    <a href="{% url 'webservices' 'en' %}">click here</a> if you want to see how to use GEMET's Web Servies
+  </div>
+  </body>
+</html>
