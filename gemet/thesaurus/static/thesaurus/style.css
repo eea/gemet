@@ -112,7 +112,7 @@
 		overflow: auto;
                 margin-bottom: .5em;
 	}
-    .dl-inline .dd-list {
+    #workarea .dl-inline .dd-list {
         margin-left: 120px;
     }
 
