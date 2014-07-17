@@ -23,17 +23,23 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Alternatives -->
+  {% if concept.alternatives %}
+    <i>Alternatives:</i>
+    {% for alternative in concept.alternatives %}
+      <i>{{ alternative }};</i>
+    {% endfor %}
+  {% endif %}
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  {% if not concept.definition %}
-  <p class="alert">Definition is not available.</p>
-  {% else %}
   <p id="definition">
     {{ concept.definition }}
     {% if concept.source %}
       <span>(Source: {{ concept.source }})</span>
     {% endif %}
   </p>
+  {% if concept.default_definition %}
+  <p class="alert">Definition is not available for the current language.</p>
   {% endif %}
 
 

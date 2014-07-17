@@ -53,7 +53,13 @@ class Concept(Model):
             .values('name', 'value')
         )
         for prop in properties:
-            setattr(self, prop['name'], prop['value'])
+            if prop['name'] == 'altLabel':
+                if hasattr(self, 'alternatives'):
+                    self.alternatives.append(prop['value'])
+                else:
+                    self.alternatives = [prop['value']]
+            else:
+                setattr(self, prop['name'], prop['value'])
 
     def set_parents(self, langcode):
         for parent_type in self.parents_relations:

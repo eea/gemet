@@ -285,7 +285,10 @@ class TermView(ConceptView):
 
     def get_object(self):
         term = super(TermView, self).get_object()
-        term.set_attributes(self.langcode, ['source'])
+        term.set_attributes(self.langcode, ['source', 'altLabel'])
+        if not hasattr(term, 'definition'):
+            term.set_attributes(DEFAULT_LANGCODE, ['definition'])
+            term.default_definition = True
         return term
 
 
