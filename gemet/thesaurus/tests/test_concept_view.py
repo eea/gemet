@@ -85,9 +85,9 @@ class TestConceptView(GemetTest):
                          "some definition")
         self.assertEqual(resp.pyquery('.content p#scope-note').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.content ul:eq(1) li a').text(),
+        self.assertEqual(resp.pyquery('.content ul.listing:eq(1) li').text(),
                          "Group Parent")
-        self.assertEqual(resp.pyquery('.content ul:eq(0) li a').text(),
+        self.assertEqual(resp.pyquery('.content ul.listing:eq(0) li').text(),
                          "Theme Parent")
 
     def test_concept_one_theme_rdf(self):
@@ -119,7 +119,7 @@ class TestConceptView(GemetTest):
                          "some scope note")
         self.assertEqual(resp.pyquery('.content ul:eq(1)').text(),
                          "Group Parent")
-        themes = resp.pyquery('.content ul:eq(0) li a').text().split()
+        themes = resp.pyquery('.content ul.listing:eq(0) li').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
@@ -143,7 +143,7 @@ class TestConceptView(GemetTest):
         url = reverse('concept', kwargs={'concept_id': self.concept.id,
                                          'langcode': 'en'})
         resp = self.app.get(url)
-        url = resp.pyquery('.content p:eq(2)').text()
+        url = resp.pyquery('.content h5.h5-url').text().split()[-1] + '/'
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_redirect_rdf(self):
