@@ -68,7 +68,7 @@
   {% if concept.broader_concepts %}
   <div class="dl-inline">
     <h6 class="dt">Broader</h6>
-    <ul class="dd no-list">
+    <ul class="dd-list">
       {% for cp in concept.broader_concepts %}
       <li>
         <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a></li>
@@ -78,11 +78,11 @@
   </div>
   {% endif %}
 
-  <!-- Similar -->
+  <!-- Related -->
   {% if concept.related_concepts %}
   <div class=" dl-inline">
     <h6 class="dt">Related</h6>
-    <ul class="dd no-list">
+    <ul class="dd-list">
       {% for cp in concept.related_concepts %}
       <li>
         <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>  </li>
@@ -95,7 +95,7 @@
   {% if concept.narrower_concepts %}
   <div class=" dl-inline">
     <h6 class="dt">Narrower</h6>
-    <ul class="dd no-list">
+    <ul class="dd-list">
       {% for cp in concept.narrower_concepts %}
       <li>
         <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a></li>
