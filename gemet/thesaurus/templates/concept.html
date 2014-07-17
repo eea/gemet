@@ -128,8 +128,9 @@
   {% endif %}
 
   <!-- Concept URL -->
-  <h5 class="h5">Concept URL</h5>
-  <p><a rel="nofollow" href="{{ concept.url }}">{{ concept.url }}</a></p>
+  <h5 class="h5 h5-url">Concept URL:
+  {{ concept.url|slice:":-1" }}
+  </h5>
 
 {% endblock %}
 {% block version %}
