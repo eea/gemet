@@ -43,7 +43,7 @@
   <ul class="listing">
     {% for theme in concept.themes %}
     <li>
-      <a href="{% url 'theme' language.code theme.id %}">{{ theme.name }}</a>
+      {{ theme.name }}
     </li>
     {% endfor %}
   </ul>
@@ -55,7 +55,7 @@
       <ul class="listing">
       {% for group in concept.groups %}
         <li>
-          <a href="{% url 'group' language.code group.id %}">{{ group.name }}</a>
+          {{ group.name }}
         </li>
       {% endfor %}
     </ul>
