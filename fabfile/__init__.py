@@ -44,7 +44,7 @@ def deploy():
         run('git pull --rebase')
         run('pip install -r requirements-dep.txt')
         run('./manage.py syncdb')
-        run('./manage.py collectstatic')
+        run('./manage.py collectstatic --noinput')
         run('supervisorctl -c {0} restart django'.format(env.supervisord_conf))
 
 
