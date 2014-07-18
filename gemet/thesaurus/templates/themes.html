@@ -1,7 +1,7 @@
 {% extends layout_template %}
 
 {% block title %}
-Themes list
+  {{ page_title }}
 {% endblock %}
 
 {% load gemet_tags %}
@@ -14,7 +14,7 @@ Themes list
     <p class="alert">There are no themes available for the current language so these are listed in English.</p>
   {% endif %}
 
-  <ul class="listing columns vertical {% if language.rtl %}direction-rtl{% endif %}">
+  <ul class="listing columns {{ css_class }} {% if language.rtl %}direction-rtl{% endif %}">
     {% for theme in themes %}
     <li>
       <a href="{% url theme_url language.code theme.id %}">{{ theme.name }}</a>

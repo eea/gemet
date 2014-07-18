@@ -79,6 +79,7 @@ class ThemesView(HeaderMixin, TemplateView):
     page_title = 'Themes'
     theme_url = 'theme_concepts'
     view_name = 'themes'
+    css_class = 'split-20'
 
     def _get_themes_by_langcode(self, langcode):
         return (
@@ -107,7 +108,8 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
-            'ns_version': self.model_cls.objects.get_ns().version
+            'ns_version': self.model_cls.objects.get_ns().version,
+            'css_class': self.css_class,
         })
         return context
 
@@ -117,6 +119,7 @@ class InspireThemesView(ThemesView):
     page_title = 'INSPIRE Spatial Data Themes'
     theme_url = 'inspire_theme'
     view_name = 'inspire_themes'
+    css_class = 'split-17'
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)

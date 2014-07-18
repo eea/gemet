@@ -443,23 +443,41 @@
 	.listing.columns.direction-rtl > li {
 		float: right;
 	}
-	
-	/* vertical column listing */
-	.columns.vertical > li:nth-child(-n+20) {
+
+	/* split-20 column listing */
+	.columns.split-20 > li:nth-child(-n+20) {
 		clear: left;
 	}
-	.columns.vertical > li:nth-child(n+21) {
+	.columns.split-20 > li:nth-child(n+21) {
 		margin-left: 50%;
 		float: none;
 	}
-	.columns.vertical.direction-rtl > li:nth-child(-n+20) {
+	.columns.split-20.direction-rtl > li:nth-child(-n+20) {
 		clear: right;
 	}
-	.columns.vertical.direction-rtl > li:nth-child(n+21) {
+	.columns.split-20.direction-rtl > li:nth-child(n+21) {
 		margin-left: auto;
 		margin-right: 50%;
 		float: none;
 	}
+
+        /* inspire-themes -> columns with 17 concepts each */
+	.columns.split-17 > li:nth-child(-n+17) {
+		clear: left;
+	}
+	.columns.split-17 > li:nth-child(n+18) {
+		margin-left: 50%;
+		float: none;
+	}
+	.columns.direction-rtl.split-17 > li:nth-child(-n+17) {
+		clear: right;
+	}
+	.columns.direction-rtl.split-17 > li:nth-child(n+18) {
+		margin-left: auto;
+		margin-right: 50%;
+		float: none;
+	}
+
 	#workarea .listing .listing {
 		margin-left: 1.5em!important;
 	}
