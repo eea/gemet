@@ -67,7 +67,7 @@ urlpatterns = patterns(
         name='redirects'
     ),
     url(r'^concept$', old_concept_redirect, name='old_concept_redirect'),
-    url(r'^2004/06/gemet-schema\.rdf/$', GemetSchemaView.as_view(),
+    url(r'^2004/06/gemet-schema\.rdf/?$', GemetSchemaView.as_view(),
         name='gemet_schema'),
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
