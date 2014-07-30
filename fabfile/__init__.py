@@ -13,8 +13,13 @@ LOCATION_WARNING = """deployment. You need to prefix the task with the location
 
 def environment(location):
     config = ConfigParser.SafeConfigParser()
-    config.read(LOCAL_PATH / 'env.ini')
-    env.update(config.items(section=location))
+    config_path = LOCAL_PATH / 'env.ini'
+    config.read(config_path)
+    try:
+        env.update(config.items(section=location))
+    except ConfigParser.NoSectionError:
+        exit('Cannot run task on {0}. Please define the corresponding section '
+             'in {1}.'.format(location, config_path))
     env.sandbox_activate = 'source {0}'.format(path(env.sandbox) / 'bin' /
                                                'activate')
     env.deployment_location = location
@@ -29,6 +34,11 @@ def require_variables():
 @task
 def staging():
     environment('staging')
+
+
+@task
+def production():
+    environment('production')
 
 
 @task
