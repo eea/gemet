@@ -49,3 +49,6 @@ DATABASES = {
 #     '--cover-erase',
 #     '--cover-package=gemet',
 # ]
+#
+# Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
+# GEMET_RDFGZ_PATH = '/path/to/gemet.rdf.gz'

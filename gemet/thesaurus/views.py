@@ -4,7 +4,7 @@ import sys
 from xmlrpclib import Fault
 from urllib import urlencode
 
-from django.http import Http404
+from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import (
     render,
     get_object_or_404,
@@ -15,6 +15,7 @@ from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
+from django.conf import settings
 
 from gemet.thesaurus.models import (
     Language,
@@ -814,6 +815,17 @@ class DownloadView(HeaderMixin, FormView):
             raise Http404
         self.langcode = form.cleaned_data['language_names'].code
         return super(DownloadView, self).form_valid(form=form)
+
+
+def download_gemet_rdf(request):
+    try:
+        f = open(settings.GEMET_RDFGZ_PATH)
+    except (IOError, AttributeError):
+        raise Http404
+
+    response = StreamingHttpResponse(f, content_type='application/x-gzip')
+    response['Content-Disposition'] = 'attachment; filename="gemet.rdf.gz"'
+    return response
 
 
 def redirect_old_urls(request, view_name):

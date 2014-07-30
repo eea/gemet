@@ -33,6 +33,7 @@ from gemet.thesaurus.views import (
     WebServicesView,
     GemetSchemaView,
     GemetVoidView,
+    download_gemet_rdf,
 )
 from .api import ApiView
 
@@ -71,6 +72,7 @@ urlpatterns = patterns(
     url(r'^2004/06/gemet-schema\.rdf/?$', GemetSchemaView.as_view(),
         name='gemet_schema'),
     url(r'^void\.rdf/?$', GemetVoidView.as_view()),
+    url(r'^gemet\.rdf\.gz/?$', download_gemet_rdf),
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),
     url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
         url(r'^about/$', AboutView.as_view(), name='about'),
