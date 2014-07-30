@@ -486,6 +486,18 @@ class GemetSchemaView(XMLTemplateView):
     template_name = 'gemet_schema.rdf'
 
 
+class GemetVoidView(XMLTemplateView):
+    template_name = 'void.rdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(GemetVoidView, self).get_context_data(**kwargs)
+
+        context.update({
+            'languages': Language.objects.values('code').order_by('code')
+        })
+        return context
+
+
 class BackboneRDFView(XMLTemplateView):
     template_name = 'downloads/backbone.rdf'
 

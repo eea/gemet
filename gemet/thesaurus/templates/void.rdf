@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+           xmlns:owl="http://www.w3.org/2002/07/owl#"
+           xmlns:dcterms="http://purl.org/dc/terms/"
+           xmlns:foaf="http://xmlns.com/foaf/0.1/"
+           xmlns:void="http://rdfs.org/ns/void#">
+
+   <!-- This file is a listing of the RDF outputs supported by GEMET
+        See http://www.w3.org/TR/void/
+    -->
+  <foaf:Organization rdf:ID="EEA">
+    <foaf:name>European Environment Agency</foaf:name>
+    <foaf:homepage rdf:resource="http://www.eea.europa.eu/"/>
+    <owl:sameAs rdf:resource="http://rod.eionet.europa.eu/clients/3"/>
+    <owl:sameAs rdf:resource="http://www.eionet.europa.eu/organisations/eu_eea"/>
+  </foaf:Organization>
+
+  <void:Dataset rdf:about="http://www.eionet.europa.eu/gemet">
+    <dcterms:title>GEneral Multilingual Environmental Thesaurus</dcterms:title>
+    <dcterms:license rdf:resource="http://creativecommons.org/licenses/by/2.5/dk/"/>
+    <dcterms:publisher rdf:resource="http://www.eionet.europa.eu/void.rdf#EEA"/>
+    <dcterms:creator rdf:resource="http://www.eionet.europa.eu/void.rdf#EEA"/>
+    <dcterms:contributor rdf:resource="http://www.eionet.europa.eu/users/roug"/>
+    <dcterms:contributor rdf:resource="http://www.eionet.europa.eu/users/jensen"/>
+    <void:exampleResource rdf:resource="http://www.eionet.europa.eu/gemet/supergroup/4044"/>
+    <void:exampleResource rdf:resource="http://www.eionet.europa.eu/gemet/concept/250"/>
+    <void:uriPattern>^http://www.eionet.europa.eu/gemet/.*</void:uriPattern>
+    <void:dataDump rdf:resource="http://www.eionet.europa.eu/gemet/gemet.rdf.gz"/>
+<!--
+    <void:dataDump rdf:resource="http://www.eionet.europa.eu/gemet/gemet-backbone.rdf"/>
+    <void:dataDump rdf:resource="http://www.eionet.europa.eu/gemet/gemet-skoscore.rdf"/>
+{% for language in languages %}
+    <void:dataDump rdf:resource="http://www.eionet.europa.eu/gemet/gemet-definitions.rdf?langcode={{ language.code }}"/>
+    <void:dataDump rdf:resource="http://www.eionet.europa.eu/gemet/gemet-groups.rdf?langcode={{ language.code }}"/>
+{% endfor %}
+-->
+  </void:Dataset>
+</rdf:RDF>
