@@ -6,7 +6,9 @@
 
 {% block content %}
 	<div class="error404 clearfix">
-		<h1>404 Sorry, the requested page was not found.</h1>
-		<a href="{% url 'themes' 'en' %}">Return to the home page &rarr;</a>
+		<h1>Error (404)</h1>
+                <p>We can't find the page you're looking for.</p>
+                <p>You might try retyping the URL and trying again. Or we could
+                take you back to the <a href="{% url 'themes' 'en' %}">home page</a>.</p>
 	</div>
 {% endblock %}

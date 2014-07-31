@@ -532,6 +532,9 @@
 	#workarea:after {
 		clear: both;
 	}
+        #workarea {
+            padding-bottom: 60px;
+        }
 
 	/* header */
 	.gemet-header {
@@ -708,6 +711,9 @@
 		padding-top: 1em;
 		border-top: 1px solid #ddd;
 		margin-top: 1em;
+		margin-bottom: 1em;
+                position: absolute;
+                bottom: 0;
 	}
 	.footer-menu a {
 		text-decoration: none;
@@ -723,12 +729,18 @@
 	/* 404 */
 	.error404 > * {
 		margin-bottom: 0;
-		font-size: 28px!important;
 		line-height: 1;
 		font-weight: bold;
 		padding: 0!important;
 		margin: 0!important;
 	}
+        .error404 h1 {
+		font-size: 28px!important;
+                padding-bottom: 40px!important;
+        }
+        .error404 p {
+                font-size: 16px!important;
+        }
 	.error404 a {
 		color: #2a6495;
 		text-decoration: none;
