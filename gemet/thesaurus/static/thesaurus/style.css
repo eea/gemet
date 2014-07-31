@@ -723,7 +723,7 @@
 	/* 404 */
 	.error404 > * {
 		margin-bottom: 0;
-		font-size: 64px!important;
+		font-size: 28px!important;
 		line-height: 1;
 		font-weight: bold;
 		padding: 0!important;
