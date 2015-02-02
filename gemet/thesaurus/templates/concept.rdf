@@ -12,3 +12,4 @@
 {% for property in properties %}{% if property.property_type %}
 <{{ property.property_type.prefix }} xml:lang="{{ property.language.code }}">{{ property.value }}</skos:{{ property.name }}>{% endif %}{% endfor %}
 </rdf:Description>
+</rdf:RDF>
