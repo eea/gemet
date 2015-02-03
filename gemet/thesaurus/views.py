@@ -519,15 +519,13 @@ class BackboneRDFView(XMLTemplateView):
 
         for concept in concepts:
             relations.update({
-                concept['code']: (Relation.objects
-                                  .filter(source_id=concept['id'],
-                                          property_type__name__in=
-                                          ['theme', 'group'],
-                                          )
-                                  .values('target__code',
-                                          'property_type__name',
-                                          )
-                                  )
+                concept['code']: (
+                    Relation.objects
+                    .filter(source_id=concept['id'],
+                            property_type__name__in=['theme', 'group'])
+                    .values('target__code',
+                            'property_type__name')
+                )
             })
 
         context.update({
