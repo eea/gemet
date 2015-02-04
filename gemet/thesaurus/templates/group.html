@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='group' id=group.id %}
+  {% include 'header.html' with view='group' id=group.code %}
 
   <!-- Group -->
   <h3 class="h3">{{ group.name }}</h3>
@@ -36,9 +36,7 @@
   <h5 class="h5">Super groups</h5>
   <ul class="listing">
     {% for sg in group.broader_concepts %}
-    <li>
-      <a href="{% url 'supergroup' language.code sg.id %}">{{ sg.name }}</a>
-    </li>
+    <li>{{ sg.name }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -48,17 +46,16 @@
   <h5 class="h5">Concepts</h5>
   <ul class="listing">
     {% for cp in group.groupMember_concepts %}
-    <li>
-      <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
-    </li>
+    <li>{{ cp.name }}</li>
     {% endfor %}
   </ul>
   {% endif %}
 
 
   <!-- Concept URL -->
-  <h5 class="h5">Concept URL</h5>
-  <p id="concept-url"><a rel="nofollow" href="{{ group.url }}">{{ group.url }}</a></p>
+  <h5 class="h5 h5-url">Concept URL:
+  {{ group.url|slice:":-1" }}
+  </h5>
 
 {% endblock %}
 {% block version %}
