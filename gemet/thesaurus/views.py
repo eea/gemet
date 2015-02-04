@@ -505,7 +505,9 @@ class BackboneRDFView(XMLTemplateView):
         supergroups = SuperGroup.objects.values('code')
 
         group_uri = Namespace.objects.get(heading='Groups').type_url
-        groups = Group.objects.values('code')
+        groups = (Group.objects
+                  .filter(source_relations__property_type__name='broader')
+                  .values('source_relations__target__code', 'code'))
 
         theme_uri = Namespace.objects.get(heading='Themes').type_url
         themes = Theme.objects.values('code')
