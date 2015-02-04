@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
+{% load gemet_tags %}
+
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
@@ -9,7 +12,7 @@
 {% for concept_code, definition in definitions.items %}
     <rdf:Description rdf:about="concept/{{ concept_code }}">
     {% for d in definition %}
-    <skos:{{ d.name }}>{{ d.value }}</skos:{{ d.name }}>
+    <skos:{{ d.name }}>{{ d.value|normalize:"NFC" }}</skos:{{ d.name }}>
     {% endfor %}
     </rdf:Description>
 {% endfor %}
