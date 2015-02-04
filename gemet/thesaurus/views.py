@@ -128,7 +128,7 @@ class InspireThemesView(ThemesView):
                      Property.objects.filter(
                          language_id=lang.get('code'),
                          concept__namespace=self.model_cls.objects.get_ns(),
-                     )]
+                         )]
 
         context.update({'languages': languages})
         return context
@@ -505,6 +505,7 @@ class BackboneRDFView(XMLTemplateView):
         supergroups = SuperGroup.objects.values('code')
 
         group_uri = Namespace.objects.get(heading='Groups').type_url
+        # TODO: find a way to alias foreign key attributes
         groups = (Group.objects
                   .filter(source_relations__property_type__name='broader')
                   .values('source_relations__target__code', 'code'))
