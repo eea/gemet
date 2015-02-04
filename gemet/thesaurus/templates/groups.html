@@ -20,7 +20,7 @@ Groups list
           {% get_children supergroup.id language.code as supergroup_children %}
           {% for group in supergroup_children %}
             <li>
-            <a href="{% url 'relations' language.code group.id %}">{{ group.name }}</a>
+            <a href="{% url 'relations' language.code group.concept__code %}">{{ group.name }}</a>
             </li>
           {% endfor %}
         </ul>

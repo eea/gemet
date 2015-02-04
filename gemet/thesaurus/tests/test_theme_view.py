@@ -17,7 +17,7 @@ class TestThemeView(GemetTest):
                         value="some prefLabel")
 
     def test_theme_no_concept(self):
-        url = reverse('theme', kwargs={'concept_id': self.theme.id,
+        url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -43,7 +43,7 @@ class TestThemeView(GemetTest):
                         target=concept)
         RelationFactory(property_type=pt2, source=concept,
                         target=self.theme)
-        url = reverse('theme', kwargs={'concept_id': self.theme.id,
+        url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -82,7 +82,7 @@ class TestThemeView(GemetTest):
                         target=concept2)
         RelationFactory(property_type=pt4, source=concept2,
                         target=self.theme)
-        url = reverse('theme', kwargs={'concept_id': self.theme.id,
+        url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -103,14 +103,14 @@ class TestThemeView(GemetTest):
                          "English some prefLabel")
 
     def test_redirect(self):
-        url = reverse('theme', kwargs={'concept_id': self.theme.id,
+        url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content p:eq(2)').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
-        url = reverse('theme', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('theme', kwargs={'code': 1, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

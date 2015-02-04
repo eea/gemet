@@ -24,7 +24,7 @@ Concepts list
   {% if letter == 0 %}
     <span class="selected-elm">all</span>
   {% else %}
-    <a href="{% url 'theme_concepts' language.code theme.id %}?letter=0">all</a>
+    <a href="{% url 'theme_concepts' language.code theme.code %}?letter=0">all</a>
   {% endif %}
   {% for letter_index in letters %}
     {% if letter == forloop.counter %}
@@ -32,13 +32,13 @@ Concepts list
     {% elif not letter_index.1 %}
       <span class="unavailable-letter">{{ letter_index.0 }}</span>
     {% else %}
-      <a href="{% url 'theme_concepts' language.code theme.id %}?letter={{ forloop.counter }}">{{ letter_index.0 }}</a>
+      <a href="{% url 'theme_concepts' language.code theme.code %}?letter={{ forloop.counter }}">{{ letter_index.0 }}</a>
     {% endif %}
   {% endfor %}
   {% if letter == 99 %}
     other
   {% else %}
-    <a href="{% url 'theme_concepts' language.code theme.id %}?letter=99">other</a>
+    <a href="{% url 'theme_concepts' language.code theme.code %}?letter=99">other</a>
   {% endif %}
 </div>  
 {% endblock %}

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='inspire_theme' id=inspire_theme.id %}
+  {% include 'header.html' with view='inspire_theme' id=inspire_theme.code %}
 
   <!-- Theme -->
   <h3 class="h3">{{ inspire_theme.name }}</h3>
@@ -55,7 +55,6 @@
   <h5 class="h5 h5-url">Concept URL:
     {{ inspire_theme.url }}
   </h5>
-
 
 {% endblock %}
 {% block version %}

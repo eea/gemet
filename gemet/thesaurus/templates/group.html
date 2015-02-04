@@ -49,7 +49,7 @@
   <ul class="listing">
     {% for cp in group.groupMember_concepts %}
     <li>
-      <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+      <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
     </li>
     {% endfor %}
   </ul>

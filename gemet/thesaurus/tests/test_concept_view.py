@@ -74,7 +74,7 @@ class TestConceptView(GemetTest):
 
     def test_concept_one_theme(self):
         self.set_concept_one_theme()
-        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+        url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -92,7 +92,7 @@ class TestConceptView(GemetTest):
 
     def test_concept_one_theme_rdf(self):
         self.set_concept_one_theme()
-        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+        url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url, extra_environ={
             'HTTP_ACCEPT': 'application/rdf+xml'
@@ -106,7 +106,7 @@ class TestConceptView(GemetTest):
 
     def test_concept_two_themes(self):
         self.set_concept_two_theme()
-        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+        url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -126,7 +126,7 @@ class TestConceptView(GemetTest):
 
     def test_concept_two_themes_rdf(self):
         self.set_concept_two_theme()
-        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+        url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url, extra_environ={
             'HTTP_ACCEPT': 'application/rdf+xml'
@@ -140,7 +140,7 @@ class TestConceptView(GemetTest):
         self.assertEqual(resp.body.count('theme/' + str(self.theme2.id)), 1)
 
     def test_redirect(self):
-        url = reverse('concept', kwargs={'concept_id': self.concept.id,
+        url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content h5.h5-url').text().split()[-1] + '/'
@@ -167,7 +167,7 @@ class TestConceptView(GemetTest):
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
     def test_404_error(self):
-        url = reverse('concept', kwargs={'concept_id': 2, 'langcode': 'en'})
+        url = reverse('concept', kwargs={'code': 2, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

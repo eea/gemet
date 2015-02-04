@@ -93,7 +93,7 @@ class ThemesView(HeaderMixin, TemplateView):
             .extra(select={'name': 'value',
                            'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'name')
+            .values('id', 'name', 'concept__code')
         )
 
     def get_context_data(self, **kwargs):
@@ -213,8 +213,8 @@ class RelationsView(HeaderMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
-        pk = self.kwargs.get('group_id')
-        group = get_object_or_404(Group, pk=pk)
+        code = self.kwargs.get('group_code')
+        group = get_object_or_404(Group, code=code)
         group.set_attributes(self.langcode, ['prefLabel'])
 
         expand_text = self.request.GET.get('exp')
@@ -237,11 +237,10 @@ class RelationsView(HeaderMixin, TemplateView):
 
 
 class ConceptView(HeaderMixin, DetailView):
-    pk_url_kwarg = 'concept_id'
 
     def get_object(self):
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        concept = get_object_or_404(self.model, pk=pk)
+        code = self.kwargs.get('code')
+        concept = get_object_or_404(self.model, code=code)
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
@@ -387,7 +386,6 @@ class PaginatorView(HeaderMixin, ListView):
 
         all_concepts = self._filter_by_letter(self.concepts, letters,
                                               startswith)
-
         return all_concepts
 
     def get_context_data(self, **kwargs):
@@ -414,8 +412,8 @@ class ThemeConceptsView(PaginatorView):
     model = Theme
 
     def get_queryset(self):
-        pk = self.kwargs.get('theme_id')
-        self.theme = get_object_or_404(self.model, pk=pk)
+        code = self.kwargs.get('theme_code')
+        self.theme = get_object_or_404(self.model, code=code)
         self.theme.set_attributes(self.langcode, ['prefLabel'])
         self.concepts = self.theme.get_children(self.langcode)
         return super(ThemeConceptsView, self).get_queryset(self.theme)
@@ -443,12 +441,10 @@ class AlphabeticView(PaginatorView):
                 language__code=self.langcode,
                 concept__namespace__heading='Concepts'
             )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
+            .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'name')
+            .values('id', 'concept__code', 'name')
         )
-
         return super(AlphabeticView, self).get_queryset()
 
     def get_context_data(self, **kwargs):
@@ -844,8 +840,7 @@ def redirect_old_urls(request, view_name):
 
     if view_name == 'theme_concepts':
         theme_code = request.GET.get('th')
-        theme = get_object_or_404(Theme, code=theme_code)
-        kwargs.update({'theme_id': theme.id})
+        kwargs.update({'theme_code': theme_code})
 
     url = reverse(view, kwargs=kwargs)
     letter = request.GET.get('letter')
@@ -859,10 +854,8 @@ def old_concept_redirect(request):
     langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
     ns = request.GET.get('ns')
     cp = request.GET.get('cp')
-    concept = get_object_or_404(Concept, namespace__id=ns, code=cp)
-    return redirect(NS_ID_VIEW_MAPPING.get(ns),
-                    langcode=langcode,
-                    concept_id=concept.id)
+    get_object_or_404(Concept, namespace__id=ns, code=cp)
+    return redirect(NS_ID_VIEW_MAPPING.get(ns), langcode=langcode, code=cp)
 
 
 def concept_redirect(request, concept_type, concept_code):
@@ -877,8 +870,7 @@ def concept_redirect(request, concept_type, concept_code):
         cp = get_object_or_404(model, code=concept_code)
         if is_rdf(request):
             return render_rdf(request, cp)
-        return redirect(concept_type, langcode=DEFAULT_LANGCODE,
-                        concept_id=cp.id)
+        return redirect(concept_type, langcode=DEFAULT_LANGCODE, code=cp.code)
     else:
         raise Http404
 

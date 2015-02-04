@@ -17,7 +17,7 @@ class TestRelationsView(GemetTest):
         self.group = GroupFactory()
         PropertyFactory(concept=self.group, value="Group")
 
-        self.url = reverse('relations', kwargs={'group_id': self.group.id,
+        self.url = reverse('relations', kwargs={'group_code': self.group.code,
                                                 'langcode': 'en'})
 
     def test_group_with_no_member(self):
@@ -50,7 +50,7 @@ class TestRelationsView(GemetTest):
             format(url=reverse('relations',
                                kwargs={
                                    'langcode': 'en',
-                                   'group_id': self.group.id,
+                                   'group_code': self.group.code,
                                }),
                    exp=exp_encrypt(str(concept.id)))
         )
@@ -59,7 +59,7 @@ class TestRelationsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) > li a:eq(1)').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept.id})
+                                       'code': concept.code})
         )
         self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(1)').text(),
                          "Concept")
@@ -88,7 +88,7 @@ class TestRelationsView(GemetTest):
         self.assertEqual(expand_list, [str(concept.id)])
 
     def test_expand_list(self):
-        group1 = GroupFactory(id=10)
+        group1 = GroupFactory(id=10, code='10')
         concept = TermFactory()
 
         PropertyFactory(concept=group1, value="Group1")
@@ -109,7 +109,7 @@ class TestRelationsView(GemetTest):
                 'relations',
                 kwargs={
                     'langcode': 'en',
-                    'group_id': self.group.id,
+                    'group_code': self.group.code,
                 },
             ),
             exp=exp_encrypt(str(group1.id)),
@@ -136,7 +136,7 @@ class TestRelationsView(GemetTest):
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 
-        url = reverse('relations', kwargs={'group_id': concept.id,
+        url = reverse('relations', kwargs={'group_code': concept.code,
                                            'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 

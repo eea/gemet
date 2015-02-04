@@ -45,7 +45,7 @@
   <ul class="listing">
     {% for cp in theme.themeMember_concepts %}
     <li>
-      <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>
+      <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
     </li>
     {% endfor %}
   </ul>

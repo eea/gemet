@@ -30,7 +30,7 @@ class TestInspireThemesView(GemetTest):
                          .attr('href'),
                          reverse('inspire_theme',
                                  kwargs={'langcode': 'en',
-                                         'concept_id': theme.id})
+                                         'code': theme.code})
                          )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a').text(),
                          u'Addresses')

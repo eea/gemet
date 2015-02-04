@@ -50,7 +50,7 @@ class TestGroupsView(GemetTest):
         self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
         self.assertEqual(resp.pyquery('.content .groups li a').attr('href'),
                          reverse('relations', kwargs={'langcode': 'en',
-                                                      'group_id': group.id})
+                                                      'group_code': group.code})
                          )
         self.assertEqual(resp.pyquery('.content .groups li a').text(), 'Group')
 
@@ -110,6 +110,6 @@ class TestGroupsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content .groups li:eq(0) a').attr('href'),
             reverse('relations', kwargs={'langcode': 'en',
-                                         'group_id': group.id})
+                                         'group_code': group.code})
         )
         self.assertEqual(resp.pyquery('.content .groups li:eq(1)').text(), '')

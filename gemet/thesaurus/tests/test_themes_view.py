@@ -35,7 +35,7 @@ class TestThemesView(GemetTest):
         self.assertEqual(resp.pyquery('.listing.columns li a').attr('href'),
                          reverse('theme_concepts',
                                  kwargs={'langcode': 'en',
-                                         'theme_id': theme.id})
+                                         'theme_code': theme.code})
                          )
         self.assertEqual(resp.pyquery('.listing.columns li a').text(),
                          u'administration')
@@ -56,7 +56,7 @@ class TestThemesView(GemetTest):
         self.assertEqual(
             resp.pyquery('.listing.columns li:eq(0) a').attr('href'),
             reverse('theme_concepts', kwargs={'langcode': 'en',
-                                              'theme_id': theme1.id})
+                                              'theme_code': theme1.code})
         )
         self.assertEqual(resp.pyquery('.listing.columns li:eq(0) a').text(),
                          u'Theme 1'
@@ -64,7 +64,7 @@ class TestThemesView(GemetTest):
         self.assertEqual(
             resp.pyquery('.listing.columns li:eq(1) a').attr('href'),
             reverse('theme_concepts', kwargs={'langcode': 'en',
-                                              'theme_id': theme2.id})
+                                              'theme_code': theme2.code})
         )
         self.assertEqual(resp.pyquery('.listing.columns li:eq(1) a').text(),
                          u'Theme 2'

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='concept' id=concept.id %}
+  {% include 'header.html' with view='concept' id=concept.code %}
 
   <!-- Concept -->
   <h3 class="h3">{{ concept.name }}</h3>
@@ -77,7 +77,7 @@
     <ul class="dd-list">
       {% for cp in concept.broader_concepts %}
       <li>
-        <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a></li>
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
       {% endfor %}
     </ul>
 
@@ -91,7 +91,7 @@
     <ul class="dd-list">
       {% for cp in concept.related_concepts %}
       <li>
-        <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a>  </li>
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
       {% endfor %}
     </ul>
   </div>
@@ -104,7 +104,7 @@
     <ul class="dd-list">
       {% for cp in concept.narrower_concepts %}
       <li>
-        <a href="{% url 'concept' language.code cp.id %}">{{ cp.name }}</a></li>
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
       {% endfor %}
     </ul>
   </div>

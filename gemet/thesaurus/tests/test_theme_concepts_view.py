@@ -30,7 +30,7 @@ class TestThemeConceptsView(GemetTest):
                         target=self.theme)
 
         url = reverse('theme_concepts', kwargs={'langcode': 'en',
-                                                'theme_id': self.theme.id})
+                                                'theme_code': self.theme.code})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -38,7 +38,7 @@ class TestThemeConceptsView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul:eq(0)').length, 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept.id})
+                                                    'code': concept.code})
                          )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'Concept value')
@@ -60,7 +60,7 @@ class TestThemeConceptsView(GemetTest):
                         target=self.theme)
 
         url = reverse('theme_concepts', kwargs={'langcode': 'en',
-                                                'theme_id': self.theme.id})
+                                                'theme_code': self.theme.code})
         resp = self.app.get(url)
 
         self.assertEqual(200, resp.status_int)
@@ -68,14 +68,14 @@ class TestThemeConceptsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept1.id})
+                                       'code': concept1.code})
         )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
                          'Concept 1')
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept2.id})
+                                       'code': concept2.code})
         )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          'Concept 2')
@@ -98,7 +98,7 @@ class TestThemeConceptsView(GemetTest):
         url = "{url}?letter={letter}"\
               .format(url=reverse('theme_concepts',
                                   kwargs={'langcode': 'en',
-                                          'theme_id': self.theme.id}),
+                                          'theme_code': self.theme.code}),
                       letter=1)
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
@@ -109,7 +109,7 @@ class TestThemeConceptsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept1.id})
+                                       'code': concept1.code})
         )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
@@ -134,7 +134,7 @@ class TestThemeConceptsView(GemetTest):
         url = "{url}?letter={letter}"\
               .format(url=reverse('theme_concepts',
                                   kwargs={'langcode': 'en',
-                                          'theme_id': self.theme.id}),
+                                          'theme_code': self.theme.code}),
                       letter=1)
         resp = self.app.get(url)
 
@@ -146,7 +146,7 @@ class TestThemeConceptsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': english_concept.id})
+                                       'code': english_concept.code})
         )
 
     def test_letter_selected_filter_one_concept_two_languages(self):
@@ -163,7 +163,7 @@ class TestThemeConceptsView(GemetTest):
         url = "{url}?letter={letter}"\
               .format(url=reverse('theme_concepts',
                                   kwargs={'langcode': 'en',
-                                          'theme_id': self.theme.id}),
+                                          'theme_code': self.theme.code}),
                       letter=1)
         resp = self.app.get(url)
 
@@ -175,7 +175,7 @@ class TestThemeConceptsView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept.id})
+                                       'code': concept.code})
         )
 
     def test_404_error_letter_out_of_range(self):
@@ -190,7 +190,7 @@ class TestThemeConceptsView(GemetTest):
         url = "{url}?letter={letter}"\
               .format(url=reverse('theme_concepts',
                                   kwargs={'langcode': 'en',
-                                          'theme_id': self.theme.id}),
+                                          'theme_code': self.theme.code}),
                       letter=100)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
@@ -206,7 +206,7 @@ class TestThemeConceptsView(GemetTest):
                         target=self.theme)
 
         url = reverse('theme_concepts', kwargs={'langcode': 'en',
-                                                'theme_id': concept.id})
+                                                'theme_code': concept.code})
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())

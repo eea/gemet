@@ -70,7 +70,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.status_int, 200)
         self.assertEqual(resp.content_type, 'text/xml')
         self.assertEqual(resp.content.count('supergroup/3'), 2)
-        self.assertEqual(resp.content.count('group/2'), 3)
+        self.assertEqual(resp.content.count('group/2'), 4)
         self.assertEqual(resp.content.count('theme/4'), 3)
         self.assertEqual(resp.content.count('concept/1'), 3)
 
