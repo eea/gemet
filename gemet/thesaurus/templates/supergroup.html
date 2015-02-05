@@ -7,41 +7,52 @@
 {% block content %}
   {% include 'header.html' with view='supergroup' id=supergroup.id %}
 
-  <h3>{{ supergroup.name }}</h3>
-
-  <h4>Definiton:</h4>
-  <span class="infotext">
-    {% if not supergroup.definition %}
-      <span>Definition is not available</span>
-    {% else %}
-      {{supergroup.definition }}
-    {% endif %}
-  </span>
-
-  <h4>Scope note:</h4>
-  <span class="infotext">
-    {{ supergroup.scopeNote|default:"scope note is not available" }}
-  </span>
-
-  {% if supergroup.narrower_concepts %}
-    <h4>Groups</h4>
-    <ul>
-      {% for cp in supergroup.narrower_concepts %}
-        <li>
-          <a href="{% url 'group' language.code cp.id %}">{{ cp.name }}</a>
-        </li>
+  <!-- Concept -->
+  <h3 class="h3">{{ supergroup.name }}</h3>
+  <!-- Side bar -->
+  <div class="side-bar box">
+    <!-- Translations -->
+    <h6 class="no-margin-top">Translations</h6>
+    <ul id="translations" class="dl-inline no-list">
+      {% for translation in supergroup.translations %}
+      <li class="clearfix">
+        <div class="dt">{{ translation.language.name }}</div>
+        <div class="dd">{{ translation.value }}</div>
+      </li>
       {% endfor %}
     </ul>
+  </div>
+
+  <!-- Definition -->
+  <h5 class="h5 hidden-desktop">Definition</h5>
+  {% if not supergroup.definition %}
+    <p class="alert">Definition is not available</p>
+  {% else %}
+    <p id="definition">{{ supergroup.definition }}</p>
   {% endif %}
 
-  <h4>Translations:</h4>
-  <ul>
-    {% for translation in supergroup.translations %}
-      <li>{{ translation.language.name }}: {{ translation.value }}</li>
+  <!-- Scope -->
+  <h5 class="h5">Scope note</h5>
+  {% if not supergroup.scopeNote %}
+    <p class="alert">Scope note is not available.</p>
+  {% else %}
+    <p id="scope-note">{{ supergroup.scopeNote }}</p>
+  {% endif %}
+
+  <!-- Groups -->
+  {% if supergroup.narrower_concepts %}
+  <h5 class="h5">Groups</h5>
+  <ul class="listing">
+    {% for group in supergroup.narrower_concepts %}
+      <li>{{ group.name }}</li>
     {% endfor %}
   </ul>
+  {% endif %}
 
-  <h4>Concept URL: &lt;{{ supergroup.url }}&gt;</h4>
+  <!-- Concept URL -->
+  <h5 class="h5 h5-url">Concept URL:
+  {{ supergroup.url|slice:":-1" }}
+  </h5>
 
 {% endblock %}
 {% block version %}

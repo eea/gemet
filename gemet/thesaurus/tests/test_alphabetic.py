@@ -35,7 +35,7 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a')
                          .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept.id})
+                                                    'code': concept.code})
                          )
 
     def test_two_languages_one_preflabel(self):
@@ -56,7 +56,7 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': spanish.code,
-                                       'concept_id': concept.id})
+                                       'code': concept.code})
         )
 
     def test_more_concepts(self):
@@ -76,14 +76,14 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0) a')
                          .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept1.id})
+                                                    'code': concept1.code})
                          )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          'Concept2')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1) a')
                          .attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept2.id})
+                                                    'code': concept2.code})
                          )
 
     def test_letter_selected_filter_one_language(self):
@@ -103,7 +103,7 @@ class TestAlphabeticView(GemetTest):
                          'A_Concept')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept1.id})
+                                                    'code': concept1.code})
                          )
 
     def test_wrong_letter_selected(self):
@@ -138,14 +138,14 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept1.id})
+                                       'code': concept1.code})
         )
         self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
                          '"B_Concept"')
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
-                                       'concept_id': concept2.id})
+                                       'code': concept2.code})
         )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
@@ -168,8 +168,9 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
                          'A_EN_Concept')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
-                         reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': 1})
+                         reverse('concept',
+                                 kwargs={'langcode': 'en',
+                                         'code': english_concept.code})
                          )
 
     def test_letter_selected_filter_one_concept_two_languages(self):
@@ -191,7 +192,7 @@ class TestAlphabeticView(GemetTest):
                          'A_EN_Concept')
         self.assertEqual(resp.pyquery('.content ul:eq(0) li a').attr('href'),
                          reverse('concept', kwargs={'langcode': 'en',
-                                                    'concept_id': concept.id})
+                                                    'code': concept.code})
                          )
 
     def test_404_error_letter_out_of_range(self):

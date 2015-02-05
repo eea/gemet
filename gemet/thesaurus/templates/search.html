@@ -19,7 +19,7 @@ Search thesaurus
       {% for concept in concepts %}
         <li>
             {% get_concept_names concept.search_text as names %}
-            <a href="{% url 'concept' language.code concept.id %}">{{ names.concept_name }}</a>
+            <a href="{% url 'concept' language.code concept.concept__code %}">{{ names.concept_name }}</a>
             <p class="no-margin-top small">
               {% if names.other_names %}
                 <span class="muted">other names:</span>

@@ -15,7 +15,7 @@ Concepts list
   <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% get_children group.id language.code as group_children %}
     {% for concept in group_children %}
-      {% include 'concept_snippet.html' with concept=concept group_id=group.id langcode=language.code %}
+      {% include 'concept_snippet.html' with concept=concept group_code=group.code langcode=language.code %}
     {% endfor %}
   </ul>
 

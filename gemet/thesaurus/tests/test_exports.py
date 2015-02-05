@@ -52,25 +52,27 @@ class TestExports(GemetTest):
         term = TermFactory()
         theme = ThemeFactory()
         group = GroupFactory()
-        SuperGroupFactory()
+        supergroup = SuperGroupFactory()
 
         p11 = PropertyTypeFactory()
         p12 = PropertyTypeFactory(id='2', name='theme', label='Theme')
         p21 = PropertyTypeFactory(id='3', name='groupMember',
                                   label='Group member')
         p22 = PropertyTypeFactory(id='4', name='group', label='Group')
+        p13 = PropertyTypeFactory(id='5', name='broader', label='Broader')
 
         RelationFactory(property_type=p11, source=theme, target=term)
         RelationFactory(property_type=p12, source=term, target=theme)
         RelationFactory(property_type=p21, source=group, target=term)
         RelationFactory(property_type=p22, source=term, target=group)
+        RelationFactory(property_type=p13, source=group, target=supergroup)
 
         resp = self.app.get(reverse('gemet-backbone.rdf'))
 
         self.assertEqual(resp.status_int, 200)
         self.assertEqual(resp.content_type, 'text/xml')
-        self.assertEqual(resp.content.count('supergroup/3'), 2)
-        self.assertEqual(resp.content.count('group/2'), 3)
+        self.assertEqual(resp.content.count('supergroup/3'), 3)
+        self.assertEqual(resp.content.count('group/2'), 4)
         self.assertEqual(resp.content.count('theme/4'), 3)
         self.assertEqual(resp.content.count('concept/1'), 3)
 

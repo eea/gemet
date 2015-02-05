@@ -41,6 +41,11 @@
 {% for group in groups %}
     <skos:Collection rdf:about="group/{{ group.code }}">
         <rdf:type rdf:resource="{{ group_uri }}"/>
+        <gemet:subGroupOf>
+            <rdf:Description rdf:about="supergroup/{{ group.source_relations__target__code }}">
+                <skos:member rdf:resource="group/{{ group.code }}"/>
+            </rdf:Description>
+        </gemet:subGroupOf>
     </skos:Collection>
 {% endfor %}
 

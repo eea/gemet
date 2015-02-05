@@ -17,7 +17,7 @@ class TestSuperGroupView(GemetTest):
                         value="some prefLabel")
 
     def test_supergroup_no_concept(self):
-        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
                                             'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
@@ -43,7 +43,7 @@ class TestSuperGroupView(GemetTest):
                         target=group)
         RelationFactory(property_type=pt2, source=group,
                         target=self.supergroup)
-        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
                                             'langcode': 'en'})
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
@@ -84,7 +84,7 @@ class TestSuperGroupView(GemetTest):
                         target=group2)
         RelationFactory(property_type=pt4, source=group2,
                         target=self.supergroup)
-        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
                                             'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -108,7 +108,7 @@ class TestSuperGroupView(GemetTest):
                          "English: some prefLabel")
 
     def test_redirect(self):
-        url = reverse('supergroup', kwargs={'concept_id': self.supergroup.id,
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
                                             'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -116,7 +116,7 @@ class TestSuperGroupView(GemetTest):
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
-        url = reverse('supergroup', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('supergroup', kwargs={'code': 1, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

@@ -18,7 +18,7 @@ class TestGroupView(GemetTest):
                         value="some prefLabel")
 
     def test_group_no_concept(self):
-        url = reverse('group', kwargs={'concept_id': self.group.id,
+        url = reverse('group', kwargs={'code': self.group.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -52,7 +52,7 @@ class TestGroupView(GemetTest):
                         target=supergroup)
         RelationFactory(property_type=pt4, source=supergroup,
                         target=self.group)
-        url = reverse('group', kwargs={'concept_id': self.group.id,
+        url = reverse('group', kwargs={'code': self.group.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
 
@@ -73,14 +73,14 @@ class TestGroupView(GemetTest):
                          "English some prefLabel")
 
     def test_redirect(self):
-        url = reverse('group', kwargs={'concept_id': self.group.id,
+        url = reverse('group', kwargs={'code': self.group.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content p#concept-url').text()
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
-        url = reverse('group', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('group', kwargs={'code': 1, 'langcode': 'en'})
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

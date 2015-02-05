@@ -92,10 +92,9 @@ class Concept(Model):
                     .values_list('target_id', flat=True)
                 )
             )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
+            .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'name')
+            .values('id', 'concept__code', 'name')
         )
 
     def set_siblings(self, langcode):
@@ -147,7 +146,7 @@ class Concept(Model):
             children
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'name')
+            .values('id', 'concept__code', 'name')
         )
 
     def get_concept_type(self):

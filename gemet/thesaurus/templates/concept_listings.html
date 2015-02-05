@@ -16,9 +16,9 @@
     {% for concept in concepts %}
     <li>
       {% if concept.name %}
-        <a href="{% url 'concept' language.code concept.id %}">{{concept.name}}</a>
+        <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
       {% else %}
-        <a href="{% url 'concept' language.code concept.id %}">{% default_name concept.id %}</a>[english]
+        <a href="{% url 'concept' language.code concept.concept__code %}">{% default_name concept.id %}</a>[english]
       {% endif %}
     </li>
     {% endfor %}

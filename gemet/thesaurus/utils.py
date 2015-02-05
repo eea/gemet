@@ -22,18 +22,14 @@ def regex_search(query, language, heading):
             value__iregex=r'%s' % query,
         )
         .extra(
-            select={'value_coll': 'value COLLATE {0}'.format(
-                language.charset)},
-        )
-        .extra(
             select={
+                'value_coll': 'value COLLATE {0}'.format(language.charset),
                 'name': 'value',
-                'id': 'concept_id'
-            })
-        .extra(
+                'id': 'concept_id',
+            },
             order_by=['value_coll']
         )
-        .values('id', 'name')
+        .values('id', 'concept__code', 'name')
     )
 
 
@@ -77,16 +73,13 @@ def api_search(query, language, search_mode, headings):
         )
         .extra(
             select={
-                'value_coll': 'value COLLATE {0}'.format(language.charset)}
-        )
-        .extra(
-            select={
+                'value_coll': 'value COLLATE {0}'.format(language.charset),
                 'name': 'value',
-                'id': 'concept_id'
-            }
+                'id': 'concept_id',
+            },
+            order_by=['value_coll']
         )
-        .extra(order_by=['value_coll'])
-        .values('id', 'name')
+        .values('id', 'concept__code', 'name')
     )
 
 
@@ -107,9 +100,10 @@ def insite_search(query, language, heading):
             select={
                 'search_text': 'value COLLATE {0}'.format(language.charset),
                 'id': 'concept_id',
-            })
-        .extra(order_by=['search_text'])
-        .values('id', 'search_text')
+            },
+            order_by=['search_text']
+        )
+        .values('id', 'search_text', 'concept__code')
     )
 
 

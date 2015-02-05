@@ -1,3 +1,4 @@
+import unicodedata
 from django import template
 
 from gemet.thesaurus.models import Concept
@@ -56,3 +57,8 @@ def default_name(concept_id):
         )
         .value
     )
+
+
+@register.filter
+def normalize(value, form):
+    return unicodedata.normalize(form, value)
