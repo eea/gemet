@@ -47,6 +47,11 @@ def public():
 
 
 @task
+def production():
+    environment('production')
+
+
+@task
 def deploy():
     require_variables()
 
