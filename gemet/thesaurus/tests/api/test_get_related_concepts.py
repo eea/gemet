@@ -117,7 +117,7 @@ class TestGetRelatedConcepts(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition2')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'], self.NS_ROOT + term2.get_about_url()[1:-1]
+            resp['uri'], self.NS_ROOT + term2.get_about_url()[1:]
         )
         self.assertEqual(resp['thesaurus'], term2.namespace.url)
 

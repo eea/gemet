@@ -115,7 +115,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp['definition']['string'], 'definition1')
         self.assertEqual(resp['definition']['language'], 'en')
         self.assertEqual(
-            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
 
     def test_missing_thesaurus_uri(self):
@@ -135,7 +135,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp[0]['definition']['string'], 'definition1')
         self.assertEqual(resp[0]['definition']['language'], 'en')
         self.assertEqual(
-            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
         self.assertEqual(resp[1]['preferredLabel']['string'], 'prefLabel2')
@@ -143,7 +143,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         self.assertEqual(resp[1]['definition']['string'], 'definition2')
         self.assertEqual(resp[1]['definition']['language'], 'en')
         self.assertEqual(
-            resp[1]['uri'], self.NS_ROOT + theme.get_about_url()[1:-1]
+            resp[1]['uri'], self.NS_ROOT + theme.get_about_url()[1:]
         )
         self.assertEqual(resp[1]['thesaurus'], theme.namespace.url)
 

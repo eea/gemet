@@ -111,7 +111,7 @@ class TestAllConceptRelatives(GemetTest):
                          self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp['relation'], p3.uri)
         self.assertEqual(
-            resp['target'], self.NS_ROOT + theme.get_about_url()[1:-1]
+            resp['target'], self.NS_ROOT + theme.get_about_url()[1:]
         )
 
     def test_optional_parameters(self):
@@ -145,11 +145,11 @@ class TestAllConceptRelatives(GemetTest):
                          self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp[0]['relation'], p1.uri)
         self.assertEqual(
-            resp[0]['target'], self.NS_ROOT + term2.get_about_url()[1:-1]
+            resp[0]['target'], self.NS_ROOT + term2.get_about_url()[1:]
         )
         self.assertEqual(
             resp[1]['source'], self.NS_ROOT + 'concept/' + self.term.code)
         self.assertEqual(resp[1]['relation'], p3.uri)
         self.assertEqual(
-            resp[1]['target'], self.NS_ROOT + theme.get_about_url()[1:-1]
+            resp[1]['target'], self.NS_ROOT + theme.get_about_url()[1:]
         )

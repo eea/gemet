@@ -143,7 +143,8 @@ class TestConceptView(GemetTest):
         url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url)
-        url = resp.pyquery('.content h5.h5-url').text().split()[-1] + '/'
+        url = resp.pyquery('.content h5.h5-url').text().split()[-1]
+        # TODO: check why the url does not have an id
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_redirect_rdf(self):

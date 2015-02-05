@@ -84,7 +84,7 @@ class TestOthers(GemetTest):
         self.assertEqual(resp[0]['definition']['string'], 'definition')
         self.assertEqual(resp[0]['definition']['language'], self.english.code)
         self.assertEqual(
-            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+            resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
         self.assertFalse(['preferredLabel'] in resp[0].keys())

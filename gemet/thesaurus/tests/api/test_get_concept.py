@@ -71,7 +71,7 @@ class TestGetConcept(GemetTest):
         self.assertEqual(resp['preferredLabel']['string'], 'prefLabel1')
         self.assertEqual(resp['definition']['string'], 'definition1')
         self.assertEqual(
-            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)
 
@@ -88,6 +88,6 @@ class TestGetConcept(GemetTest):
         self.assertEqual(resp['preferredLabel']['string'], 'prefLabel2')
         self.assertEqual(resp['definition']['string'], 'definition2')
         self.assertEqual(
-            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:-1]
+            resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
         self.assertEqual(resp['thesaurus'], self.term.namespace.url)
