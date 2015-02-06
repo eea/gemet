@@ -76,7 +76,7 @@ class TestGroupView(GemetTest):
         url = reverse('group', kwargs={'code': self.group.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-        url = resp.pyquery('.content p#concept-url').text()
+        url = resp.pyquery('.content h5.h5-url').text().split()[-1]
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):

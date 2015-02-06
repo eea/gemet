@@ -26,7 +26,7 @@
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
   {% if not supergroup.definition %}
-    <p class="alert">Definition is not available</p>
+    <p class="alert">Definition is not available.</p>
   {% else %}
     <p id="definition">{{ supergroup.definition }}</p>
   {% endif %}
@@ -51,7 +51,7 @@
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:
-  {{ supergroup.url|slice:":-1" }}
+  {{ supergroup.url }}
   </h5>
 
 {% endblock %}

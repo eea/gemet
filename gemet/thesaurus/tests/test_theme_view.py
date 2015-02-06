@@ -106,7 +106,7 @@ class TestThemeView(GemetTest):
         url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-        url = resp.pyquery('.content p:eq(2)').text()
+        url = resp.pyquery('.content h5.h5-url').text().split()[-1]
         self.assertEqual(302, self.app.get(url).status_int)
 
     def test_404_error(self):
