@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.test import skipUnlessDBFeature
 
 from . import GemetTest
 from .factories import (
@@ -48,6 +49,7 @@ class TestSearchView(GemetTest):
         RelationFactory(source=cp2, target=cp13, property_type=broader)
         RelationFactory(source=cp13, target=cp2, property_type=narrower)
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_no_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -61,6 +63,7 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content .results-nr').text(),
                          '0 results found.')
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_multiple_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -76,6 +79,7 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul li:eq(1) a').text(),
                          'something else')
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_broader_context(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -95,6 +99,7 @@ class TestSearchView(GemetTest):
             'other names: altLabel broader context: broader 2.1; broader 2.2'
         )
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_number_of_results_found(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -108,6 +113,7 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content .results-nr').text(),
                          '2 results found.')
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_regex_search(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -125,6 +131,7 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content li:eq(2) a').text(),
                          'something else')
 
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
     def test_other_names(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)

@@ -13,10 +13,6 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*e59o%%4$uxue*-aqn58$adv!fu+%p&7rg3bp=k36blzn9#(4r'
 
@@ -88,5 +84,6 @@ except ImportError:
 if 'test' in sys.argv:
     try:
         from test_settings import *
+        INSTALLED_APPS += LOCAL_INSTALLED_APPS
     except ImportError:
         pass
