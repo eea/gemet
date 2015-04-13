@@ -1,8 +1,9 @@
 from urllib import urlencode
 from xmlrpclib import Fault
+import unittest
 
 from django.core.urlresolvers import reverse
-from django.test import skipUnlessDBFeature
+from django.db import connection
 
 from gemet.thesaurus.tests.factories import (
     PropertyFactory,
@@ -36,7 +37,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
         self.assertEqual(200, status)
         self.assertEqual(content_type, 'application/json')
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_default_language(self):
         resp = self.app.get(self.url + urlencode({
             'regex': '^pref',
@@ -53,7 +54,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
             'language': 'es',
         }))
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
         self._initialize(self.term, 'prefLabel2', 'definition2', spanish)
@@ -87,7 +88,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
             'language': self.english.code,
         }))
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_specific_thesaurus_uri(self):
         theme = ThemeFactory()
         self._initialize(theme, 'prefLabel2', 'definition2', self.english)
@@ -111,7 +112,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
         self._initialize(term4, 'refLabel1', '', self.english)
         self._initialize(term5, 'prefxyzLabel1', '', self.english)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_begins_with(self):
         self._initialize_some_terms()
         resp = self.app.get(self.url + urlencode({
@@ -123,7 +124,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 3)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_ends_with(self):
         self._initialize_some_terms()
         resp = self.app.get(self.url + urlencode({
@@ -135,7 +136,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 2)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_all_operators(self):
         self._initialize_some_terms()
         resp = self.app.get(self.url + urlencode({
@@ -147,7 +148,7 @@ class TestGetConceptsMatchingRegexByThesaurus(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 3)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_no_operator(self):
         self._initialize_some_terms()
         resp = self.app.get(self.url + urlencode({

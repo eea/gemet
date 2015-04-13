@@ -1,8 +1,9 @@
 from urllib import urlencode
 from xmlrpclib import Fault
+import unittest
 
 from django.core.urlresolvers import reverse
-from django.test import skipUnlessDBFeature
+from django.db import connection
 
 from gemet.thesaurus.tests.factories import (
     PropertyFactory,
@@ -50,7 +51,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
             'keyword': 'prefLabel1',
         }))
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_default_language(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 0,
@@ -69,7 +70,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
             'keyword': 'prefLabel1',
         }))
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
         self._initialize(self.term, 'prefLabel2', 'definition2', spanish)
@@ -100,7 +101,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
             'keyword': 'prefLabel1',
         }))
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_specific_thesaurus_uri(self):
         theme = ThemeFactory()
         self._initialize(theme, 'prefLabel2', 'definition2', self.english)
@@ -122,7 +123,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
             resp['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_missing_thesaurus_uri(self):
         theme = ThemeFactory()
         self._initialize(theme, 'prefLabel2', 'definition2', self.english)
@@ -152,7 +153,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         )
         self.assertEqual(resp[1]['thesaurus'], theme.namespace.url)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_0_search_with_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 0,
@@ -164,7 +165,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_0_search_no_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 0,
@@ -176,7 +177,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_1_search_with_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 1,
@@ -188,7 +189,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_1_search_no_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 1,
@@ -200,7 +201,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_2_search_with_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 2,
@@ -212,7 +213,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_2_search_no_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 2,
@@ -224,7 +225,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_3_search_with_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 3,
@@ -236,7 +237,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_3_search_no_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 3,
@@ -248,7 +249,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 0)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_4_search_0(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 0,
@@ -260,7 +261,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_4_search_1(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 4,
@@ -272,7 +273,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_4_search_2(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 4,
@@ -284,7 +285,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_4_search_3(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 4,
@@ -296,7 +297,7 @@ class TestGetConceptsMatchingKeyword(GemetTest):
         resp = resp.json
         self.assertEqual(len(resp), 1)
 
-    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_4_search_no_result(self):
         resp = self.app.get(self.url + urlencode({
             'search_mode': 4,
