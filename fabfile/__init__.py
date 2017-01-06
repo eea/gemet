@@ -58,7 +58,7 @@ def deploy():
     with cd(env.project_root), prefix(env.sandbox_activate):
         run('git pull --rebase')
         run('pip install -r requirements-dep.txt')
-        run('./manage.py syncdb')
+        run('./manage.py migrate')
         run('./manage.py collectstatic --noinput')
         run('supervisorctl -c {0} restart django'.format(env.supervisord_conf))
 

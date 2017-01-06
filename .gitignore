@@ -1,6 +1,8 @@
 sandbox
 *~
 *.pyc
+.idea/
+.coverage
 local_settings.py
 local_test_settings.py
 docs/api/build/*
