@@ -1,6 +1,5 @@
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-# TEMPLATE_DEBUG = True
 
 LOCAL_INSTALLED_APPS = (
 # Use debug_toolbar in development for detailed debug info.
@@ -28,6 +27,9 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'db_host',
         'PORT': 'db_port',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
     },
     'import': {
         'ENGINE': 'django.db.backends.mysql',
@@ -36,6 +38,9 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'db_host',
         'PORT': 'db_port',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
     }
 }
 

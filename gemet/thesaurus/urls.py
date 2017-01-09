@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
 from gemet.thesaurus.views import (
     redirect_old_urls,
@@ -38,8 +38,7 @@ from gemet.thesaurus.views import (
 from .api import ApiView
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(
         r'^(?P<view_name>'
         'index_html|'
@@ -129,4 +128,4 @@ urlpatterns = patterns(
         ])),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
-)
+]
