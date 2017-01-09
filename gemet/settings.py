@@ -16,6 +16,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*e59o%%4$uxue*-aqn58$adv!fu+%p&7rg3bp=k36blzn9#(4r'
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
+                'gemet.layout.layout_context_processor',
+            ],
+        },
+    },
+]
+
 ALLOWED_HOSTS = []
 
 
@@ -80,20 +96,3 @@ if 'test' in sys.argv:
         INSTALLED_APPS += LOCAL_INSTALLED_APPS
     except ImportError:
         pass
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.request',
-                'gemet.layout.layout_context_processor',
-            ],
-            'debug': DEBUG
-        },
-    },
-]

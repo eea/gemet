@@ -43,6 +43,7 @@ DATABASES = {
         }
     }
 }
+# sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
 # FORCE_SCRIPT_NAME = '/gemet'
