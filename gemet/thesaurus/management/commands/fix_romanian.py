@@ -20,9 +20,9 @@ class Command(BaseCommand):
         count = 0
         for element in properties:
             for old_character, new_character in CHARACTER_REPLACEMENTS:
-                if element.value.find(old_character) != -1:
+                if old_character in element.value:
                     element.value = element.value.replace(old_character,
                                                           new_character)
                     element.save()
                     count += 1
-        print str(count) + " Property objects changed."
+        print '{} Property objects changed.'.format(str(count))
