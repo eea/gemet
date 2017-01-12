@@ -6,28 +6,18 @@ ZOPE_URL = 'http://eionet.europa.eu'
 HEADER_URL = ZOPE_URL + '/standard_html_header'
 FOOTER_URL = ZOPE_URL + '/standard_html_footer'
 
-HEADER_TEXT_PREFFIX = ''
-HEADER_TEXT_SUFFIX = ''
 
-
-class LayoutMiddleware(object):
-
-    def process_request(self, request):
-        global HEADER_TEXT_SUFFIX, HEADER_TEXT_PREFFIX, FOOTER_TEXT
+def layout_context_processor(request):
+    if settings.USE_ZOPE_LAYOUT:
         auth_header = request.META.get('HTTP_AUTHORIZATION')
         resp = requests.get(HEADER_URL, headers={'Authorization': auth_header})
         header_text = prepare_html(resp.text)
         title_start = header_text.find('<title>')
         title_end = header_text.find('</title>')
-        HEADER_TEXT_PREFFIX = header_text[:title_start+len('<title>')]
+        HEADER_TEXT_PREFFIX = header_text[:title_start + len('<title>')]
         HEADER_TEXT_SUFFIX = header_text[title_end:]
         resp = requests.get(FOOTER_URL, headers={'Authorization': auth_header})
         FOOTER_TEXT = prepare_html(resp.text)
-        return None
-
-
-def layout_context_processor(request):
-    if settings.USE_ZOPE_LAYOUT:
         return {'header_text_preffix': HEADER_TEXT_PREFFIX,
                 'header_text_suffix': HEADER_TEXT_SUFFIX,
                 'footer_text': FOOTER_TEXT,
