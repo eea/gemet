@@ -6,13 +6,9 @@ ZOPE_URL = 'http://eionet.europa.eu'
 HEADER_URL = ZOPE_URL + '/standard_html_header'
 FOOTER_URL = ZOPE_URL + '/standard_html_footer'
 
-HEADER_TEXT_PREFFIX = ''
-HEADER_TEXT_SUFFIX = ''
-
 
 def layout_context_processor(request):
     if settings.USE_ZOPE_LAYOUT:
-        global HEADER_TEXT_SUFFIX, HEADER_TEXT_PREFFIX, FOOTER_TEXT
         auth_header = request.META.get('HTTP_AUTHORIZATION')
         resp = requests.get(HEADER_URL, headers={'Authorization': auth_header})
         header_text = prepare_html(resp.text)
