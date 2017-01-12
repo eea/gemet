@@ -13,6 +13,8 @@ LOCAL_INSTALLED_APPS = ('django_nose', )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
+USE_ZOPE_LAYOUT = False
+
 NOSE_ARGS = [
     '--with-coverage',
     '--cover-erase',
