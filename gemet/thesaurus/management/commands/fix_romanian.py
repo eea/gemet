@@ -25,4 +25,4 @@ class Command(BaseCommand):
                                                           new_character)
                     element.save()
                     count += 1
-        print '{} Property objects changed.'.format(str(count))
+        print '{} Property objects changed.'.format(count)
