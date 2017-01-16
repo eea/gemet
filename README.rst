@@ -94,7 +94,7 @@ be run as an unprivileged user in the product directory::
 
 8. Create initial database structure::
 
-    ./manage.py syncdb
+    ./manage.py migrate
 
 9. Load fixtures data into the database::
 
