@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  db:
+    image: wodby/mariadb-alpine:1.3.3
+    container_name: db
+    environment:
+        TZ: Europe/Copenhagen
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  gemet:
+    build: .
+    container_name: gemet
+    ports:
+      - '8000:8000'
