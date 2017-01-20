@@ -8,9 +8,69 @@ Project Name
 The Project Name is GEMET - GEneral Multilingual Environmental Thesaurus
 http://www.eionet.europa.eu/gemet
 
-Prerequisites - System packages
+Installation (using docker)
 -------------------------------
 
+1.Clone the source repository::
+
+    git clone https://github.com/eaudeweb/gemet
+2.Change directory to project directory::
+
+    cd gemet/
+
+3.Run docker database container::
+
+    docker-compose up -d db
+
+4.Place database dump in mysql-data directory::
+
+    cp path_to_file/gemet.sql mysql-data
+
+5.Enter database container bash::
+
+    docker exec -it  db bash
+
+6.Find password for root user::
+
+   more /var/lib/mysql/.root_password
+
+7.Acces mysql with root user::
+
+   mysql -u root -p
+
+8.Create database::
+
+   CREATE DATABASE gemet DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+9.Grant acces to database to a new user::
+
+   GRANT ALL ON gemet.* TO 'gemet'@'%' IDENTIFIED BY 'password_example';
+
+10.Exit mysql::
+
+   exit
+
+11.Dump tables and data to the new database::
+
+   mysql -u root -p gemet < /var/lib/mysql/gemet.sql
+
+13.Create local_settings for Django project::
+
+  cd gemet/
+  cp local_settings.py.example local-settings.py
+
+You must set the name, username and password used to create the database.
+If you are not using an old dump, you must remove the import database from DATABASES in local_settings file.
+
+14.Start application container::
+
+  docker-compose up
+
+Installation (without using docker)
+-------------------------------
+
+Prerequisites - System packages
+-------------------------------
 These packages should be installed as superuser (root).
 
 Debian based systems

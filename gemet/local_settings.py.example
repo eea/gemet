@@ -25,8 +25,12 @@ DATABASES = {
         'NAME': 'db_name',
         'USER': 'username',
         'PASSWORD': 'password',
-        'HOST': 'db_host',
-        'PORT': 'db_port',
+        'HOST': 'db',
+        'PORT': '3306',
+        'TEST': {
+            'CHARSET': 'utf8',
+            'COLLATION': 'utf8_general_ci',
+        },
         'OPTIONS': {
             'sql_mode': 'traditional',
         }
@@ -36,8 +40,12 @@ DATABASES = {
         'NAME': 'import_db_name',
         'USER': 'username',
         'PASSWORD': 'password',
-        'HOST': 'db_host',
-        'PORT': 'db_port',
+        'HOST': 'db',
+        'PORT': '3306',
+        'TEST': {
+            'CHARSET': 'utf8',
+            'COLLATION': 'utf8_general_ci',
+        },
         'OPTIONS': {
             'sql_mode': 'traditional',
         }
