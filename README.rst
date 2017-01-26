@@ -181,6 +181,21 @@ The following custom manage.py command fixes those characters and prints the num
     ./manage.py fix_romanian
 
 
+
+
+2. Check the consistency of an excel file(.xlsx extension) containing new terms.
+
+The custom command assures:
+
+* Old terms used in the file are defined in the database.
+* New terms used in broader, narrow relations etc. of other terms are also defined in the file.
+* An error containing the cell of the term is printed if it does not respect those rules.
+
+Run the command providing a valid excel file::
+
+     ./manage.py check_spreadsheet file_name.xlsx
+
+
 Development hints
 =================
 
