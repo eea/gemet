@@ -7,10 +7,12 @@ services:
     environment:
         TZ: Europe/Copenhagen
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ../mysql-data:/var/lib/mysql
 
   gemet:
     build: .
     container_name: gemet
     ports:
-      - '8000:8000'
+      - '8888:8888'
+    depends_on:
+      - db
