@@ -172,6 +172,15 @@ configuration file with the name of the database used for import
     ./manage.py import
 
 
+Other commands
+-------------
+
+1. Some romanian terms,definitions etc. are written with the wrong diacritical marks( cedillas instead of commas ) .
+The following custom manage.py command fixes those characters and prints the number of objects changed::
+
+    ./manage.py fix_romanian
+
+
 Development hints
 =================
 
