@@ -173,17 +173,15 @@ configuration file with the name of the database used for import
 
 
 Other commands
--------------
+--------------
 
-1. Some romanian terms,definitions etc. are written with the wrong diacritical marks( cedillas instead of commas ) .
-The following custom manage.py command fixes those characters and prints the number of objects changed::
+1. Some romanian terms, definitions etc. are written with the wrong diacritical marks (cedillas instead of commas).
+The following custom management command fixes those characters and prints the number of objects changed::
 
     ./manage.py fix_romanian
 
 
-
-
-2. Check the consistency of an excel file(.xlsx extension) containing new terms.
+2. Check the consistency of an excel file (.xlsx extension) containing new terms.
 
 The custom command assures:
 
@@ -194,6 +192,30 @@ The custom command assures:
 Run the command providing a valid excel file::
 
      ./manage.py check_spreadsheet file_name.xlsx
+
+
+Documentation
+-------------
+
+The documentation has been created using `Sphinx`_. The source directories for the three sections of documentation can be found in the `docs`_ directory.
+
+.. _`Sphinx`: http://www.sphinx-doc.org/en/stable/
+.. _`docs`: https://github.com/eaudeweb/gemet/tree/master/docs
+
+In order to get the HTML output, you should run the following command inside one of the documentation directories (``api``, ``new_api`` or ``overview``)::
+
+    make html
+    
+These static HTML files can be served via a web server (Apache, Nginx, etc).
+
+Docs contents
+~~~~~~~~~~~~~
+
+* ``api`` - old version of the API user guide, kept for reference;
+* ``new_api`` - current documentation for the GEMET API; duplicated in `this file`_ and published on ``Web services`` page;
+* ``overview`` - quick overview of the technical solution;
+
+.. _`this file`: https://github.com/eaudeweb/gemet/blob/master/gemet/thesaurus/templates/api.html
 
 
 Development hints
