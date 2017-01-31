@@ -1,14 +1,30 @@
 from django.core.urlresolvers import reverse
 from django.db.models import (
-    Model,
-    CharField,
-    ForeignKey,
-    DateTimeField,
     BooleanField,
+    CharField,
+    DateTimeField,
+    ForeignKey,
     Manager,
+    Model,
+    PositiveSmallIntegerField,
 )
 
 from gemet.thesaurus import NS_VIEW_MAPPING
+
+
+class StatusModel(Model):
+    PENDING = 0
+    PUBLISHED = 1
+    DELETED = 2
+    STATUS_CHOICES = (
+        (PENDING, 'pending'),
+        (PUBLISHED, 'published'),
+        (DELETED, 'deleted'),
+    )
+    status = PositiveSmallIntegerField(choices=STATUS_CHOICES, default=PENDING)
+
+    class Meta:
+        abstract = True
 
 
 class Namespace(Model):
@@ -21,7 +37,7 @@ class Namespace(Model):
         return self.heading
 
 
-class Concept(Model):
+class Concept(StatusModel):
     namespace = ForeignKey(Namespace)
     code = CharField(max_length=10)
     date_entered = DateTimeField(blank=True, null=True)
@@ -180,7 +196,7 @@ class Language(Model):
         return self.name
 
 
-class Property(Model):
+class Property(StatusModel):
     concept = ForeignKey(Concept, related_name='properties')
     language = ForeignKey(Language, related_name='properties')
     name = CharField(max_length=50)
@@ -223,7 +239,7 @@ class PropertyType(Model):
         return self.name
 
 
-class Relation(Model):
+class Relation(StatusModel):
     source = ForeignKey(Concept, related_name='source_relations')
     target = ForeignKey(Concept, related_name='target_relations')
     property_type = ForeignKey(PropertyType)
@@ -233,7 +249,7 @@ class Relation(Model):
             self.source.code, self.target.code, self.property_type.name)
 
 
-class ForeignRelation(Model):
+class ForeignRelation(StatusModel):
     concept = ForeignKey(Concept, related_name='foreign_relations')
     uri = CharField(max_length=512)
     property_type = ForeignKey(PropertyType)
