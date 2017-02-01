@@ -5,6 +5,27 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
+def forwards_func(apps, schema_editor):
+    # We get the model from the versioned app registry;
+    # if we directly import it, it'll be the wrong version
+    Concept = apps.get_model("thesaurus", "Concept")
+    Property = apps.get_model("thesaurus", "Property")
+    Relation = apps.get_model("thesaurus", "Relation")
+    ForeignRelation = apps.get_model("thesaurus", "ForeignRelation")
+    db_alias = schema_editor.connection.alias
+    # Update status to `published` for all records
+    Concept.objects.using(db_alias).all().update(status=1)
+    Property.objects.using(db_alias).all().update(status=1)
+    Relation.objects.using(db_alias).all().update(status=1)
+    ForeignRelation.objects.using(db_alias).all().update(status=1)
+
+
+def reverse_func(apps, schema_editor):
+    # No need to modify status back to `pending`, because unapplying this
+    # migration will remove the `status` column
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -15,21 +36,30 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='concept',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')], default=0),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                default=0),
         ),
         migrations.AddField(
             model_name='foreignrelation',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')], default=0),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                default=0),
         ),
         migrations.AddField(
             model_name='property',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')], default=0),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                default=0),
         ),
         migrations.AddField(
             model_name='relation',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')], default=0),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                default=0),
         ),
+        migrations.RunPython(forwards_func, reverse_func)
     ]
