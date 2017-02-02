@@ -16,10 +16,12 @@ class StatusModel(Model):
     PENDING = 0
     PUBLISHED = 1
     DELETED = 2
+    DELETED_PENDING = 3
     STATUS_CHOICES = (
         (PENDING, 'pending'),
         (PUBLISHED, 'published'),
         (DELETED, 'deleted'),
+        (DELETED_PENDING, 'deleted pending'),
     )
     status = PositiveSmallIntegerField(choices=STATUS_CHOICES, default=PENDING)
 
