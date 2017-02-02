@@ -1,18 +1,10 @@
 from django.core.urlresolvers import reverse
-from django.db.models import (
-    BooleanField,
-    CharField,
-    DateTimeField,
-    ForeignKey,
-    Manager,
-    Model,
-    PositiveSmallIntegerField,
-)
+from django.db import models
 
 from gemet.thesaurus import NS_VIEW_MAPPING
 
 
-class StatusModel(Model):
+class StatusModel(models.Model):
     PENDING = 0
     PUBLISHED = 1
     DELETED = 2
@@ -23,27 +15,28 @@ class StatusModel(Model):
         (DELETED, 'deleted'),
         (DELETED_PENDING, 'deleted pending'),
     )
-    status = PositiveSmallIntegerField(choices=STATUS_CHOICES, default=PENDING)
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES,
+                                              default=PENDING)
 
     class Meta:
         abstract = True
 
 
-class Namespace(Model):
-    url = CharField(max_length=255)
-    heading = CharField(max_length=255)
-    version = CharField(max_length=255)
-    type_url = CharField(max_length=255)
+class Namespace(models.Model):
+    url = models.CharField(max_length=255)
+    heading = models.CharField(max_length=255)
+    version = models.CharField(max_length=255)
+    type_url = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.heading
 
 
 class Concept(StatusModel):
-    namespace = ForeignKey(Namespace)
-    code = CharField(max_length=10)
-    date_entered = DateTimeField(blank=True, null=True)
-    date_changed = DateTimeField(blank=True, null=True)
+    namespace = models.ForeignKey(Namespace)
+    code = models.CharField(max_length=10)
+    date_entered = models.DateTimeField(blank=True, null=True)
+    date_changed = models.DateTimeField(blank=True, null=True)
 
     parents_relations = []
 
@@ -183,12 +176,13 @@ class Concept(StatusModel):
         return self.code
 
 
-class Language(Model):
-    code = CharField(max_length=10, primary_key=True)
-    name = CharField(max_length=255)
-    charset = CharField(max_length=100)
-    code_alt = CharField(max_length=3)
-    direction = CharField(max_length=1, choices=(('0', 'ltr'), ('1', 'rtl')))
+class Language(models.Model):
+    code = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=255)
+    charset = models.CharField(max_length=100)
+    code_alt = models.CharField(max_length=3)
+    direction = models.CharField(max_length=1,
+                                 choices=(('0', 'ltr'), ('1', 'rtl')))
 
     @property
     def rtl(self):
@@ -199,11 +193,11 @@ class Language(Model):
 
 
 class Property(StatusModel):
-    concept = ForeignKey(Concept, related_name='properties')
-    language = ForeignKey(Language, related_name='properties')
-    name = CharField(max_length=50)
-    value = CharField(max_length=16000)
-    is_resource = BooleanField(default=False)
+    concept = models.ForeignKey(Concept, related_name='properties')
+    language = models.ForeignKey(Language, related_name='properties')
+    name = models.CharField(max_length=50)
+    value = models.CharField(max_length=16000)
+    is_resource = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "properties"
@@ -217,10 +211,10 @@ class Property(StatusModel):
             self.concept.code, self.name, self.language.code)
 
 
-class PropertyType(Model):
-    name = CharField(max_length=40)
-    label = CharField(max_length=100)
-    uri = CharField(max_length=255)
+class PropertyType(models.Model):
+    name = models.CharField(max_length=40)
+    label = models.CharField(max_length=100)
+    uri = models.CharField(max_length=255)
 
     @property
     def prefix(self):
@@ -242,9 +236,9 @@ class PropertyType(Model):
 
 
 class Relation(StatusModel):
-    source = ForeignKey(Concept, related_name='source_relations')
-    target = ForeignKey(Concept, related_name='target_relations')
-    property_type = ForeignKey(PropertyType)
+    source = models.ForeignKey(Concept, related_name='source_relations')
+    target = models.ForeignKey(Concept, related_name='target_relations')
+    property_type = models.ForeignKey(PropertyType)
 
     def __unicode__(self):
         return 's: {0}, t: {1}, rel: {2}'.format(
@@ -252,24 +246,24 @@ class Relation(StatusModel):
 
 
 class ForeignRelation(StatusModel):
-    concept = ForeignKey(Concept, related_name='foreign_relations')
-    uri = CharField(max_length=512)
-    property_type = ForeignKey(PropertyType)
-    label = CharField(max_length=100)
-    show_in_html = BooleanField(default=True)
+    concept = models.ForeignKey(Concept, related_name='foreign_relations')
+    uri = models.CharField(max_length=512)
+    property_type = models.ForeignKey(PropertyType)
+    label = models.CharField(max_length=100)
+    show_in_html = models.BooleanField(default=True)
 
 
-class DefinitionSource(Model):
-    abbr = CharField(max_length=10, primary_key=True)
-    author = CharField(max_length=255, null=True)
-    title = CharField(max_length=255, null=True)
-    url = CharField(max_length=255, null=True)
-    publication = CharField(max_length=255, null=True)
-    place = CharField(max_length=255, null=True)
-    year = CharField(max_length=10, null=True)
+class DefinitionSource(models.Model):
+    abbr = models.CharField(max_length=10, primary_key=True)
+    author = models.CharField(max_length=255, null=True)
+    title = models.CharField(max_length=255, null=True)
+    url = models.CharField(max_length=255, null=True)
+    publication = models.CharField(max_length=255, null=True)
+    place = models.CharField(max_length=255, null=True)
+    year = models.CharField(max_length=10, null=True)
 
 
-class ConceptManager(Manager):
+class ConceptManager(models.Manager):
 
     def __init__(self, namespace):
         self.namespace = namespace
@@ -299,7 +293,7 @@ class Term(Concept):
         proxy = True
 
     objects = ConceptManager('Concepts')
-    base_manager = Manager()
+    base_manager = models.Manager()
 
 
 class Theme(Concept):
@@ -309,7 +303,7 @@ class Theme(Concept):
         proxy = True
 
     objects = ConceptManager('Themes')
-    base_manager = Manager()
+    base_manager = models.Manager()
 
 
 class Group(Concept):
@@ -319,7 +313,7 @@ class Group(Concept):
         proxy = True
 
     objects = ConceptManager('Groups')
-    base_manager = Manager()
+    base_manager = models.Manager()
 
 
 class SuperGroup(Concept):
@@ -329,7 +323,7 @@ class SuperGroup(Concept):
         proxy = True
 
     objects = ConceptManager('Super groups')
-    base_manager = Manager()
+    base_manager = models.Manager()
 
 
 class InspireTheme(Concept):
@@ -339,4 +333,4 @@ class InspireTheme(Concept):
         proxy = True
 
     objects = ConceptManager('Inspire Themes')
-    base_manager = Manager()
+    base_manager = models.Manager()
