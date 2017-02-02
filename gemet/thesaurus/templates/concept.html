@@ -8,8 +8,18 @@
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.code %}
 
+  <script type="text/javascript">
+    conceptCode = '{{ concept.code | safe }}'
+  </script>
   <!-- Concept -->
-  <h3 class="h3">{{ concept.name }}</h3>
+  <div class="h3">
+    <span id="prefLabel">{{ concept.name }}</span>
+    <input type="button" value="Edit" id="prefLabelEdit"
+           data-type="prefLabel">
+    <input type="button" value="Save" id="prefLabelSave"
+           data-type="prefLabel" hidden>
+  </div>
+
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->

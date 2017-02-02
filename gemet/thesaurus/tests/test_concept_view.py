@@ -80,7 +80,7 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('.content p#definition').text(),
                          "some definition")
         self.assertEqual(resp.pyquery('.content p#scope-note').text(),
@@ -112,7 +112,7 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('.content p#definition').text(),
                          "some definition")
         self.assertEqual(resp.pyquery('.content p#scope-note').text(),

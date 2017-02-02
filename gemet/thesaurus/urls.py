@@ -35,6 +35,7 @@ from gemet.thesaurus.views import (
     GemetVoidView,
     download_gemet_rdf,
 )
+from gemet.thesaurus.edit_views import EditPropertyView
 from .api import ApiView
 
 
@@ -128,4 +129,5 @@ urlpatterns = [
         ])),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
+    url(r'^edit_property/$', EditPropertyView.as_view(), name='edit_property')
 ]
