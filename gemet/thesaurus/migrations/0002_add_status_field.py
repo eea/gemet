@@ -61,5 +61,5 @@ class Migration(migrations.Migration):
                 choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
                 default=0),
         ),
-        migrations.RunPython(forwards_func, reverse_func)
+        migrations.RunPython(forwards_func, reverse_func),
     ]

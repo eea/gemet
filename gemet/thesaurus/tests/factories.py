@@ -1,13 +1,22 @@
 import factory
 
 from gemet.thesaurus.models import (
-    Concept, Property, Language, Relation, PropertyType, Term, Group,
-    SuperGroup, Theme, DefinitionSource, InspireTheme, ForeignRelation
+    Concept, DefinitionSource, ForeignRelation, Group, InspireTheme, Language,
+    Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
 )
+
+
+class VersionFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Version
+
+    identifier = '1.0'
+    is_current = True
 
 
 class ForeignRelationFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = ForeignRelation
+
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class LanguageFactory(factory.django.DjangoModelFactory):
@@ -22,12 +31,15 @@ class LanguageFactory(factory.django.DjangoModelFactory):
 class ConceptFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Concept
 
+    version_added = factory.SubFactory(VersionFactory)
+
 
 class TermFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Term
 
     id = 1
     code = '1'
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
@@ -35,6 +47,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
 
     id = 2
     code = '2'
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class SuperGroupFactory(factory.django.DjangoModelFactory):
@@ -42,6 +55,7 @@ class SuperGroupFactory(factory.django.DjangoModelFactory):
 
     id = 3
     code = '3'
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):
@@ -49,6 +63,7 @@ class ThemeFactory(factory.django.DjangoModelFactory):
 
     id = 4
     code = '4'
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class PropertyFactory(factory.django.DjangoModelFactory):
@@ -56,6 +71,7 @@ class PropertyFactory(factory.django.DjangoModelFactory):
 
     concept = factory.SubFactory(ConceptFactory)
     language = factory.SubFactory(LanguageFactory)
+    version_added = factory.SubFactory(VersionFactory)
     name = 'prefLabel'
     value = 'administration'
 
@@ -74,6 +90,7 @@ class RelationFactory(factory.django.DjangoModelFactory):
     property_type = factory.SubFactory(PropertyTypeFactory)
     source = factory.SubFactory(ConceptFactory)
     target = factory.SubFactory(ConceptFactory)
+    version_added = factory.SubFactory(VersionFactory)
 
 
 class DataSourceFactory(factory.django.DjangoModelFactory):
@@ -85,3 +102,4 @@ class InspireThemeFactory(factory.django.DjangoModelFactory):
 
     id = 5
     code = 'ad'
+    version_added = factory.SubFactory(VersionFactory)

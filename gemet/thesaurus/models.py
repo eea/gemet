@@ -11,7 +11,7 @@ class Version(models.Model):
     is_current = models.BooleanField(default=False)
 
 
-class StatusModel(models.Model):
+class VersionableModel(models.Model):
     PENDING = 0
     PUBLISHED = 1
     DELETED = 2
@@ -24,6 +24,7 @@ class StatusModel(models.Model):
     )
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES,
                                               default=PENDING)
+    version_added = models.ForeignKey(Version)
 
     class Meta:
         abstract = True
@@ -39,7 +40,7 @@ class Namespace(models.Model):
         return self.heading
 
 
-class Concept(StatusModel):
+class Concept(VersionableModel):
     namespace = models.ForeignKey(Namespace)
     code = models.CharField(max_length=10)
     date_entered = models.DateTimeField(blank=True, null=True)
@@ -199,7 +200,7 @@ class Language(models.Model):
         return self.name
 
 
-class Property(StatusModel):
+class Property(VersionableModel):
     concept = models.ForeignKey(Concept, related_name='properties')
     language = models.ForeignKey(Language, related_name='properties')
     name = models.CharField(max_length=50)
@@ -242,7 +243,7 @@ class PropertyType(models.Model):
         return self.name
 
 
-class Relation(StatusModel):
+class Relation(VersionableModel):
     source = models.ForeignKey(Concept, related_name='source_relations')
     target = models.ForeignKey(Concept, related_name='target_relations')
     property_type = models.ForeignKey(PropertyType)
@@ -252,7 +253,7 @@ class Relation(StatusModel):
             self.source.code, self.target.code, self.property_type.name)
 
 
-class ForeignRelation(StatusModel):
+class ForeignRelation(VersionableModel):
     concept = models.ForeignKey(Concept, related_name='foreign_relations')
     uri = models.CharField(max_length=512)
     property_type = models.ForeignKey(PropertyType)
