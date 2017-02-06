@@ -285,7 +285,7 @@ class ConceptManager(models.Manager):
 
     def get_queryset(self):
         ns = self.get_ns()
-        return self.model.base_manager.filter(namespace=ns)
+        return super(ConceptManager, self).get_queryset().filter(namespace=ns)
 
     def create(self, **kwargs):
         ns = self.get_ns()
@@ -301,7 +301,6 @@ class Term(Concept):
         proxy = True
 
     objects = ConceptManager('Concepts')
-    base_manager = models.Manager()
 
 
 class Theme(Concept):
@@ -311,7 +310,6 @@ class Theme(Concept):
         proxy = True
 
     objects = ConceptManager('Themes')
-    base_manager = models.Manager()
 
 
 class Group(Concept):
@@ -321,7 +319,6 @@ class Group(Concept):
         proxy = True
 
     objects = ConceptManager('Groups')
-    base_manager = models.Manager()
 
 
 class SuperGroup(Concept):
@@ -331,7 +328,6 @@ class SuperGroup(Concept):
         proxy = True
 
     objects = ConceptManager('Super groups')
-    base_manager = models.Manager()
 
 
 class InspireTheme(Concept):
@@ -341,4 +337,3 @@ class InspireTheme(Concept):
         proxy = True
 
     objects = ConceptManager('Inspire Themes')
-    base_manager = models.Manager()
