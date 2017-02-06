@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.views import View
 
-from gemet.thesaurus.models import Concept, Language, Property
+from gemet.thesaurus.models import Concept, Language, Property, Version
 from gemet.thesaurus.forms import PropertyForm
 import json
 
@@ -36,11 +36,14 @@ class EditPropertyView(View):
             if published_field:
                 is_resource = published_field.is_resource
 
+            version = Version.objects.create()
+            # Todo: Remove when version is stable
             field = Property.objects.create(
                 language=language, concept=concept,
                 name=request.POST['name'], value=request.POST['value'],
                 status=0,
-                is_resource=is_resource)
+                is_resource=is_resource,
+                version_added=version)
 
         return HttpResponse(
             json.dumps({"data": "success", "status_code": "200",
