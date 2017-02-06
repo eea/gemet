@@ -19,6 +19,7 @@ function getCookie(name) {
 $(document).ready(function () {
 	// change language
 	// bind change event to select
+
   $('#js-change-language').on('change', function () {
     var url = $(this).find(':selected').attr('href'); // get selected value
     if (url) { // require a URL
@@ -29,51 +30,85 @@ $(document).ready(function () {
 
   $('#prefLabelEdit').click(activateEditing);
   $('#prefLabelSave').click(saveEditedField);
+  $('#scopeNoteEdit').click(activateEditing);
+  $('#scopeNoteSave').click(saveEditedField);
+  $('#definitionEdit').click(activateEditing);
+  $('#definitionSave').click(saveEditedField);
+  $('#sourceEdit').click(activateEditing);
+  $('#sourceSave').click(saveEditedField);
+
+  function prepareElements(fieldName){
+    fields = {};
+    fields['saveId'] = "#" + fieldName + "Save";
+    fields['fieldElement'] = "#" + fieldName;
+    fields['inputElement'] = fieldName + "Input";
+    fields['inputId'] = "#" + fieldName + "Input";
+    fields['editId'] = "#" + fieldName + "Edit";
+    fields['emptyId'] = "#" + fieldName + "Empty";
+
+    return fields
+  }
+
+  function cancelEditing(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName)
+    $(fields['saveId']).hide();
+    $(fields['fieldElement']).show();
+    if (concept[fieldName] == ''){
+        $(fields['emptyId']).show();
+    }
+    $(fields['inputId']).remove();
+    $(this).val('Edit');
+    $(this).unbind('click', cancelEditing);
+    $(this).bind('click', activateEditing);
+
+  };
 
   function activateEditing(){
-      var fieldName = $(this).data('type');
-      var saveId = "#" + fieldName + "Save";
-      var fieldElement =  "#" + fieldName;
-      $(saveId).show();
-      $(this).hide();
-      var prefLabelValue = $(fieldElement).text()
-      $(fieldElement).replaceWith('<input id="prefLabel" type="text" value="'
-                                   + prefLabelValue + '" />')
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName)
+    $(fields['saveId']).show();
+    $(fields['emptyId']).hide();
+    $(fields['fieldElement']).hide();
+    $(this).val('Cancel');
+    $(this).unbind('click', activateEditing);
+    $(this).bind('click', cancelEditing);
+    var prefLabelValue = $(fields['fieldElement']).text()
+    $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
+                    + '"/>').insertBefore(fields['fieldElement']);
+    $(fields['inputId']).val(concept[fieldName]);
   };
 
   function saveEditedField(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName)
 
-      var fieldName = $(this).data('type')
-      var editId = "#" + fieldName + "Edit";
-      var fieldElementId =  "#" + fieldName
+    $.ajax({
+       type:"POST",
+       url:"/edit_property/",
+       data: {
+              'concept': conceptCode,
+              'language': $('#js-change-language option:selected').val(),
+              'value': $(fields['inputId']).val(),
+              'name': fieldName,
+              'csrfmiddlewaretoken': getCookie('csrftoken'),
+             },
+       error: function(e) {
+       },
+       success: function(data){
+          $(fields['fieldElement']).text(data['value']);
+          concept[fieldName] = data['value'];
 
-      $.ajax({
-         type:"POST",
-         url:"/edit_property/",
-         data: {
-                'concept': conceptCode,
-                'lang': $('#js-change-language option:selected').val(),
-                'value': $(fieldElementId).val(),
-                'type': fieldName,
-                'csrfmiddlewaretoken': getCookie('csrftoken'),
-               },
-         success: function(data){
-             if(data['data']=='success'){
-                var newElement = '<span id="' + fieldName +'">' +
-                                 data['value'] + '</span>';
-                $(fieldElementId).replaceWith(newElement);
-             }
-             else{
-                var prefLabelValue = $(fieldElementId).text()
-                var newElement = '<span id="' + fieldName + '">' +
-                                 prefLabelValue + '</span>';
-                $(fieldElementId).replaceWith(newElement)
-             }
-         }
-      });
+       }
+    });
 
-      $(this).hide();
-      $(editId).show();
+    $(fields['fieldElement']).show();
+    $(fields['inputId']).remove();
+    $(this).hide();
+    $(fields['editId']).val('Edit');
+    $(fields['editId']).bind('click', activateEditing);
+    $(fields['editId']).unbind('click', cancelEditing);
+    $(fields['editId']).show();
   }
 
 });

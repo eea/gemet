@@ -1,6 +1,6 @@
 from django import forms
-
-from gemet.thesaurus.models import Language
+from django.forms import ModelForm
+from gemet.thesaurus.models import Language, Property
 
 
 class SearchForm(forms.Form):
@@ -23,3 +23,10 @@ class ExportForm(forms.Form):
         empty_label=None,
         label="Choose the language",
     )
+
+
+class PropertyForm(ModelForm):
+
+    class Meta:
+        model = Property
+        fields = ('concept', 'language', 'name', 'value', 'is_resource')

@@ -9,13 +9,18 @@
   {% include 'header.html' with view='concept' id=concept.code %}
 
   <script type="text/javascript">
-    conceptCode = '{{ concept.code | safe }}'
+    var conceptCode = '{{ concept.code | safe }}'
+    var concept = {}
+    concept['prefLabel'] = '{{ concept.name }}'
+    concept['definition'] = '{{ concept.definition }}'
+    concept['source'] = '{{ concept.source }}'
+    concept['scopeNote'] = '{{ concept.scopeNote }}'
   </script>
   <!-- Concept -->
   <div class="h3">
     <span id="prefLabel">{{ concept.name }}</span>
     <input type="button" value="Edit" id="prefLabelEdit"
-           data-type="prefLabel">
+           data-type="prefLabel" data-html-tag="input">
     <input type="button" value="Save" id="prefLabelSave"
            data-type="prefLabel" hidden>
   </div>
@@ -42,17 +47,29 @@
   {% endif %}
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  <p id="definition">
+  <span id="definition">
     {{ concept.definition }}
-    {% if concept.source %}
-      <span>(Source: {{ concept.source }})</span>
-    {% endif %}
-  </p>
+  </span>
+  <input type="button" value="Edit" id="definitionEdit"
+         data-type="definition" data-html-tag="textarea">
+  <input type="button" value="Save" id="definitionSave"
+         data-type="definition" hidden>
   {% if concept.default_definition %}
-  <p class="alert">Definition is not available for the current language.</p>
+  <p class="alert" id="definitionEmpty">Definition is not available for the current language.</p>
   {% endif %}
-
-
+  <!--Source-->
+  <p id="source" >
+  {% if concept.source %}
+     (Source: {{ concept.source }})
+  {% endif %}
+  </p>
+  <input type="button" value="Edit" id="sourceEdit"
+         data-type="source" data-html-tag="input">
+  <input type="button" value="Save" id="sourceSave"
+         data-type="source" hidden>
+  {% if not concept.source %}
+    <p class="alert" id="sourceEmpty"> Source is not available. </p>
+  {% endif %}
    <!-- Themes -->
   {% if concept.themes %}
   <h5 class="h5">Themes</h5>
@@ -138,11 +155,16 @@
 
   <!-- Scope -->
   <h5 class="h5">Scope note</h5>
+  <span id='scopeNote'>{{ concept.scopeNote }}</span>
+
   {% if not concept.scopeNote %}
-    <p class="alert">Scope note is not available.</p>
-  {% else %}
-    <p id="scope-note">{{ concept.scopeNote }}</p>
+    <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
   {% endif %}
+
+  <input type="button" value="Edit" id="scopeNoteEdit"
+         data-type="scopeNote" data-html-tag="input">
+  <input type="button" value="Save" id="scopeNoteSave"
+         data-type="scopeNote" hidden>
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:
