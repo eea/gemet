@@ -84,10 +84,10 @@ class ThemesView(HeaderMixin, TemplateView):
 
     def _get_themes_by_langcode(self, langcode):
         return (
-            Property.objects.filter(
+            Property.published.filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept_id__in=self.model_cls.objects.values_list(
+                concept_id__in=self.model_cls.published.values_list(
                     'id', flat=True)
             )
             .extra(select={'name': 'value',
@@ -109,7 +109,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
-            'ns_version': self.model_cls.objects.get_ns().version,
+            'ns_version': self.model_cls.published.get_ns().version,
             'css_class': self.css_class,
         })
         return context
@@ -125,9 +125,9 @@ class InspireThemesView(ThemesView):
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
         languages = [lang for lang in context['languages'] if
-                     Property.objects.filter(
+                     Property.published.filter(
                          language_id=lang.get('code'),
-                         concept__namespace=self.model_cls.objects.get_ns(),
+                         concept__namespace=self.model_cls.published.get_ns(),
                          )]
 
         context.update({'languages': languages})
@@ -141,10 +141,10 @@ class GroupsView(HeaderMixin, TemplateView):
         context = super(GroupsView, self).get_context_data(**kwargs)
 
         supergroups = (
-            Property.objects.filter(
+            Property.published.filter(
                 name='prefLabel',
                 language__code=self.langcode,
-                concept_id__in=SuperGroup.objects.values_list('id', flat=True)
+                concept_id__in=SuperGroup.published.values_list('id', flat=True)
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'},
@@ -154,7 +154,7 @@ class GroupsView(HeaderMixin, TemplateView):
 
         context.update({
             "supergroups": supergroups,
-            "ns_version": Group.objects.get_ns().version
+            "ns_version": Group.published.get_ns().version
         })
         return context
 
@@ -195,7 +195,7 @@ class SearchView(HeaderMixin, FormView):
         context.update({
             "query": self.query,
             "concepts": self.concepts,
-            "ns_version": Term.objects.get_ns().version
+            "ns_version": Term.published.get_ns().version
         })
         return context
 
@@ -231,7 +231,7 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
-            'ns_version': Term.objects.get_ns().version
+            'ns_version': Term.published.get_ns().version
         })
         return context
 
@@ -268,7 +268,7 @@ class ConceptView(HeaderMixin, DetailView):
 
         context.update({
             "languages": languages,
-            "ns_version": self.model.objects.get_ns().version
+            "ns_version": self.model.published.get_ns().version
         })
         return context
 
@@ -340,7 +340,7 @@ class PaginatorView(HeaderMixin, ListView):
 
     def _get_letters_presence(self, all_letters, theme=None):
         letters = (
-            Property.objects
+            Property.published
             .filter(
                 name='prefLabel',
                 language_id=self.langcode,
@@ -425,7 +425,7 @@ class ThemeConceptsView(PaginatorView):
             context.update({'language_warning': True})
         context.update({
             'theme': self.theme,
-            'ns_version': Term.objects.get_ns().version
+            'ns_version': Term.published.get_ns().version
         })
 
         return context
@@ -436,7 +436,7 @@ class AlphabeticView(PaginatorView):
 
     def get_queryset(self):
         self.concepts = (
-            Property.objects.filter(
+            Property.published.filter(
                 name='prefLabel',
                 language__code=self.langcode,
                 concept__namespace__heading='Concepts'
@@ -449,7 +449,7 @@ class AlphabeticView(PaginatorView):
 
     def get_context_data(self, **kwargs):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
-        context.update({"ns_version": Term.objects.get_ns().version})
+        context.update({"ns_version": Term.published.get_ns().version})
 
         return context
 
@@ -461,7 +461,7 @@ class BackboneView(TemplateView):
         context = super(BackboneView, self).get_context_data(**kwargs)
 
         relations = (
-            Relation.objects.filter(
+            Relation.published.filter(
                 property_type__label__in=['Theme', 'Group'],
             ).values(
                 'source__code', 'property_type__label', 'target__code',
@@ -502,24 +502,24 @@ class BackboneRDFView(XMLTemplateView):
         context = super(BackboneRDFView, self).get_context_data(**kwargs)
 
         supergroup_uri = Namespace.objects.get(heading='Super groups').type_url
-        supergroups = SuperGroup.objects.values('code')
+        supergroups = SuperGroup.published.values('code')
 
         group_uri = Namespace.objects.get(heading='Groups').type_url
         # TODO: find a way to alias foreign key attributes
-        groups = (Group.objects
+        groups = (Group.published
                   .filter(source_relations__property_type__name='broader')
                   .values('source_relations__target__code', 'code'))
 
         theme_uri = Namespace.objects.get(heading='Themes').type_url
-        themes = Theme.objects.values('code')
+        themes = Theme.published.values('code')
 
         relations = {}
-        concepts = Term.objects.values('id', 'code')
+        concepts = Term.published.values('id', 'code')
 
         for concept in concepts:
             relations.update({
                 concept['code']: (
-                    Relation.objects
+                    Relation.published
                     .filter(source_id=concept['id'],
                             property_type__name__in=['theme', 'group'])
                     .values('target__code',
@@ -546,7 +546,7 @@ class DefinitionsView(TemplateView):
         context = super(DefinitionsView, self).get_context_data(**kwargs)
 
         concepts = []
-        for term in Term.objects.all():
+        for term in Term.published.all():
             concept_properties = (
                 term.properties
                 .filter(
@@ -579,7 +579,7 @@ class GemetGroupsView(TemplateView):
         context = super(GemetGroupsView, self).get_context_data(**kwargs)
 
         supergroups = (
-            Property.objects
+            Property.published
             .filter(
                 name='prefLabel',
                 concept__namespace__heading='Super groups',
@@ -589,9 +589,9 @@ class GemetGroupsView(TemplateView):
         )
 
         relations = (
-            Relation.objects
+            Relation.published
             .filter(
-                target_id__in=SuperGroup.objects.values_list('id', flat=True),
+                target_id__in=SuperGroup.published.values_list('id', flat=True),
                 property_type__label='broader term',
             )
             .values('target__code', 'source_id')
@@ -600,7 +600,7 @@ class GemetGroupsView(TemplateView):
         groups = []
         for relation in relations:
             source = (
-                Property.objects
+                Property.published
                 .filter(
                     concept_id=relation['source_id'],
                     name='prefLabel',
@@ -616,7 +616,7 @@ class GemetGroupsView(TemplateView):
             })
 
         themes = (
-            Property.objects
+            Property.published
             .filter(
                 name='prefLabel',
                 language__code=DEFAULT_LANGCODE,
@@ -641,7 +641,7 @@ class GemetRelationsMixin(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(GemetRelationsMixin, self).get_context_data(**kwargs)
 
-        self.relations = Relation.objects.filter(
+        self.relations = Relation.published.filter(
             source__namespace__heading='Concepts',
             target__namespace__heading='Concepts',
             property_type__name__in=[
@@ -654,9 +654,9 @@ class GemetRelationsMixin(TemplateView):
         )
 
         self.foreign_relations = (
-            ForeignRelation.objects
+            ForeignRelation.published
             .filter(
-                concept__in=Term.objects.all(),
+                concept__in=Term.published.all(),
                 property_type__name__in=[
                     'broadMatch', 'closeMatch', 'exactMatch', 'narrowMatch',
                     'relatedMatch',
@@ -740,13 +740,13 @@ class DefinitionsByLanguage(HeaderMixin, XMLTemplateView):
     def get_context_data(self, **kwargs):
         context = super(DefinitionsByLanguage, self).get_context_data(**kwargs)
 
-        concepts = Term.objects.values('id', 'code').order_by('code')
+        concepts = Term.published.values('id', 'code').order_by('code')
         definitions = OrderedDict()
 
         for concept in concepts:
             properties = sorted(
                 (
-                    Property.objects
+                    Property.published
                     .filter(
                         concept_id=concept['id'],
                         language=self.language,
@@ -773,7 +773,7 @@ class GroupsByLanguage(HeaderMixin, XMLTemplateView):
         for heading in ['Super groups', 'Groups', 'Themes']:
             context.update({
                 heading.replace(' ', '_'): (
-                    Property.objects
+                    Property.published
                     .filter(
                         concept__namespace__heading=heading,
                         language=self.language,

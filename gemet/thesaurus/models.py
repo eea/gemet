@@ -11,6 +11,15 @@ class Version(models.Model):
     is_current = models.BooleanField(default=False)
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super(PublishedManager, self).get_queryset()
+            .filter(status__in=[
+                VersionableModel.PUBLISHED, VersionableModel.DELETED_PENDING])
+        )
+
+
 class VersionableModel(models.Model):
     PENDING = 0
     PUBLISHED = 1
@@ -25,6 +34,9 @@ class VersionableModel(models.Model):
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES,
                                               default=PENDING)
     version_added = models.ForeignKey(Version)
+
+    objects = models.Manager()
+    published = PublishedManager()
 
     class Meta:
         abstract = True
@@ -86,7 +98,7 @@ class Concept(VersionableModel):
             setattr(
                 self,
                 parent_name,
-                Property.objects.filter(
+                Property.published.filter(
                     name='prefLabel',
                     language__code=langcode,
                     concept_id__in=self.source_relations
@@ -101,7 +113,7 @@ class Concept(VersionableModel):
 
     def get_siblings(self, langcode, relation_type):
         return (
-            Property.objects
+            Property.published
             .filter(
                 name='prefLabel',
                 language__code=langcode,
@@ -123,7 +135,7 @@ class Concept(VersionableModel):
 
     def get_children(self, langcode):
         children = (
-            Property.objects
+            Property.published
             .filter(
                 name='prefLabel',
                 language__code=langcode,
@@ -144,7 +156,7 @@ class Concept(VersionableModel):
                     self.source_relations
                     .filter(property_type__name='groupMember')
                     .exclude(
-                        target__id__in=Relation.objects.filter(
+                        target__id__in=Relation.published.filter(
                             property_type__name='broader',
                         )
                         .values_list('source_id', flat=True)
@@ -293,6 +305,15 @@ class ConceptManager(models.Manager):
         return super(ConceptManager, self).create(**kwargs)
 
 
+class PublishedConceptManager(ConceptManager):
+    def get_queryset(self):
+        return (
+            super(PublishedConceptManager, self).get_queryset()
+            .filter(status__in=[
+                VersionableModel.PUBLISHED, VersionableModel.DELETED_PENDING])
+        )
+
+
 class Term(Concept):
     siblings_relations = ['broader', 'narrower', 'related']
     parents_relations = ['group', 'theme']
@@ -301,6 +322,7 @@ class Term(Concept):
         proxy = True
 
     objects = ConceptManager('Concepts')
+    published = PublishedConceptManager('Concepts')
 
 
 class Theme(Concept):
@@ -310,6 +332,7 @@ class Theme(Concept):
         proxy = True
 
     objects = ConceptManager('Themes')
+    published = PublishedConceptManager('Themes')
 
 
 class Group(Concept):
@@ -319,6 +342,7 @@ class Group(Concept):
         proxy = True
 
     objects = ConceptManager('Groups')
+    published = PublishedConceptManager('Groups')
 
 
 class SuperGroup(Concept):
@@ -328,6 +352,7 @@ class SuperGroup(Concept):
         proxy = True
 
     objects = ConceptManager('Super groups')
+    published = PublishedConceptManager('Super groups')
 
 
 class InspireTheme(Concept):
@@ -337,3 +362,4 @@ class InspireTheme(Concept):
         proxy = True
 
     objects = ConceptManager('Inspire Themes')
+    published = PublishedConceptManager('Inspire Themes')

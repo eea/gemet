@@ -14,7 +14,7 @@ def is_rdf(request):
 
 def regex_search(query, language, heading):
     return (
-        Property.objects
+        Property.published
         .filter(
             name='prefLabel',
             language__code=language.code,
@@ -61,7 +61,7 @@ def api_search(query, language, search_mode, headings):
     query_search = search_types.get(search_mode)
 
     return (
-        Property.objects
+        Property.published
         .filter(
             name='prefLabel',
             language__code=language.code,
@@ -86,7 +86,7 @@ def api_search(query, language, search_mode, headings):
 def insite_search(query, language, heading):
 
     return (
-        Property.objects
+        Property.published
         .filter(
             name='searchText',
             language__code=language.code,
