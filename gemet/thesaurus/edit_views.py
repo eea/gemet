@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views import View
 
@@ -8,20 +9,32 @@ import json
 
 class EditPropertyView(View):
 
-    def post(self, request):
-        form = PropertyForm(request.POST)
-        if not form.is_valid():
-            response = HttpResponse(json.dumps({"errors": form.errors}),
+    def post(self, request, *args, **kwargs):
+        try:
+            language = Language.objects.get(code=kwargs['langcode'])
+            concept = Concept.objects.get(id=kwargs['concept_id'])
+        except ObjectDoesNotExist:
+            response = HttpResponse(json.dumps({
+                                    "message": 'Object does not exist.'}),
                                     content_type="application/json")
+            response.status = 'error'
             response.status_code = 400
             return response
 
-        field = Property.objects.filter(language=request.POST['language'],
-                                        concept__code=request.POST['concept'],
-                                        name=request.POST['name'])
+        form = PropertyForm(request.POST)
 
-        published_field = field.filter(status=1).first()
-        pending_field = field.filter(status=0).first()
+        if not form.is_valid():
+            response = HttpResponse(json.dumps({"message": form.errors}),
+                                    content_type="application/json")
+            response.status = 'error'
+            response.status_code = 400
+            return response
+        field = Property.objects.filter(language=kwargs['langcode'],
+                                        concept__id=kwargs['concept_id'],
+                                        name=kwargs['property'])
+
+        published_field = field.filter(status=Property.PUBLISHED).first()
+        pending_field = field.filter(status=Property.PENDING).first()
 
         if pending_field:
             pending_field.value = request.POST['value']
@@ -29,25 +42,24 @@ class EditPropertyView(View):
             field = pending_field
 
         else:
-            language = Language.objects.get(code=request.POST['language'])
-            concept = Concept.objects.get(code=request.POST['concept'])
-
             is_resource = False
             if published_field:
+                published_field.status = Property.DELETED_PENDING
+                published_field.save()
                 is_resource = published_field.is_resource
 
             version = Version.objects.create()
             # Todo: Remove when version is stable
             field = Property.objects.create(
                 language=language, concept=concept,
-                name=request.POST['name'], value=request.POST['value'],
-                status=0,
+                name=kwargs['property'],
+                value=request.POST['value'],
+                status=Property.PENDING,
                 is_resource=is_resource,
                 version_added=version)
 
-        return HttpResponse(
-            json.dumps({"data": "success", "status_code": "200",
-                        "value": field.value}),
-            content_type="application/json"
-        )
-
+        response = HttpResponse(json.dumps({"value": field.value}),
+                                content_type="application/json")
+        response.status = 'success'
+        response.status_code = 200
+        return response

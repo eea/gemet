@@ -45,7 +45,6 @@ $(document).ready(function () {
     fields['inputId'] = "#" + fieldName + "Input";
     fields['editId'] = "#" + fieldName + "Edit";
     fields['emptyId'] = "#" + fieldName + "Empty";
-
     return fields
   }
 
@@ -54,7 +53,7 @@ $(document).ready(function () {
     var fields = prepareElements(fieldName)
     $(fields['saveId']).hide();
     $(fields['fieldElement']).show();
-    if (concept[fieldName] == ''){
+    if ($(fields['fieldElement']).data('value') == ''){
         $(fields['emptyId']).show();
     }
     $(fields['inputId']).remove();
@@ -76,28 +75,25 @@ $(document).ready(function () {
     var prefLabelValue = $(fields['fieldElement']).text()
     $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
                     + '"/>').insertBefore(fields['fieldElement']);
-    $(fields['inputId']).val(concept[fieldName]);
+    $(fields['inputId']).val($(fields['fieldElement']).data('value'));
   };
 
   function saveEditedField(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName)
-
+    var url = $(fields['fieldElement']).data('href')
     $.ajax({
-       type:"POST",
-       url:"/edit_property/",
+       type: "POST",
+       url: url,
        data: {
-              'concept': conceptCode,
-              'language': $('#js-change-language option:selected').val(),
               'value': $(fields['inputId']).val(),
-              'name': fieldName,
               'csrfmiddlewaretoken': getCookie('csrftoken'),
              },
        error: function(e) {
        },
        success: function(data){
           $(fields['fieldElement']).text(data['value']);
-          concept[fieldName] = data['value'];
+          $(fields['fieldElement']).data('value', data['value']);
 
        }
     });

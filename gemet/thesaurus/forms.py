@@ -29,4 +29,4 @@ class PropertyForm(ModelForm):
 
     class Meta:
         model = Property
-        fields = ('concept', 'language', 'name', 'value', 'is_resource')
+        fields = ('value', )

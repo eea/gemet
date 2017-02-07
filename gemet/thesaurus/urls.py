@@ -103,6 +103,8 @@ urlpatterns = [
         url(r'^definition-sources/$', DefinitionSourcesView.as_view(),
             name='definition_sources'),
         url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
+        url(r'^edit_property/(?P<concept_id>\d+)/(?P<property>[a-zA-Z-]+)/$',
+            EditPropertyView.as_view(), name='edit_property')
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html$', BackboneView.as_view(),
@@ -129,5 +131,4 @@ urlpatterns = [
         ])),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
-    url(r'^edit_property/$', EditPropertyView.as_view(), name='edit_property')
 ]

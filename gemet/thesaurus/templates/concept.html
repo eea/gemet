@@ -8,17 +8,10 @@
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.code %}
 
-  <script type="text/javascript">
-    var conceptCode = '{{ concept.code | safe }}'
-    var concept = {}
-    concept['prefLabel'] = '{{ concept.name }}'
-    concept['definition'] = '{{ concept.definition }}'
-    concept['source'] = '{{ concept.source }}'
-    concept['scopeNote'] = '{{ concept.scopeNote }}'
-  </script>
   <!-- Concept -->
   <div class="h3">
-    <span id="prefLabel">{{ concept.name }}</span>
+    <span id="prefLabel" data-value="{{ concept.name }}"
+    data-href="{% url 'edit_property' language.code concept.id 'prefLabel' %}">{{ concept.name }}</span>
     <input type="button" value="Edit" id="prefLabelEdit"
            data-type="prefLabel" data-html-tag="input">
     <input type="button" value="Save" id="prefLabelSave"
@@ -47,7 +40,8 @@
   {% endif %}
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  <span id="definition">
+  <span id="definition" data-value="{{ concept.definition }}"
+        data-href="{% url 'edit_property' language.code concept.id 'definition' %}">
     {{ concept.definition }}
   </span>
   <input type="button" value="Edit" id="definitionEdit"
@@ -58,7 +52,8 @@
   <p class="alert" id="definitionEmpty">Definition is not available for the current language.</p>
   {% endif %}
   <!--Source-->
-  <p id="source" >
+  <p id="source" data-value="{{ concept.source }}"
+     data-href="{% url 'edit_property' language.code concept.id 'source' %}">
   {% if concept.source %}
      (Source: {{ concept.source }})
   {% endif %}
@@ -155,7 +150,10 @@
 
   <!-- Scope -->
   <h5 class="h5">Scope note</h5>
-  <span id='scopeNote'>{{ concept.scopeNote }}</span>
+  <span id='scopeNote' data-value="{{ concept.scopeNote }}"
+        data-href="{% url 'edit_property' language.code concept.id 'scopeNote' %}">
+    {{ concept.scopeNote }}
+  </span>
 
   {% if not concept.scopeNote %}
     <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
