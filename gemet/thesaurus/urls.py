@@ -35,7 +35,8 @@ from gemet.thesaurus.views import (
     GemetVoidView,
     download_gemet_rdf,
 )
-from gemet.thesaurus.edit_views import EditPropertyView
+from gemet.thesaurus.edit_views import AddParentRelationView, EditPropertyView
+from gemet.thesaurus.edit_views import RemoveParentRelationView
 from .api import ApiView
 
 
@@ -104,7 +105,13 @@ urlpatterns = [
             name='definition_sources'),
         url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
         url(r'^edit_property/(?P<concept_id>\d+)/(?P<property>[a-zA-Z-]+)/$',
-            EditPropertyView.as_view(), name='edit_property')
+            EditPropertyView.as_view(), name='edit_property'),
+        url(r'^remove_parent_concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+            RemoveParentRelationView.as_view(), name='remove_parent'),
+        url(r'^add_parent_concept/(?P<concept_id>\d+)/$',
+            AddParentRelationView.as_view(), name='add_parent'),
+        url(r'^add_parent_concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+            AddParentRelationView.as_view(), name='add_parent'),
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html$', BackboneView.as_view(),

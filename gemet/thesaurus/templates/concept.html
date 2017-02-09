@@ -66,28 +66,40 @@
     <p class="alert" id="sourceEmpty"> Source is not available. </p>
   {% endif %}
    <!-- Themes -->
-  {% if concept.themes %}
   <h5 class="h5">Themes</h5>
-  <ul class="listing">
+  <input type="button" value="Add Theme" id="themeAdd" data-type="theme"
+         data-href="{% url 'add_parent' language.code concept.id %}">
+  <input type="button" value="Cancel" id="themeCancel" data-type="theme" hidden>
+  <input type="button" value="Save" id="themeSave" data-langcode="{{ language.code }}"
+         data-concept="{{ concept.id }}" data-type="theme" hidden>
+  <ul id="theme" class="listing">
     {% for theme in concept.themes %}
-    <li>
-      {{ theme.name }}
-    </li>
+      <li id="theme{{ theme.id }}" value="{{ theme.concept__id }}">
+        {{ theme.name }}
+      </li>
+      <input class="removeParent" type="button" data-field="#theme{{ theme.id }}"
+             data-href="{% url 'remove_parent' language.code concept.id theme.id %}"
+             data-type="theme" value="Delete" />
     {% endfor %}
   </ul>
-  {% endif %}
 
   <!-- Groups -->
-  {% if concept.groups %}
-    <h5 class="h5">Groups</h5>
-      <ul class="listing">
-      {% for group in concept.groups %}
-        <li>
-          {{ group.name }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  <h5 class="h5">Groups</h5>
+  <input type="button" value="Add Group" id="groupAdd" data-type="group"
+         data-href="{% url 'add_parent' language.code concept.id %}">
+  <input type="button" value="Cancel" id="groupCancel" data-type="group" hidden>
+  <input type="button" value="Save" id="groupSave" data-langcode="{{ language.code }}"
+         data-concept="{{ concept.id }}" data-type="group" hidden>
+  <ul id="group" class="listing">
+    {% for group in concept.groups %}
+      <li id="group{{ group.id }}" value="{{ group.concept__id }}">
+        {{ group.name }}
+      </li>
+      <input class="removeParent" type="button" data-field="#group{{ group.id }}"
+             data-href="{% url 'remove_parent' language.code concept.id group.id %}"
+             data-type="group" value="Delete" />
+    {% endfor %}
+  </ul>
 
   <!-- Related terms -->
   <h5 class="h5">Related terms</h5>

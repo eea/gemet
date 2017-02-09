@@ -37,6 +37,10 @@ $(document).ready(function () {
   $('#sourceEdit').click(activateEditing);
   $('#sourceSave').click(saveEditedField);
 
+  $('#themeAdd').click(activateSelectEditing);
+  $('#groupAdd').click(activateSelectEditing);
+  $('.removeParent').click(removeParent);
+
   function prepareElements(fieldName){
     fields = {};
     fields['saveId'] = "#" + fieldName + "Save";
@@ -45,6 +49,8 @@ $(document).ready(function () {
     fields['inputId'] = "#" + fieldName + "Input";
     fields['editId'] = "#" + fieldName + "Edit";
     fields['emptyId'] = "#" + fieldName + "Empty";
+    fields['fieldAdd'] = "#" + fieldName + "Add";
+    fields['fieldCancel'] = "#" + fieldName + "Cancel";
     return fields
   }
 
@@ -72,7 +78,6 @@ $(document).ready(function () {
     $(this).val('Cancel');
     $(this).unbind('click', activateEditing);
     $(this).bind('click', cancelEditing);
-    var prefLabelValue = $(fields['fieldElement']).text()
     $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
                     + '"/>').insertBefore(fields['fieldElement']);
     $(fields['inputId']).val($(fields['fieldElement']).data('value'));
@@ -107,4 +112,127 @@ $(document).ready(function () {
     $(fields['editId']).show();
   }
 
+  function getAllConcepts(url, elementId, type){
+    $(elementId).empty(); // removes previous option elements from select
+    $.ajax({ // ajax call to retrieve all concepts used as options
+      type: "GET",
+      url: url,
+      data: {
+        'type': type,
+      },
+      error: function(e) {
+      },
+      success: function(data){
+        list_concepts = data['parents'];
+        for(index in list_concepts){
+          // creating options using received data
+          var $option = $('<option value=' + list_concepts[index]['id'] + '>'
+                        + list_concepts[index]['name'] + '</option>');
+          var remove_url = list_concepts[index]['href'];
+          var add_url = list_concepts[index]['href_add'];
+          $option.attr('data-href', remove_url);// get url to remove the relation
+          $option.attr('data-href_add', add_url);// get url to add the relation
+          $(elementId).append($option);
+        }
+      }
+    });
+  };
+
+  function cancelSelectEditing(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName)
+    $(fields['saveId']).hide();
+    $(fields['saveId']).unbind('click', saveConceptRelation);
+    $(fields['inputId']).remove();
+    $(fields['fieldAdd']).show();
+    $(fields['fieldAdd']).bind('click', activateSelectEditing);
+    $(this).hide();
+    $(this).unbind('click', cancelSelectEditing);
+  };
+
+  function activateSelectEditing(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName); //preparing selectors
+    $(fields['saveId']).show();
+    $(fields['saveId']).bind('click', saveConceptRelation);
+    $(fields['fieldCancel']).show();
+    $(fields['fieldCancel']).bind('click', cancelSelectEditing);
+    $(this).hide();
+    $(this).unbind('click', activateSelectEditing);
+    url = $(this).data('href');
+    $('<select id="' + fields['inputElement'] + '"/>').insertBefore(fields['fieldCancel']);
+    getAllConcepts(url, fields['inputId'], fieldName);
+  };
+
+  function removeParent(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName);
+    var url = $(this).data('href');
+    var deleteFieldId = $(this).data('field');
+    var deleteButton = $(this);
+    $.ajax({
+       type: "POST",
+       url: url,
+       data: {
+              'csrfmiddlewaretoken': getCookie('csrftoken'),
+              'type': fieldName,
+             },
+       error: function(e) {
+        if ($(fields['inputId']).length)
+          getAllConcepts(url, fields['inputId'], fieldName);
+       },
+       success: function(data){
+         $(deleteFieldId).remove();
+         deleteButton.remove(); // remove both element and its delete button
+         // change options based on database changes
+         var url = $(fields['fieldAdd']).data('href')
+         if ($(fields['inputId']).length)
+           getAllConcepts(url, fields['inputId'], fieldName);
+       }
+    });
+  };
+
+  function addElement(parentId, parentText, url, fields, fieldName){
+    var $newParent = $('<li id=' + fieldName + parentId + " value=" +
+                       parentId + ">" + parentText + "</li>");
+    var $newParentDelete = $('<input>')
+    $newParentDelete.addClass("removeParent");
+    $newParentDelete.attr("type", "button");
+    $newParentDelete.val("Delete");
+    $newParentDelete.attr("data-field", fields['fieldElement'] + parentId);
+    $newParentDelete.attr("data-href", url);
+    $newParentDelete.attr("data-type", fieldName);
+    $newParentDelete.bind('click', removeParent);
+    $(fields['fieldElement']).append($newParent);
+    $(fields['fieldElement']).append($newParentDelete);
+  }
+
+  function saveConceptRelation(){
+    var fieldName = $(this).data('type');
+    var fields = prepareElements(fieldName);
+    // define a selector for all options of the targeted select
+    var selector = fields['inputId'] + " option:selected";
+    var parentId = $(selector).val();
+    var parentText = $(selector).text();
+    var addUrl = $(selector).data('href_add');
+    var removeUrl = $(selector).data('href');
+    var url = $(fields['fieldAdd']).data('href');
+    $.ajax({
+       type: "POST",
+       url: addUrl,
+       data: {
+              'csrfmiddlewaretoken': getCookie('csrftoken'),
+              'type': fieldName,
+             },
+       error: function(e) {
+         if ($(fields['inputId']).length)
+           getAllConcepts(url, fields['inputId'], fieldName);
+       },
+       success: function(data){
+         addElement(parentId, parentText, removeUrl, fields, fieldName);
+         if ($(fields['inputId']).length)
+            getAllConcepts(url, fields['inputId'], fieldName);
+       }
+    });
+  }
 });
