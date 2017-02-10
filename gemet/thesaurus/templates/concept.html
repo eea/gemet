@@ -105,18 +105,27 @@
   <h5 class="h5">Related terms</h5>
 
   <!-- Broader -->
-  {% if concept.broader_concepts %}
+
   <div class="dl-inline">
     <h6 class="dt">Broader</h6>
-    <ul class="dd-list">
+    <input type="button" value="Add Broader Term" id="broaderAdd" data-type="broader"
+           data-href="{% url 'add_parent' language.code concept.id %}">
+    <input type="button" value="Cancel" id="broaderCancel" data-type="broader" hidden>
+    <input type="button" value="Save" id="broaderSave" data-langcode="{{ language.code }}"
+         data-concept="{{ concept.id }}" data-type="broader" hidden>
+  <ul  class="listing">
+    <ul id="broader" class="dd-list">
       {% for cp in concept.broader_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+      <li id="broader{{ cp.id }}">
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
+      </li>
+      <input class="removeParent" type="button" data-field="#broader{{ cp.id }}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-type="broader" value="Delete" />
       {% endfor %}
     </ul>
-
+  </ul>
   </div>
-  {% endif %}
 
   <!-- Related -->
   {% if concept.related_concepts %}
@@ -125,6 +134,7 @@
     <ul class="dd-list">
       {% for cp in concept.related_concepts %}
       <li>
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
         <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
       {% endfor %}
     </ul>

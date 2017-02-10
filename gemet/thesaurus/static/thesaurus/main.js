@@ -39,6 +39,7 @@ $(document).ready(function () {
 
   $('#themeAdd').click(activateSelectEditing);
   $('#groupAdd').click(activateSelectEditing);
+  $('#broaderAdd').click(activateSelectEditing);
   $('.removeParent').click(removeParent);
 
   function prepareElements(fieldName){
@@ -130,10 +131,13 @@ $(document).ready(function () {
                         + list_concepts[index]['name'] + '</option>');
           var remove_url = list_concepts[index]['href'];
           var add_url = list_concepts[index]['href_add'];
+          var concept_url = list_concepts[index]['href_concept']
           $option.attr('data-href', remove_url);// get url to remove the relation
           $option.attr('data-href_add', add_url);// get url to add the relation
+          $option.attr('data-href_concept', concept_url);
           $(elementId).append($option);
         }
+        $(fields['inputId']).show();
       }
     });
   };
@@ -160,7 +164,7 @@ $(document).ready(function () {
     $(this).hide();
     $(this).unbind('click', activateSelectEditing);
     url = $(this).data('href');
-    $('<select id="' + fields['inputElement'] + '"/>').insertBefore(fields['fieldCancel']);
+    $('<select id="' + fields['inputElement'] + '" hidden/>').insertBefore(fields['fieldCancel']);
     getAllConcepts(url, fields['inputId'], fieldName);
   };
 
@@ -192,9 +196,11 @@ $(document).ready(function () {
     });
   };
 
-  function addElement(parentId, parentText, url, fields, fieldName){
+  function addElement(parentId, parentText, url, fields, fieldName, conceptUrl){
+    if (['broader'].includes(fieldName))
+        parentText = "<a href='" + conceptUrl + "'>" + parentText + "</a></li>";
     var $newParent = $('<li id=' + fieldName + parentId + " value=" +
-                       parentId + ">" + parentText + "</li>");
+                     parentId + ">" + parentText + "</li>");
     var $newParentDelete = $('<input>')
     $newParentDelete.addClass("removeParent");
     $newParentDelete.attr("type", "button");
@@ -217,6 +223,7 @@ $(document).ready(function () {
     var addUrl = $(selector).data('href_add');
     var removeUrl = $(selector).data('href');
     var url = $(fields['fieldAdd']).data('href');
+    var conceptUrl = $(selector).data('href_concept');
     $.ajax({
        type: "POST",
        url: addUrl,
@@ -229,7 +236,8 @@ $(document).ready(function () {
            getAllConcepts(url, fields['inputId'], fieldName);
        },
        success: function(data){
-         addElement(parentId, parentText, removeUrl, fields, fieldName);
+         addElement(parentId, parentText, removeUrl, fields, fieldName,
+                    conceptUrl);
          if ($(fields['inputId']).length)
             getAllConcepts(url, fields['inputId'], fieldName);
        }

@@ -4,7 +4,7 @@ from django.views import View
 from django.urls import reverse
 
 from gemet.thesaurus.models import Concept, Group, Language, Property
-from gemet.thesaurus.models import PropertyType, Relation, Theme, Version
+from gemet.thesaurus.models import PropertyType, Relation, Theme, Term, Version
 from gemet.thesaurus.forms import PropertyForm
 import json
 
@@ -14,8 +14,10 @@ class ConceptMixin(object):
     def _set_concept_model(self, parent_type):
         if parent_type == 'group':
             self.model = Group
-        else:
+        elif parent_type == 'theme':
             self.model = Theme
+        elif parent_type in ['broader', 'narrower', 'related']:
+            self.model = Term
 
     def _get_all_concepts_by_langcode(self, langcode, model):
         return (
@@ -109,7 +111,7 @@ class RemoveParentRelationView(ResponseMixin, ConceptMixin, View):
 
         relation = Relation.objects.filter(
             source=concept, target=parent_concept,
-            property_type__name=self.model.__name__)
+            property_type__name=relation_type)
 
         published = relation.filter(status=Property.PUBLISHED).first()
         pending = relation.filter(status=Property.PENDING).first()
@@ -135,8 +137,13 @@ class AddParentRelationView(ResponseMixin, ConceptMixin, View):
                         'parent_id': concept['id']}
             remove_rev = reverse('remove_parent', kwargs=url_args)
             add_rev = reverse('add_parent', kwargs=url_args)
+            concept_code = Concept.objects.get(id=concept['id']).code
+            concept_rev = reverse('concept', kwargs={
+                'langcode': kwargs['langcode'],
+                'code': concept_code})
             concept['href'] = remove_rev
             concept['href_add'] = add_rev
+            concept['href_concept'] = concept_rev
 
     def get(self, request, **kwargs):
         relation_type = request.GET['type']
@@ -194,7 +201,7 @@ class AddParentRelationView(ResponseMixin, ConceptMixin, View):
                                                              Property.PENDING])
         if not check_relation_status:
             version = Version.objects.create()
-            theme_property = PropertyType.objects.get(label=self.model.__name__)
+            theme_property = PropertyType.objects.get(name=relation_type)
             field = Relation(source=concept, target=parent_concept,
                              status=Property.PENDING, version_added=version,
                              property_type=theme_property)
