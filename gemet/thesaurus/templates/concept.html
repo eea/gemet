@@ -148,17 +148,24 @@
   </div>
 
   <!-- Narrower -->
-  {% if concept.narrower_concepts %}
   <div class=" dl-inline">
     <h6 class="dt">Narrower</h6>
-    <ul class="dd-list">
+    <input type="button" value="Add Related Term" id="narrowerAdd" data-type="narrower"
+           data-href="{% url 'add_parent' language.code concept.id %}">
+    <input type="button" value="Cancel" id="narrowerCancel" data-type="narrower" hidden>
+    <input type="button" value="Save" id="narrowerSave" data-langcode="{{ language.code }}"
+           data-concept="{{ concept.id }}" data-type="narrower" hidden>
+    <ul id="narrower" class="dd-list">
       {% for cp in concept.narrower_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+      <li id="narrower{{ cp.id }}">
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
+      </li>
+      <input class="removeParent" type="button" data-field="#narrower{{ cp.id }}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-type="narrower" value="Delete" />
       {% endfor %}
     </ul>
   </div>
-  {% endif %}
 
   <!-- Other relations -->
   <h5 class="h5">Other relations</h5>

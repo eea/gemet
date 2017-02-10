@@ -41,6 +41,7 @@ $(document).ready(function () {
   $('#groupAdd').click(activateSelectEditing);
   $('#broaderAdd').click(activateSelectEditing);
   $('#relatedAdd').click(activateSelectEditing);
+  $('#narrowerAdd').click(activateSelectEditing);
   $('.removeParent').click(removeParent);
 
   function prepareElements(fieldName){
