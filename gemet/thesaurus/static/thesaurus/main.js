@@ -40,6 +40,7 @@ $(document).ready(function () {
   $('#themeAdd').click(activateSelectEditing);
   $('#groupAdd').click(activateSelectEditing);
   $('#broaderAdd').click(activateSelectEditing);
+  $('#relatedAdd').click(activateSelectEditing);
   $('.removeParent').click(removeParent);
 
   function prepareElements(fieldName){
@@ -197,7 +198,7 @@ $(document).ready(function () {
   };
 
   function addElement(parentId, parentText, url, fields, fieldName, conceptUrl){
-    if (['broader'].includes(fieldName))
+    if (['broader', 'related', 'narrower'].includes(fieldName))
         parentText = "<a href='" + conceptUrl + "'>" + parentText + "</a></li>";
     var $newParent = $('<li id=' + fieldName + parentId + " value=" +
                      parentId + ">" + parentText + "</li>");

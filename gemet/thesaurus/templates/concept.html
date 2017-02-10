@@ -128,18 +128,24 @@
   </div>
 
   <!-- Related -->
-  {% if concept.related_concepts %}
   <div class=" dl-inline">
     <h6 class="dt">Related</h6>
-    <ul class="dd-list">
+    <input type="button" value="Add Related Term" id="relatedAdd" data-type="related"
+           data-href="{% url 'add_parent' language.code concept.id %}">
+    <input type="button" value="Cancel" id="relatedCancel" data-type="related" hidden>
+    <input type="button" value="Save" id="relatedSave" data-langcode="{{ language.code }}"
+           data-concept="{{ concept.id }}" data-type="related" hidden>
+    <ul id="related" class="dd-list">
       {% for cp in concept.related_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
+      <li id="related{{ cp.id }}">
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
+      </li>
+      <input class="removeParent" type="button" data-field="#related{{ cp.id }}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-type="related" value="Delete" />
       {% endfor %}
     </ul>
   </div>
-  {% endif %}
 
   <!-- Narrower -->
   {% if concept.narrower_concepts %}
