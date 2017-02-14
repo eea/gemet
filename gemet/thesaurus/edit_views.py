@@ -24,14 +24,13 @@ class ConceptMixin(object):
             Property.published.filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept_id__in=model.published.values_list(
-                    'id', flat=True)
+                concept__namespace__heading=self.model.NAMESPACE,
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'
                            },
                    order_by=['name'])
-            .values('name', 'id')
+            .values('name', 'id').all()
         )
 
 

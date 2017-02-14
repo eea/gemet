@@ -317,49 +317,54 @@ class PublishedConceptManager(ConceptManager):
 class Term(Concept):
     siblings_relations = ['broader', 'narrower', 'related']
     parents_relations = ['group', 'theme']
+    NAMESPACE = 'Concepts'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Concepts')
-    published = PublishedConceptManager('Concepts')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class Theme(Concept):
     siblings_relations = ['themeMember']
+    NAMESPACE = 'Themes'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Themes')
-    published = PublishedConceptManager('Themes')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class Group(Concept):
     siblings_relations = ['broader', 'groupMember']
+    NAMESPACE = 'Groups'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Groups')
-    published = PublishedConceptManager('Groups')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class SuperGroup(Concept):
     siblings_relations = ['narrower']
+    NAMESPACE = 'Super groups'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Super groups')
-    published = PublishedConceptManager('Super groups')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class InspireTheme(Concept):
     siblings_relations = []
+    NAMESPACE = 'Inspire Themes'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Inspire Themes')
-    published = PublishedConceptManager('Inspire Themes')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
