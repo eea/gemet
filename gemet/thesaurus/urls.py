@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.conf import settings
 
 from gemet.thesaurus.views import (
     redirect_old_urls,
@@ -139,3 +140,9 @@ urlpatterns = [
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

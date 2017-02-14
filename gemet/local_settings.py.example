@@ -10,6 +10,14 @@ LOCAL_INSTALLED_APPS = (
 #    'raven.contrib.django',
 )
 
+LOCAL_MIDDLEWARE_CLASSES = (
+# The following middleware class is needed for debug_toolbar to work
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
+# This setting is needed for debug_toolbar
+# INTERNAL_IPS = ['127.0.0.1']
+
 # Fill in your DSN value:
 # SENTRY_DSN = ''
 
