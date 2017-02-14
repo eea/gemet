@@ -244,8 +244,9 @@ class ConceptView(HeaderMixin, DetailView):
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
-            concept.properties
-            .filter(name='prefLabel')
+            Property.published
+            .filter(name='prefLabel', concept=concept)
+            .select_related('language')
             .order_by('language__name')
         )
         concept.set_attributes(self.langcode,
@@ -257,14 +258,14 @@ class ConceptView(HeaderMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ConceptView, self).get_context_data(**kwargs)
 
-        languages = [{
-            'code': p.language.code,
-            'name': p.language.name,
-        }
-            for p in context[self.context_object_name].properties.filter(
-                name='prefLabel',
-                value__isnull=False,
-            )]
+        languages = (
+            Language.objects
+            .filter(properties__concept=self.object,
+                    properties__value__isnull=False)
+            .values('code', 'name')
+            .order_by('name')
+            .distinct()
+        )
 
         context.update({
             "languages": languages,

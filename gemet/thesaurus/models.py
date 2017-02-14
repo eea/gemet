@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.functional import cached_property
 
 from gemet.thesaurus import NS_VIEW_MAPPING
 
@@ -60,7 +61,7 @@ class Concept(VersionableModel):
 
     parents_relations = []
 
-    @property
+    @cached_property
     def visible_foreign_relations(self):
         result = {}
         relations = self.foreign_relations.filter(show_in_html=True)
