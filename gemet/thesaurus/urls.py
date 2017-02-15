@@ -36,8 +36,12 @@ from gemet.thesaurus.views import (
     GemetVoidView,
     download_gemet_rdf,
 )
+from gemet.thesaurus.edit_views import AddForeignRelationView, AddPropertyView
 from gemet.thesaurus.edit_views import AddParentRelationView, EditPropertyView
 from gemet.thesaurus.edit_views import RemoveParentRelationView
+from gemet.thesaurus.edit_views import RemoveForeignRelationView
+from gemet.thesaurus.edit_views import RemovePropertyView
+
 from .api import ApiView
 
 
@@ -105,14 +109,22 @@ urlpatterns = [
         url(r'^definition-sources/$', DefinitionSourcesView.as_view(),
             name='definition_sources'),
         url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
-        url(r'^edit_property/(?P<concept_id>\d+)/(?P<property>[a-zA-Z-]+)/$',
-            EditPropertyView.as_view(), name='edit_property'),
-        url(r'^remove_parent_concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+        url(r'^remove-property/(?P<concept_id>\d+)/$',
+            RemovePropertyView.as_view(), name='remove_property'),
+        url(r'^remove-other/(?P<id>\d+)/$',
+            RemoveForeignRelationView.as_view(), name='remove_other'),
+        url(r'^remove-parent_concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
             RemoveParentRelationView.as_view(), name='remove_parent'),
-        url(r'^add_parent_concept/(?P<concept_id>\d+)/$',
+        url(r'^add-parent-concept/(?P<concept_id>\d+)/(?P<type>[a-zA-Z-]+)/$',
             AddParentRelationView.as_view(), name='add_parent'),
-        url(r'^add_parent_concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+        url(r'^add-parent-concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
             AddParentRelationView.as_view(), name='add_parent'),
+        url(r'^add-other-concept/(?P<concept_id>\d+)/$',
+            AddForeignRelationView.as_view(), name='add_other'),
+        url(r'^edit-property/(?P<concept_id>\d+)/(?P<name>[a-zA-Z-]+)/$',
+            EditPropertyView.as_view(), name='edit_property'),
+        url(r'^add-property/(?P<concept_id>\d+)/(?P<name>[a-zA-Z-]+)/$',
+            AddPropertyView.as_view(), name='add_property'),
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html$', BackboneView.as_view(),

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from gemet.thesaurus.models import Language, Property
+from gemet.thesaurus.models import Language, ForeignRelation, Property
 
 
 class SearchForm(forms.Form):
@@ -30,3 +30,10 @@ class PropertyForm(ModelForm):
     class Meta:
         model = Property
         fields = ('value', )
+
+
+class ForeignRelationForm(ModelForm):
+
+    class Meta:
+        model = ForeignRelation
+        fields = ('label', 'uri')
