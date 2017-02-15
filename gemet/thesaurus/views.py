@@ -124,11 +124,13 @@ class InspireThemesView(ThemesView):
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
-        languages = [lang for lang in context['languages'] if
-                     Property.published.filter(
-                         language_id=lang.get('code'),
-                         concept__namespace=self.model_cls.published.get_ns(),
-                         )]
+        languages = (
+            Language.objects
+            # TODO Replace hardcoded value after merging task_81147
+            .filter(properties__concept__namespace__heading='Inspire Themes')
+            .values('code', 'name')
+            .order_by('name')
+        )
 
         context.update({'languages': languages})
         return context
