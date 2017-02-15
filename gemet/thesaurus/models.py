@@ -67,6 +67,7 @@ class Concept(VersionableModel):
             ForeignRelation.published
             .filter(show_in_html=True, concept=self)
             .values('label', 'uri', 'property_type__label')
+            .order_by('property_type__label')
         )
 
     @property
@@ -75,18 +76,19 @@ class Concept(VersionableModel):
 
     def set_attributes(self, langcode, property_list):
         properties = (
-            self.properties.filter(
+            Property.published
+            .filter(
+                concept=self,
                 name__in=property_list,
                 language__code=langcode,
             )
             .values('name', 'value')
         )
+        if not hasattr(self, 'alternatives'):
+            self.alternatives = []
         for prop in properties:
             if prop['name'] == 'altLabel':
-                if hasattr(self, 'alternatives'):
-                    self.alternatives.append(prop['value'])
-                else:
-                    self.alternatives = [prop['value']]
+                self.alternatives.append(prop['value'])
             else:
                 setattr(self, prop['name'], prop['value'])
 

@@ -239,6 +239,7 @@ class RelationsView(HeaderMixin, TemplateView):
 
 
 class ConceptView(HeaderMixin, DetailView):
+    attributes = ['prefLabel', 'definition', 'scopeNote']
 
     def get_object(self):
         code = self.kwargs.get('code')
@@ -251,8 +252,7 @@ class ConceptView(HeaderMixin, DetailView):
             .order_by('language__name')
             .values('language__name', 'value')
         )
-        concept.set_attributes(self.langcode,
-                               ['prefLabel', 'definition', 'scopeNote'])
+        concept.set_attributes(self.langcode, self.attributes)
         concept.url = self.request.build_absolute_uri(concept.get_about_url())
 
         return concept
@@ -288,10 +288,10 @@ class TermView(ConceptView):
     model = Term
     concept_type = 'concept'
     context_object_name = 'concept'
+    attributes = ['prefLabel', 'definition', 'scopeNote', 'source', 'altLabel']
 
     def get_object(self):
         term = super(TermView, self).get_object()
-        term.set_attributes(self.langcode, ['source', 'altLabel'])
         if not hasattr(term, 'definition'):
             term.set_attributes(DEFAULT_LANGCODE, ['definition'])
             term.default_definition = True
