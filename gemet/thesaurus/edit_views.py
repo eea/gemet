@@ -83,6 +83,7 @@ class EditPropertyView(JsonResponseMixin, View):
                                             is_resource=is_resource,
                                             version_added=version,
                                             concept=concept, language=language,
+                                            name=kwargs['name'],
                                             **form.cleaned_data)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
