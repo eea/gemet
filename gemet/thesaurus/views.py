@@ -246,8 +246,8 @@ class ConceptView(HeaderMixin, DetailView):
         concept.translations = (
             Property.published
             .filter(name='prefLabel', concept=concept)
-            .select_related('language')
             .order_by('language__name')
+            .values('language__name', 'value')
         )
         concept.set_attributes(self.langcode,
                                ['prefLabel', 'definition', 'scopeNote'])

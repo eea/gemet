@@ -17,7 +17,7 @@
     <ul id="translations" class="dl-inline no-list">
       {% for translation in theme.translations %}
       <li class="clearfix">
-        <div class="dt">{{ translation.language.name }}</div>
+        <div class="dt">{{ translation.language__name }}</div>
         <div class="dd">{{ translation.value }}</div>
       </li>
       {% endfor %}

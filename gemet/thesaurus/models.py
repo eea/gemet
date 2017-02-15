@@ -63,14 +63,11 @@ class Concept(VersionableModel):
 
     @cached_property
     def visible_foreign_relations(self):
-        result = {}
-        relations = self.foreign_relations.filter(show_in_html=True)
-        for relation in relations:
-            (
-                result.setdefault(relation.property_type.label, [])
-                .append(relation)
-            )
-        return result
+        return (
+            ForeignRelation.published
+            .filter(show_in_html=True, concept=self)
+            .values('label', 'uri', 'property_type__label')
+        )
 
     @property
     def name(self):
@@ -223,7 +220,7 @@ class Property(VersionableModel):
     class Meta:
         verbose_name_plural = "properties"
 
-    @property
+    @cached_property
     def property_type(self):
         return PropertyType.get_by_name(self.name)
 
