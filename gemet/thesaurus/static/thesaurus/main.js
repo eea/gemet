@@ -64,7 +64,7 @@ $(document).ready(function () {
     var fields = prepareElements(fieldName);
     $(fields['saveId']).hide();
     $(fields['fieldElement']).show();
-    if ($(fields['fieldElement']).data('data-value') == ''){
+    if ($(fields['fieldElement']).data('value') == ''){
         $(fields['emptyId']).show();
     }
     $(fields['inputId']).remove();
@@ -256,7 +256,7 @@ $(document).ready(function () {
        },
        success: function(data){
           $(fields['fieldElement']).text(data['value']);
-          $(fields['fieldElement']).attr('data-value', data['value']);
+          $(fields['fieldElement']).data('value', data['value']);
        }
     }).done(function() {
         $(fields['editId']).click();
