@@ -66,7 +66,7 @@ class Concept(VersionableModel):
         return (
             ForeignRelation.published
             .filter(show_in_html=True, concept=self)
-            .values('label', 'uri', 'property_type__label')
+            .values('id', 'label', 'uri', 'property_type__label')
             .order_by('property_type__label')
         )
 

@@ -197,7 +197,7 @@
   <ul class="dl-inline no-list" id="all-other">
     {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
     {% for foreign_relation in foreign_relations %}
-    <li class="" id="type{{ relations.0.property_type.id }}">
+    <li class="">
       <div class="dt">{{ foreign_relation.grouper }}</div>
       {% for relation in foreign_relation.list %}
           <div class="dd" id="other{{ relation.id }}">

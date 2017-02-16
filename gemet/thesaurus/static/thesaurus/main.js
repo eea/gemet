@@ -121,8 +121,8 @@ $(document).ready(function () {
     for(index in relation_types){
       // creating options using received data
       var $option = $('<option value=' + relation_types[index]['id'] + '>'
-                    + relation_types[index]['name'] + '</option>');
-      var labelName = relation_types[index]['label'];
+                    + relation_types[index]['label'] + '</option>');
+      var labelName = relation_types[index]['name'];
       $option.attr('data-label', labelName);
       $(elementId).append($option);
     }
@@ -327,7 +327,7 @@ $(document).ready(function () {
     var fields = prepareElements(fieldName);
     var selector = fields['inputId'] + " option:selected";
     var propertyTypeId = $(selector).val();
-    var propertyTypeLabel = $(selector).data('label');
+    var propertyTypeName = $(selector).text();
     var propertyLabel = $(fields['fieldElement'] + "Value").val();
     var parentUrl = $(fields['fieldElement'] + "Url").val();
     var addUrl = $(this).data('href');
@@ -344,7 +344,7 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
-         var $elementType = $('#type' + propertyTypeId);
+         var $elementType = $('div:contains("' + propertyTypeName + '")').parent();
          var relationField = "<div class='dd' id='other" + data['id'] + "'><a href=" +
          parentUrl + ">" + propertyLabel + "</a></div>"
          var $deleteButton = $('<input class="removeParent" type="button"' +
@@ -356,8 +356,8 @@ $(document).ready(function () {
            $elementType.append($deleteButton);
          }
          else{
-         var $newType = $("<li class='' id='type" + propertyTypeId + "'>");
-         var $newList = $("<div class='dt'>" +  propertyTypeLabel + "</div>");
+         var $newType = $("<li class=''>");
+         var $newList = $("<div class='dt'>" +  propertyTypeName + "</div>");
          $newType.append($newList);
          $newType.append(relationField);
          $newType.append($deleteButton);
