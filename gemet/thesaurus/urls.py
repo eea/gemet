@@ -113,11 +113,13 @@ urlpatterns = [
             RemovePropertyView.as_view(), name='remove_property'),
         url(r'^remove-other/(?P<id>\d+)/$',
             RemoveForeignRelationView.as_view(), name='remove_other'),
-        url(r'^remove-parent-concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+        url(r'^remove-parent-concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/'
+            r'(?P<type>[a-zA-Z-]+)/$',
             RemoveParentRelationView.as_view(), name='remove_parent'),
         url(r'^add-parent-concept/(?P<concept_id>\d+)/(?P<type>[a-zA-Z-]+)/$',
             AddParentRelationView.as_view(), name='add_parent'),
-        url(r'^add-parent-concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/$',
+        url(r'^add-parent-concept/(?P<concept_id>\d+)/(?P<parent_id>\d+)/'
+            r'(?P<type>[a-zA-Z-]+)/$',
             AddParentRelationView.as_view(), name='add_parent'),
         url(r'^add-other-concept/(?P<concept_id>\d+)/$',
             AddForeignRelationView.as_view(), name='add_other'),

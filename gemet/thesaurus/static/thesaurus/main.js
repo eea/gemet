@@ -280,7 +280,6 @@ $(document).ready(function () {
        url: addUrl,
        data: {
               'csrfmiddlewaretoken': getCookie('csrftoken'),
-              'type': fieldName,
              },
        error: function(e) {
        },
@@ -386,7 +385,6 @@ $(document).ready(function () {
        data: {
               'csrfmiddlewaretoken': getCookie('csrftoken'),
               'value': $(deleteFieldId).data('value'),
-              'type': fieldName,
              },
        error: function(e) {
        },

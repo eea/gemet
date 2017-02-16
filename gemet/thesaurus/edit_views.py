@@ -92,7 +92,7 @@ class EditPropertyView(JsonResponseMixin, View):
 class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, **kwargs):
-        relation_type = request.POST['type']
+        relation_type = kwargs['type']
         if not relation_type:
             data = {"message": 'Attribute type is required.'}
             return self._get_response(data, 'error', 400)
@@ -129,7 +129,8 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
         for concept in concept_list:
             url_args = {'langcode': kwargs['langcode'],
                         'concept_id': kwargs['concept_id'],
-                        'parent_id': concept['id']}
+                        'parent_id': concept['id'],
+                        'type': kwargs['type']}
             remove_rev = reverse('remove_parent', kwargs=url_args)
             add_rev = reverse('add_parent', kwargs=url_args)
             concept_code = Concept.objects.get(id=concept['id']).code
@@ -162,11 +163,7 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
         return self._get_response(data, 'success', 200)
 
     def post(self, request, **kwargs):
-        relation_type = request.POST['type']
-        if not relation_type:
-            data = {"message": 'Attribute type is required.'}
-            return self._get_response(data, 'error', 400)
-
+        relation_type = kwargs['type']
         self._set_concept_model(relation_type)
         try:
             concept = Concept.objects.get(id=kwargs['concept_id'])

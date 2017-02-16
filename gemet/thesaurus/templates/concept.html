@@ -93,7 +93,7 @@
         {{ theme.name }}
       </li>
       <input class="removeParent" type="button" data-field="#theme{{ theme.id }}"
-             data-href="{% url 'remove_parent' language.code concept.id theme.id %}"
+             data-href="{% url 'remove_parent' language.code concept.id theme.id 'theme' %}"
              data-type="theme" value="Delete" />
     {% endfor %}
   </ul>
@@ -111,7 +111,7 @@
         {{ group.name }}
       </li>
       <input class="removeParent" type="button" data-field="#group{{ group.id }}"
-             data-href="{% url 'remove_parent' language.code concept.id group.id %}"
+             data-href="{% url 'remove_parent' language.code concept.id group.id 'group' %}"
              data-type="group" value="Delete" />
     {% endfor %}
   </ul>
@@ -135,7 +135,7 @@
         <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
       </li>
       <input class="removeParent" type="button" data-field="#broader{{ cp.id }}"
-       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id 'broader' %}"
        data-type="broader" value="Delete" />
       {% endfor %}
     </ul>
@@ -156,7 +156,7 @@
         <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
       </li>
       <input class="removeParent" type="button" data-field="#related{{ cp.id }}"
-       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id 'related' %}"
        data-type="related" value="Delete" />
       {% endfor %}
     </ul>
@@ -176,7 +176,7 @@
         <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
       </li>
       <input class="removeParent" type="button" data-field="#narrower{{ cp.id }}"
-       data-href="{% url 'remove_parent' language.code concept.id cp.id %}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id 'narrower' %}"
        data-type="narrower" value="Delete" />
       {% endfor %}
     </ul>
