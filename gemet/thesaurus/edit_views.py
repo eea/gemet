@@ -104,7 +104,6 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-
         relation = Relation.objects.filter(
             source=concept, target=parent_concept,
             property_type__name=relation_type)
@@ -220,6 +219,7 @@ class AddPropertyView(JsonResponseMixin, View):
         field = Property.objects.create(status=Property.PENDING,
                                         version_added=version,
                                         language=language, concept=concept,
+                                        name=kwargs['name'],
                                         **form.cleaned_data)
         url_args = {'langcode': kwargs['langcode'],
                     'concept_id': kwargs['concept_id']}
@@ -238,6 +238,7 @@ class RemovePropertyView(JsonResponseMixin, View):
         try:
             language = Language.objects.get(code=kwargs['langcode'])
             concept = Concept.objects.get(id=kwargs['concept_id'])
+            # todo add name filtering in here.. it is not ok as it is now
             field = Property.objects.filter(language=language, concept=concept,
                                             value=request.POST['value']).first()
         except ObjectDoesNotExist:
