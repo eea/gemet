@@ -3,7 +3,8 @@ from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
 
-from gemet.thesaurus.models import Concept, ForeignRelation, Group, Language
+from gemet.thesaurus.models import Concept, ForeignRelation
+from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
 from gemet.thesaurus.models import RELATION_TYPES, Theme, Term, Version
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
@@ -208,6 +209,13 @@ class AddPropertyView(JsonResponseMixin, View):
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
         version = Version.objects.create()
+        prop = Property.objects.filter(status=Property.PENDING,
+                                       language=language,
+                                       concept=concept,
+                                       name=name)
+        if prop:
+            data = {"message": 'Value must be unique.'}
+            return self._get_response(data, 'error', 400)
         # Todo: Remove when version is stable
         field = Property.objects.create(status=Property.PENDING,
                                         version_added=version,
@@ -250,7 +258,8 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
         relation_types = [{"name": prop.name,
                            "label": prop.label,
                            "id": prop.id}
-                          for prop in PropertyType.objects.all()]
+                          for prop in PropertyType.objects.all()
+                          if prop.name in FOREIGN_RELATION_TYPES]
         data = {"relation_types": relation_types}
         return self._get_response(data, 'success', 200)
 
