@@ -41,6 +41,7 @@ from gemet.thesaurus.edit_views import AddParentRelationView, EditPropertyView
 from gemet.thesaurus.edit_views import RemoveParentRelationView
 from gemet.thesaurus.edit_views import RemoveForeignRelationView
 from gemet.thesaurus.edit_views import RemovePropertyView
+from gemet.thesaurus.edit_views import TermEditView
 
 from .api import ApiView
 
@@ -89,6 +90,8 @@ urlpatterns = [
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<code>\d+)$', TermView.as_view(),
             name='concept'),
+        url(r'^concept/(?P<code>\d+)/edit$', TermEditView.as_view(),
+            name='concept_edit'),
         url(r'^inspire-theme/(?P<code>[a-zA-Z]+)$',
             InspireThemeView.as_view(), name='inspire_theme'),
         url(r'^theme/(?P<code>\d+)$', ThemeView.as_view(),

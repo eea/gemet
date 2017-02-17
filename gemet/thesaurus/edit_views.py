@@ -1,3 +1,5 @@
+import json
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 from django.views import View
@@ -8,7 +10,12 @@ from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
 from gemet.thesaurus.models import RELATION_TYPES, Theme, Term, Version
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
-import json
+from gemet.thesaurus.views import TermView
+
+
+class TermEditView(TermView):
+    template_name = "concept_edit.html"
+    model = Term
 
 
 class ConceptMixin(object):
@@ -227,10 +234,11 @@ class AddPropertyView(JsonResponseMixin, View):
                     'concept_id': concept_id}
         remove_url = reverse('remove_property', kwargs=url_args)
 
-        data = {"value": field.value,
-                "id": field.id,
-                "url": remove_url,
-               }
+        data = {
+            "value": field.value,
+            "id": field.id,
+            "url": remove_url,
+        }
         return self._get_response(data, 'success', 200)
 
 
