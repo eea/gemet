@@ -9,13 +9,14 @@ from gemet.thesaurus.models import Concept, ForeignRelation
 from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
 from gemet.thesaurus.models import RELATION_TYPES, Theme, Term, Version
+from gemet.thesaurus.models import EditableTerm
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import TermView
 
 
 class TermEditView(TermView):
     template_name = "concept_edit.html"
-    model = Term
+    model = EditableTerm
 
 
 class ConceptMixin(object):
