@@ -4,6 +4,13 @@ from django.utils.functional import cached_property
 
 from gemet.thesaurus import NS_VIEW_MAPPING
 
+RELATION_TYPES = ['theme',
+                  'group',
+                  'broader',
+                  'narrower',
+                  'related',
+                  ]
+
 
 class Version(models.Model):
     identifier = models.CharField(max_length=255)

@@ -1,11 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
 
 from gemet.thesaurus.models import Concept, ForeignRelation, Group, Language
-from gemet.thesaurus.models import Property, PropertyType, Relation, Theme
-from gemet.thesaurus.models import Term, Version
+from gemet.thesaurus.models import Property, PropertyType, Relation
+from gemet.thesaurus.models import RELATION_TYPES, Theme, Term, Version
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
 import json
 
@@ -13,6 +13,8 @@ import json
 class ConceptMixin(object):
 
     def _set_concept_model(self, parent_type):
+        if parent_type not in RELATION_TYPES:
+            raise Http404
         if parent_type == 'group':
             self.model = Group
         elif parent_type == 'theme':
@@ -47,10 +49,10 @@ class JsonResponseMixin(object):
 
 class EditPropertyView(JsonResponseMixin, View):
 
-    def post(self, request, **kwargs):
+    def post(self, request, langcode, concept_id, name):
         try:
-            language = Language.objects.get(code=kwargs['langcode'])
-            concept = Concept.objects.get(id=kwargs['concept_id'])
+            language = Language.objects.get(code=langcode)
+            concept = Concept.objects.get(id=concept_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -58,9 +60,9 @@ class EditPropertyView(JsonResponseMixin, View):
         if not form.is_valid():
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
-        field = Property.objects.filter(language=kwargs['langcode'],
-                                        concept__id=kwargs['concept_id'],
-                                        name=kwargs['name'])
+        field = Property.objects.filter(language=langcode,
+                                        concept__id=concept_id,
+                                        name=name)
 
         published_field = field.filter(status=Property.PUBLISHED).first()
         pending_field = field.filter(status=Property.PENDING).first()
@@ -82,8 +84,9 @@ class EditPropertyView(JsonResponseMixin, View):
             field = Property.objects.create(status=Property.PENDING,
                                             is_resource=is_resource,
                                             version_added=version,
-                                            concept=concept, language=language,
-                                            name=kwargs['name'],
+                                            concept=concept,
+                                            language=language,
+                                            name=name,
                                             **form.cleaned_data)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
@@ -91,22 +94,17 @@ class EditPropertyView(JsonResponseMixin, View):
 
 class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def post(self, request, **kwargs):
-        relation_type = kwargs['type']
-        if not relation_type:
-            data = {"message": 'Attribute type is required.'}
-            return self._get_response(data, 'error', 400)
-
-        self._set_concept_model(relation_type)
+    def post(self, request, langcode, concept_id, parent_id, type):
+        self._set_concept_model(type)
         try:
-            concept = Concept.objects.get(id=kwargs['concept_id'])
-            parent_concept = self.model.objects.get(id=kwargs['parent_id'])
+            concept = Concept.objects.get(id=concept_id)
+            parent_concept = self.model.objects.get(id=parent_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
         relation = Relation.objects.filter(
             source=concept, target=parent_concept,
-            property_type__name=relation_type)
+            property_type__name=type)
 
         published = relation.filter(status=Property.PUBLISHED).first()
         pending = relation.filter(status=Property.PENDING).first()
@@ -125,56 +123,54 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
 class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def get_reverse_urls(self, concept_list, **kwargs):
+    def get_reverse_urls(self, concept_list, langcode, concept_id, type):
         for concept in concept_list:
-            url_args = {'langcode': kwargs['langcode'],
-                        'concept_id': kwargs['concept_id'],
+            url_args = {'langcode': langcode,
+                        'concept_id': concept_id,
                         'parent_id': concept['id'],
-                        'type': kwargs['type']}
+                        'type': type}
             remove_rev = reverse('remove_parent', kwargs=url_args)
             add_rev = reverse('add_parent', kwargs=url_args)
             concept_code = Concept.objects.get(id=concept['id']).code
             concept_rev = reverse('concept', kwargs={
-                'langcode': kwargs['langcode'],
+                'langcode': langcode,
                 'code': concept_code})
             concept['href'] = remove_rev
             concept['href_add'] = add_rev
             concept['href_concept'] = concept_rev
 
-    def get(self, request, **kwargs):
-        relation_type = kwargs['type']
-        self._set_concept_model(kwargs['type'])
+    def get(self, request, langcode, concept_id, type):
+        self._set_concept_model(type)
         try:
-            concept = Concept.objects.get(id=kwargs['concept_id'])
+            concept = Concept.objects.get(id=concept_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        concept.parents_relations = [kwargs['type']]
-        concept.set_parents(kwargs['langcode'])
+        concept.parents_relations = [type]
+        concept.set_parents(langcode)
         target_concepts = self._get_all_concepts_by_langcode(
-            langcode=kwargs['langcode'], model=self.model)
-        type_name = relation_type + "s"
+            langcode=langcode, model=self.model)
+        type_name = type + "s"
         concept_relations = [y['id'] for y in getattr(concept, type_name)]
         unselected_concepts = [x for x in target_concepts
                                if x['id'] not in concept_relations]
-        self.get_reverse_urls(unselected_concepts, **kwargs)
+        self.get_reverse_urls(unselected_concepts, langcode, concept_id, type)
         data = {"parents": unselected_concepts}
         return self._get_response(data, 'success', 200)
 
-    def post(self, request, **kwargs):
-        relation_type = kwargs['type']
-        self._set_concept_model(relation_type)
+    def post(self, request, langcode, concept_id, parent_id, type):
+        self._set_concept_model(type)
         try:
-            concept = Concept.objects.get(id=kwargs['concept_id'])
-            parent_concept = self.model.objects.get(id=kwargs['parent_id'])
+            concept = Concept.objects.get(id=concept_id)
+            parent_concept = self.model.objects.get(id=parent_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
         relations = Relation.objects.filter(
             source=concept, target=parent_concept,
-            property_type__name=relation_type)
+            property_type__name=type)
         deleted = relations.filter(status=Property.DELETED).first()
         deleted_pending = relations.filter(
             status=Property.DELETED_PENDING).first()
@@ -189,7 +185,7 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
                                                              Property.PENDING])
         if not check_relation_status:
             version = Version.objects.create()
-            theme_property = PropertyType.objects.get(name=relation_type)
+            theme_property = PropertyType.objects.get(name=type)
             field = Relation(source=concept, target=parent_concept,
                              status=Property.PENDING, version_added=version,
                              property_type=theme_property)
@@ -200,10 +196,10 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
 class AddPropertyView(JsonResponseMixin, View):
 
-    def post(self, request, **kwargs):
+    def post(self, request, langcode, concept_id, name):
         try:
-            language = Language.objects.get(code=kwargs['langcode'])
-            concept = Concept.objects.get(id=kwargs['concept_id'])
+            language = Language.objects.get(code=langcode)
+            concept = Concept.objects.get(id=concept_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -215,11 +211,12 @@ class AddPropertyView(JsonResponseMixin, View):
         # Todo: Remove when version is stable
         field = Property.objects.create(status=Property.PENDING,
                                         version_added=version,
-                                        language=language, concept=concept,
-                                        name=kwargs['name'],
+                                        language=language,
+                                        concept=concept,
+                                        name=name,
                                         **form.cleaned_data)
-        url_args = {'langcode': kwargs['langcode'],
-                    'concept_id': kwargs['concept_id']}
+        url_args = {'langcode': langcode,
+                    'concept_id': concept_id}
         remove_url = reverse('remove_property', kwargs=url_args)
 
         data = {"value": field.value,
@@ -231,10 +228,10 @@ class AddPropertyView(JsonResponseMixin, View):
 
 class RemovePropertyView(JsonResponseMixin, View):
 
-    def post(self, request, **kwargs):
+    def post(self, request, langcode, concept_id):
         try:
-            language = Language.objects.get(code=kwargs['langcode'])
-            concept = Concept.objects.get(id=kwargs['concept_id'])
+            language = Language.objects.get(code=langcode)
+            concept = Concept.objects.get(id=concept_id)
             # todo add name filtering in here.. it is not ok as it is now
             field = Property.objects.filter(language=language, concept=concept,
                                             value=request.POST['value']).first()
@@ -249,7 +246,7 @@ class RemovePropertyView(JsonResponseMixin, View):
 
 class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def get(self, request, **kwargs):
+    def get(self, request, langcode, concept_id):
         relation_types = [{"name": prop.name,
                            "label": prop.label,
                            "id": prop.id}
@@ -257,9 +254,9 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
         data = {"relation_types": relation_types}
         return self._get_response(data, 'success', 200)
 
-    def post(self, request, **kwargs):
+    def post(self, request, langcode, concept_id):
         try:
-            concept = Concept.objects.get(id=kwargs['concept_id'])
+            concept = Concept.objects.get(id=concept_id)
             property_type = PropertyType.objects.get(id=request.POST['type'])
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
@@ -271,7 +268,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
             new_relation = ForeignRelation.objects.create(
                 version_added=version, property_type=property_type,
                 concept=concept, **form.cleaned_data)
-            url_kwargs = {'langcode': kwargs['langcode'],
+            url_kwargs = {'langcode': langcode,
                           'id': new_relation.id}
             data = {'id': new_relation.id,
                     'remove_url': reverse('remove_other', kwargs=url_kwargs)}
@@ -282,9 +279,9 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
 
 class RemoveForeignRelationView(JsonResponseMixin, View):
 
-    def post(self, request, **kwargs):
+    def post(self, request, langcode, id):
         try:
-            foreign_relation = ForeignRelation.objects.get(id=kwargs['id'])
+            foreign_relation = ForeignRelation.objects.get(id=id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)

@@ -97,8 +97,8 @@ $(document).ready(function () {
     $(fields['fieldAdd']).bind('click', activateSelectEditing);
     $(this).hide();
     $(this).unbind('click', cancelSelectEditing);
-    $(fields['fieldElement'] + ' .removeParent').bind('click', removeParent);
-    $(fields['fieldElement'] + ' .removeParent').show();
+    $(fields['fieldElement']).children('.removeParent').bind('click', removeParent);
+    $(fields['fieldElement']).children('.removeParent').show();
   };
 
   /* other relations cancel */
@@ -188,8 +188,8 @@ $(document).ready(function () {
     $('<select id="' + fields['inputElement'] + '" hidden/>').
     insertBefore(fields['fieldCancel']);
     getAllConcepts(url, fields['inputId'], fieldName);
-    $(fields['fieldElement'] + ' .removeParent').unbind('click', removeParent);
-    $(fields['fieldElement'] + ' .removeParent').hide();
+    $(fields['fieldElement']).children('.removeParent').unbind('click', removeParent);
+    $(fields['fieldElement']).children('.removeParent').hide();
   };
 
   /* alternatives enable editing */
@@ -344,7 +344,7 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
-         var $elementType = $('div:contains("' + propertyTypeName + '")').parent();
+         var $elementType = $('#all-other div:contains("' + propertyTypeName + '")').parent();
          var relationField = "<div class='dd' id='other" + data['id'] + "'><a href=" +
          parentUrl + ">" + propertyLabel + "</a></div>"
          var $deleteButton = $('<input class="removeParent" type="button"' +
