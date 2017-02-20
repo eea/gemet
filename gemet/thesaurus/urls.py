@@ -36,11 +36,12 @@ from gemet.thesaurus.views import (
     GemetVoidView,
     download_gemet_rdf,
 )
-from gemet.thesaurus.edit_views import AddForeignRelationView, AddPropertyView
-from gemet.thesaurus.edit_views import AddParentRelationView, EditPropertyView
-from gemet.thesaurus.edit_views import RemoveParentRelationView
-from gemet.thesaurus.edit_views import RemoveForeignRelationView
-from gemet.thesaurus.edit_views import RemovePropertyView
+
+
+from .edit_views import AddForeignRelationView, AddPropertyView
+from .edit_views import AddParentRelationView, EditPropertyView
+from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
+from .edit_views import RemovePropertyView
 from gemet.thesaurus.edit_views import TermEditView
 
 from .api import ApiView
