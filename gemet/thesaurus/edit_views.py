@@ -220,7 +220,8 @@ class AddPropertyView(JsonResponseMixin, View):
         prop = Property.objects.filter(status=Property.PENDING,
                                        language=language,
                                        concept=concept,
-                                       name=name)
+                                       name=name,
+                                       value=form.cleaned_data['value'])
         if prop:
             data = {"message": 'Value must be unique.'}
             return self._get_response(data, 'error', 400)
@@ -249,8 +250,8 @@ class RemovePropertyView(JsonResponseMixin, View):
         try:
             language = Language.objects.get(code=langcode)
             concept = Concept.objects.get(id=id)
-            field = Property.objects.filter(language=language, concept=concept,
-                                            value=request.POST['value']).first()
+            field = Property.objects.get(language=language, concept=concept,
+                                         value=request.POST['value'])
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
