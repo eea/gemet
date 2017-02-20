@@ -16,20 +16,20 @@ class TestEditPropertyView(GemetTest):
         self.language = LanguageFactory()
         self.concept = TermFactory()
         self.request_kwargs = {'langcode': self.language.code,
-                               'concept_id': self.concept.id,
+                               'id': self.concept.id,
                                'name': 'prefLabel'}
 
     def test_edit_property_bad_concept(self):
 
         url = reverse('edit_property',  kwargs={'langcode': 'en',
-                                                'concept_id': 43,
+                                                'id': 43,
                                                 'name': 'prefLabel'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_edit_property_bad_language(self):
         url = reverse('edit_property', kwargs={'langcode': 'abc',
-                                               'concept_id': self.concept.id,
+                                               'id': self.concept.id,
                                                'name': 'prefLabel'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
@@ -60,19 +60,19 @@ class TestAddPropertyView(GemetTest):
         self.language = LanguageFactory()
         self.concept = TermFactory()
         self.request_kwargs = {'langcode': self.language.code,
-                               'concept_id': self.concept.id,
+                               'id': self.concept.id,
                                'name': 'prefLabel'}
 
     def test_add_property_bad_concept(self):
         url = reverse('add_property', kwargs={'langcode': 'en',
-                                              'concept_id': 43,
+                                              'id': 43,
                                               'name': 'prefLabel'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_add_property_bad_language(self):
         url = reverse('add_property', kwargs={'langcode': 'abc',
-                                              'concept_id': self.concept.id,
+                                              'id': self.concept.id,
                                               'name': 'prefLabel'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
@@ -102,13 +102,13 @@ class TestRemoveParentRelationView(GemetTest):
         self.theme = ThemeFactory()
         self.property_type = PropertyTypeFactory(label='Theme', name='theme')
         self.request_kwargs = {'langcode': 'en',
-                               'concept_id': self.term.id,
+                               'id': self.term.id,
                                'parent_id': self.theme.id,
                                'type': 'theme'}
 
     def test_remove_relation_bad_concept(self):
         url = reverse('remove_parent', kwargs={'langcode': 'en',
-                                               'concept_id': 31,
+                                               'id': 31,
                                                'parent_id': self.theme.id,
                                                'type': 'theme'})
         response = self.app.post(url, expect_errors=True)
@@ -116,7 +116,7 @@ class TestRemoveParentRelationView(GemetTest):
 
     def test_remove_relation_bad_parent(self):
         url = reverse('remove_parent', kwargs={'langcode': 'en',
-                                               'concept_id': self.term.id,
+                                               'id': self.term.id,
                                                'parent_id': 99,
                                                'type': 'theme'})
         response = self.app.post(url, expect_errors=True)
@@ -156,8 +156,9 @@ class TestAddParentRelationView(GemetTest):
                                                  name='theme', id=10)
 
     def test_get_property_type_theme(self):
-        url = reverse('add_parent', kwargs={'concept_id': self.term.id,
-                                           'langcode': 'en', 'type': 'theme'})
+        url = reverse('add_parent', kwargs={'id': self.term.id,
+                                            'langcode': 'en',
+                                            'type': 'theme'})
 
         response = self.app.get(url)
         self.assertEqual(200, response.status_code)
@@ -165,13 +166,14 @@ class TestAddParentRelationView(GemetTest):
 
         self.assertEqual('Theme 1', data['name'])
         self.assertEqual(4, data['id'])
-        url = reverse('add_parent', kwargs={'concept_id': self.term.id,
-                                            'langcode': 'en', 'type': 'group'})
+        url = reverse('add_parent', kwargs={'id': self.term.id,
+                                            'langcode': 'en',
+                                            'type': 'group'})
         response = self.app.get(url)
         self.assertEqual(200, response.status_code)
 
     def test_post_no_concept_no_parent_object(self):
-        url = reverse('add_parent', kwargs={'concept_id': 33,
+        url = reverse('add_parent', kwargs={'id': 33,
                                             'langcode': 'en',
                                             'parent_id': 45,
                                             'type': 'theme'})
@@ -180,7 +182,7 @@ class TestAddParentRelationView(GemetTest):
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_parent', kwargs={'concept_id': self.term.id,
+        url = reverse('add_parent', kwargs={'id': self.term.id,
                                             'langcode': 'en',
                                             'parent_id': self.theme.id,
                                             'type': 'theme'})
@@ -199,17 +201,17 @@ class TestRemovePropertyView(GemetTest):
                                         concept=self.term, value='new property',
                                         status=Property.PUBLISHED)
         self.request_kwargs = {'langcode': 'en',
-                               'concept_id': 1}
+                               'id': 1}
 
     def test_remove_property_bad_concept(self):
         url = reverse('remove_property', kwargs={'langcode': 'en',
-                                                 'concept_id': 43})
+                                                 'id': 43})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_remove_property_bad_language(self):
         url = reverse('remove_property', kwargs={'langcode': 'abc',
-                                                 'concept_id': 1})
+                                                 'id': 1})
         response = self.app.post(url, expect_errors=True,
                                  params={'value': 'new property'})
         self.assertEqual(400, response.status_code)
@@ -236,8 +238,7 @@ class TestAddForeignRelationView(GemetTest):
         self.concept = TermFactory()
 
     def test_get_retrives_property_types(self):
-        # todo filter property_types for foreign relations
-        url = reverse('add_other', kwargs={'concept_id': self.concept.id,
+        url = reverse('add_other', kwargs={'id': self.concept.id,
                                            'langcode': self.lang.code})
         response = self.app.get(url)
         relations = json.loads(response.body)['relation_types']
@@ -248,19 +249,19 @@ class TestAddForeignRelationView(GemetTest):
         self.assertEqual(relations[1]['name'], 'closeMatch')
 
     def test_post_bad_request(self):
-        url = reverse('add_other', kwargs={'concept_id': 10, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 10, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
                                  params={'type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_bad_form(self):
-        url = reverse('add_other', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
                                  params={'type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_other', kwargs={'concept_id': 1, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
                                  params={'uri': 'Uri', 'type': 10,
                                          'label': 'Label'})
@@ -281,12 +282,16 @@ class TestRemoveForeignRelationView(GemetTest):
             concept=self.term, property_type=self.property_type, id=8)
 
     def test_remove_foreign_relation_no_relation(self):
-        url = reverse('remove_other', kwargs={'id': 7, 'langcode': 'en'})
+        url = reverse('remove_other', kwargs={'id': 1,
+                                              'relation_id': 7,
+                                              'langcode': 'en'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_remove_foreign_relation_correct_request(self):
-        url = reverse('remove_other', kwargs={'id': 8, 'langcode': 'en'})
+        url = reverse('remove_other', kwargs={'id': 1,
+                                              'relation_id': 8,
+                                              'langcode': 'en'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(200, response.status_code)
         foreign_relation = ForeignRelation.objects.get(id=8)

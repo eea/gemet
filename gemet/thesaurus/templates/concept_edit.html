@@ -205,7 +205,7 @@
           <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
           <input class="removeParent" type="button" data-type="other"
           data-field="#other{{ relation.id }}" value="Delete"
-          data-href="{% url 'remove_other' language.code relation.id %}"/>
+          data-href="{% url 'remove_other' language.code concept.id relation.id %}"/>
       {% endfor %}
     </li>
 
