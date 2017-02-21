@@ -80,16 +80,19 @@ class Concept(VersionableModel):
 
     parents_relations = []
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
+    extra_values = []
 
     @cached_property
     def visible_foreign_relations(self):
+        values = ['id', 'label', 'uri', 'property_type__label']
+        values.extend(self.extra_values)
         return (
             self.foreign_relations
             .filter(
                 show_in_html=True,
                 status__in=self.status_list,
             )
-            .values('id', 'label', 'uri', 'property_type__label')
+            .values(*values)
             .order_by('property_type__label')
         )
 
@@ -97,16 +100,21 @@ class Concept(VersionableModel):
     def name(self):
         return getattr(self, 'prefLabel', '')
 
-    def set_attributes(self, langcode, property_list):
-        properties = (
+    def get_attributes(self, langcode, property_list):
+        values = ['name', 'value']
+        values.extend(self.extra_values)
+        return (
             self.properties
             .filter(
                 name__in=property_list,
                 language__code=langcode,
                 status__in=self.status_list,
             )
-            .values('name', 'value')
+            .values(*values)
         )
+
+    def set_attributes(self, langcode, property_list):
+        properties = self.get_attributes(langcode, property_list)
         if not hasattr(self, 'alternatives'):
             self.alternatives = []
         for prop in properties:
@@ -116,6 +124,8 @@ class Concept(VersionableModel):
                 setattr(self, prop['name'], prop['value'])
 
     def set_parents(self, langcode):
+        values = ['id', 'name']
+        values.extend(self.extra_values)
         for parent_type in self.parents_relations:
             parent_name = parent_type + 's'
             setattr(
@@ -134,10 +144,12 @@ class Concept(VersionableModel):
                 .extra(select={'name': 'value',
                                'id': 'concept_id'},
                        order_by=['name'])
-                .values('id', 'name')
+                .values(*values)
             )
 
     def get_siblings(self, langcode, relation_type):
+        values = ['id', 'concept__code', 'name']
+        values.extend(self.extra_values)
         return (
             Property.objects
             .filter(
@@ -154,7 +166,7 @@ class Concept(VersionableModel):
             )
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'concept__code', 'name')
+            .values(*values)
         )
 
     def set_siblings(self, langcode):
@@ -163,6 +175,9 @@ class Concept(VersionableModel):
                     self.get_siblings(langcode, relation_type))
 
     def get_children(self, langcode):
+        values = ['id', 'concept__code', 'name']
+        values.extend(self.extra_values)
+
         children = (
             Property.objects
             .filter(
@@ -214,7 +229,7 @@ class Concept(VersionableModel):
             children
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'concept__code', 'name')
+            .values(*values)
         )
 
     def get_concept_type(self):
@@ -409,6 +424,21 @@ class InspireTheme(Concept):
 
 class EditableTerm(Term):
     status_list = [Term.PUBLISHED, Term.PENDING, Term.DELETED_PENDING]
+    extra_values = ['status']
 
     class Meta:
         proxy = True
+
+    def name(self):
+        pref_label = getattr(self, 'prefLabel', [])
+        for item in pref_label:
+            if item['editable']:
+                return item['value']
+
+    def set_attributes(self, langcode, property_list):
+        properties = self.get_attributes(langcode, property_list)
+        for prop in properties:
+            prop['editable'] = prop['status'] in (self.PUBLISHED, self.PENDING)
+            value = getattr(self, prop['name'], [])
+            value.append(prop)
+            setattr(self, prop['name'], value)

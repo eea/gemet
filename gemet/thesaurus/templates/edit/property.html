@@ -1,0 +1,15 @@
+{% load gemet_tags %}
+{% for property in concept|getattr:property_name %}
+    <span class="status-{{ property.status }}"
+    {% if property.editable %}
+        id="{{ property.name }}"
+        data-value="{{ property.value }}"
+        data-href="{% url 'edit_property' language.code concept.id property.name %}"
+    {% endif %}
+        >{{ property.value }}</span>
+    <br>
+{% endfor %}
+<input type="button" value="Edit" id="{{ property_name }}Edit"
+        data-type="{{ property_name }}" data-html-tag="{{ html_tag }}">
+<input type="button" value="Save" id="{{ property_name }}Save"
+        data-type="{{ property_name }}" hidden>

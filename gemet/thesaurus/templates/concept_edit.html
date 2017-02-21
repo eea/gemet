@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block title %}
-{{ concept.name }}
+ Edit {{ concept.name }}
 {% endblock %}
 
 {% block content %}
@@ -11,12 +11,7 @@
 
   <!-- Concept -->
   <div class="h3">
-    <span id="prefLabel" data-value="{{ concept.name }}"
-    data-href="{% url 'edit_property' language.code concept.id 'prefLabel' %}">{{ concept.name }}</span>
-    <input type="button" value="Edit" id="prefLabelEdit"
-           data-type="prefLabel" data-html-tag="input">
-    <input type="button" value="Save" id="prefLabelSave"
-           data-type="prefLabel" hidden>
+    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
 
   <!-- Side bar -->
@@ -41,12 +36,12 @@
   <input type="button" value="Cancel" id="alternativeCancel" data-type="alternative" hidden>
   <input type="button" value="Save" id="alternativeSave" data-langcode="{{ language.code }}"
          data-concept="{{ concept.id }}" data-type="alternative" hidden>
-  </br>
-  </br>
   <div id="alternativeList">
-    {% for alternative in concept.alternatives %}
-      <i id="alternative{{ forloop.counter }}" data-value="{{ alternative }}">
-        {{ alternative }};
+    {% for alternative in concept.altLabel %}
+      <i id="alternative{{ forloop.counter }}"
+         data-value="{{ alternative.value }}"
+         class="status-{{ alternative.status }}">
+        {{ alternative.value }};
       </i>
       <input class="removeParent" type="button" data-field="#alternative{{ forloop.counter }}"
              data-type="alternative"
@@ -54,33 +49,27 @@
              value="Delete" />
     {% endfor %}
   </div>
+
   <!-- Definition -->
+  <p>
   <h5 class="h5 hidden-desktop">Definition</h5>
-  <span id="definition" data-value="{{ concept.definition }}"
-        data-href="{% url 'edit_property' language.code concept.id 'definition' %}">
-    {{ concept.definition }}
-  </span>
-  <input type="button" value="Edit" id="definitionEdit"
-         data-type="definition" data-html-tag="textarea">
-  <input type="button" value="Save" id="definitionSave"
-         data-type="definition" hidden>
-  {% if concept.default_definition %}
-  <p class="alert" id="definitionEmpty">Definition is not available for the current language.</p>
-  {% endif %}
-  <!--Source-->
-  <p id="source" data-value="{{ concept.source }}"
-     data-href="{% url 'edit_property' language.code concept.id 'source' %}">
-  {% if concept.source %}
-     (Source: {{ concept.source }})
-  {% endif %}
+    {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+    {% if concept.default_definition %}
+      <p class="alert" id="definitionEmpty">
+        Definition is not available for the current language.
+      </p>
+    {% endif %}
   </p>
-  <input type="button" value="Edit" id="sourceEdit"
-         data-type="source" data-html-tag="input">
-  <input type="button" value="Save" id="sourceSave"
-         data-type="source" hidden>
-  {% if not concept.source %}
-    <p class="alert" id="sourceEmpty"> Source is not available. </p>
-  {% endif %}
+
+  <!--Source-->
+  <p>
+    <span>Source:</span>
+    {% include 'edit/property.html' with property_name='source' html_tag='textarea' %}
+    {% if not concept.source %}
+      <p class="alert" id="sourceEmpty"> Source is not available. </p>
+    {% endif %}
+  </p>
+
    <!-- Themes -->
   <h5 class="h5">Themes</h5>
   <input type="button" value="Add Theme" id="themeAdd" data-type="theme"
