@@ -204,18 +204,11 @@
 
   <!-- Scope -->
   <h5 class="h5">Scope note</h5>
-  <span id='scopeNote' data-value="{{ concept.scopeNote }}"
-        data-href="{% url 'edit_property' language.code concept.id 'scopeNote' %}">
-    {{ concept.scopeNote }}
-  </span>
+  {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
 
   {% if not concept.scopeNote %}
     <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
   {% endif %}
-  <input type="button" value="Edit" id="scopeNoteEdit"
-         data-type="scopeNote" data-html-tag="input">
-  <input type="button" value="Save" id="scopeNoteSave"
-         data-type="scopeNote" hidden>
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:

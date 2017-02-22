@@ -236,9 +236,8 @@ $(document).ready(function () {
   function saveEditedField(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    var url = $(fields['fieldElement']).data('href');
+    var url = $(fields['fieldParent']).data('href');
     var fieldStatus = $(fields['fieldElement']).data('status');
-
     $.ajax({
       type: "POST",
       url: url,
@@ -253,7 +252,7 @@ $(document).ready(function () {
           $(fields['fieldElement']).text(data['value']);
           $(fields['fieldElement']).data('value', data['value']);
         }
-        else { // published field
+        if (fieldStatus == 1){ // published field
           var oldField = $(fields['fieldElement']).clone();
           oldField.attr('class', 'status-3');
           oldField.removeAttr('data-status');
@@ -266,6 +265,14 @@ $(document).ready(function () {
           $(fields['fieldElement']).data('value', data['value']);
           $(fields['fieldElement']).before(oldField);
           $(fields['fieldElement']).before('<br>'); // TODO remove this once we have proper styling
+        }
+        if (fieldStatus == null){ // property not defined yet
+          $newPropertyTag = $('<span>' + data['value'] + '</span>');
+          $newPropertyTag.data('status', '0');
+          $newPropertyTag.attr('id', fieldName);
+          $newPropertyTag.data('value', data['value']);
+          $newPropertyTag.attr('class', 'status-0');
+          $(fields['fieldParent']).append($newPropertyTag);
         }
       }
     }).done(function() {
