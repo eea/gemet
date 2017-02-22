@@ -34,14 +34,14 @@ $(document).ready(function () {
 
   function prepareElements(fieldName){
     fields = {};
-    fields['saveId'] = "#" + fieldName + "Save";
+    fields['saveButton'] = "#" + fieldName + "Save";
     fields['fieldElement'] = "#" + fieldName;
-    fields['inputElement'] = fieldName + "Input";
-    fields['inputId'] = "#" + fieldName + "Input";
-    fields['editId'] = "#" + fieldName + "Edit";
-    fields['emptyId'] = "#" + fieldName + "Empty";
-    fields['fieldAdd'] = "#" + fieldName + "Add";
-    fields['fieldCancel'] = "#" + fieldName + "Cancel";
+    fields['inputTag'] = fieldName + "Input";
+    fields['inputTagId'] = "#" + fieldName + "Input";
+    fields['editButtonId'] = "#" + fieldName + "Edit";
+    fields['emptyTagId'] = "#" + fieldName + "Empty";
+    fields['addButtonId'] = "#" + fieldName + "Add";
+    fields['cancelButtonId'] = "#" + fieldName + "Cancel";
     fields['fieldParent'] = "#parent-" + fieldName;
     return fields
   }
@@ -50,26 +50,29 @@ $(document).ready(function () {
   function cancelEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    $(fields['saveId']).hide();
+    $(fields['saveButton']).hide();
     $(fields['fieldElement']).show();
+    $(fields['fieldParent']).show();
+
     if ($(fields['fieldElement']).data('value') == ''){
-        $(fields['emptyId']).show();
+        $(fields['emptyTagId']).show();
     }
-    $(fields['inputId']).remove();
-    $(this).val('Edit');
+    $(fields['inputTagId']).remove();
+    $(this).hide()
     $(this).unbind('click', cancelEditing);
-    $(this).bind('click', activateEditing);
+    $(fields['editButtonId']).show()
+    $(fields['editButtonId']).bind('click', activateEditing);
   };
 
   /* alternatives cancel */
   function cancelAdd(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    $(fields['saveId']).hide();
-    $(fields['saveId']).unbind('click', saveProperty);
-    $(fields['inputId']).remove();
-    $(fields['fieldAdd']).show();
-    $(fields['fieldAdd']).bind('click', activateAlternativeAdd);
+    $(fields['saveButton']).hide();
+    $(fields['saveButton']).unbind('click', saveProperty);
+    $(fields['inputTagId']).remove();
+    $(fields['addButtonId']).show();
+    $(fields['addButtonId']).bind('click', activateAlternativeAdd);
     $(this).hide();
     $(this).unbind('click', cancelAdd);
   };
@@ -78,11 +81,11 @@ $(document).ready(function () {
   function cancelSelectEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    $(fields['saveId']).hide();
-    $(fields['saveId']).unbind('click', saveConceptRelation);
-    $(fields['inputId']).remove();
-    $(fields['fieldAdd']).show();
-    $(fields['fieldAdd']).bind('click', activateSelectEditing);
+    $(fields['saveButton']).hide();
+    $(fields['saveButton']).unbind('click', saveConceptRelation);
+    $(fields['inputTagId']).remove();
+    $(fields['addButtonId']).show();
+    $(fields['addButtonId']).bind('click', activateSelectEditing);
     $(this).hide();
     $(this).unbind('click', cancelSelectEditing);
     $(fields['fieldElement']).children('.removeParent').bind('click', removeParent);
@@ -93,13 +96,13 @@ $(document).ready(function () {
   function cancelOtherRelationEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    $(fields['saveId']).hide();
-    $(fields['saveId']).unbind('click', saveOtherRelation);
+    $(fields['saveButton']).hide();
+    $(fields['saveButton']).unbind('click', saveOtherRelation);
     $('.otherInput').hide();
     $('.otherInput').val('');
-    $(fields['inputId']).remove();
-    $(fields['fieldAdd']).show();
-    $(fields['fieldAdd']).bind('click', activateOtherFieldAdd);
+    $(fields['inputTagId']).remove();
+    $(fields['addButtonId']).show();
+    $(fields['addButtonId']).bind('click', activateOtherFieldAdd);
     $(this).hide();
     $(this).unbind('click', cancelOtherRelationEditing);
   };
@@ -114,7 +117,7 @@ $(document).ready(function () {
       $option.attr('data-label', labelName);
       $(elementId).append($option);
     }
-    $(fields['inputId']).show();
+    $(fields['inputTagId']).show();
   }
 
   /* set all concepts for relations (themes, groups, terms) */
@@ -142,7 +145,7 @@ $(document).ready(function () {
           $option.attr('data-href_concept', concept_url);
           $(elementId).append($option);
         }
-        $(fields['inputId']).show();
+        $(fields['inputTagId']).show();
       }
     });
   };
@@ -151,31 +154,32 @@ $(document).ready(function () {
   function activateEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    $(fields['saveId']).show(); // Show save button
-    $(fields['emptyId']).hide(); // Hide empty property warning
+    $(fields['saveButton']).show(); // Show save button
+    $(fields['emptyTagId']).hide(); // Hide empty property warning
     $(fields['fieldParent']).hide();
-    $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
+    $('<' + $(this).data('html-tag') +' id="' + fields['inputTag']
       + '"/>').insertAfter(fields['fieldParent']);
-    $(this).val('Cancel');
+    $(this).hide();
     $(this).unbind('click', activateEditing);
-    $(this).bind('click', cancelEditing);
-    $(fields['inputId']).val($(fields['fieldElement']).data('value'));
+    $(fields['cancelButtonId']).show()
+    $(fields['cancelButtonId']).bind('click', cancelEditing);
+    $(fields['inputTagId']).val($(fields['fieldElement']).data('value'));
   };
 
   /* themes group narrow broader related enable editing */
   function activateSelectEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName); //preparing selectors
-    $(fields['saveId']).show();
-    $(fields['saveId']).bind('click', saveConceptRelation);
-    $(fields['fieldCancel']).show();
-    $(fields['fieldCancel']).bind('click', cancelSelectEditing);
+    $(fields['saveButton']).show();
+    $(fields['saveButton']).bind('click', saveConceptRelation);
+    $(fields['cancelButtonId']).show();
+    $(fields['cancelButtonId']).bind('click', cancelSelectEditing);
     $(this).hide();
     $(this).unbind('click', activateSelectEditing);
     url = $(this).data('href');
-    $('<select id="' + fields['inputElement'] + '" hidden/>').
-    insertBefore(fields['fieldCancel']);
-    getAllConcepts(url, fields['inputId'], fieldName);
+    $('<select id="' + fields['inputTag'] + '" hidden/>').
+    insertBefore(fields['cancelButtonId']);
+    getAllConcepts(url, fields['inputTagId'], fieldName);
     $(fields['fieldElement']).children('.removeParent').unbind('click', removeParent);
     $(fields['fieldElement']).children('.removeParent').hide();
   };
@@ -184,31 +188,31 @@ $(document).ready(function () {
   function activateAlternativeAdd(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName)
-    $(fields['saveId']).show();
-    $(fields['saveId']).bind('click', saveProperty);
-    $(fields['fieldCancel']).show();
-    $(fields['fieldCancel']).bind('click', cancelAdd);
+    $(fields['saveButton']).show();
+    $(fields['saveButton']).bind('click', saveProperty);
+    $(fields['cancelButtonId']).show();
+    $(fields['cancelButtonId']).bind('click', cancelAdd);
     $(this).unbind('click', activateAlternativeAdd);
     $(this).hide();
-    $('<input id="' + fields['inputElement'] + '"/>').
-    insertBefore(fields['fieldCancel']);
+    $('<input id="' + fields['inputTag'] + '"/>').
+    insertBefore(fields['cancelButtonId']);
   };
 
   /* other relations enable editing */
   function activateOtherFieldAdd(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName); //preparing selectors
-    $(fields['saveId']).show();
-    $(fields['saveId']).bind('click', saveOtherRelation);
-    $(fields['fieldCancel']).show();
-    $(fields['fieldCancel']).bind('click', cancelOtherRelationEditing);
+    $(fields['saveButton']).show();
+    $(fields['saveButton']).bind('click', saveOtherRelation);
+    $(fields['cancelButtonId']).show();
+    $(fields['cancelButtonId']).bind('click', cancelOtherRelationEditing);
     $(this).hide();
     $(this).unbind('click', activateOtherFieldAdd);
     var url = $(this).data('href');
-    $('<select id="' + fields['inputElement'] +
-    '" hidden/>').insertBefore(fields['fieldCancel']);
+    $('<select id="' + fields['inputTag'] +
+    '" hidden/>').insertBefore(fields['cancelButtonId']);
     $('.otherInput').show();
-    getAllConcepts(url, fields['inputId'], fieldName);
+    getAllConcepts(url, fields['inputTagId'], fieldName);
   }
 
   /* append the new relation to html (themes, groups, related relations) */
@@ -239,7 +243,7 @@ $(document).ready(function () {
       type: "POST",
       url: url,
       data: {
-             'value': $(fields['inputId']).val(),
+             'value': $(fields['inputTagId']).val(),
              'csrfmiddlewaretoken': getCookie('csrftoken')
             },
       error: function(e) {
@@ -265,7 +269,7 @@ $(document).ready(function () {
         }
       }
     }).done(function() {
-        $(fields['editId']).click();
+        $(fields['cancelButtonId']).click();
    });
   }
 
@@ -274,12 +278,12 @@ $(document).ready(function () {
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
     // define a selector for all options of the targeted select
-    var selector = fields['inputId'] + " option:selected";
+    var selector = fields['inputTagId'] + " option:selected";
     var parentId = $(selector).val();
     var parentText = $(selector).text();
     var addUrl = $(selector).data('href_add');
     var removeUrl = $(selector).data('href');
-    var url = $(fields['fieldAdd']).data('href');
+    var url = $(fields['addButtonId']).data('href');
     var conceptUrl = $(selector).data('href_concept');
     $.ajax({
        type: "POST",
@@ -292,7 +296,7 @@ $(document).ready(function () {
        success: function(data){
          addElement(parentId, parentText, removeUrl, fields, fieldName,
                     conceptUrl);
-         $(fields['fieldCancel']).click();
+         $(fields['cancelButtonId']).click();
        }
     });
   }
@@ -306,7 +310,7 @@ $(document).ready(function () {
        type: "POST",
        url: url,
        data: {
-              'value': $(fields['inputId']).val(),
+              'value': $(fields['inputTagId']).val(),
               'csrfmiddlewaretoken': getCookie('csrftoken'),
              },
        error: function(e) {
@@ -322,7 +326,7 @@ $(document).ready(function () {
         $deleteButton.bind('click', removeParent);
         $deleteButton.attr('data-href', data['url']);
         $('#alternativeList').append($deleteButton);
-        $(fields['fieldCancel']).click();
+        $(fields['cancelButtonId']).click();
        }
     });
   }
@@ -331,7 +335,7 @@ $(document).ready(function () {
   function saveOtherRelation(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
-    var selector = fields['inputId'] + " option:selected";
+    var selector = fields['inputTagId'] + " option:selected";
     var propertyTypeId = $(selector).val();
     var propertyTypeName = $(selector).text();
     var propertyLabel = $(fields['fieldElement'] + "Value").val();
@@ -371,7 +375,7 @@ $(document).ready(function () {
          }
        }
     }).done(function() {
-        $(fields['fieldCancel']).click();
+        $(fields['cancelButtonId']).click();
    });
   }
   /* remove concept, alternative or other relation */
