@@ -76,7 +76,7 @@ class ThemeFactory(factory.django.DjangoModelFactory):
 class PropertyFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Property
 
-    concept = factory.SubFactory(ConceptFactory)
+    concept = factory.SubFactory(TermFactory)
     language = factory.SubFactory(LanguageFactory)
     version_added = factory.SubFactory(VersionFactory)
     name = 'prefLabel'

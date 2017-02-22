@@ -195,34 +195,20 @@ class TestRemovePropertyView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.language = LanguageFactory()
-        self.term = TermFactory()
-        self.property = PropertyFactory(language=self.language,
-                                        concept=self.term, value='new property',
+        self.property = PropertyFactory(value='new property',
                                         status=Property.PUBLISHED)
-        self.request_kwargs = {'langcode': 'en',
-                               'id': 1}
 
     def test_remove_property_bad_concept(self):
-        url = reverse('remove_property', kwargs={'langcode': 'en',
-                                                 'id': 43})
+        url = reverse('remove_property', kwargs={'pk': 43})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_property_bad_language(self):
-        url = reverse('remove_property', kwargs={'langcode': 'abc',
-                                                 'id': 1})
-        response = self.app.post(url, expect_errors=True,
-                                 params={'value': 'new property'})
-        self.assertEqual(400, response.status_code)
-
     def test_remove_property_correct_request(self):
-        url = reverse('remove_property', kwargs=self.request_kwargs)
+        url = reverse('remove_property', kwargs={'pk': self.property.pk})
         response = self.app.post(url, params={'value': 'new property'})
         self.assertEqual(200, response.status_code)
 
-        prop = Property.objects.get(language=self.language, concept=self.term,
-                                    value='new property')
+        prop = Property.objects.get(pk=self.property.pk)
         self.assertEqual(prop.status, Property.DELETED_PENDING)
 
 
