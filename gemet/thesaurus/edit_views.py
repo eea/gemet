@@ -212,11 +212,11 @@ class AddPropertyView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
+
         form = PropertyForm(request.POST)
         if not form.is_valid():
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
-        version = Version.objects.create()
         prop = Property.objects.filter(status=Property.PENDING,
                                        language=language,
                                        concept=concept,
@@ -225,20 +225,20 @@ class AddPropertyView(JsonResponseMixin, View):
         if prop:
             data = {"message": 'Value must be unique.'}
             return self._get_response(data, 'error', 400)
-        # Todo: Remove when version is stable
+        # TODO: Remove when version is stable
+        version = Version.objects.create()
         field = Property.objects.create(status=Property.PENDING,
                                         version_added=version,
                                         language=language,
                                         concept=concept,
                                         name=name,
                                         **form.cleaned_data)
-        url_args = {'langcode': langcode,
-                    'id': id}
-        remove_url = reverse('remove_property', kwargs=url_args)
+        remove_url = reverse('remove_property', kwargs={'pk': field.pk})
 
         data = {
             "value": field.value,
             "id": field.id,
+            "status": field.status,
             "url": remove_url,
         }
         return self._get_response(data, 'success', 200)
@@ -246,19 +246,15 @@ class AddPropertyView(JsonResponseMixin, View):
 
 class RemovePropertyView(JsonResponseMixin, View):
 
-    def post(self, request, langcode, id):
+    def post(self, request, pk):
         try:
-            language = Language.objects.get(code=langcode)
-            concept = Concept.objects.get(id=id)
-            field = Property.objects.get(language=language, concept=concept,
-                                         value=request.POST['value'])
+            field = Property.objects.get(pk=pk)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
         field.status = Property.DELETED_PENDING
         field.save()
-        data = {}
-        return self._get_response(data, 'success', 200)
+        return self._get_response({}, 'success', 200)
 
 
 class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):

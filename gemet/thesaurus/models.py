@@ -101,7 +101,7 @@ class Concept(VersionableModel):
         return getattr(self, 'prefLabel', '')
 
     def get_attributes(self, langcode, property_list):
-        values = ['name', 'value']
+        values = ['id', 'name', 'value']
         values.extend(self.extra_values)
         return (
             self.properties

@@ -138,8 +138,6 @@ urlpatterns = [
             ])),
         ])),
     url(r'^(?P<langcode>[a-zA-Z-]+)/concept/(?P<id>\d+)/edit/', include([
-        url(r'^property/remove/$',
-            RemovePropertyView.as_view(), name='remove_property'),
         url(r'^other/(?P<relation_id>\d+)/remove/$',
             RemoveForeignRelationView.as_view(), name='remove_other'),
         url(r'^other/add/$',
@@ -157,6 +155,8 @@ urlpatterns = [
         url(r'^property/type/(?P<name>[a-zA-Z-]+)/add$',
             AddPropertyView.as_view(), name='add_property')
         ])),
+    url(r'^property/(?P<pk>\d+)/remove/$',
+        RemovePropertyView.as_view(), name='remove_property'),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
 ]

@@ -38,14 +38,15 @@
          data-concept="{{ concept.id }}" data-type="alternative" hidden>
   <div id="alternativeList">
     {% for alternative in concept.altLabel %}
-      <i id="alternative{{ forloop.counter }}"
-         data-value="{{ alternative.value }}"
+      <i id="alternative{{ alternative.id }}"
          class="status-{{ alternative.status }}">
         {{ alternative.value }};
       </i>
-      <input class="removeParent" type="button" data-field="#alternative{{ forloop.counter }}"
+      <input class="removeParent"
+             type="button"
+             data-field-id="#alternative{{ alternative.id }}"
              data-type="alternative"
-             data-href="{% url 'remove_property' language.code concept.id %}"
+             data-href="{% url 'remove_property' alternative.id %}"
              value="Delete" />
     {% endfor %}
   </div>
@@ -226,5 +227,5 @@
     {% include 'version.html' with version=ns_version %}
 {% endblock %}
 {% block js %}
-  <script src="{% static 'thesaurus/edit.js' %}"></script>
+  <script type="text/javascript" src="{% static 'thesaurus/edit.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,3 @@
-
 // function which retrieves a cookie based on its name
 function getCookie(name) {
     var cookieValue = null;
@@ -43,6 +42,7 @@ $(document).ready(function () {
     fields['emptyId'] = "#" + fieldName + "Empty";
     fields['fieldAdd'] = "#" + fieldName + "Add";
     fields['fieldCancel'] = "#" + fieldName + "Cancel";
+    fields['fieldParent'] = "#parent-" + fieldName;
     return fields
   }
 
@@ -150,15 +150,15 @@ $(document).ready(function () {
   /* prefLabel, definition, scopeNote, source enable editing */
   function activateEditing(){
     var fieldName = $(this).data('type');
-    var fields = prepareElements(fieldName)
-    $(fields['saveId']).show();
-    $(fields['emptyId']).hide();
-    $(fields['fieldElement']).hide();
+    var fields = prepareElements(fieldName);
+    $(fields['saveId']).show(); // Show save button
+    $(fields['emptyId']).hide(); // Hide empty property warning
+    $(fields['fieldParent']).hide();
+    $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
+      + '"/>').insertAfter(fields['fieldParent']);
     $(this).val('Cancel');
     $(this).unbind('click', activateEditing);
     $(this).bind('click', cancelEditing);
-    $('<' + $(this).data('html-tag') +' id="' + fields['inputElement']
-                    + '"/>').insertBefore(fields['fieldElement']);
     $(fields['inputId']).val($(fields['fieldElement']).data('value'));
   };
 
@@ -231,21 +231,39 @@ $(document).ready(function () {
   /* prefLabel, definition, scopeNote, source save new property */
   function saveEditedField(){
     var fieldName = $(this).data('type');
-    var fields = prepareElements(fieldName)
-    var url = $(fields['fieldElement']).data('href')
+    var fields = prepareElements(fieldName);
+    var url = $(fields['fieldElement']).data('href');
+    var fieldStatus = $(fields['fieldElement']).data('status');
+
     $.ajax({
-       type: "POST",
-       url: url,
-       data: {
-              'value': $(fields['inputId']).val(),
-              'csrfmiddlewaretoken': getCookie('csrftoken'),
-             },
-       error: function(e) {
-       },
-       success: function(data){
+      type: "POST",
+      url: url,
+      data: {
+             'value': $(fields['inputId']).val(),
+             'csrfmiddlewaretoken': getCookie('csrftoken')
+            },
+      error: function(e) {
+      },
+      success: function(data){
+        if (fieldStatus == 0) { // pending field
           $(fields['fieldElement']).text(data['value']);
           $(fields['fieldElement']).data('value', data['value']);
-       }
+        }
+        else { // published field
+          var oldField = $(fields['fieldElement']).clone();
+          oldField.attr('class', 'status-3');
+          oldField.removeAttr('data-status');
+          oldField.removeAttr('id');
+          oldField.removeAttr('data-value');
+          oldField.removeAttr('data-href');
+          $(fields['fieldElement']).attr('class', 'status-0');
+          $(fields['fieldElement']).data('status', '0');
+          $(fields['fieldElement']).text(data['value']);
+          $(fields['fieldElement']).data('value', data['value']);
+          $(fields['fieldElement']).before(oldField);
+          $(fields['fieldElement']).before('<br>'); // TODO remove this once we have proper styling
+        }
+      }
     }).done(function() {
         $(fields['editId']).click();
    });
@@ -294,9 +312,9 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
-        $('#alternativeList').append("<i id='alternative" +
-                                     data['id'] + "' data-value='" +
-                                     data['value'] + "'>" +
+        $('#alternativeList').append("<i id='alternative" + data['id'] +
+                                     "' data-value='" + data['value'] +
+                                     "' class='status-" + data['status'] + "'>" +
                                      data['value'] + ";</i>");
         $deleteButton = $("<input class='removeParent' type='button' " +
                           "data-type='alternative' value='Delete' />");
@@ -365,7 +383,7 @@ $(document).ready(function () {
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
     var url = $(this).data('href');
-    var deleteFieldId = $(this).data('field');
+    var deleteFieldId = $(this).data('field-id');
     var deleteButton = $(this);
     $.ajax({
        type: "POST",
@@ -377,8 +395,8 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
-         $(deleteFieldId).remove();
-         deleteButton.remove(); // remove both element and its delete button
+         $(deleteFieldId).attr('class', 'status-3'); // Change status
+         // TODO define delete behaviour deleteButton.remove(); // Remove delete button
        }
     });
   };
