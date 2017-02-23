@@ -219,8 +219,9 @@ $(document).ready(function () {
   function addElement(parentId, parentText, url, fields, fieldName, conceptUrl){
     if (['broader', 'related', 'narrower'].includes(fieldName))
         parentText = "<a href='" + conceptUrl + "'>" + parentText + "</a></li>";
-    var $newParent = $('<li id=' + fieldName + parentId + " value=" +
-                     parentId + ">" + parentText + "</li>");
+    var $newParent = $('<li id=' + fieldName + parentId +
+                     " class=status-0" +
+                     " value=" + parentId + ">" + parentText + "</li>");
     var $newParentDelete = $('<input>')
     $newParentDelete.addClass("removeParent");
     $newParentDelete.attr("type", "button");

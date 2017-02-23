@@ -442,3 +442,13 @@ class EditableTerm(Term):
             value = getattr(self, prop['name'], [])
             value.append(prop)
             setattr(self, prop['name'], value)
+
+    def set_parents(self, langcode):
+        super(EditableTerm, self).set_parents(langcode)
+        # This is ugly; TODO refactor
+        for theme in self.themes:
+            theme['status'] = self.source_relations.filter(
+                target_id=theme['id']).first().status
+        for group in self.groups:
+            group['status'] = self.source_relations.filter(
+                target_id=group['id']).first().status

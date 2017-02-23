@@ -1,10 +1,12 @@
 {% load gemet_tags %}
   <ul id="{{ type }}" class="listing">
     {% for parent in concept_list %}
-      <li id="{{ type }}{{ parent.id }}" value="{{ parent.concept__id }}">
+      <li id="{{ type }}{{ parent.id }}"
+          value="{{ parent.id }}"
+          class="status-{{ parent.status }}">
         {{ parent.name }}
       </li>
-      <input class="removeParent" type="button" data-field="#type{{ parent.id }}"
+      <input class="removeParent" type="button" data-field-id="#{{ type }}{{ parent.id }}"
              data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
              data-type="{{ type }}" value="Delete" />
     {% endfor %}
