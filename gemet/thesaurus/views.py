@@ -247,8 +247,12 @@ class ConceptView(HeaderMixin, DetailView):
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
-            Property.published
-            .filter(name='prefLabel', concept=concept)
+            Property.objects
+            .filter(
+                name='prefLabel',
+                concept=concept,
+                status__in=self.model.status_list,
+            )
             .order_by('language__name')
             .values('language__name', 'value')
         )
@@ -271,7 +275,7 @@ class ConceptView(HeaderMixin, DetailView):
 
         context.update({
             "languages": languages,
-            "ns_version": self.model.published.get_ns().version
+            "ns_version": self.model.objects.get_ns().version
         })
         return context
 

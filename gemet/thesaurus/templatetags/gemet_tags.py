@@ -62,3 +62,22 @@ def default_name(concept_id):
 @register.filter
 def normalize(value, form):
     return unicodedata.normalize(form, value)
+
+
+@register.filter
+def getattr(obj, args):
+    """ Try to get an attribute from an object.
+
+    Example: {% if block|getattr:"editable,True" %}
+
+    Beware that the default is always a string, if you want this
+    to return False, pass an empty second argument:
+    {% if block|getattr:"editable," %}
+    """
+    (attribute, default) = args.split(',') if ',' in args else (args, None)
+    try:
+        return obj.__getattribute__(attribute)
+    except AttributeError:
+        return obj.__dict__.get(attribute, default)
+    except:
+        return default

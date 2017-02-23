@@ -4,6 +4,25 @@ from django.utils.functional import cached_property
 
 from gemet.thesaurus import NS_VIEW_MAPPING
 
+RELATION_TYPES = [
+    'theme',
+    'group',
+    'broader',
+    'narrower',
+    'related',
+]
+
+FOREIGN_RELATION_TYPES = [
+    'exactMatch',
+    'broadMatch',
+    'closeMatch',
+    'narrowMatch',
+    'relatedMatch',
+    'hasWikipediaArticle',
+    'sameEEAGlossary',
+    'seeAlso',
+]
+
 
 class Version(models.Model):
     identifier = models.CharField(max_length=255)
@@ -16,8 +35,7 @@ class PublishedManager(models.Manager):
     def get_queryset(self):
         return (
             super(PublishedManager, self).get_queryset()
-            .filter(status__in=[
-                VersionableModel.PUBLISHED, VersionableModel.DELETED_PENDING])
+            .filter(status__in=VersionableModel.PUBLISHED_STATUS_OPTIONS)
         )
 
 
@@ -32,6 +50,7 @@ class VersionableModel(models.Model):
         (DELETED, 'deleted'),
         (DELETED_PENDING, 'deleted pending'),
     )
+    PUBLISHED_STATUS_OPTIONS = [PUBLISHED, DELETED_PENDING]
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES,
                                               default=PENDING)
     version_added = models.ForeignKey(Version)
@@ -60,13 +79,20 @@ class Concept(VersionableModel):
     date_changed = models.DateTimeField(blank=True, null=True)
 
     parents_relations = []
+    status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
+    extra_values = []
 
     @cached_property
     def visible_foreign_relations(self):
+        values = ['id', 'label', 'uri', 'property_type__label']
+        values.extend(self.extra_values)
         return (
-            ForeignRelation.published
-            .filter(show_in_html=True, concept=self)
-            .values('label', 'uri', 'property_type__label')
+            self.foreign_relations
+            .filter(
+                show_in_html=True,
+                status__in=self.status_list,
+            )
+            .values(*values)
             .order_by('property_type__label')
         )
 
@@ -74,16 +100,21 @@ class Concept(VersionableModel):
     def name(self):
         return getattr(self, 'prefLabel', '')
 
-    def set_attributes(self, langcode, property_list):
-        properties = (
-            Property.published
+    def get_attributes(self, langcode, property_list):
+        values = ['id', 'name', 'value']
+        values.extend(self.extra_values)
+        return (
+            self.properties
             .filter(
-                concept=self,
                 name__in=property_list,
                 language__code=langcode,
+                status__in=self.status_list,
             )
-            .values('name', 'value')
+            .values(*values)
         )
+
+    def set_attributes(self, langcode, property_list):
+        properties = self.get_attributes(langcode, property_list)
         if not hasattr(self, 'alternatives'):
             self.alternatives = []
         for prop in properties:
@@ -93,39 +124,49 @@ class Concept(VersionableModel):
                 setattr(self, prop['name'], prop['value'])
 
     def set_parents(self, langcode):
+        values = ['id', 'name']
+        values.extend(self.extra_values)
         for parent_type in self.parents_relations:
             parent_name = parent_type + 's'
             setattr(
                 self,
                 parent_name,
-                Property.published.filter(
+                Property.objects.filter(
                     name='prefLabel',
                     language__code=langcode,
                     concept_id__in=self.source_relations
-                    .filter(property_type__name=parent_type)
+                    .filter(
+                        property_type__name=parent_type,
+                        status__in=self.status_list,
+                    )
                     .values_list('target_id', flat=True)
                 )
                 .extra(select={'name': 'value',
                                'id': 'concept_id'},
                        order_by=['name'])
-                .values('id', 'name')
+                .values(*values)
             )
 
     def get_siblings(self, langcode, relation_type):
+        values = ['id', 'concept__code', 'name']
+        values.extend(self.extra_values)
         return (
-            Property.published
+            Property.objects
             .filter(
                 name='prefLabel',
                 language__code=langcode,
                 concept_id__in=(
                     self.source_relations
-                    .filter(property_type__name=relation_type)
+                    .filter(
+                        property_type__name=relation_type,
+                        status__in=self.status_list,
+                    )
                     .values_list('target_id', flat=True)
                 )
             )
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'concept__code', 'name')
+            .values(*values)
         )
 
     def set_siblings(self, langcode):
@@ -134,11 +175,15 @@ class Concept(VersionableModel):
                     self.get_siblings(langcode, relation_type))
 
     def get_children(self, langcode):
+        values = ['id', 'concept__code', 'name']
+        values.extend(self.extra_values)
+
         children = (
-            Property.published
+            Property.objects
             .filter(
                 name='prefLabel',
                 language__code=langcode,
+                status__in=self.status_list,
             )
         )
 
@@ -146,7 +191,10 @@ class Concept(VersionableModel):
             children = children.filter(
                 concept_id__in=(
                     self.source_relations
-                    .filter(property_type__name='narrower')
+                    .filter(
+                        property_type__name='narrower',
+                        status__in=self.status_list,
+                    )
                     .values_list('target_id', flat=True)
                 )
             )
@@ -156,8 +204,9 @@ class Concept(VersionableModel):
                     self.source_relations
                     .filter(property_type__name='groupMember')
                     .exclude(
-                        target__id__in=Relation.published.filter(
+                        target__id__in=Relation.objects.filter(
                             property_type__name='broader',
+                            status__in=self.status_list,
                         )
                         .values_list('source_id', flat=True)
                     )
@@ -168,7 +217,10 @@ class Concept(VersionableModel):
             children = children.filter(
                 concept_id__in=(
                     self.source_relations
-                    .filter(property_type__name='themeMember')
+                    .filter(
+                        property_type__name='themeMember',
+                        status__in=self.status_list,
+                    )
                     .values_list('target_id', flat=True)
                 )
             )
@@ -177,7 +229,7 @@ class Concept(VersionableModel):
             children
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
-            .values('id', 'concept__code', 'name')
+            .values(*values)
         )
 
     def get_concept_type(self):
@@ -317,49 +369,76 @@ class PublishedConceptManager(ConceptManager):
 class Term(Concept):
     siblings_relations = ['broader', 'narrower', 'related']
     parents_relations = ['group', 'theme']
+    NAMESPACE = 'Concepts'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Concepts')
-    published = PublishedConceptManager('Concepts')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class Theme(Concept):
     siblings_relations = ['themeMember']
+    NAMESPACE = 'Themes'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Themes')
-    published = PublishedConceptManager('Themes')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class Group(Concept):
     siblings_relations = ['broader', 'groupMember']
+    NAMESPACE = 'Groups'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Groups')
-    published = PublishedConceptManager('Groups')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class SuperGroup(Concept):
     siblings_relations = ['narrower']
+    NAMESPACE = 'Super groups'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Super groups')
-    published = PublishedConceptManager('Super groups')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
 
 
 class InspireTheme(Concept):
     siblings_relations = []
+    NAMESPACE = 'Inspire Themes'
 
     class Meta:
         proxy = True
 
-    objects = ConceptManager('Inspire Themes')
-    published = PublishedConceptManager('Inspire Themes')
+    objects = ConceptManager(NAMESPACE)
+    published = PublishedConceptManager(NAMESPACE)
+
+
+class EditableTerm(Term):
+    status_list = [Term.PUBLISHED, Term.PENDING, Term.DELETED_PENDING]
+    extra_values = ['status']
+
+    class Meta:
+        proxy = True
+
+    def name(self):
+        pref_label = getattr(self, 'prefLabel', [])
+        for item in pref_label:
+            if item['editable']:
+                return item['value']
+
+    def set_attributes(self, langcode, property_list):
+        properties = self.get_attributes(langcode, property_list)
+        for prop in properties:
+            prop['editable'] = prop['status'] in (self.PUBLISHED, self.PENDING)
+            value = getattr(self, prop['name'], [])
+            value.append(prop)
+            setattr(self, prop['name'], value)

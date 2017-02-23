@@ -88,6 +88,7 @@ LOCAL_INSTALLED_APPS = ()
 try:
     from local_settings import *
     INSTALLED_APPS += LOCAL_INSTALLED_APPS
+    MIDDLEWARE_CLASSES += LOCAL_MIDDLEWARE_CLASSES
 except ImportError:
     pass
 

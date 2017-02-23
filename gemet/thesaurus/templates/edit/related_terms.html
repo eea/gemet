@@ -1,0 +1,13 @@
+{% load gemet_tags %}
+  <ul  class="listing">
+    <ul id="{{ type }}" class="dd-list">
+      {% for cp in concept_list %}
+      <li id="{{ type }}{{ cp.id }}">
+        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
+      </li>
+      <input class="removeParent" type="button" data-field="#{{ type }}{{ cp.id }}"
+       data-href="{% url 'remove_parent' language.code concept.id cp.id type %}"
+       data-type="{{ type }}" value="Delete" />
+      {% endfor %}
+    </ul>
+  </ul>

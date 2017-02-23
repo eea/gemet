@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.conf import settings
 
 from gemet.thesaurus.views import (
     redirect_old_urls,
@@ -35,6 +36,14 @@ from gemet.thesaurus.views import (
     GemetVoidView,
     download_gemet_rdf,
 )
+
+
+from .edit_views import AddForeignRelationView, AddPropertyView
+from .edit_views import AddParentRelationView, EditPropertyView
+from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
+from .edit_views import RemovePropertyView
+from gemet.thesaurus.edit_views import TermEditView
+
 from .api import ApiView
 
 
@@ -82,6 +91,8 @@ urlpatterns = [
         url(r'^groups/$', GroupsView.as_view(), name='groups'),
         url(r'^concept/(?P<code>\d+)$', TermView.as_view(),
             name='concept'),
+        url(r'^concept/(?P<code>\d+)/edit$', TermEditView.as_view(),
+            name='concept_edit'),
         url(r'^inspire-theme/(?P<code>[a-zA-Z]+)$',
             InspireThemeView.as_view(), name='inspire_theme'),
         url(r'^theme/(?P<code>\d+)$', ThemeView.as_view(),
@@ -126,6 +137,32 @@ urlpatterns = [
                 name='gemet-groups.rdf'),
             ])),
         ])),
+    url(r'^(?P<langcode>[a-zA-Z-]+)/concept/(?P<id>\d+)/edit/', include([
+        url(r'^other/(?P<relation_id>\d+)/remove/$',
+            RemoveForeignRelationView.as_view(), name='remove_other'),
+        url(r'^other/add/$',
+            AddForeignRelationView.as_view(), name='add_other'),
+        url(r'^parent-concept/(?P<parent_id>\d+)/type/(?P<rel_type>[a-zA-Z-]+)'
+            r'/remove',
+            RemoveParentRelationView.as_view(), name='remove_parent'),
+        url(r'^parent-concept/type/(?P<rel_type>[a-zA-Z-]+)/add$',
+            AddParentRelationView.as_view(), name='add_parent'),
+        url(r'^parent-concept/(?P<parent_id>\d+)/type/'
+            r'(?P<rel_type>[a-zA-Z-]+)/$', AddParentRelationView.as_view(),
+            name='add_parent'),
+        url(r'^property/type/(?P<name>[a-zA-Z-]+)/edit/$',
+            EditPropertyView.as_view(), name='edit_property'),
+        url(r'^property/type/(?P<name>[a-zA-Z-]+)/add$',
+            AddPropertyView.as_view(), name='add_property')
+        ])),
+    url(r'^property/(?P<pk>\d+)/remove/$',
+        RemovePropertyView.as_view(), name='remove_property'),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$', concept_redirect,
         name='concept_redirect'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

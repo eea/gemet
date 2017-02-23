@@ -1,6 +1,6 @@
 from django import forms
-
-from gemet.thesaurus.models import Language
+from django.forms import ModelForm
+from gemet.thesaurus.models import Language, ForeignRelation, Property
 
 
 class SearchForm(forms.Form):
@@ -23,3 +23,17 @@ class ExportForm(forms.Form):
         empty_label=None,
         label="Choose the language",
     )
+
+
+class PropertyForm(ModelForm):
+
+    class Meta:
+        model = Property
+        fields = ('value', )
+
+
+class ForeignRelationForm(ModelForm):
+
+    class Meta:
+        model = ForeignRelation
+        fields = ('label', 'uri')

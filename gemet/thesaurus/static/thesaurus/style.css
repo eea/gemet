@@ -803,3 +803,11 @@
         .documentwrapper .pre {
             font-size: 1.1em;
         }
+
+/* edit pages */
+.status-0 {
+    background-color: #eaffea;
+}
+.status-3 {
+    background-color: #ffecec;
+}
