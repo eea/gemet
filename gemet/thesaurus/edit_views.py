@@ -31,12 +31,21 @@ class ConceptMixin(object):
         elif parent_type in ['broader', 'narrower', 'related']:
             self.model = Term
 
-    def _get_all_concepts_by_langcode(self, langcode, model):
-        return (
-            Property.published.filter(
+    def _get_all_concepts_by_langcode(self, langcode, concept, relation):
+        return list(
+            Property.objects
+            .filter(
                 name='prefLabel',
                 language__code=langcode,
                 concept__namespace__heading=self.model.NAMESPACE,
+                status__in=(Property.PENDING, Property.PUBLISHED),
+            )
+            .exclude(
+                concept_id__in=concept.source_relations.filter(
+                    property_type__name=relation,
+                    status__in=(Relation.PENDING, Relation.PUBLISHED),
+                )
+                .values_list('target_id', flat=True)
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'
@@ -103,8 +112,8 @@ class EditPropertyView(JsonResponseMixin, View):
 
 class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def post(self, request, langcode, id, parent_id, type):
-        self._set_concept_model(type)
+    def post(self, request, langcode, id, parent_id, rel_type):
+        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
             parent_concept = self.model.objects.get(id=parent_id)
@@ -113,7 +122,7 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
             return self._get_response(data, 'error', 400)
         relation = Relation.objects.filter(
             source=concept, target=parent_concept,
-            property_type__name=type)
+            property_type__name=rel_type)
 
         published = relation.filter(status=Property.PUBLISHED).first()
         pending = relation.filter(status=Property.PENDING).first()
@@ -132,12 +141,12 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
 class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def get_reverse_urls(self, concept_list, langcode, id, type):
+    def get_reverse_urls(self, concept_list, langcode, id, rel_type):
         for concept in concept_list:
             url_args = {'langcode': langcode,
                         'id': id,
                         'parent_id': concept['id'],
-                        'type': type}
+                        'rel_type': rel_type}
             remove_rev = reverse('remove_parent', kwargs=url_args)
             add_rev = reverse('add_parent', kwargs=url_args)
             concept_code = Concept.objects.get(id=concept['id']).code
@@ -148,28 +157,22 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
             concept['href_add'] = add_rev
             concept['href_concept'] = concept_rev
 
-    def get(self, request, langcode, id, type):
-        self._set_concept_model(type)
+    def get(self, request, langcode, id, rel_type):
+        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        concept.parents_relations = [type]
-        concept.set_parents(langcode)
         target_concepts = self._get_all_concepts_by_langcode(
-            langcode=langcode, model=self.model)
-        type_name = type + "s"
-        concept_relations = [y['id'] for y in getattr(concept, type_name)]
-        unselected_concepts = [x for x in target_concepts
-                               if x['id'] not in concept_relations]
-        self.get_reverse_urls(unselected_concepts, langcode, id, type)
-        data = {"parents": unselected_concepts}
+            langcode, concept, rel_type)
+        self.get_reverse_urls(target_concepts, langcode, id, rel_type)
+        data = {"parents": target_concepts}
         return self._get_response(data, 'success', 200)
 
-    def post(self, request, langcode, id, parent_id, type):
-        self._set_concept_model(type)
+    def post(self, request, langcode, id, parent_id, rel_type):
+        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
             parent_concept = self.model.objects.get(id=parent_id)
@@ -179,7 +182,7 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
         relations = Relation.objects.filter(
             source=concept, target=parent_concept,
-            property_type__name=type)
+            property_type__name=rel_type)
         deleted = relations.filter(status=Property.DELETED).first()
         deleted_pending = relations.filter(
             status=Property.DELETED_PENDING).first()
@@ -194,7 +197,7 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
                                                              Property.PENDING])
         if not check_relation_status:
             version = Version.objects.create()
-            theme_property = PropertyType.objects.get(name=type)
+            theme_property = PropertyType.objects.get(name=rel_type)
             field = Relation(source=concept, target=parent_concept,
                              status=Property.PENDING, version_added=version,
                              property_type=theme_property)
@@ -271,7 +274,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
     def post(self, request, langcode, id):
         try:
             concept = Concept.objects.get(id=id)
-            property_type = PropertyType.objects.get(id=request.POST['type'])
+            property_type = PropertyType.objects.get(id=request.POST['rel_type'])
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)

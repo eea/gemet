@@ -353,7 +353,7 @@ $(document).ready(function () {
        url: addUrl,
        data: {
               'csrfmiddlewaretoken': getCookie('csrftoken'),
-              'type': propertyTypeId,
+              'rel_type': propertyTypeId,
               'uri': parentUrl,
               'label': propertyLabel,
               'property_type': propertyTypeId,

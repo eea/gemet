@@ -104,13 +104,13 @@ class TestRemoveParentRelationView(GemetTest):
         self.request_kwargs = {'langcode': 'en',
                                'id': self.term.id,
                                'parent_id': self.theme.id,
-                               'type': 'theme'}
+                               'rel_type': 'theme'}
 
     def test_remove_relation_bad_concept(self):
         url = reverse('remove_parent', kwargs={'langcode': 'en',
                                                'id': 31,
                                                'parent_id': self.theme.id,
-                                               'type': 'theme'})
+                                               'rel_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
@@ -118,7 +118,7 @@ class TestRemoveParentRelationView(GemetTest):
         url = reverse('remove_parent', kwargs={'langcode': 'en',
                                                'id': self.term.id,
                                                'parent_id': 99,
-                                               'type': 'theme'})
+                                               'rel_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
@@ -158,7 +158,7 @@ class TestAddParentRelationView(GemetTest):
     def test_get_property_type_theme(self):
         url = reverse('add_parent', kwargs={'id': self.term.id,
                                             'langcode': 'en',
-                                            'type': 'theme'})
+                                            'rel_type': 'theme'})
 
         response = self.app.get(url)
         self.assertEqual(200, response.status_code)
@@ -168,7 +168,7 @@ class TestAddParentRelationView(GemetTest):
         self.assertEqual(4, data['id'])
         url = reverse('add_parent', kwargs={'id': self.term.id,
                                             'langcode': 'en',
-                                            'type': 'group'})
+                                            'rel_type': 'group'})
         response = self.app.get(url)
         self.assertEqual(200, response.status_code)
 
@@ -176,7 +176,7 @@ class TestAddParentRelationView(GemetTest):
         url = reverse('add_parent', kwargs={'id': 33,
                                             'langcode': 'en',
                                             'parent_id': 45,
-                                            'type': 'theme'})
+                                            'rel_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
@@ -185,7 +185,7 @@ class TestAddParentRelationView(GemetTest):
         url = reverse('add_parent', kwargs={'id': self.term.id,
                                             'langcode': 'en',
                                             'parent_id': self.theme.id,
-                                            'type': 'theme'})
+                                            'rel_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(200, response.status_code)
@@ -237,19 +237,19 @@ class TestAddForeignRelationView(GemetTest):
     def test_post_bad_request(self):
         url = reverse('add_other', kwargs={'id': 10, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
-                                 params={'type': 10})
+                                 params={'rel_type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_bad_form(self):
         url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
-                                 params={'type': 10})
+                                 params={'rel_type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
         url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,
-                                 params={'uri': 'Uri', 'type': 10,
+                                 params={'uri': 'Uri', 'rel_type': 10,
                                          'label': 'Label'})
         self.assertEqual(200, response.status_code)
         data = json.loads(response.body)
