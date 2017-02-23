@@ -328,7 +328,7 @@ $(document).ready(function () {
                                      "' class='status-" + data['status'] + "'>" +
                                      data['value'] + ";</i>");
         $deleteButton = $("<input class='removeParent' type='button' " +
-                          "data-type='alternative' value='Delete' />");
+                          "data-type='alternative' value='Delete' data-field-id='#alternative" + data['id'] +"' />");
         $deleteButton.attr('data-field', "#alternative" + data['id']);
         $deleteButton.bind('click', removeParent);
         $deleteButton.attr('data-href', data['url']);
