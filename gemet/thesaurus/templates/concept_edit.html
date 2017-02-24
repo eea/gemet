@@ -123,11 +123,13 @@
     <li class="">
       <div class="dt">{{ foreign_relation.grouper }}</div>
       {% for relation in foreign_relation.list %}
-          <div class="dd" id="other{{ relation.id }}">
+        <div class="status-{{ relation.status }}" id="other{{ relation.id }}">
+          <div class="dd">
           <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
           <input class="removeParent" type="button" data-type="other"
-          data-field="#other{{ relation.id }}" value="Delete"
+          data-field-id="#other{{ relation.id }}" value="Delete"
           data-href="{% url 'remove_other' language.code concept.id relation.id %}"/>
+        </div>
       {% endfor %}
     </li>
 

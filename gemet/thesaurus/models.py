@@ -452,3 +452,11 @@ class EditableTerm(Term):
         for group in self.groups:
             group['status'] = self.source_relations.filter(
                 target_id=group['id']).first().status
+
+    def set_siblings(self, langcode):
+        for relation_type in self.siblings_relations:
+            siblings = self.get_siblings(langcode, relation_type)
+            for sibling in siblings:
+                sibling['status'] = self.source_relations.filter(
+                    target_id=sibling['id']).first().status
+            setattr(self, relation_type + '_concepts', siblings)

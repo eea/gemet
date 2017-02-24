@@ -363,23 +363,24 @@ $(document).ready(function () {
        },
        success: function(data){
          var $elementType = $('#all-other div:contains("' + propertyTypeName + '")').parent();
+         var relationWrapper = $("<div class='status-0'></div>");
          var relationField = "<div class='dd' id='other" + data['id'] + "'><a href=" +
          parentUrl + ">" + propertyLabel + "</a></div>"
          var $deleteButton = $('<input class="removeParent" type="button"' +
          'data-type="other" data-field="#other' + data['id'] +
          '" value="Delete"' + 'data-href="' + data['remove_url'] + '"/>');
+         relationWrapper.append(relationField);
+         relationWrapper.append($deleteButton);
          $deleteButton.bind('click', removeParent);
          if ($elementType.length){
-           $elementType.append(relationField);
-           $elementType.append($deleteButton);
+           $elementType.append(relationWrapper);
          }
          else{
-         var $newType = $("<li class=''>");
-         var $newList = $("<div class='dt'>" +  propertyTypeName + "</div>");
-         $newType.append($newList);
-         $newType.append(relationField);
-         $newType.append($deleteButton);
-         $("#all-other").append($newType);
+           var $newType = $("<li class=''>");
+           var $newList = $("<div class='dt'>" +  propertyTypeName + "</div>");
+           $newType.append($newList);
+           $newType.append(relationWrapper);
+           $("#all-other").append($newType);
          }
        }
     }).done(function() {
