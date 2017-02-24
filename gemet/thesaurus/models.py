@@ -123,30 +123,6 @@ class Concept(VersionableModel):
             else:
                 setattr(self, prop['name'], prop['value'])
 
-    def set_parents(self, langcode):
-        values = ['id', 'name']
-        values.extend(self.extra_values)
-        for parent_type in self.parents_relations:
-            parent_name = parent_type + 's'
-            setattr(
-                self,
-                parent_name,
-                Property.objects.filter(
-                    name='prefLabel',
-                    language__code=langcode,
-                    concept_id__in=self.source_relations
-                    .filter(
-                        property_type__name=parent_type,
-                        status__in=self.status_list,
-                    )
-                    .values_list('target_id', flat=True)
-                )
-                .extra(select={'name': 'value',
-                               'id': 'concept_id'},
-                       order_by=['name'])
-                .values(*values)
-            )
-
     def get_siblings(self, langcode, relation_type):
         values = ['id', 'concept__code', 'name']
         values.extend(self.extra_values)
@@ -173,6 +149,12 @@ class Concept(VersionableModel):
         for relation_type in self.siblings_relations:
             setattr(self, relation_type + '_concepts',
                     self.get_siblings(langcode, relation_type))
+
+    def set_parents(self, langcode):
+        for parent_type in self.parents_relations:
+            parent_name = parent_type + 's'
+            setattr(self, parent_name,
+                    self.get_siblings(langcode, parent_type))
 
     def get_children(self, langcode):
         values = ['id', 'concept__code', 'name']
@@ -422,12 +404,9 @@ class InspireTheme(Concept):
     published = PublishedConceptManager(NAMESPACE)
 
 
-class EditableTerm(Term):
+class EditMixin(object):
     status_list = [Term.PUBLISHED, Term.PENDING, Term.DELETED_PENDING]
     extra_values = ['status']
-
-    class Meta:
-        proxy = True
 
     def name(self):
         pref_label = getattr(self, 'prefLabel', [])
@@ -444,14 +423,12 @@ class EditableTerm(Term):
             setattr(self, prop['name'], value)
 
     def set_parents(self, langcode):
-        super(EditableTerm, self).set_parents(langcode)
-        # This is ugly; TODO refactor
-        for theme in self.themes:
-            theme['status'] = self.source_relations.filter(
-                target_id=theme['id']).first().status
-        for group in self.groups:
-            group['status'] = self.source_relations.filter(
-                target_id=group['id']).first().status
+        for parent_relation in self.parents_relations:
+            parents = self.get_siblings(langcode, parent_relation)
+            for parent in parents:
+                parent['status'] = self.source_relations.filter(
+                    target_id=parent['id']).first().status
+            setattr(self, parent_relation + 's', parents)
 
     def set_siblings(self, langcode):
         for relation_type in self.siblings_relations:
@@ -460,3 +437,9 @@ class EditableTerm(Term):
                 sibling['status'] = self.source_relations.filter(
                     target_id=sibling['id']).first().status
             setattr(self, relation_type + '_concepts', siblings)
+
+
+class EditableTerm(EditMixin, Term):
+
+    class Meta:
+        proxy = True
