@@ -218,8 +218,8 @@ $(document).ready(function () {
   }
 
   /* append the new relation to html (themes, groups, related relations) */
-  function addElement(parentId, parentText, url, fields, fieldName, conceptUrl){
-    if (['broader', 'related', 'narrower'].includes(fieldName))
+  function addElement(parentId, parentText, url, fields, fieldName, conceptUrl, link_tag){
+    if (link_tag == true)
         parentText = "<a href='" + conceptUrl + "'>" + parentText + "</a></li>";
     var $newParent = $('<li id=' + fieldName + parentId +
                      " class=status-0" +
@@ -294,6 +294,7 @@ $(document).ready(function () {
     var addUrl = $(selector).data('href_add');
     var removeUrl = $(selector).data('href');
     var url = $(fields['addButtonId']).data('href');
+    var link_tag = $(fields['addButtonId']).data('link');
     var conceptUrl = $(selector).data('href_concept');
     $.ajax({
        type: "POST",
@@ -305,7 +306,7 @@ $(document).ready(function () {
        },
        success: function(data){
          addElement(parentId, parentText, removeUrl, fields, fieldName,
-                    conceptUrl);
+                    conceptUrl, link_tag);
          $(fields['cancelButtonId']).click();
        }
     });

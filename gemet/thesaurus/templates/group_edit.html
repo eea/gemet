@@ -28,19 +28,19 @@
   </div>
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' edit_concept=group %}
+  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' edit_concept=group  %}
   {% if not group.definition %}
     <p class="alert" id="definitionEmpty">Definition is not available.</p>
   {% endif %}
 
   <!-- Broader -->
   <h5 class="h5">Super groups</h5>
-  {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Super Group' edit_concept=group %}
+  {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Super Group' edit_concept=group link='false' %}
   {% include 'edit/theme_group.html' with type='broader' concept_list=group.broader_concepts edit_concept=group %}
 
   <!-- Concepts -->
   <h5 class="h5">Concepts</h5>
-  {% include 'edit/relation_buttons.html' with type='groupMember' button_label='Add Concepts' edit_concept=group %}
+  {% include 'edit/relation_buttons.html' with type='groupMember' button_label='Add Concepts' edit_concept=group link='false' %}
   {% include 'edit/theme_group.html' with type='groupMember' concept_list=group.groupMember_concepts edit_concept=group %}
 
   <!-- Concept URL -->
