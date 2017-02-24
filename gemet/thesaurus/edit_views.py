@@ -8,10 +8,16 @@ from django.urls import reverse
 from gemet.thesaurus.models import Concept, ForeignRelation
 from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
-from gemet.thesaurus.models import RELATION_TYPES, Theme, Term, Version
-from gemet.thesaurus.models import EditableTerm
+from gemet.thesaurus.models import RELATION_TYPES
+from gemet.thesaurus.models import SuperGroup, Theme, Term, Version
+from gemet.thesaurus.models import EditableGroup, EditableTerm
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
-from gemet.thesaurus.views import TermView
+from gemet.thesaurus.views import GroupView, TermView
+
+
+class GroupEditView(GroupView):
+    template_name = "group_edit.html"
+    model = EditableGroup
 
 
 class TermEditView(TermView):
@@ -21,14 +27,16 @@ class TermEditView(TermView):
 
 class ConceptMixin(object):
 
-    def _set_concept_model(self, parent_type):
+    def _set_concept_model(self, parent_type, namespace):
         if parent_type not in RELATION_TYPES:
             raise Http404
         if parent_type == 'group':
             self.model = Group
         elif parent_type == 'theme':
             self.model = Theme
-        elif parent_type in ['broader', 'narrower', 'related']:
+        elif parent_type == 'broader' and namespace == 'Groups':
+            self.model = SuperGroup
+        elif parent_type in ['broader', 'narrower', 'related', 'groupMember']:
             self.model = Term
 
     def _get_all_concepts_by_langcode(self, langcode, concept, relation):
@@ -113,9 +121,9 @@ class EditPropertyView(JsonResponseMixin, View):
 class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, langcode, id, parent_id, rel_type):
-        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
+            self._set_concept_model(rel_type, concept.namespace.heading)
             parent_concept = self.model.objects.get(id=parent_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
@@ -158,9 +166,9 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
             concept['href_concept'] = concept_rev
 
     def get(self, request, langcode, id, rel_type):
-        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
+            self._set_concept_model(rel_type, concept.namespace.heading)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -172,9 +180,9 @@ class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
         return self._get_response(data, 'success', 200)
 
     def post(self, request, langcode, id, parent_id, rel_type):
-        self._set_concept_model(rel_type)
         try:
             concept = Concept.objects.get(id=id)
+            self._set_concept_model(rel_type, concept.namespace.heading)
             parent_concept = self.model.objects.get(id=parent_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
