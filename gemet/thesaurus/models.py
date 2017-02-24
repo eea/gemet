@@ -405,7 +405,7 @@ class InspireTheme(Concept):
 
 
 class EditMixin(object):
-    status_list = [Term.PUBLISHED, Term.PENDING, Term.DELETED_PENDING]
+    status_list = [Concept.PUBLISHED, Concept.PENDING, Concept.DELETED_PENDING]
     extra_values = ['status']
 
     def name(self):
@@ -440,6 +440,12 @@ class EditMixin(object):
 
 
 class EditableTerm(EditMixin, Term):
+
+    class Meta:
+        proxy = True
+
+
+class EditableGroup(EditMixin, Group):
 
     class Meta:
         proxy = True
