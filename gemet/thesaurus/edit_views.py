@@ -196,22 +196,25 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        relation = Relation.objects.filter(
-            source=concept, target=parent_concept,
-            property_type__name=rel_type)
 
-        published = relation.filter(status=Property.PUBLISHED).first()
-        pending = relation.filter(status=Property.PENDING).first()
-        if published:
-            published.status = Property.DELETED_PENDING
-            published.save()
-        if relation:
-            if pending:
-                pending.delete()
-            data = {}
-            return self._get_response(data, 'success', 200)
-        data = {"message": 'Object does not exist.'}
-        return self._get_response(data, 'error', 400)
+        relation = Relation.objects.filter(
+            source=concept,
+            target=parent_concept,
+            property_type__name=rel_type,
+            status__in=(Relation.PUBLISHED, Relation.PENDING)
+        ).first()
+
+        if not relation:
+            data = {"message": 'Object does not exist.'}
+            return self._get_response(data, 'error', 400)
+
+        if relation.status == Relation.PUBLISHED:
+            relation.status = Relation.DELETED_PENDING
+            relation.save()
+        elif relation.status == Relation.PENDING:
+            relation.delete()
+
+        return self._get_response({}, 'success', 200)
 
 
 class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
@@ -300,11 +303,14 @@ class RemovePropertyView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        if field.status == Property.PENDING:
-            field.delete()
-        else:
+
+        # Soft delete for published records / hard delete for pending ones
+        if field.status == Property.PUBLISHED:
             field.status = Property.DELETED_PENDING
             field.save()
+        elif field.status == Property.PENDING:
+            field.delete()
+
         return self._get_response({}, 'success', 200)
 
 
@@ -313,7 +319,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
     def post(self, request, langcode, id):
         try:
             concept = Concept.objects.get(id=id)
-            property_type = PropertyType.objects.get(id=request.POST['rel_type'])
+            prop_type = PropertyType.objects.get(id=request.POST['rel_type'])
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -322,7 +328,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
             version = Version.objects.create()
             # todo remove version when stable
             new_relation = ForeignRelation.objects.create(
-                version_added=version, property_type=property_type,
+                version_added=version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)
             url_kwargs = {'langcode': langcode,
                           'id': id,
@@ -342,10 +348,11 @@ class RemoveForeignRelationView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        if foreign_relation.status == Property.PENDING:
-            foreign_relation.delete()
-        else:
-            foreign_relation.status = Property.DELETED_PENDING
+
+        if foreign_relation.status == ForeignRelation.PUBLISHED:
+            foreign_relation.status = ForeignRelation.DELETED_PENDING
             foreign_relation.save()
-        data = {}
-        return self._get_response(data, 'success', 200)
+        elif foreign_relation.status == ForeignRelation.PENDING:
+            foreign_relation.delete()
+
+        return self._get_response({}, 'success', 200)
