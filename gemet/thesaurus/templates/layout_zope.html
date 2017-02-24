@@ -1,8 +1,19 @@
+{% load staticfiles %}
+
 {% autoescape off %}
-{{ header_text_preffix }}
+{{ header_before_title }}
+
 {% block title %}
 {% endblock %}
-{{ header_text_suffix }}
+
+{{ header_after_title }}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/style.css' %}" />
+{% endblock %}
+
+{{ header_end }}
+
 {% endautoescape %}
 
 <div class="content">
