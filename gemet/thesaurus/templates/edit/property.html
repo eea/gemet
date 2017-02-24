@@ -1,7 +1,7 @@
 {% load gemet_tags %}
 <div id="parent-{{ property_name }}"
-     data-href="{% url 'edit_property' language.code concept.id property_name %}">
-  {% for property in concept|getattr:property_name %}
+     data-href="{% url 'edit_property' language.code edit_concept.id property_name %}">
+  {% for property in edit_concept|getattr:property_name %}
     <span class="status-{{ property.status }}"
     {% if property.editable %}
         data-status="{{ property.status }}"

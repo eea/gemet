@@ -1,6 +1,6 @@
 {% load gemet_tags %}
   <input type="button" value="{{ button_label }}" id="{{ type }}Add" data-type="{{ type }}"
-         data-href="{% url 'add_parent' language.code concept.id type %}">
+         data-href="{% url 'add_parent' language.code edit_concept.id type %}">
   <input type="button" value="Cancel" id="{{ type }}Cancel" data-type="{{ type }}" hidden>
   <input type="button" value="Save" id="{{ type }}Save" data-langcode="{{ language.code }}"
-         data-concept="{{ concept.id }}" data-type="{{ type }}" hidden>
+         data-concept="{{ edit_concept.id }}" data-type="{{ type }}" hidden>

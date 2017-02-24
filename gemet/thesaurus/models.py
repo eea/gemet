@@ -10,6 +10,7 @@ RELATION_TYPES = [
     'broader',
     'narrower',
     'related',
+    'groupMember',
 ]
 
 FOREIGN_RELATION_TYPES = [

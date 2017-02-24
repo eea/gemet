@@ -11,7 +11,7 @@
 
   <!-- Concept -->
   <div class="h3">
-    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
+    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' edit_concept=concept %}
   </div>
 
   <!-- Side bar -->
@@ -54,7 +54,7 @@
   <!-- Definition -->
   <p>
   <h5 class="h5 hidden-desktop">Definition</h5>
-    {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+    {% include 'edit/property.html' with property_name='definition' html_tag='textarea' edit_concept=concept %}
     {% if concept.default_definition %}
       <p class="alert" id="definitionEmpty">
         Definition is not available for the current language.
@@ -65,7 +65,7 @@
   <!--Source-->
   <p>
     <span>Source:</span>
-    {% include 'edit/property.html' with property_name='source' html_tag='textarea' %}
+    {% include 'edit/property.html' with property_name='source' html_tag='input' edit_concept=concept %}
     {% if not concept.source %}
       <p class="alert" id="sourceEmpty"> Source is not available. </p>
     {% endif %}
@@ -73,12 +73,12 @@
 
    <!-- Themes -->
   <h5 class="h5">Themes</h5>
-  {% include 'edit/relation_buttons.html' with type='theme' button_label='Add Theme' %}
-  {% include 'edit/theme_group.html' with type='theme' concept_list=concept.themes %}
+  {% include 'edit/relation_buttons.html' with type='theme' button_label='Add Theme' edit_concept=concept %}
+  {% include 'edit/theme_group.html' with type='theme' concept_list=concept.themes edit_concept=concept %}
   <!-- Groups -->
   <h5 class="h5">Groups</h5>
-  {% include 'edit/relation_buttons.html' with type='group' button_label='Add Group' %}
-  {% include 'edit/theme_group.html' with type='group' concept_list=concept.groups %}
+  {% include 'edit/relation_buttons.html' with type='group' button_label='Add Group' edit_concept=concept %}
+  {% include 'edit/theme_group.html' with type='group' concept_list=concept.groups edit_concept=concept %}
 
   <!-- Related terms -->
   <h5 class="h5">Related terms</h5>
@@ -87,22 +87,22 @@
 
   <div class="dl-inline">
     <h6 class="dt">Broader</h6>
-    {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Broader Term' %}
-    {% include 'edit/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
+    {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Broader Term' edit_concept=concept %}
+    {% include 'edit/related_terms.html' with type='broader' concept_list=concept.broader_concepts  edit_concept=concept %}
   </div>
 
   <!-- Related -->
   <div class=" dl-inline">
     <h6 class="dt">Related</h6>
-    {% include 'edit/relation_buttons.html' with type='related' button_label='Add Related Term' %}
-    {% include 'edit/related_terms.html' with type='related' concept_list=concept.related_concepts %}
+    {% include 'edit/relation_buttons.html' with type='related' button_label='Add Related Term' edit_concept=concept %}
+    {% include 'edit/related_terms.html' with type='related' concept_list=concept.related_concepts edit_concept=concept %}
   </div>
 
   <!-- Narrower -->
   <div class=" dl-inline">
     <h6 class="dt">Narrower</h6>
-    {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' %}
-    {% include 'edit/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
+    {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' edit_concept=concept %}
+    {% include 'edit/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts edit_concept=concept %}
   </div>
 
   <!-- Other relations -->
@@ -138,7 +138,7 @@
 
   <!-- Scope -->
   <h5 class="h5">Scope note</h5>
-  {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
+  {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' edit_concept=concept %}
 
   {% if not concept.scopeNote %}
     <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>

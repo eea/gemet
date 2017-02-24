@@ -29,6 +29,8 @@ $(document).ready(function () {
   $('#broaderAdd').click(activateSelectEditing);
   $('#relatedAdd').click(activateSelectEditing);
   $('#narrowerAdd').click(activateSelectEditing);
+  $('#groupMemberAdd').click(activateSelectEditing);
+  $('#superGroupAdd').click(activateSelectEditing);
   $('#alternativeAdd').click(activateAlternativeAdd);
   $('.removeParent').click(removeParent);
 

@@ -7,7 +7,7 @@
         {{ parent.name }}
       </li>
       <input class="removeParent" type="button" data-field-id="#{{ type }}{{ parent.id }}"
-             data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
+             data-href="{% url 'remove_parent' language.code edit_concept.id parent.id type %}"
              data-type="{{ type }}" value="Delete" />
     {% endfor %}
   </ul>
