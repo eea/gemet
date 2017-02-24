@@ -16,6 +16,7 @@ from gemet.thesaurus.views import GroupView, TermView
 
 
 class GroupEditView(GroupView):
+    context_object_name = 'concept'
     template_name = "group_edit.html"
     model = EditableGroup
 
@@ -34,7 +35,7 @@ class ConceptMixin(object):
             self.model = Group
         elif parent_type == 'theme':
             self.model = Theme
-        elif parent_type == 'broader' and namespace == 'Groups':
+        elif parent_type == 'broader' and namespace == Group.NAMESPACE:
             self.model = SuperGroup
         elif parent_type in ['broader', 'narrower', 'related', 'groupMember']:
             self.model = Term

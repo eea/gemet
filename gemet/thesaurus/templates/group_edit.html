@@ -3,22 +3,22 @@
 {% load staticfiles %}
 
 {% block title %}
- Edit {{ group.name }}
+ Edit {{ concept.name }}
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='group' id=group.code %}
+  {% include 'header.html' with view='group' id=concept.code %}
 
   <!-- Group -->
   <div class="h3">
-    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' edit_concept=group %}
+    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
-      {% for translation in group.translations %}
+      {% for translation in concept.translations %}
       <li class="clearfix">
         <div class="dt">{{ translation.language__name }}</div>
         <div class="dd">{{ translation.value }}</div>
@@ -28,24 +28,24 @@
   </div>
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' edit_concept=group  %}
-  {% if not group.definition %}
+  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+  {% if not concept.definition %}
     <p class="alert" id="definitionEmpty">Definition is not available.</p>
   {% endif %}
 
   <!-- Broader -->
   <h5 class="h5">Super groups</h5>
-  {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Super Group' edit_concept=group link='false' %}
-  {% include 'edit/theme_group.html' with type='broader' concept_list=group.broader_concepts edit_concept=group %}
+  {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Super Group' link='false' %}
+  {% include 'edit/theme_group.html' with type='broader' concept_list=concept.broader_concepts %}
 
   <!-- Concepts -->
   <h5 class="h5">Concepts</h5>
-  {% include 'edit/relation_buttons.html' with type='groupMember' button_label='Add Concepts' edit_concept=group link='false' %}
-  {% include 'edit/theme_group.html' with type='groupMember' concept_list=group.groupMember_concepts edit_concept=group %}
+  {% include 'edit/relation_buttons.html' with type='groupMember' button_label='Add Concepts' link='false' %}
+  {% include 'edit/theme_group.html' with type='groupMember' concept_list=concept.groupMember_concepts %}
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:
-  {{ group.url }}
+  {{ concept.url }}
   </h5>
 
 {% endblock %}
