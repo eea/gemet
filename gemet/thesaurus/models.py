@@ -450,3 +450,9 @@ class EditableGroup(EditMixin, Group):
 
     class Meta:
         proxy = True
+
+
+class EditableSuperGroup(EditMixin, SuperGroup):
+
+    class Meta:
+        proxy = True

@@ -43,6 +43,7 @@ from .edit_views import AddParentRelationView, EditPropertyView
 from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
 from .edit_views import RemovePropertyView
 from gemet.thesaurus.edit_views import GroupEditView, TermEditView
+from gemet.thesaurus.edit_views import SuperGroupEditView
 
 from .api import ApiView
 
@@ -103,6 +104,8 @@ urlpatterns = [
             name='group_edit'),
         url(r'^supergroup/(?P<code>\d+)$', SuperGroupView.as_view(),
             name='supergroup'),
+        url(r'^supergroup/(?P<code>\d+)/edit$', SuperGroupEditView.as_view(),
+            name='supergroup_edit'),
         url(r'^relations/(?P<group_code>\d+)/$', RelationsView.as_view(),
             name='relations'),
         url(r'^theme/(?P<theme_code>\d+)/concepts/$',
