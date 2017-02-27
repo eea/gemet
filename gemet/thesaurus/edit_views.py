@@ -10,10 +10,11 @@ from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
 from gemet.thesaurus.models import RELATION_TYPES, SuperGroup, Theme, Term
 from gemet.thesaurus.models import Version
-from gemet.thesaurus.models import EditableGroup, EditableTerm
+from gemet.thesaurus.models import EditableGroup, EditableTerm, EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
-from gemet.thesaurus.views import GroupView, TermView, SuperGroupView
+from gemet.thesaurus.views import GroupView, SuperGroupView
+from gemet.thesaurus.views import TermView, ThemeView
 
 
 class GroupEditView(GroupView):
@@ -33,6 +34,12 @@ class TermEditView(TermView):
     model = EditableTerm
 
 
+class ThemeEditView(ThemeView):
+    template_name = "theme_edit.html"
+    model = EditableTheme
+    context_object_name = 'concept'
+
+
 class ConceptMixin(object):
 
     def _set_concept_model(self, parent_type, namespace):
@@ -46,7 +53,8 @@ class ConceptMixin(object):
             self.model = SuperGroup
         elif parent_type == 'narrower' and namespace == SuperGroup.NAMESPACE:
             self.model = Group
-        elif parent_type in ['broader', 'narrower', 'related', 'groupMember']:
+        elif parent_type in ['broader', 'narrower', 'related', 'groupMember',
+                             'themeMember']:
             self.model = Term
 
     def _get_all_concepts_by_langcode(self, langcode, concept, relation):
@@ -111,6 +119,9 @@ class EditPropertyView(JsonResponseMixin, View):
         else:
             is_resource = False
             if published_field:
+                if published_field.value == form.cleaned_data['value']:
+                    data = {"message": 'Value already used.'}
+                    return self._get_response(data, 'error', 400)
                 published_field.status = Property.DELETED_PENDING
                 published_field.save()
                 is_resource = published_field.is_resource
