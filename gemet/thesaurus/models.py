@@ -11,6 +11,7 @@ RELATION_TYPES = [
     'narrower',
     'related',
     'groupMember',
+    'themeMember',
 ]
 
 FOREIGN_RELATION_TYPES = [
@@ -438,6 +439,12 @@ class EditMixin(object):
                 sibling['status'] = self.source_relations.filter(
                     target_id=sibling['id']).first().status
             setattr(self, relation_type + '_concepts', siblings)
+
+
+class EditableTheme(EditMixin, Theme):
+
+    class Meta:
+        proxy = True
 
 
 class EditableTerm(EditMixin, Term):
