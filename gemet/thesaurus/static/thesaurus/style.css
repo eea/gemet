@@ -1248,6 +1248,12 @@ li:hover .btn-remove-down {
 	    font-family: FontAwesome;
 }
 
+.text-area .alternative-item > i:before {
+	    content: "\f0da";
+	    font-family: FontAwesome;
+}
+
+
 .text-area ul {
     margin-left: 0;
 }
