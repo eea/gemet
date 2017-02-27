@@ -37,6 +37,7 @@ class TermEditView(TermView):
 class ThemeEditView(ThemeView):
     template_name = "theme_edit.html"
     model = EditableTheme
+    context_object_name = 'concept'
 
 
 class ConceptMixin(object):
