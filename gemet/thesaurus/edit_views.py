@@ -118,6 +118,9 @@ class EditPropertyView(JsonResponseMixin, View):
         else:
             is_resource = False
             if published_field:
+                if published_field.value == form.cleaned_data['value']:
+                    data = {"message": 'Value already used.'}
+                    return self._get_response(data, 'error', 400)
                 published_field.status = Property.DELETED_PENDING
                 published_field.save()
                 is_resource = published_field.is_resource
