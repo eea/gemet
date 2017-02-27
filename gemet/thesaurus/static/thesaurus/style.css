@@ -1032,8 +1032,8 @@ li:hover .btn-remove-down {
     float: left;
     clear: left;
     display: inline-block;
-    margin: 1rem;
-    border-radius: 6px;
+    /*margin: 1rem;*/
+    /*border-radius: 6px;*/
     padding-left: .5rem;
     border-collapse: collapse;
     padding: .5rem;
@@ -1056,11 +1056,13 @@ li:hover .btn-remove-down {
 /* edit pages */
 
 .status-0 {
-    text-shadow: 0px 0px 6px rgba(15, 183, 0, 0.4);
+    /*text-shadow: 0px 0px 6px rgba(15, 183, 0, 0.4);*/
+        color: #069641;
 }
 
 .status-3 {
-    text-shadow:0px 0px 6px rgba(177, 0, 0, 0.4);
+    /*text-shadow:0px 0px 6px rgba(177, 0, 0, 0.4);*/
+        color: #a70f0f;
 }
 
 .status-0,
@@ -1241,6 +1243,11 @@ li:hover .btn-remove-down {
     list-style-type: none;
 }
 
+.text-area li:before {
+	    content: "\f0da";
+	    font-family: FontAwesome;
+}
+
 .text-area ul {
     margin-left: 0;
 }
@@ -1283,3 +1290,6 @@ li:hover .btn-remove-down {
 #workarea ul li {
 	position: relative;
 }
+
+
+
