@@ -15,6 +15,10 @@ function getCookie(name) {
 }
 
 $(document).ready(function () {
+
+  // Hide elements with hidden attribute
+  $("[hidden]").hide();
+
   $('#prefLabelEdit').click(activateEditing);
   $('#prefLabelSave').click(saveEditedField);
   $('#scopeNoteEdit').click(activateEditing);
