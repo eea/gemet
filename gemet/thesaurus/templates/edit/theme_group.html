@@ -5,9 +5,16 @@
           value="{{ parent.id }}"
           class="status-{{ parent.status }}">
         {{ parent.name }}
+          <button class='btng centerMe removeParent' type="button" data-field-id="#{{ type }}{{ parent.id }}"
+                       data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
+                       data-type="{{ type }}">
+          <div class='icon'>
+             <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+              <span>Delete</span>
+           </div>
+          </button>
       </li>
-      <input class="removeParent" type="button" data-field-id="#{{ type }}{{ parent.id }}"
-             data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
-             data-type="{{ type }}" value="Delete" />
     {% endfor %}
   </ul>
