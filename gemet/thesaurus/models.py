@@ -11,6 +11,7 @@ RELATION_TYPES = [
     'narrower',
     'related',
     'groupMember',
+    'themeMember',
 ]
 
 FOREIGN_RELATION_TYPES = [
@@ -440,6 +441,12 @@ class EditMixin(object):
             setattr(self, relation_type + '_concepts', siblings)
 
 
+class EditableTheme(EditMixin, Theme):
+
+    class Meta:
+        proxy = True
+
+
 class EditableTerm(EditMixin, Term):
 
     class Meta:
@@ -447,6 +454,12 @@ class EditableTerm(EditMixin, Term):
 
 
 class EditableGroup(EditMixin, Group):
+
+    class Meta:
+        proxy = True
+
+
+class EditableSuperGroup(EditMixin, SuperGroup):
 
     class Meta:
         proxy = True

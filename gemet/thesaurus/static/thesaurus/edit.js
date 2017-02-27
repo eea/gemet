@@ -36,6 +36,7 @@ $(document).ready(function () {
   $('#groupMemberAdd').click(activateSelectEditing);
   $('#superGroupAdd').click(activateSelectEditing);
   $('#alternativeAdd').click(activateAlternativeAdd);
+  $('#themeMemberAdd').click(activateSelectEditing);
   $('.removeParent').click(removeParent);
 
   function prepareElements(fieldName){

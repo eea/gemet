@@ -42,7 +42,8 @@ from .edit_views import AddForeignRelationView, AddPropertyView
 from .edit_views import AddParentRelationView, EditPropertyView
 from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
 from .edit_views import RemovePropertyView
-from gemet.thesaurus.edit_views import GroupEditView, TermEditView
+from gemet.thesaurus.edit_views import GroupEditView, SuperGroupEditView
+from gemet.thesaurus.edit_views import TermEditView, ThemeEditView
 
 from .api import ApiView
 
@@ -97,18 +98,20 @@ urlpatterns = [
             InspireThemeView.as_view(), name='inspire_theme'),
         url(r'^theme/(?P<code>\d+)$', ThemeView.as_view(),
             name='theme'),
+        url(r'^theme/(?P<code>\d+)/edit$', ThemeEditView.as_view(),
+            name='theme_edit'),
         url(r'^group/(?P<code>\d+)$', GroupView.as_view(),
             name='group'),
         url(r'^group/(?P<code>\d+)/edit$', GroupEditView.as_view(),
             name='group_edit'),
         url(r'^supergroup/(?P<code>\d+)$', SuperGroupView.as_view(),
             name='supergroup'),
+        url(r'^supergroup/(?P<code>\d+)/edit$', SuperGroupEditView.as_view(),
+            name='supergroup_edit'),
         url(r'^relations/(?P<group_code>\d+)/$', RelationsView.as_view(),
             name='relations'),
         url(r'^theme/(?P<theme_code>\d+)/concepts/$',
-            ThemeConceptsView.as_view(),
-            name='theme_concepts'
-            ),
+            ThemeConceptsView.as_view(), name='theme_concepts'),
         url(r'^alphabetic/$', AlphabeticView.as_view(), name='alphabetic'),
         url(r'^alphabets/$', AlphabetsView.as_view(), name='alphabets'),
         url(r'^search/$', SearchView.as_view(), name='search'),
