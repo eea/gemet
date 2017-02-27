@@ -427,6 +427,7 @@ hr {
     font-size: smaller;
     margin-left: 24px;
     margin-bottom: 1em;
+        border-radius: 1rem;
 }
 
 @media (max-width: 700px) {
@@ -1255,3 +1256,4 @@ li:hover .btn-remove-down {
     left: 100%;
     top: -2px;
 }
+

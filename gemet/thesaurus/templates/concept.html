@@ -24,93 +24,106 @@
     </ul>
   </div>
   <!-- Alternatives -->
-  {% if concept.alternatives %}
-    <i>Alternatives:</i>
-    {% for alternative in concept.alternatives %}
-      <i>{{ alternative }};</i>
-    {% endfor %}
-  {% endif %}
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definition</h5>
-  <p id="definition">
-    {{ concept.definition }}
-    {% if concept.source %}
-      <span>(Source: {{ concept.source }})</span>
+    {% if concept.alternatives %}
+      <div class="text-area">
+          <i>Alternatives:</i>
+          {% for alternative in concept.alternatives %}
+            <i>{{ alternative }};</i>
+          {% endfor %}
+      </div>
     {% endif %}
-  </p>
-  {% if concept.default_definition %}
-  <p class="alert">Definition is not available for the current language.</p>
-  {% endif %}
-
+  <!-- Definition -->
+  <div class="text-area">
+    <h5 class="h5 hidden-desktop">Definition</h5>
+    <p id="definition">
+      {{ concept.definition }}
+      {% if concept.source %}
+        <span>(Source: {{ concept.source }})</span>
+      {% endif %}
+    </p>
+    {% if concept.default_definition %}
+    <p class="alert">Definition is not available for the current language.</p>
+    {% endif %}
+  </div>
 
    <!-- Themes -->
-  {% if concept.themes %}
-  <h5 class="h5">Themes</h5>
-  <ul class="listing">
-    {% for theme in concept.themes %}
-    <li>
-      {{ theme.name }}
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+    {% if concept.themes %}
+      <div class="text-area">
+        <h5 class="h5">Themes</h5>
+        <ul class="listing">
+          {% for theme in concept.themes %}
+          <li>
+            {{ theme.name }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
 
   <!-- Groups -->
-  {% if concept.groups %}
-    <h5 class="h5">Groups</h5>
-      <ul class="listing">
-      {% for group in concept.groups %}
-        <li>
-          {{ group.name }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    {% if concept.groups %}
+      <div class="text-area">
+          <h5 class="h5">Groups</h5>
+            <ul class="listing">
+            {% for group in concept.groups %}
+              <li>
+                {{ group.name }}
+              </li>
+            {% endfor %}
+          </ul>
+      </div>
+    {% endif %}
 
   <!-- Related terms -->
+ <div class="text-area">
   <h5 class="h5">Related terms</h5>
 
   <!-- Broader -->
-  {% if concept.broader_concepts %}
-  <div class="dl-inline">
-    <h6 class="dt">Broader</h6>
-    <ul class="dd-list">
-      {% for cp in concept.broader_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
-      {% endfor %}
-    </ul>
+    {% if concept.broader_concepts %}
+    <div class="dl-inline">
+      <h6 class="dt">Broader</h6>
+      <ul class="dd-list">
+        {% for cp in concept.broader_concepts %}
+        <li>
+          <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+        {% endfor %}
+      </ul>
 
-  </div>
-  {% endif %}
-
+    </div>
+    {% endif %}
+</div>
   <!-- Related -->
   {% if concept.related_concepts %}
-  <div class=" dl-inline">
-    <h6 class="dt">Related</h6>
-    <ul class="dd-list">
-      {% for cp in concept.related_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
-      {% endfor %}
-    </ul>
-  </div>
+    <div class="text-area">
+      <div class=" dl-inline">
+        <h6 class="dt">Related</h6>
+        <ul class="dd-list">
+          {% for cp in concept.related_concepts %}
+          <li>
+            <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
   {% endif %}
 
   <!-- Narrower -->
   {% if concept.narrower_concepts %}
-  <div class=" dl-inline">
-    <h6 class="dt">Narrower</h6>
-    <ul class="dd-list">
-      {% for cp in concept.narrower_concepts %}
-      <li>
-        <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
+    <div class="text-area">
+      <div class=" dl-inline">
+        <h6 class="dt">Narrower</h6>
+        <ul class="dd-list">
+          {% for cp in concept.narrower_concepts %}
+          <li>
+            <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
 
   <!-- Other relations -->
+<div class="text-area">
   <h5 class="h5">Other relations</h5>
   <ul class="dl-inline no-list">
     {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
@@ -125,19 +138,23 @@
 
     {% endfor %}
   </ul>
+</div>
 
   <!-- Scope -->
+<div class="text-area">
   <h5 class="h5">Scope note</h5>
   {% if not concept.scopeNote %}
     <p class="alert">Scope note is not available.</p>
   {% else %}
     <p id="scopeNote">{{ concept.scopeNote }}</p>
   {% endif %}
-
+</div>
   <!-- Concept URL -->
+<div class="text-area">
   <h5 class="h5 h5-url">Concept URL:
   {{ concept.url }}
   </h5>
+</div>
 
 {% endblock %}
 {% block version %}
