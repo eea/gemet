@@ -80,14 +80,15 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content #prefLabel').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
         self.assertEqual(resp.pyquery('.content #definition').text(),
                          "some definition")
         self.assertEqual(resp.pyquery('.content #scopeNote').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.content ul.listing:eq(1) li').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(1) li').text(),
                          "Group Parent")
-        self.assertEqual(resp.pyquery('.content ul.listing:eq(0) li').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(0) li').text(),
                          "Theme Parent")
 
     def test_concept_one_theme_rdf(self):
@@ -112,14 +113,15 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content #prefLabel').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
         self.assertEqual(resp.pyquery('.content #definition').text(),
                          "some definition")
         self.assertEqual(resp.pyquery('.content #scopeNote').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(1)').text(),
                          "Group Parent")
-        themes = resp.pyquery('.content ul.listing:eq(0) li').text().split()
+        themes = resp.pyquery('ul.listing:eq(0) li').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")

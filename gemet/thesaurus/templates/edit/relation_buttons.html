@@ -1,6 +1,38 @@
 {% load gemet_tags %}
-  <input type="button" value="{{ button_label }}" id="{{ type }}Add" data-type="{{ type }}"
-         data-link={{ link }} data-href="{% url 'add_parent' language.code concept.id type %}">
-  <input type="button" value="Cancel" id="{{ type }}Cancel" data-type="{{ type }}" hidden>
-  <input type="button" value="Save" id="{{ type }}Save" data-langcode="{{ language.code }}"
-         data-concept="{{ id }}" data-type="{{ type }}" hidden>
+
+<button class='btng add' type="button" value="{{ button_label }}"
+        id="{{ type }}Add"
+        data-type="{{ type }}"
+        data-href="{% url 'add_parent' language.code concept.id type %}"
+        data-link="{{ link }}">
+  <div class='icon'>
+    <i class="fa fa-plus" aria-hidden="true"></i>
+  </div>
+  <div class='text'>
+    <span>Add</span>
+  </div>
+</button>
+
+<button class='btng cancel' type="button" value="Cancel"
+        id="{{ type }}Cancel"
+        data-type="{{ type }}" hidden>
+  <div class='icon'>
+    <i class="fa fa-stop-circle" aria-hidden="true"></i>
+  </div>
+  <div class='text'>
+    <span>Cancel</span>
+  </div>
+</button>
+
+<button class='btng save' type="button" value="Save"
+        id="{{ type }}Save"
+        data-langcode="{{ language.code }}"
+        data-concept="{{ id }}"
+        data-type="{{ type }}" hidden>
+  <div class='icon'>
+    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+  </div>
+  <div class='text'>
+    <span>Save</span>
+  </div>
+</button>

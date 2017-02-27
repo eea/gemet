@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block title %}
- Edit {{ concept.name }}
+  Edit {{ concept.name }}
 {% endblock %}
 
 {% block content %}
@@ -20,139 +20,248 @@
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}
-      <li class="clearfix">
-        <div class="dt">{{ translation.language__name }}</div>
-        <div class="dd">{{ translation.value }}</div>
-      </li>
+        <li class="clearfix">
+          <div class="dt">{{ translation.language__name }}</div>
+          <div class="dd">{{ translation.value }}</div>
+        </li>
       {% endfor %}
     </ul>
   </div>
+
   <!-- Alternatives -->
-  <i id="alternative" data-href="{% url 'add_property' language.code concept.id 'altLabel' %}">
-    Alternatives:
-  </i>
-  <input  type="button" value="Add Alternative" id="alternativeAdd" data-type="alternative"
-          data-html-tag="input"/>
-  <input type="button" value="Cancel" id="alternativeCancel" data-type="alternative" hidden>
-  <input type="button" value="Save" id="alternativeSave" data-langcode="{{ language.code }}"
-         data-concept="{{ concept.id }}" data-type="alternative" hidden>
-  <div id="alternativeList">
-    {% for alternative in concept.altLabel %}
-      <i id="alternative{{ alternative.id }}"
-         class="status-{{ alternative.status }}">
-        {{ alternative.value }};
-      </i>
-      <input class="removeParent"
-             type="button"
-             data-field-id="#alternative{{ alternative.id }}"
-             data-type="alternative"
-             data-href="{% url 'remove_property' alternative.id %}"
-             value="Delete" />
-    {% endfor %}
+  <div class="alternative-wrapper text-area">
+    <div class="alternative-header">
+      <span id="alternative"
+            data-href="{% url 'add_property' language.code concept.id 'altLabel' %}">
+        Alternatives:
+      </span>
+
+      <button class='btng add' type="button"
+              id="alternativeAdd" value="Add Alternative" title="Add"
+              data-toggle="tooltip"
+              data-type="alternative"
+              data-html-tag="input">
+        <div class='icon'>
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </div>
+        <div class='text'>
+          <span>Add</span>
+        </div>
+      </button>
+
+      <button class='btng cancel' type="button"
+              id="alternativeCancel" value="Cancel" title="Cancel"
+              data-toggle="tooltip"
+              data-type="alternative" hidden>
+        <div class='icon'>
+          <i class="fa fa-stop-circle" aria-hidden="true"></i>
+        </div>
+        <div class='text'>
+          <span>Cancel</span>
+        </div>
+      </button>
+
+      <button class='btng save' type="button"
+              id="alternativeSave" value="Save" title="Save"
+              data-toggle="tooltip"
+              data-langcode="{{ language.code }}"
+              data-concept="{{ concept.id }}"
+              data-type="alternative" hidden>
+        <div class='icon'>
+          <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </div>
+        <div class='text'>
+          <span>Save</span>
+        </div>
+      </button>
+    </div>
+
+    <div id="alternativeList">
+      {% for alternative in concept.altLabel %}
+        <div class="alternative-item">
+          <i id="alternative{{ alternative.id }}"
+             class="status-{{ alternative.status }}">
+            {{ alternative.value }};
+          </i>
+          <button class='btng centerMe removeParent' type="submit" value="X"
+                  data-field-id="#alternative{{ alternative.id }}"
+                  data-type="alternative"
+                  data-href="{% url 'remove_property' alternative.id %}">
+            <div class='icon'>
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </div>
+            <div class='text'>
+              <span>Delete</span>
+            </div>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 
   <!-- Definition -->
-  <p>
-  <h5 class="h5 hidden-desktop">Definition</h5>
+  <div class="definition text-area">
+    <h5 class="h5">Definition</h5>
     {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+
     {% if concept.default_definition %}
       <p class="alert" id="definitionEmpty">
         Definition is not available for the current language.
       </p>
     {% endif %}
-  </p>
+  </div>
 
   <!--Source-->
-  <p>
+  <div class="source text-area">
     <span>Source:</span>
-    {% include 'edit/property.html' with property_name='source' html_tag='input' %}
+    {% include 'edit/property.html' with property_name='source' html_tag='textarea' %}
     {% if not concept.source %}
       <p class="alert" id="sourceEmpty"> Source is not available. </p>
     {% endif %}
-  </p>
+  </div>
 
-   <!-- Themes -->
-  <h5 class="h5">Themes</h5>
-  {% include 'edit/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
-  {% include 'edit/theme_group.html' with type='theme' concept_list=concept.themes %}
+  <!-- Themes -->
+  <div class="themes text-area">
+    <h5 class="h5">Themes</h5>
+    {% include 'edit/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
+    {% include 'edit/theme_group.html' with type='theme' concept_list=concept.themes %}
+  </div>
+
   <!-- Groups -->
-  <h5 class="h5">Groups</h5>
-  {% include 'edit/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
-  {% include 'edit/theme_group.html' with type='group' concept_list=concept.groups %}
+  <div class="groups text-area">
+    <h5 class="h5">Groups</h5>
+    {% include 'edit/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
+    {% include 'edit/theme_group.html' with type='group' concept_list=concept.groups %}
+  </div>
 
   <!-- Related terms -->
-  <h5 class="h5">Related terms</h5>
+  <div class="related-terms text-area">
+    <h5 class="h5">Related terms</h5>
 
-  <!-- Broader -->
+    <!-- Broader -->
+    <div class="dl-inline">
+      <div class="dl-header">
+        <h6 class="dt">Broader</h6>
+        {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
+      </div>
+      {% include 'edit/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
+    </div>
 
-  <div class="dl-inline">
-    <h6 class="dt">Broader</h6>
-    {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
-    {% include 'edit/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
-  </div>
+    <!-- Related -->
+    <div class="dl-inline">
+      <div class="dl-header">
+        <h6 class="dt">Related</h6>
+        {% include 'edit/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
+      </div>
+      {% include 'edit/related_terms.html' with type='related' concept_list=concept.related_concepts %}
+    </div>
 
-  <!-- Related -->
-  <div class=" dl-inline">
-    <h6 class="dt">Related</h6>
-    {% include 'edit/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
-    {% include 'edit/related_terms.html' with type='related' concept_list=concept.related_concepts %}
-  </div>
-
-  <!-- Narrower -->
-  <div class=" dl-inline">
-    <h6 class="dt">Narrower</h6>
-    {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
-    {% include 'edit/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
+    <!-- Narrower -->
+    <div class="dl-inline">
+      <div class="dl-header">
+        <h6 class="dt">Narrower</h6>
+        {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
+      </div>
+      {% include 'edit/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
+    </div>
   </div>
 
   <!-- Other relations -->
-  <h5 class="h5">Other relations</h5>
-  <input type="button" value="Add Other Term" id="otherAdd" data-type="other"
-         data-href="{% url 'add_other' language.code concept.id %}" />
-  <label class="otherInput" for="Value" hidden>Value:</label>
-  <input class="otherInput" type="text" id='otherValue' value="" data-type="other"  hidden />
-  <label class="otherInput" for="Url" hidden>Url:</label>
-  <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
-  <input type="button" value="Cancel" id="otherCancel" data-type="other" hidden>
-  <input type="button" value="Save" id="otherSave" data-langcode="{{ language.code }}"
-         data-concept="{{ concept.id }}" data-type="other" hidden
-         data-href="{% url 'add_other' language.code concept.id %}">
-  <ul class="dl-inline no-list" id="all-other">
-    {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
-    {% for foreign_relation in foreign_relations %}
-    <li class="">
-      <div class="dt">{{ foreign_relation.grouper }}</div>
-      {% for relation in foreign_relation.list %}
-        <div class="status-{{ relation.status }}" id="other{{ relation.id }}">
-          <div class="dd">
-          <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
-          <input class="removeParent" type="button" data-type="other"
-          data-field-id="#other{{ relation.id }}" value="Delete"
-          data-href="{% url 'remove_other' language.code concept.id relation.id %}"/>
-        </div>
-      {% endfor %}
-    </li>
+  <div class="other-relations text-area">
+    <h5 class="h5">Other relations</h5>
 
-    {% endfor %}
-  </ul>
+    <button class='btng add' type="button"
+            id="otherAdd" value="Add Other Term" title="Add"
+            data-toggle="tooltip"
+            data-type="other"
+            data-href="{% url 'add_other' language.code concept.id %}">
+      <div class='icon'>
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </div>
+      <div class='text'>
+        <span>Add Other Term</span>
+      </div>
+    </button>
+
+    <label class="otherInput" for="Value" hidden>Value:</label>
+    <input class="otherInput" type="text" id='otherValue' value="" data-type="other" hidden />
+    <label class="otherInput" for="Url" hidden>Url:</label>
+    <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
+
+    <button class='btng cancel' type="button"
+            id="otherCancel" value="Cancel" title="Cancel"
+            data-toggle="tooltip"
+            data-type="other" hidden>
+      <div class='icon'>
+        <i class="fa fa-stop-circle" aria-hidden="true"></i>
+      </div>
+      <div class='text'>
+        <span>Cancel</span>
+      </div>
+    </button>
+
+    <button class='btng save' type="button"
+            id="otherSave" value="Save" title="Save"
+            data-toggle="tooltip"
+            data-langcode="{{ language.code }}"
+            data-concept="{{ concept.id }}"
+            data-type="other"
+            data-href="{% url 'add_other' language.code concept.id %}" hidden>
+      <div class='icon'>
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+      </div>
+      <div class='text'>
+        <span>Save</span>
+      </div>
+    </button>
+
+    <ul class="dl-inline no-list" id="all-other">
+      {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
+      {% for foreign_relation in foreign_relations %}
+        <li>
+          <span class="">{{ foreign_relation.grouper }}</span>
+
+          {% for relation in foreign_relation.list %}
+            <div class="status-{{ relation.status }} other-item" id="other{{ relation.id }}">
+              <a href="{{ relation.uri }}">{{ relation.label }}</a>
+              <button class='btng centerMe removeParent' type="button" value="Delete"
+                      data-type="other"
+                      data-field-id="#other{{ relation.id }}"
+                      data-href="{% url 'remove_other' language.code concept.id relation.id %}">
+                <div class='icon'>
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+                <div class='text'>
+                  <span>Delete</span>
+                </div>
+              </button>
+            </div>
+          {% endfor %}
+
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
   <!-- Scope -->
-  <h5 class="h5">Scope note</h5>
-  {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
-
-  {% if not concept.scopeNote %}
-    <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
-  {% endif %}
+  <div class="scope text-area">
+    <h5 class="h5">Scope note</h5>
+    {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
+    {% if not concept.scopeNote %}
+      <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
+    {% endif %}
+  </div>
 
   <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ concept.url }}
+  <h5 class="h5 h5-url">
+    Concept URL: {{ concept.url }}
   </h5>
+{% endblock %}
 
-{% endblock %}
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' with version=ns_version %}
 {% endblock %}
+
 {% block js %}
   <script type="text/javascript" src="{% static 'thesaurus/edit.js' %}"></script>
 {% endblock %}
