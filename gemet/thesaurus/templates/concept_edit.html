@@ -27,7 +27,7 @@
         <span id="alternative" data-href="{% url 'add_property' language.code concept.id 'altLabel' %}">
     Alternatives:
   </span>
-        <button class='btng add' type="button" value="Add Alternative" id="alternativeAdd" data-type="alternative" data-html-tag="input">
+        <button class='btng add' type="button" value="Add Alternative" id="alternativeAdd" data-type="alternative" data-html-tag="input" data-toggle="tooltip" title="Add">
             <div class='icon'>
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </div>
@@ -35,7 +35,7 @@
                 <span>Add</span>
             </div>
         </button>
-        <button class='btng cancel' type="button" value="Cancel" id="alternativeCancel" data-type="alternative" hidden>
+        <button class='btng cancel' type="button" value="Cancel" id="alternativeCancel" data-type="alternative" data-toggle="tooltip" title="Cancel" hidden>
             <div class='icon'>
                 <i class="fa fa-stop-circle" aria-hidden="true"></i>
             </div>
@@ -43,7 +43,7 @@
                 <span>Cancel</span>
             </div>
         </button>
-        <button class='btng save' type="button" value="Save" id="alternativeSave" data-langcode="{{ language.code }}" data-concept="{{ concept.id }}" data-type="alternative" hidden>
+        <button class='btng save' type="button" value="Save" id="alternativeSave" data-langcode="{{ language.code }}" data-concept="{{ concept.id }}" data-type="alternative" data-toggle="tooltip" title="Save" hidden>
             <div class='icon'>
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </div>
@@ -135,7 +135,7 @@
 <!-- Other relations -->
 <div class="other-relations text-area">
   <h5 class="h5">Other relations</h5>
-  <button class='btng save' type="button" value="Add Other Term" id="otherAdd" data-type="other" data-href="{% url 'add_other' language.code concept.id %}">
+  <button class='btng save' type="button" value="Add Other Term" id="otherAdd" data-type="other" data-href="{% url 'add_other' language.code concept.id %}" data-toggle="tooltip" title="Add">
       <div class='icon'>
           <i class="fa fa-plus" aria-hidden="true"></i>
       </div>
@@ -147,7 +147,7 @@
   <input class="otherInput" type="text" id='otherValue' value="" data-type="other" hidden />
   <label class="otherInput" for="Url" hidden>Url:</label>
   <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
-  <button class='btng cancel' type="button" value="Cancel" id="otherCancel" data-type="other" hidden>
+  <button class='btng cancel' type="button" value="Cancel" id="otherCancel" data-type="other" data-toggle="tooltip" title="Cancel" hidden>
       <div class='icon'>
           <i class="fa fa-stop-circle" aria-hidden="true"></i>
       </div>
@@ -155,7 +155,7 @@
           <span>Cancel</span>
       </div>
   </button>
-  <button class='btng save' type="button" value="Save" id="otherSave" data-langcode="{{ language.code }}" data-concept="{{ concept.id }}" data-type="other" hidden data-href="{% url 'add_other' language.code concept.id %}">
+  <button class='btng save' type="button" value="Save" id="otherSave" data-langcode="{{ language.code }}" data-concept="{{ concept.id }}" data-type="other" hidden data-href="{% url 'add_other' language.code concept.id %}" data-toggle="tooltip" title="Save">
       <div class='icon'>
           <i class="fa fa-floppy-o" aria-hidden="true"></i>
       </div>

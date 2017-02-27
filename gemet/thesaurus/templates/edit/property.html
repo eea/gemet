@@ -12,7 +12,7 @@
         >{{ property.value }}</div>
   {% endfor %}
 </div>
-<button class='btng edit' type="button" value="Edit" id="{{ property_name }}Edit" data-type="{{ property_name }}" data-html-tag="{{ html_tag }}">
+<button class='btng edit' type="button" value="Edit" id="{{ property_name }}Edit" data-type="{{ property_name }}" data-html-tag="{{ html_tag }}" data-toggle="tooltip" title="Edit">
     <div class='icon'>
         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
     </div>
@@ -20,7 +20,7 @@
         <span>Edit</span>
     </div>
 </button>
-<button class='btng cancel' type="button" value="Cancel" id="{{ property_name }}Cancel" data-type="{{ property_name }}" hidden>
+<button class='btng cancel' type="button" value="Cancel" id="{{ property_name }}Cancel" data-type="{{ property_name }}" data-toggle="tooltip" title="Cancel" hidden>
     <div class='icon'>
         <i class="fa fa-stop-circle" aria-hidden="true"></i>
     </div>
@@ -28,7 +28,7 @@
         <span>Cancel</span>
     </div>
 </button>
-<button class='btng save' type="button" value="Save" id="{{ property_name }}Save" data-type="{{ property_name }}" hidden>
+<button class='btng save' type="button" value="Save" id="{{ property_name }}Save" data-type="{{ property_name }}" data-toggle="tooltip" title="Save" hidden>
     <div class='icon'>
         <i class="fa fa-floppy-o" aria-hidden="true"></i>
     </div>

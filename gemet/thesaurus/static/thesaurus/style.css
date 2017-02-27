@@ -1249,6 +1249,15 @@ li:hover .btn-remove-down {
     display: inline-block;
     padding: 1rem;
     border-radius: 6px;
+    position: relative;
+    margin-right: 1rem;
+}
+
+.other-item .removeParent {
+    position: absolute;
+    right: -18px;
+    top: -2px;
+    left: auto;
 }
 
 .removeParent {
@@ -1257,3 +1266,20 @@ li:hover .btn-remove-down {
     top: -2px;
 }
 
+
+.alternative-item {
+    position: relative;
+    float: left;
+    clear: left;
+}
+
+
+.alternative-item .removeParent {
+	    position: absolute;
+    left: 100%;
+    top: -7px;
+}
+
+#workarea ul li {
+	position: relative;
+}
