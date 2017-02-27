@@ -8,17 +8,24 @@ from django.urls import reverse
 from gemet.thesaurus.models import Concept, ForeignRelation
 from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
 from gemet.thesaurus.models import Property, PropertyType, Relation
-from gemet.thesaurus.models import RELATION_TYPES
-from gemet.thesaurus.models import SuperGroup, Theme, Term, Version
+from gemet.thesaurus.models import RELATION_TYPES, SuperGroup, Theme, Term
+from gemet.thesaurus.models import Version
 from gemet.thesaurus.models import EditableGroup, EditableTerm
+from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
-from gemet.thesaurus.views import GroupView, TermView
+from gemet.thesaurus.views import GroupView, TermView, SuperGroupView
 
 
 class GroupEditView(GroupView):
     context_object_name = 'concept'
     template_name = "group_edit.html"
     model = EditableGroup
+
+
+class SuperGroupEditView(SuperGroupView):
+    context_object_name = 'concept'
+    template_name = "supergroup_edit.html"
+    model = EditableSuperGroup
 
 
 class TermEditView(TermView):
@@ -37,6 +44,8 @@ class ConceptMixin(object):
             self.model = Theme
         elif parent_type == 'broader' and namespace == Group.NAMESPACE:
             self.model = SuperGroup
+        elif parent_type == 'narrower' and namespace == SuperGroup.NAMESPACE:
+            self.model = Group
         elif parent_type in ['broader', 'narrower', 'related', 'groupMember']:
             self.model = Term
 
