@@ -89,7 +89,8 @@ $(document).ready(function () {
     $(fields['fieldElement']).show();
     $(fields['fieldParent']).show();
 
-    if ($(fields['fieldElement']).data('value') == ''){
+    if (($(fields['fieldElement']).data('value') == '') ||
+       ($(fields['fieldElement']).data('value') == undefined)){
         $(fields['emptyTagId']).show();
     }
     $(fields['inputTagId']).remove();
