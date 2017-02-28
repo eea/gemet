@@ -26,27 +26,37 @@
       {% endfor %}
     </ul>
   </div>
+
   <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definition</h5>
+  <div class="text-area">
+    <h5 class="h5 hidden-desktop">Definition</h5>
   {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-  {% if not concept.definition %}
-    <p class="alert" id="definitionEmpty">Definition is not available.</p>
-  {% endif %}
+    {% if not concept.definition %}
+      <p class="alert" id="definitionEmpty">Definition is not available.</p>
+    {% endif %}
+  </div>
 
   <!-- Broader -->
-  <h5 class="h5">Super groups</h5>
+  <div class="text-area">
+    <h5 class="h5">Super groups</h5>
   {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Super Group' link='false' %}
   {% include 'edit/bits/theme_group.html' with type='broader' concept_list=concept.broader_concepts %}
+  </div>
 
   <!-- Concepts -->
-  <h5 class="h5">Concepts</h5>
+  <div class="text-area">
+    <h5 class="h5">Concepts</h5>
   {% include 'edit/bits/relation_buttons.html' with type='groupMember' button_label='Add Concepts' link='false' %}
   {% include 'edit/bits/theme_group.html' with type='groupMember' concept_list=concept.groupMember_concepts %}
+  </div>
 
   <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ concept.url }}
-  </h5>
+  <div class="text-area">
+    <h5 class="h5 h5-url">Concept URL:
+    {{ concept.url }}
+    </h5>
+  </div>
+
 {% endblock %}
 
 {% block version %}

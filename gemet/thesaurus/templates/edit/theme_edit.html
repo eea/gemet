@@ -26,29 +26,38 @@ Edit {{ concept.name }}
       {% endfor %}
     </ul>
   </div>
+
   <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definition</h5>
+  <div class="text-area">
+    <h5 class="h5 hidden-desktop">Definition</h5>
   {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-  {% if not concept.definition %}
-      <p class="alert">Definition is not available.</p>
-  {% endif %}
+    {% if not concept.definition %}
+        <p class="alert">Definition is not available.</p>
+    {% endif %}
+  </div>
 
   <!-- Scope -->
- <h5 class="h5">Scope note</h5>
-   {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
- {% if not concept.scopeNote %}
-   <p class="alert" id="scopeNoteEmpty">Scope note is not available.</p>
- {% endif %}
+  <div class="text-area">
+   <h5 class="h5">Scope note</h5>
+    {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+   {% if not concept.scopeNote %}
+     <p class="alert" id="scopeNoteEmpty">Scope note is not available.</p>
+   {% endif %}
+   </div>
 
   <!-- Concepts -->
+ <div class="text-area"> 
   <h5 class="h5">Concepts</h5>
   {% include 'edit/bits/relation_buttons.html' with type='themeMember' button_label='Add Concepts' link='false' %}
   {% include 'edit/bits/theme_group.html' with type='themeMember' concept_list=concept.themeMember_concepts %}
+</div>
 
   <!-- Concept URL -->
+<div class="text-area">
   <h5 class="h5 h5-url">Concept URL:
   {{ concept.url }}
   </h5>
+</div>
 
 {% endblock %}
 {% block version %}

@@ -24,38 +24,46 @@
     </ul>
   </div>
   <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definiton</h5>
+  <div class="text-area">
+      <h5 class="h5 hidden-desktop">Definiton</h5>
   {% if not group.definition %}
     <p class="alert">Definition is not available.</p>
   {% else %}
     <p>{{ group.definition }}</p>
   {% endif %}
+  </div>
 
   <!-- Broader -->
   {% if group.broader_concepts %}
-  <h5 class="h5">Super groups</h5>
-  <ul class="listing">
-    {% for sg in group.broader_concepts %}
-    <li>{{ sg.name }}</li>
-    {% endfor %}
-  </ul>
+  <div class="text-area">
+    <h5 class="h5">Super groups</h5>
+    <ul class="listing">
+      {% for sg in group.broader_concepts %}
+      <li>{{ sg.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
   <!-- Concepts -->
   {% if group.groupMember_concepts %}
-  <h5 class="h5">Concepts</h5>
-  <ul class="listing">
-    {% for cp in group.groupMember_concepts %}
-    <li>{{ cp.name }}</li>
-    {% endfor %}
-  </ul>
+  <div class="text-area">
+    <h5 class="h5">Concepts</h5>
+    <ul class="listing">
+      {% for cp in group.groupMember_concepts %}
+      <li>{{ cp.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
 
   <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ group.url }}
-  </h5>
+  <div class="text-area">
+    <h5 class="h5 h5-url">Concept URL:
+    {{ group.url }}
+    </h5>
+  </div>
 
 {% endblock %}
 {% block version %}

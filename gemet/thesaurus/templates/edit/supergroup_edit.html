@@ -28,29 +28,37 @@
     </ul>
   </div>
 
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-  {% if not concept.definition %}
-    <p class="alert">Definition is not available.</p>
-  {% endif %}
+    <!-- Definition -->
+  <div class="text-area">
+    <h5 class="h5 hidden-desktop">Definition</h5>
+ {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+    {% if not concept.definition %}
+      <p class="alert">Definition is not available.</p>
+    {% endif %}
+  </div>
 
-  <!-- Scope -->
-  <h5 class="h5">Scope note</h5>
-  {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-  {% if not concept.scopeNote %}
-    <p class="alert">Scope note is not available.</p>
-  {% endif %}
+    <!-- Scope -->
+  <div class="text-area">
+    <h5 class="h5">Scope note</h5>
+ {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+    {% if not concept.scopeNote %}
+      <p class="alert">Scope note is not available.</p>
+    {% endif %}
+  </div>
 
-  <!-- Groups -->
-  <h5 class="h5">Groups</h5>
+    <!-- Groups -->
+  <div class="text-area">
+    <h5 class="h5">Groups</h5>
   {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
   {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
+  </div>
 
-  <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ concept.url }}
-  </h5>
+    <!-- Concept URL -->
+  <div class="text-area">
+    <h5 class="h5 h5-url">Concept URL:
+    {{ concept.url }}
+    </h5>
+  </div>
 
 {% endblock %}
 {% block version %}
