@@ -19,23 +19,23 @@ from gemet.thesaurus.views import TermView, ThemeView
 
 class GroupEditView(GroupView):
     context_object_name = 'concept'
-    template_name = "group_edit.html"
+    template_name = "edit/group_edit.html"
     model = EditableGroup
 
 
 class SuperGroupEditView(SuperGroupView):
     context_object_name = 'concept'
-    template_name = "supergroup_edit.html"
+    template_name = "edit/supergroup_edit.html"
     model = EditableSuperGroup
 
 
 class TermEditView(TermView):
-    template_name = "concept_edit.html"
+    template_name = "edit/concept_edit.html"
     model = EditableTerm
 
 
 class ThemeEditView(ThemeView):
-    template_name = "theme_edit.html"
+    template_name = "edit/theme_edit.html"
     model = EditableTheme
     context_object_name = 'concept'
 

@@ -11,7 +11,7 @@
 
   <!-- Concept -->
   <div class="h3">
-    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
+    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
 
   <!-- Side bar -->
@@ -30,22 +30,22 @@
 
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+  {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
   {% if not concept.definition %}
     <p class="alert">Definition is not available.</p>
   {% endif %}
 
   <!-- Scope -->
   <h5 class="h5">Scope note</h5>
-  {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
+  {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
   {% if not concept.scopeNote %}
     <p class="alert">Scope note is not available.</p>
   {% endif %}
 
   <!-- Groups -->
   <h5 class="h5">Groups</h5>
-  {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
-  {% include 'edit/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
+  {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
+  {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:
@@ -59,4 +59,5 @@
 
 {% block js %}
   <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
+  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
 {% endblock %}

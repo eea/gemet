@@ -3,15 +3,15 @@
 {% load staticfiles %}
 
 {% block title %}
-Edit {{ concept.name }}
+ Edit {{ concept.name }}
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='theme' id=concept.id %}
+  {% include 'header.html' with view='group' id=concept.code %}
 
-  <!-- Theme -->
+  <!-- Group -->
   <div class="h3">
-    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
+    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
   <!-- Side bar -->
   <div class="side-bar box">
@@ -28,33 +28,32 @@ Edit {{ concept.name }}
   </div>
   <!-- Definition -->
   <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+  {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
   {% if not concept.definition %}
-      <p class="alert">Definition is not available.</p>
+    <p class="alert" id="definitionEmpty">Definition is not available.</p>
   {% endif %}
 
-  <!-- Scope -->
- <h5 class="h5">Scope note</h5>
-   {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
- {% if not concept.scopeNote %}
-   <p class="alert" id="scopeNoteEmpty">Scope note is not available.</p>
- {% endif %}
+  <!-- Broader -->
+  <h5 class="h5">Super groups</h5>
+  {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Super Group' link='false' %}
+  {% include 'edit/bits/theme_group.html' with type='broader' concept_list=concept.broader_concepts %}
 
   <!-- Concepts -->
   <h5 class="h5">Concepts</h5>
-  {% include 'edit/relation_buttons.html' with type='themeMember' button_label='Add Concepts' link='false' %}
-  {% include 'edit/theme_group.html' with type='themeMember' concept_list=concept.themeMember_concepts %}
+  {% include 'edit/bits/relation_buttons.html' with type='groupMember' button_label='Add Concepts' link='false' %}
+  {% include 'edit/bits/theme_group.html' with type='groupMember' concept_list=concept.groupMember_concepts %}
 
   <!-- Concept URL -->
   <h5 class="h5 h5-url">Concept URL:
   {{ concept.url }}
   </h5>
-
 {% endblock %}
+
 {% block version %}
     {% include 'version.html' with version=ns_version %}
 {% endblock %}
 
 {% block js %}
   <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
+  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
 {% endblock %}

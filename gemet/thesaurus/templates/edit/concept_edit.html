@@ -11,7 +11,7 @@
 
   <!-- Concept -->
   <div class="h3">
-    {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
+    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
 
   <!-- Side bar -->
@@ -102,7 +102,7 @@
   <!-- Definition -->
   <div class="definition text-area">
     <h5 class="h5">Definition</h5>
-    {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+    {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
 
     {% if concept.default_definition %}
       <p class="alert" id="definitionEmpty">
@@ -114,7 +114,7 @@
   <!--Source-->
   <div class="source text-area">
     <span>Source:</span>
-    {% include 'edit/property.html' with property_name='source' html_tag='textarea' %}
+    {% include 'edit/bits/property.html' with property_name='source' html_tag='textarea' %}
     {% if not concept.source %}
       <p class="alert" id="sourceEmpty"> Source is not available. </p>
     {% endif %}
@@ -123,15 +123,15 @@
   <!-- Themes -->
   <div class="themes text-area">
     <h5 class="h5">Themes</h5>
-    {% include 'edit/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
-    {% include 'edit/theme_group.html' with type='theme' concept_list=concept.themes %}
+    {% include 'edit/bits/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
+    {% include 'edit/bits/theme_group.html' with type='theme' concept_list=concept.themes %}
   </div>
 
   <!-- Groups -->
   <div class="groups text-area">
     <h5 class="h5">Groups</h5>
-    {% include 'edit/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
-    {% include 'edit/theme_group.html' with type='group' concept_list=concept.groups %}
+    {% include 'edit/bits/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
+    {% include 'edit/bits/theme_group.html' with type='group' concept_list=concept.groups %}
   </div>
 
   <!-- Related terms -->
@@ -142,27 +142,27 @@
     <div class="dl-inline">
       <div class="dl-header">
         <h6 class="dt">Broader</h6>
-        {% include 'edit/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
+        {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
       </div>
-      {% include 'edit/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
+      {% include 'edit/bits/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
     </div>
 
     <!-- Related -->
     <div class="dl-inline">
       <div class="dl-header">
         <h6 class="dt">Related</h6>
-        {% include 'edit/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
+        {% include 'edit/bits/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
       </div>
-      {% include 'edit/related_terms.html' with type='related' concept_list=concept.related_concepts %}
+      {% include 'edit/bits/related_terms.html' with type='related' concept_list=concept.related_concepts %}
     </div>
 
     <!-- Narrower -->
     <div class="dl-inline">
       <div class="dl-header">
         <h6 class="dt">Narrower</h6>
-        {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
+        {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
       </div>
-      {% include 'edit/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
+      {% include 'edit/bits/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
     </div>
   </div>
 
@@ -246,7 +246,7 @@
   <!-- Scope -->
   <div class="scope text-area">
     <h5 class="h5">Scope note</h5>
-    {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
+    {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
     {% if not concept.scopeNote %}
       <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
     {% endif %}
@@ -264,5 +264,5 @@
 
 {% block js %}
   <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/select4.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
 {% endblock %}
