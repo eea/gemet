@@ -251,10 +251,10 @@ $(document).ready(function () {
   /* append the new relation to html (themes, groups, related relations) */
   function addElement(parentId, parentText, url, fields, fieldName, conceptUrl, link_tag){
     if (link_tag == true)
-        parentText = "<a href='" + conceptUrl + "'>" + parentText + "</a></li>";
+        parentText = "<a href='" + conceptUrl + "'> " + parentText + "</a></li>";
     var $newParent = $('<li id=' + fieldName + parentId +
                      " class=status-0" +
-                     " value=" + parentId + ">" + parentText + "</li>");
+                     " value=" + parentId + "> " + parentText + "</li>");
     var $newParentDelete = $('<input>')
     $newParentDelete.addClass("removeParent");
     $newParentDelete.attr("type", "button");
@@ -298,7 +298,6 @@ $(document).ready(function () {
           $(fields['fieldElement']).text(data['value']);
           $(fields['fieldElement']).data('value', data['value']);
           $(fields['fieldElement']).before(oldField);
-          $(fields['fieldElement']).before('<br>'); // TODO remove this once we have proper styling
         }
         if (fieldStatus == null){ // property not defined yet
           $newPropertyTag = $('<span>' + data['value'] + '</span>');
