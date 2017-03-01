@@ -155,23 +155,6 @@ class TestAddParentRelationView(GemetTest):
         self.property_type = PropertyTypeFactory(label='Theme',
                                                  name='theme', id=10)
 
-    def test_get_property_type_theme(self):
-        url = reverse('add_parent', kwargs={'id': self.term.id,
-                                            'langcode': 'en',
-                                            'rel_type': 'theme'})
-
-        response = self.app.get(url)
-        self.assertEqual(200, response.status_code)
-        data = json.loads(response.body)['parents'][0]
-
-        self.assertEqual('Theme 1', data['name'])
-        self.assertEqual(4, data['id'])
-        url = reverse('add_parent', kwargs={'id': self.term.id,
-                                            'langcode': 'en',
-                                            'rel_type': 'group'})
-        response = self.app.get(url)
-        self.assertEqual(200, response.status_code)
-
     def test_post_no_concept_no_parent_object(self):
         url = reverse('add_parent', kwargs={'id': 33,
                                             'langcode': 'en',
