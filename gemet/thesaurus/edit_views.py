@@ -196,10 +196,9 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         if published:
             published.status = Property.DELETED_PENDING
             published.save()
-        if pending:
-            pending.status = Property.DELETED_PENDING
-            pending.save()
         if relation:
+            if pending:
+                pending.delete()
             data = {}
             return self._get_response(data, 'success', 200)
         data = {"message": 'Object does not exist.'}
@@ -292,8 +291,11 @@ class RemovePropertyView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        field.status = Property.DELETED_PENDING
-        field.save()
+        if field.status == Property.PENDING:
+            field.delete()
+        else:
+            field.status = Property.DELETED_PENDING
+            field.save()
         return self._get_response({}, 'success', 200)
 
 
@@ -340,7 +342,10 @@ class RemoveForeignRelationView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        foreign_relation.status = Property.DELETED_PENDING
-        foreign_relation.save()
+        if foreign_relation.status == Property.PENDING:
+            foreign_relation.delete()
+        else:
+            foreign_relation.status = Property.DELETED_PENDING
+            foreign_relation.save()
         data = {}
         return self._get_response(data, 'success', 200)

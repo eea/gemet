@@ -441,8 +441,12 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
+
+         if ($(deleteFieldId).hasClass('status-0')){
+            $(deleteFieldId).remove();
+         }
          $(deleteFieldId).attr('class', 'status-3'); // Change status
-         // TODO define delete behaviour deleteButton.remove(); // Remove delete button
+         $(deleteButton).remove();
        }
     });
   };
