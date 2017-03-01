@@ -87,6 +87,7 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
             concept['add_url'] = add_url
             concept['remove_url'] = remove_url
             concept['concept_url'] = concept_url
+        return concepts
 
     def _get_concepts(self, langcode, relation, query):
         return (
@@ -119,10 +120,10 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
         query = request.GET.get('q')
 
         concepts = self._get_concepts(langcode, relation, query)
-        items = self._set_reverse_urls(concepts, langcode, relation)
+        items = self._set_reverse_urls(concepts[start:end], langcode, relation)
 
         data = {
-            'items': list(concepts[start:end]),
+            'items': list(items),
             'total_count': concepts.count(),
         }
         return self._get_response(data, 'success', 200)
