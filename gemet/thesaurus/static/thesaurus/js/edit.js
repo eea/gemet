@@ -14,7 +14,50 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function formatConcept (concept) {
+  return concept.name;
+}
+
+function formatConceptSelection (concept) {
+  var $selection = $("<div selected>" + concept.name + "</div>");
+  $selection.attr('data-href', concept.remove_url);
+  $selection.attr('data-href_add', concept.add_url);
+  $selection.attr('data-href_concept', concept.concept_url);
+  $selection.attr('value', concept.id);
+  return $selection;
+}
+
 $(document).ready(function () {
+  $(".select-ajax").each(function() {
+      $(this).select2({
+      ajax: {
+        url: $(this).data('href'),
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term, // search term
+            page: params.page
+          };
+        },
+        processResults: function (data, params) {
+          params.page = params.page || 1;
+
+          return {
+            results: data.items,
+            pagination: {
+              more: (params.page * 30) < data.total_count
+            }
+          };
+        },
+        cache: true
+      },
+      escapeMarkup: function (markup) { return markup; },
+      minimumInputLength: 1,
+      templateResult: formatConcept,
+      templateSelection: formatConceptSelection
+    });
+  });
 
   // Hide elements with hidden attribute
   $("[hidden]").hide();
@@ -90,7 +133,7 @@ $(document).ready(function () {
     var fields = prepareElements(fieldName);
     $(fields['saveButton']).hide();
     $(fields['saveButton']).unbind('click', saveConceptRelation);
-    $(fields['inputTagId']).remove();
+    $(fields['inputTagId']).hide();
     $(fields['addButtonId']).show();
     $(fields['addButtonId']).bind('click', activateSelectEditing);
     $(this).hide();
@@ -177,16 +220,13 @@ $(document).ready(function () {
   function activateSelectEditing(){
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName); //preparing selectors
+    $(fields['inputTagId']).show()
     $(fields['saveButton']).show();
-    $(fields['saveButton']).bind('click', saveConceptRelation);
     $(fields['cancelButtonId']).show();
-    $(fields['cancelButtonId']).bind('click', cancelSelectEditing);
     $(this).hide();
     $(this).unbind('click', activateSelectEditing);
-    url = $(this).data('href');
-    $('<select id="' + fields['inputTag'] + '" hidden/>').
-    insertBefore(fields['cancelButtonId']);
-    getAllConcepts(url, fields['inputTagId'], fieldName);
+    $(fields['cancelButtonId']).bind('click', cancelSelectEditing);
+    $(fields['saveButton']).bind('click', saveConceptRelation);
     $(fields['fieldElement']).children('.removeParent').unbind('click', removeParent);
     $(fields['fieldElement']).children('.removeParent').hide();
   };
@@ -293,8 +333,8 @@ $(document).ready(function () {
     var fieldName = $(this).data('type');
     var fields = prepareElements(fieldName);
     // define a selector for all options of the targeted select
-    var selector = fields['inputTagId'] + " option:selected";
-    var parentId = $(selector).val();
+    var selector = fields['inputTagId'] + " div";
+    var parentId = $(selector).attr('value');
     var parentText = $(selector).text();
     var addUrl = $(selector).data('href_add');
     var removeUrl = $(selector).data('href');

@@ -41,7 +41,7 @@ from gemet.thesaurus.views import (
 from .edit_views import AddForeignRelationView, AddPropertyView
 from .edit_views import AddParentRelationView, EditPropertyView
 from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
-from .edit_views import RemovePropertyView
+from .edit_views import RemovePropertyView, UnrelatedConcepts
 from gemet.thesaurus.edit_views import GroupEditView, SuperGroupEditView
 from gemet.thesaurus.edit_views import TermEditView, ThemeEditView
 
@@ -118,6 +118,8 @@ urlpatterns = [
         url(r'^definition-sources/$', DefinitionSourcesView.as_view(),
             name='definition_sources'),
         url(r'^webservices/$', WebServicesView.as_view(), name='webservices'),
+        url(r'^concepts/except/(?P<code>\d+)/relation/(?P<relation>[a-zA-Z]+)$',
+            UnrelatedConcepts.as_view(), name='concepts_json'),
         ])),
     url(r'^exports/', include([
         url(r'^gemet-backbone\.html$', BackboneView.as_view(),
@@ -150,8 +152,6 @@ urlpatterns = [
         url(r'^parent-concept/(?P<parent_id>\d+)/type/(?P<rel_type>[a-zA-Z-]+)'
             r'/remove',
             RemoveParentRelationView.as_view(), name='remove_parent'),
-        url(r'^parent-concept/type/(?P<rel_type>[a-zA-Z-]+)/add$',
-            AddParentRelationView.as_view(), name='add_parent'),
         url(r'^parent-concept/(?P<parent_id>\d+)/type/'
             r'(?P<rel_type>[a-zA-Z-]+)/$', AddParentRelationView.as_view(),
             name='add_parent'),

@@ -57,29 +57,6 @@ class ConceptMixin(object):
                              'themeMember']:
             self.model = Term
 
-    def _get_all_concepts_by_langcode(self, langcode, concept, relation):
-        return list(
-            Property.objects
-            .filter(
-                name='prefLabel',
-                language__code=langcode,
-                concept__namespace__heading=self.model.NAMESPACE,
-                status__in=(Property.PENDING, Property.PUBLISHED),
-            )
-            .exclude(
-                concept_id__in=concept.source_relations.filter(
-                    property_type__name=relation,
-                    status__in=(Relation.PENDING, Relation.PUBLISHED),
-                )
-                .values_list('target_id', flat=True)
-            )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'
-                           },
-                   order_by=['name'])
-            .values('name', 'id').all()
-        )
-
 
 class JsonResponseMixin(object):
 
@@ -89,6 +66,66 @@ class JsonResponseMixin(object):
         response.status = status
         response.status_code = status_code
         return response
+
+
+class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
+
+    def _set_reverse_urls(self, concepts, langcode, relation):
+        for concept in concepts:
+            url_kwargs = {
+                'langcode': langcode,
+                'id': self.concept.id,
+                'parent_id': concept['id'],
+                'rel_type': relation,
+            }
+            add_url = reverse('add_parent', kwargs=url_kwargs)
+            remove_url = reverse('remove_parent', kwargs=url_kwargs)
+            concept_url = reverse('concept', kwargs={
+                'langcode': langcode,
+                'code': concept['concept__code'],
+            })
+            concept['add_url'] = add_url
+            concept['remove_url'] = remove_url
+            concept['concept_url'] = concept_url
+
+    def _get_concepts(self, langcode, relation, query):
+        return (
+            Property.objects
+            .filter(
+                name='prefLabel',
+                language__code=langcode,
+                concept__namespace__heading=self.model.NAMESPACE,
+                status__in=(Property.PENDING, Property.PUBLISHED),
+                value__istartswith=query,
+            )
+            .exclude(
+                concept_id__in=self.concept.source_relations.filter(
+                    property_type__name=relation,
+                    status__in=(Relation.PENDING, Relation.PUBLISHED),
+                )
+                .values_list('target_id', flat=True)
+            )
+            .extra(select={'name': 'value', 'id': 'concept_id'},
+                   order_by=['name'])
+            .values('name', 'id', 'concept__code')
+        )
+
+    def get(self, request, langcode, code, relation):
+        self.concept = Concept.objects.get(code=code)
+        self._set_concept_model(relation, self.concept.namespace.heading)
+
+        page = int(request.GET.get('page', '1'))
+        start, end = 30 * (page-1), 30 * page
+        query = request.GET.get('q')
+
+        concepts = self._get_concepts(langcode, relation, query)
+        items = self._set_reverse_urls(concepts, langcode, relation)
+
+        data = {
+            'items': list(concepts[start:end]),
+            'total_count': concepts.count(),
+        }
+        return self._get_response(data, 'success', 200)
 
 
 class EditPropertyView(JsonResponseMixin, View):
@@ -169,36 +206,6 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
 
 class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
-
-    def get_reverse_urls(self, concept_list, langcode, id, rel_type):
-        for concept in concept_list:
-            url_args = {'langcode': langcode,
-                        'id': id,
-                        'parent_id': concept['id'],
-                        'rel_type': rel_type}
-            remove_rev = reverse('remove_parent', kwargs=url_args)
-            add_rev = reverse('add_parent', kwargs=url_args)
-            concept_code = Concept.objects.get(id=concept['id']).code
-            concept_rev = reverse('concept', kwargs={
-                'langcode': langcode,
-                'code': concept_code})
-            concept['href'] = remove_rev
-            concept['href_add'] = add_rev
-            concept['href_concept'] = concept_rev
-
-    def get(self, request, langcode, id, rel_type):
-        try:
-            concept = Concept.objects.get(id=id)
-            self._set_concept_model(rel_type, concept.namespace.heading)
-        except ObjectDoesNotExist:
-            data = {"message": 'Object does not exist.'}
-            return self._get_response(data, 'error', 400)
-
-        target_concepts = self._get_all_concepts_by_langcode(
-            langcode, concept, rel_type)
-        self.get_reverse_urls(target_concepts, langcode, id, rel_type)
-        data = {"parents": target_concepts}
-        return self._get_response(data, 'success', 200)
 
     def post(self, request, langcode, id, parent_id, rel_type):
         try:
