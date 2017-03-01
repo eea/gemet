@@ -116,7 +116,7 @@
   <!--Source-->
   <div class="source text-area">
     <span>Source:</span>
-    {% include 'edit/property.html' with property_name='source' html_tag='input' %}
+    {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
     {% if not concept.source %}
       <p class="alert" id="sourceEmpty"> Source is not available. </p>
     {% endif %}

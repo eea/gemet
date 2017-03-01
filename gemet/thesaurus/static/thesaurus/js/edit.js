@@ -38,7 +38,6 @@ $(document).ready(function () {
         cache: true
       },
       escapeMarkup: function (markup) { return markup; },
-      minimumInputLength: 1,
       templateResult: formatConcept,
       templateSelection: formatConceptSelection
     });

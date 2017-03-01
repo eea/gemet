@@ -117,7 +117,7 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
 
         page = int(request.GET.get('page', '1'))
         start, end = 30 * (page-1), 30 * page
-        query = request.GET.get('q')
+        query = request.GET.get('q') or ''
 
         concepts = self._get_concepts(langcode, relation, query)
         items = self._set_reverse_urls(concepts[start:end], langcode, relation)
