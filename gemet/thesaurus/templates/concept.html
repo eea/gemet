@@ -24,9 +24,9 @@
     </ul>
   </div>
 
-
+<div class="text-area-wrapper">
  <!-- Definition -->
-  <div class="text-area">
+  <div class="text-area" id="definition">
     <h5 class="h5 hidden-desktop">Definition</h5>
     <p id="definition">
       {{ concept.definition }}
@@ -55,8 +55,7 @@
   <h5 class="h5">Related terms</h5>
 
   <!-- Broader -->
-  <div class="related-terms">
- 
+  
     {% if concept.broader_concepts %}
     <div>
       <h6>Broader</h6>
@@ -95,9 +94,8 @@
       </div>
     {% endif %}
 
-  </div>
+ 
 </div>
-<div class="group">
    <!-- Themes -->
     {% if concept.themes %}
       <div class="text-area">
@@ -125,7 +123,6 @@
           </ul>
       </div>
     {% endif %}
-</div>
 
   <!-- Other relations -->
   {% if foreign_relation %}
@@ -148,7 +145,7 @@
 {% endif %}
 
   <!-- Scope -->
-<div class="text-area">
+<div class="text-area" id="scope">
   <h5 class="h5">Scope note</h5>
   {% if not concept.scopeNote %}
     <p class="alert">Scope note is not available.</p>
@@ -157,10 +154,12 @@
   {% endif %}
 </div>
   <!-- Concept URL -->
-<div class="text-area">
+<div class="text-area" id="concepturl">
   <h5 class="h5 h5-url">Concept URL:
   {{ concept.url }}
   </h5>
+</div>
+
 </div>
 
 {% endblock %}

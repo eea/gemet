@@ -689,7 +689,7 @@ hr {
 #workarea {
     padding-bottom: 60px;
     margin-left: 0;
-        background: #F3F8FB;
+        // background: #F3F8FB;
             font-size: 110%;
 }
 
@@ -1158,13 +1158,16 @@ li:hover .btn-remove-down {
     color: #245580;
 }
 
-.content div:hover > .btng,
-.content li:hover > .btng {
+.content .text-area:hover .btng,
+.content li:hover .btng,
+.h1:hover .btng,
+.h2:hover .btng,
+.h3:hover .btng  {
     opacity: 1;
 }
 
 .edit-page .text-area {
-    padding: 1rem;
+    // padding: 1rem;
     border-radius: 1rem;
     box-shadow: 0px 0px 2px #676161;
     overflow: hidden;
@@ -1174,8 +1177,8 @@ li:hover .btn-remove-down {
 
 .text-area {
     padding: 1rem;
-    overflow: auto;
-        border-bottom: 1px solid #e4e4e4;
+    overflow: hidden;
+        // border-bottom: 1px solid #e4e4e4;
 }
 
 .dl-header {
@@ -1198,9 +1201,9 @@ li:hover .btn-remove-down {
 }
 
 .text-area li:before {
-	    content: "\f0da";
-	    font-family: FontAwesome;
-        color: #FF7E01;
+	    content: "• ";
+	    // font-family: FontAwesome;
+        color: #0065a5;
 }
 
 .edit-page .text-area li:before { 
@@ -1445,7 +1448,8 @@ font-size: 1.2rem;
 #workarea h3,
 #workarea h2,
 #workarea h4 {
-    color: #FF7E01;
+    color: #0065a5;
+        font-weight: bold;
 }
 
 
@@ -1482,7 +1486,7 @@ border-radius: 0;
 }
 
 p#definition {
-       text-indent: 20px;
+       // text-indent: 20px;
 }
 
 .edit-page .related-terms {
@@ -1507,7 +1511,7 @@ p#definition {
 .group {
        display: flex;
     justify-content: flex-start;
-        border-bottom: 1px solid #e4e4e4;
+        // border-bottom: 1px solid #e4e4e4;
 }
 
 .group .text-area {
@@ -1519,4 +1523,40 @@ p#definition {
 
 .text-area, .group {
     margin-bottom: 3rem;
+}
+
+.button-elements {
+    display: inline-block;
+}
+
+.input-area {
+    display: inline-block;
+}
+
+
+
+.text-area-wrapper {
+        display: flex;
+    flex-wrap: wrap;
+}
+
+
+.text-area#definition
+ {
+    width: 100%;
+  width: 100%;
+  box-shadow: 0px 0px 2px #aaa;
+  border-radius: 6px;
+}
+
+
+#definition *{
+   // color: white!important;
+}
+
+#scope, 
+#concepturl {
+  width: 100%;
+  box-shadow: 0px 0px 2px #aaa;
+  border-radius: 6px;
 }

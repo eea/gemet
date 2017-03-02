@@ -8,7 +8,7 @@
 
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.code %}
-
+<div class="edit-page">
   <!-- Concept -->
   <div class="h3">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
@@ -106,7 +106,6 @@
   <div class="definition text-area">
     <h5 class="h5">Definition</h5>
       {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-
       {% if concept.default_definition %}
         <p class="alert" id="definitionEmpty">
           Definition is not available for the current language.
@@ -272,6 +271,7 @@
   <h5 class="h5 h5-url">
     Concept URL: {{ concept.url }}
   </h5>
+</div>
 {% endblock %}
 
 {% block version %}
