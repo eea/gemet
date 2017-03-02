@@ -1,5 +1,7 @@
 {% load gemet_tags %}
+<div class="text-field">
   <ul id="{{ type }}" class="listing">
+    <div class="elements-list">
     {% for parent in concept_list %}
       <li id="{{ type }}{{ parent.id }}"
           value="{{ parent.id }}"
@@ -19,4 +21,6 @@
           {% endif %}
       </li>
     {% endfor %}
+    </div>
   </ul>
+</div>

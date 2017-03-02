@@ -1,44 +1,44 @@
 {% load gemet_tags %}
-
-<div id="{{ type }}Input" style="width: 50%;" hidden>
+<div id="{{ type }}Input" class="input-area" style="width: 50%;" hidden>
   <select class="select-ajax"
           style="width: 100%;"
           data-href="{% url 'concepts_json' language.code concept.code type %}">
   </select>
 </div>
+<div class="button-elements">
+  <button class='btng add' type="button" value="{{ button_label }}"
+          id="{{ type }}Add"
+          data-type="{{ type }}"
+          data-link="{{ link }}">
+    <div class='icon'>
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Add</span>
+    </div>
+  </button>
 
-<button class='btng add' type="button" value="{{ button_label }}"
-        id="{{ type }}Add"
-        data-type="{{ type }}"
-        data-link="{{ link }}">
-  <div class='icon'>
-    <i class="fa fa-plus" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Add</span>
-  </div>
-</button>
+  <button class='btng cancel' type="button" value="Cancel"
+          id="{{ type }}Cancel"
+          data-type="{{ type }}" hidden>
+    <div class='icon'>
+      <i class="fa fa-stop-circle" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Cancel</span>
+    </div>
+  </button>
 
-<button class='btng cancel' type="button" value="Cancel"
-        id="{{ type }}Cancel"
-        data-type="{{ type }}" hidden>
-  <div class='icon'>
-    <i class="fa fa-stop-circle" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Cancel</span>
-  </div>
-</button>
-
-<button class='btng save' type="button" value="Save"
-        id="{{ type }}Save"
-        data-langcode="{{ language.code }}"
-        data-concept="{{ id }}"
-        data-type="{{ type }}" hidden>
-  <div class='icon'>
-    <i class="fa fa-floppy-o" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Save</span>
-  </div>
-</button>
+  <button class='btng save' type="button" value="Save"
+          id="{{ type }}Save"
+          data-langcode="{{ language.code }}"
+          data-concept="{{ id }}"
+          data-type="{{ type }}" hidden>
+    <div class='icon'>
+      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Save</span>
+    </div>
+  </button>
+</div>

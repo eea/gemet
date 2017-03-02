@@ -11,7 +11,7 @@
 
   <!-- Concept -->
   <div class="h3">
-    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
+      {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
 
   <!-- Side bar -->
@@ -35,45 +35,46 @@
             data-href="{% url 'add_property' language.code concept.id 'altLabel' %}">
         Alternatives:
       </span>
+      <div class="button-elements">
+        <button class='btng add' type="button"
+                id="alternativeAdd" value="Add Alternative" title="Add"
+                data-toggle="tooltip"
+                data-type="alternative"
+                data-html-tag="input">
+          <div class='icon'>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Add</span>
+          </div>
+        </button>
 
-      <button class='btng add' type="button"
-              id="alternativeAdd" value="Add Alternative" title="Add"
-              data-toggle="tooltip"
-              data-type="alternative"
-              data-html-tag="input">
-        <div class='icon'>
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </div>
-        <div class='text'>
-          <span>Add</span>
-        </div>
-      </button>
+        <button class='btng cancel' type="button"
+                id="alternativeCancel" value="Cancel" title="Cancel"
+                data-toggle="tooltip"
+                data-type="alternative" hidden>
+          <div class='icon'>
+            <i class="fa fa-stop-circle" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Cancel</span>
+          </div>
+        </button>
 
-      <button class='btng cancel' type="button"
-              id="alternativeCancel" value="Cancel" title="Cancel"
-              data-toggle="tooltip"
-              data-type="alternative" hidden>
-        <div class='icon'>
-          <i class="fa fa-stop-circle" aria-hidden="true"></i>
-        </div>
-        <div class='text'>
-          <span>Cancel</span>
-        </div>
-      </button>
-
-      <button class='btng save' type="button"
-              id="alternativeSave" value="Save" title="Save"
-              data-toggle="tooltip"
-              data-langcode="{{ language.code }}"
-              data-concept="{{ concept.id }}"
-              data-type="alternative" hidden>
-        <div class='icon'>
-          <i class="fa fa-floppy-o" aria-hidden="true"></i>
-        </div>
-        <div class='text'>
-          <span>Save</span>
-        </div>
-      </button>
+        <button class='btng save' type="button"
+                id="alternativeSave" value="Save" title="Save"
+                data-toggle="tooltip"
+                data-langcode="{{ language.code }}"
+                data-concept="{{ concept.id }}"
+                data-type="alternative" hidden>
+          <div class='icon'>
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Save</span>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div id="alternativeList">
@@ -104,36 +105,40 @@
   <!-- Definition -->
   <div class="definition text-area">
     <h5 class="h5">Definition</h5>
-    {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+      {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
 
-    {% if concept.default_definition %}
-      <p class="alert" id="definitionEmpty">
-        Definition is not available for the current language.
-      </p>
-    {% endif %}
+      {% if concept.default_definition %}
+        <p class="alert" id="definitionEmpty">
+          Definition is not available for the current language.
+        </p>
+      {% endif %}
   </div>
 
   <!--Source-->
   <div class="source text-area">
     <span>Source:</span>
-    {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
-    {% if not concept.source %}
-      <p class="alert" id="sourceEmpty"> Source is not available. </p>
-    {% endif %}
+      {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
+      {% if not concept.source %}
+        <p class="alert" id="sourceEmpty"> Source is not available. </p>
+      {% endif %}
   </div>
 
   <!-- Themes -->
   <div class="themes text-area">
     <h5 class="h5">Themes</h5>
-    {% include 'edit/bits/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
-    {% include 'edit/bits/theme_group.html' with type='theme' concept_list=concept.themes %}
+    <div class="element">
+      {% include 'edit/bits/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='theme' concept_list=concept.themes %}
+    </div>
   </div>
 
   <!-- Groups -->
   <div class="groups text-area">
     <h5 class="h5">Groups</h5>
-    {% include 'edit/bits/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
-    {% include 'edit/bits/theme_group.html' with type='group' concept_list=concept.groups %}
+    <div class="element">
+      {% include 'edit/bits/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='group' concept_list=concept.groups %}
+    </div>
   </div>
 
   <!-- Related terms -->
@@ -142,87 +147,93 @@
 
     <!-- Broader -->
     <div class="dl-inline">
-      <div class="dl-header">
-        <h6 class="dt">Broader</h6>
-        {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
+      <div class="element">
+        <div class="dl-header">
+          <h6 class="dt">Broader</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
       </div>
-      {% include 'edit/bits/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
     </div>
-
     <!-- Related -->
     <div class="dl-inline">
-      <div class="dl-header">
-        <h6 class="dt">Related</h6>
-        {% include 'edit/bits/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
+      <div class="element">
+        <div class="dl-header">
+          <h6 class="dt">Related</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='related' concept_list=concept.related_concepts %}
       </div>
-      {% include 'edit/bits/related_terms.html' with type='related' concept_list=concept.related_concepts %}
     </div>
-
     <!-- Narrower -->
     <div class="dl-inline">
-      <div class="dl-header">
-        <h6 class="dt">Narrower</h6>
-        {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
+      <div class="element">
+        <div class="dl-header">
+          <h6 class="dt">Narrower</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
       </div>
-      {% include 'edit/bits/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
     </div>
   </div>
 
   <!-- Other relations -->
   <div class="other-relations text-area">
     <h5 class="h5">Other relations</h5>
+    <div class="element">
+      <div class="button-elements">
+        <button class='btng add' type="button"
+                id="otherAdd" value="Add Other Term" title="Add"
+                data-toggle="tooltip"
+                data-type="other"
+                data-href="{% url 'add_other' language.code concept.id %}">
+          <div class='icon'>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Add Other Term</span>
+          </div>
+        </button>
 
-    <button class='btng add' type="button"
-            id="otherAdd" value="Add Other Term" title="Add"
-            data-toggle="tooltip"
-            data-type="other"
-            data-href="{% url 'add_other' language.code concept.id %}">
-      <div class='icon'>
-        <i class="fa fa-plus" aria-hidden="true"></i>
-      </div>
-      <div class='text'>
-        <span>Add Other Term</span>
-      </div>
-    </button>
+        <label class="otherInput" for="Value" hidden>Value:</label>
+        <input class="otherInput" type="text" id='otherValue' value="" data-type="other" hidden />
+        <label class="otherInput" for="Url" hidden>Url:</label>
+        <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
+        <button class='btng cancel' type="button"
+                id="otherCancel" value="Cancel" title="Cancel"
+                data-toggle="tooltip"
+                data-type="other" hidden>
+          <div class='icon'>
+            <i class="fa fa-stop-circle" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Cancel</span>
+          </div>
+        </button>
 
-    <label class="otherInput" for="Value" hidden>Value:</label>
-    <input class="otherInput" type="text" id='otherValue' value="" data-type="other" hidden />
-    <label class="otherInput" for="Url" hidden>Url:</label>
-    <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
-
-    <button class='btng cancel' type="button"
-            id="otherCancel" value="Cancel" title="Cancel"
-            data-toggle="tooltip"
-            data-type="other" hidden>
-      <div class='icon'>
-        <i class="fa fa-stop-circle" aria-hidden="true"></i>
+        <button class='btng save' type="button"
+                id="otherSave" value="Save" title="Save"
+                data-toggle="tooltip"
+                data-langcode="{{ language.code }}"
+                data-concept="{{ concept.id }}"
+                data-type="other"
+                data-href="{% url 'add_other' language.code concept.id %}" hidden>
+          <div class='icon'>
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+          </div>
+          <div class='text'>
+            <span>Save</span>
+          </div>
+        </button>
       </div>
-      <div class='text'>
-        <span>Cancel</span>
-      </div>
-    </button>
-
-    <button class='btng save' type="button"
-            id="otherSave" value="Save" title="Save"
-            data-toggle="tooltip"
-            data-langcode="{{ language.code }}"
-            data-concept="{{ concept.id }}"
-            data-type="other"
-            data-href="{% url 'add_other' language.code concept.id %}" hidden>
-      <div class='icon'>
-        <i class="fa fa-floppy-o" aria-hidden="true"></i>
-      </div>
-      <div class='text'>
-        <span>Save</span>
-      </div>
-    </button>
-
+    </div>
     <ul class="dl-inline no-list" id="all-other">
       {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
       {% for foreign_relation in foreign_relations %}
+      <div class="foreign-relation">
         <li>
           <span class="">{{ foreign_relation.grouper }}</span>
-
+          <div class="foreign-elements">
           {% for relation in foreign_relation.list %}
             <div class="status-{{ relation.status }} other-item" id="other{{ relation.id }}">
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
@@ -241,8 +252,9 @@
               {% endif %}
             </div>
           {% endfor %}
-
+          </div>
         </li>
+      </div>
       {% endfor %}
     </ul>
   </div>
@@ -250,10 +262,10 @@
   <!-- Scope -->
   <div class="scope text-area">
     <h5 class="h5">Scope note</h5>
-    {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-    {% if not concept.scopeNote %}
-      <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
-    {% endif %}
+      {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+      {% if not concept.scopeNote %}
+        <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
+      {% endif %}
   </div>
 
   <!-- Concept URL -->
