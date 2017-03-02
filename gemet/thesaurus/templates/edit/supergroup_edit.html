@@ -10,17 +10,10 @@
 <div class="edit-page">
     {% include 'header.html' with view='supergroup' id=concept.id %}
 
-<<<<<<< a30e27884fa1a2b82d0319f4f71efc9a6a0bcf46:gemet/thesaurus/templates/edit/supergroup_edit.html
   <!-- Concept -->
   <div class="h3">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
-=======
-    <!-- Concept -->
-    <div class="h3">
-      {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
-    </div>
->>>>>>> [refs #82698] new layout:gemet/thesaurus/templates/supergroup_edit.html
 
     <!-- Side bar -->
     <div class="side-bar box">
@@ -35,37 +28,10 @@
         {% endfor %}
       </ul>
     </div>
-
-<<<<<<< a30e27884fa1a2b82d0319f4f71efc9a6a0bcf46:gemet/thesaurus/templates/edit/supergroup_edit.html
-    <!-- Definition -->
-  <div class="text-area">
-    <h5 class="h5 hidden-desktop">Definition</h5>
- {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-    {% if not concept.definition %}
-      <p class="alert">Definition is not available.</p>
-    {% endif %}
-  </div>
-
-    <!-- Scope -->
-  <div class="text-area">
-    <h5 class="h5">Scope note</h5>
- {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-    {% if not concept.scopeNote %}
-      <p class="alert">Scope note is not available.</p>
-    {% endif %}
-  </div>
-
-    <!-- Groups -->
-  <div class="text-area">
-    <h5 class="h5">Groups</h5>
-  {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
-  {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
-  </div>
-=======
       <!-- Definition -->
     <div class="text-area">
       <h5 class="h5 hidden-desktop">Definition</h5>
-      {% include 'edit/property.html' with property_name='definition' html_tag='textarea' %}
+     {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
       {% if not concept.definition %}
         <p class="alert">Definition is not available.</p>
       {% endif %}
@@ -74,7 +40,7 @@
       <!-- Scope -->
     <div class="text-area">
       <h5 class="h5">Scope note</h5>
-      {% include 'edit/property.html' with property_name='scopeNote' html_tag='input' %}
+   {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
       {% if not concept.scopeNote %}
         <p class="alert">Scope note is not available.</p>
       {% endif %}
@@ -83,10 +49,9 @@
       <!-- Groups -->
     <div class="text-area">
       <h5 class="h5">Groups</h5>
-      {% include 'edit/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
-      {% include 'edit/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
+       {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
+  {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
     </div>
->>>>>>> [refs #82698] new layout:gemet/thesaurus/templates/supergroup_edit.html
 
       <!-- Concept URL -->
     <div class="text-area">
