@@ -5,8 +5,8 @@
 {% block title %}
  Edit {{ concept.name }}
 {% endblock %}
-
 {% block content %}
+<div class="edit-page">
   {% include 'header.html' with view='group' id=concept.code %}
 
   <!-- Group -->
@@ -57,6 +57,7 @@
     </h5>
   </div>
 
+</div>
 {% endblock %}
 
 {% block version %}

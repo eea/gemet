@@ -7,7 +7,10 @@
 {% endblock %}
 
 {% block content %}
+<div class="edit-page">
   {% include 'header.html' with view='concept' id=concept.code %}
+
+
   <!-- Concept -->
   <div class="h3">
     {% include 'edit/property.html' with property_name='prefLabel' html_tag='input' %}
@@ -257,6 +260,7 @@
   <h5 class="h5 h5-url">
     Concept URL: {{ concept.url }}
   </h5>
+</div>
 {% endblock %}
 
 {% block version %}

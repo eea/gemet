@@ -9,18 +9,26 @@
 {{ header_after_title }}
 
 {% block css %}
+<<<<<<< a30e27884fa1a2b82d0319f4f71efc9a6a0bcf46
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/style.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap.min.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap-theme.min.css' %}">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/select2.min.css' %}" />
+=======
+      <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/bootstrap-theme.min.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/style.css' %}" />
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+>>>>>>> [refs #82698] new layout
 {% endblock %}
 
 {{ header_end }}
 
 {% endautoescape %}
 
-<div class="content edit-page">
+<div class="content">
   {% block content %}
   {% endblock %}
 </div>
