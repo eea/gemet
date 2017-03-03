@@ -7,9 +7,6 @@
 {% block content %}
   {% include 'header.html' with view='group' id=group.code %}
 
-  <!-- Group -->
-  <h3 class="h3">{{ group.name }}</h3>
-
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
@@ -23,9 +20,19 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Group -->
+  <h3 class="h3">{{ group.name }}</h3>
+
+
+
+
+<div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area" id="definition">
+
   <!-- Definition -->
   <div class="text-area">
-      <h5 class="h5 hidden-desktop">Definiton</h5>
+      <h5 class="h5">Definiton</h5>
   {% if not group.definition %}
     <p class="alert">Definition is not available.</p>
   {% else %}
@@ -63,6 +70,9 @@
     <h5 class="h5 h5-url">Concept URL:
     {{ group.url }}
     </h5>
+  </div>
+
+  </div>
   </div>
 
 {% endblock %}

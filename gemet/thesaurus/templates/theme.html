@@ -8,8 +8,6 @@
 {% block content %}
   {% include 'header.html' with view='theme' id=theme.id %}
 
-  <!-- Theme -->
-  <h3 class="h3">{{ theme.name }}</h3>
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
@@ -23,6 +21,11 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Theme -->
+  <h3 class="h3">{{ theme.name }}</h3>
+<div class="text-area-wrapper">
+ <!-- Definition -->
+ <div class="text-area" id="definition">
 
     <!-- Definition -->
   <div class="text-area">
@@ -61,6 +64,9 @@
     <h5 class="h5 h5-url">Concept URL:
     {{ theme.url }}
     </h5>
+  </div>
+
+  </div>
   </div>
 
 {% endblock %}

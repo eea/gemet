@@ -6,10 +6,7 @@
 
 {% block content %}
   {% include 'header.html' with view='supergroup' id=supergroup.id %}
-
-    <!-- Concept -->
-    <h3 class="h3">{{ supergroup.name }}</h3>
-    <!-- Side bar -->
+  <!-- Side bar -->
     <div class="side-bar box">
       <!-- Translations -->
       <h6 class="no-margin-top">Translations</h6>
@@ -22,6 +19,14 @@
         {% endfor %}
       </ul>
     </div>
+
+    <!-- Concept -->
+    <h3 class="h3">{{ supergroup.name }}</h3>
+  
+
+  <div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area" id="definition">
 
     <!-- Definition -->
   <div class="text-area">
@@ -61,7 +66,8 @@
     {{ supergroup.url }}
     </h5>
   </div>
-
+</div>
+</div>
 {% endblock %}
 {% block version %}
     {% include 'version.html' with version=ns_version %}

@@ -8,8 +8,7 @@
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.code %}
 
-  <!-- Concept -->
-  <h1 class="selected-word" id="prefLabel">{{ concept.name }}</h1>
+
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
@@ -24,10 +23,18 @@
     </ul>
   </div>
 
+
+  <!-- Concept -->
+  <h1 class="selected-word" id="prefLabel">{{ concept.name }}</h1>
+
 <div class="text-area-wrapper">
  <!-- Definition -->
   <div class="text-area" id="definition">
-    <h5 class="h5 hidden-desktop">Definition</h5>
+
+  <div class="text-area">
+  
+    <h5 class="h5">Definition</h5>
+   
     <p id="definition">
       {{ concept.definition }}
       {% if concept.source %}
@@ -37,9 +44,12 @@
     {% if concept.default_definition %}
     <p class="alert">Definition is not available for the current language.</p>
     {% endif %}
+    
   </div>
 
-  <!-- Alternatives -->
+
+
+ <!-- Alternatives -->
     {% if concept.alternatives %}
       <div class="text-area">
           <i>Alternatives:</i>
@@ -55,10 +65,9 @@
   <h5 class="h5">Related terms</h5>
 
   <!-- Broader -->
-  
     {% if concept.broader_concepts %}
     <div>
-      <h6>Broader</h6>
+      <h6>Broader:</h6>
        <ul class="listing">
         {% for cp in concept.broader_concepts %}
         <li>
@@ -71,7 +80,7 @@
   <!-- Related -->
   {% if concept.related_concepts %}
       <div>
-        <h6>Related</h6>
+        <h6>Related:</h6>
          <ul class="listing">
           {% for cp in concept.related_concepts %}
           <li>
@@ -84,7 +93,7 @@
   <!-- Narrower -->
   {% if concept.narrower_concepts %}
       <div>
-        <h6>Narrower</h6>
+        <h6>Narrower:</h6>
         <ul class="listing">
           {% for cp in concept.narrower_concepts %}
           <li>
@@ -94,12 +103,11 @@
       </div>
     {% endif %}
 
- 
 </div>
    <!-- Themes -->
     {% if concept.themes %}
       <div class="text-area">
-        <h5 class="h5">Themes</h5>
+        <h5 class="h5">Themes:</h5>
         <ul class="listing">
           {% for theme in concept.themes %}
           <li>
@@ -113,7 +121,7 @@
   <!-- Groups -->
     {% if concept.groups %}
       <div class="text-area">
-          <h5 class="h5">Groups</h5>
+          <h5 class="h5">Groups:</h5>
             <ul class="listing">
             {% for group in concept.groups %}
               <li>
@@ -124,28 +132,38 @@
       </div>
     {% endif %}
 
+
+
+
+
+  </div>
+
+ 
+
+</div>
+
+
+
   <!-- Other relations -->
-  {% if foreign_relation %}
-<div class="text-area">
+<div class="text-area modified">
   <h5 class="h5">Other relations</h5>
-  <ul class="listing">
+  <div class="listing">
     {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
     {% for foreign_relation in foreign_relations %}
-    <li>
-      <div>{{ foreign_relation.grouper }}</div>
+    <ul>
+      <h6 class="inline">{{ foreign_relation.grouper }}: </h6>
       {% for relation in foreign_relation.list %}
-          <div>
-          <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
+          <li class="inline">
+          <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
       {% endfor %}
-    </li>
+    </ul>
 
     {% endfor %}
-  </ul>
+  </div>
 </div>
-{% endif %}
 
   <!-- Scope -->
-<div class="text-area" id="scope">
+<div class="text-area modified" id="scope">
   <h5 class="h5">Scope note</h5>
   {% if not concept.scopeNote %}
     <p class="alert">Scope note is not available.</p>
@@ -158,8 +176,6 @@
   <h5 class="h5 h5-url">Concept URL:
   {{ concept.url }}
   </h5>
-</div>
-
 </div>
 
 {% endblock %}
