@@ -449,15 +449,25 @@ hr {
 
 .side-bar {
     float: right;
-    width: 240px;
+   width: 0;
     padding: 12px;
     font-size: smaller;
-    margin-left: 24px;
+      margin-left: 0;
     margin-right: -15px;
     margin-bottom: 1em;
     border-radius: 1rem;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    position: relative;
+           right: -26px;
+           border-top-left-radius: 0;
+             
+           transition: all 300ms;
+}
+
+.edit-page .side-bar {
+      top: -16px;
+         margin-left: -12px;
 }
 
 @media (max-width: 700px) {
@@ -667,15 +677,12 @@ hr {
     width: 0.8em;
     line-height: 0.8em;
     text-align: center;
-    border: 1px solid #ccc;
-    color: black!important;
+    // border: 1px solid #ccc;
+    // color: black!important;
     text-decoration: none!important;
 }
 
-.toggle-collapse:hover {
-    border-color: #aaa;
-    background-color: #eee;
-}
+
 
 .direction-rtl .toggle-collapse {
     float: right;
@@ -1288,7 +1295,7 @@ li:hover .btn-remove-down {
 .search_bar {
     background: #fff;
     border: #b7b7b7 solid 1px;
-    border-radius: 3px;
+    border-radius: 6px;
     position: relative;
     font-family: 'Source Sans Pro', sans-serif;
     margin-left: auto;
@@ -1571,7 +1578,7 @@ li:hover .btn-remove-down {
     margin-right: -15px;
     padding: 15px;
     border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
+    /*border-top-right-radius: 1rem;*/
     box-shadow: 0px -1px 3px 0px #b1b1b1;
 }
 
@@ -1594,4 +1601,133 @@ li:hover .btn-remove-down {
 
 h6.inline {
     margin-right: .5rem;
+}
+
+
+
+.text-area.relations li:after {
+    display: none;
+}
+
+.text-area.relations li,
+.text-area.relations ul {
+    position: relative;
+}
+
+
+.text-area.relations ul:before {
+    content: "";
+    display: block;
+    width: 0;
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    border-left: 4px solid #e8e8e8;
+    bottom: 10px;
+    color: inherit;
+}
+
+
+.text-area.relations li:before {
+     content: "";
+    display: block;
+    width: 20px;
+    height: 0;
+    /* border-top: 1px solid; */
+    margin-top: -2px;
+    border-top: 4px solid #e8e8e8;
+    position: absolute;
+    top: 11px;
+    left: -17px;
+    z-index: 1;
+}
+
+
+.text-area.relations .first-level > li:before {
+   display: none;
+}
+
+
+.text-area.relations i {
+        z-index: 5;
+    position: relative;
+        color: #cac8c8;
+}
+
+
+
+.beautiful-listing ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.beautiful-listing li {
+  font: 200 15px/1.5 Lato;
+}
+
+
+.beautiful-listing li a {
+  text-decoration: none;
+      /*color: rgba(255,255,255,0.7);*/
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+.beautiful-listing li:hover {
+    list-style-image: none;
+  /*font-size: 16px;*/
+  /*// background: #f6f6f6;*/
+}
+.beautiful-listing .list-title,
+.beautiful-listing h1,
+.beautiful-listing h2,
+.beautiful-listing h3,
+.beautiful-listing h4,
+.beautiful-listing h5 {
+        margin-left: 1.5rem!important;
+}
+
+.beautiful-listing {
+    margin-bottom: 3rem;
+    margin-top: 1rem;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    /* margin-left: -16px; */
+    /* margin-right: -16px; */
+    padding: 1rem;
+    box-shadow: 0px 0px 3px #aaa;
+    border-radius: 1rem;
+}
+
+.expand-button {
+    position: absolute;
+    background: #fbfbfb;
+    border: 1px solid #ddd;
+    top: 33px;
+    border-bottom: 0;
+    border-top-left-radius: 6px;
+    transform: rotate(270deg);
+    border-top-right-radius: 6px;
+    left: -60px;
+    font-size: 1.7rem;
+}
+
+.edit-page .expand-button {
+    border-top-right-radius: 0;
+}
+
+
+.expand-button:focus {
+    outline:none;
+}
+
+.expand {
+    width: 240px;
+    right: 0;
+        margin-left: 2rem!important;
 }

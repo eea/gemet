@@ -9,14 +9,11 @@
 {% block content %}
   {% include 'header.html' with view='concept' id=concept.code %}
 <div class="edit-page">
-  <!-- Concept -->
-  <div class="h3">
-      {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
-  </div>
 
-  <!-- Side bar -->
+ <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
+    <button class="expand-button">Translation</button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}
@@ -27,6 +24,12 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Concept -->
+  <div class="h3">
+      {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
+  </div>
+
+
 
   <!-- Alternatives -->
   <div class="alternative-wrapper text-area">

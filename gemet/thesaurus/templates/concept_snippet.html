@@ -3,9 +3,9 @@
   {% get_expand concept.id expand_list as expand %}
   <a class="toggle-collapse" href="{% url 'relations' language.code group_code %}?exp={{ expand.param }}">
     {% if expand.status %}
-    -
+     <i class="fa fa-minus" aria-hidden="true"></i>
     {% else %}
-    +
+      <i class="fa fa-plus" aria-hidden="true"></i>
     {% endif %}
   </a>
   {% if concept.name %}
