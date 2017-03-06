@@ -461,7 +461,7 @@ hr {
     position: relative;
            right: -26px;
            border-top-left-radius: 0;
-             
+
            transition: all 300ms;
 }
 
@@ -1731,3 +1731,26 @@ h6.inline {
     right: 0;
         margin-left: 2rem!important;
 }
+
+.btng.cancel ,
+.btng.save {
+ display: none;
+ }
+
+
+
+.visible .btng.cancel ,
+.visible .btng.save,
+.visible.textarea label,
+.visible.textarea select,
+.visible.textarea div,
+.visible.text-field div,
+.visible.input-area{
+display: inline-flex!important;
+}
+
+
+.hidden {
+display:none;
+}
+

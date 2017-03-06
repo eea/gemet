@@ -10,7 +10,7 @@
   {% include 'header.html' with view='concept' id=concept.code %}
 <div class="edit-page">
 
- <!-- Side bar -->
+  <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
     <button class="expand-button">Translation</button>
@@ -25,21 +25,21 @@
     </ul>
   </div>
   <!-- Concept -->
-  <div class="h3">
+  <div class="h3 element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
-
-
 
   <!-- Alternatives -->
   <div class="alternative-wrapper text-area">
     <div class="alternative-header">
-      <span id="alternative"
-            data-href="{% url 'add_property' language.code concept.id 'altLabel' %}">
+      <span id="alternative">
         Alternatives:
       </span>
+      <div class="input-area" hidden>
+        <input id="alternativeInput"/>
+      </div>
       <div class="button-elements">
-        <button class='btng add' type="button"
+        <button class='btng edit' type="button"
                 id="alternativeAdd" value="Add Alternative" title="Add"
                 data-toggle="tooltip"
                 data-type="alternative"
@@ -69,6 +69,9 @@
                 data-toggle="tooltip"
                 data-langcode="{{ language.code }}"
                 data-concept="{{ concept.id }}"
+                data-input-id="#alternativeInput"
+                data-parent-id="#alternativeList"
+                data-href="{% url 'add_property' language.code concept.id 'altLabel' %}"
                 data-type="alternative" hidden>
           <div class='icon'>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
@@ -86,42 +89,42 @@
           <i id="alternative{{ alternative.id }}"
              class="status-{{ alternative.status }}">
             {{ alternative.value }};
+            {% if alternative.status != 3 %}
+            <button class='btng centerMe removeParent' type="submit" value="X"
+                    data-field-id="#alternative{{ alternative.id }}"
+                    data-type="alternative"
+                    data-href="{% url 'remove_property' alternative.id %}">
+              <div class='icon'>
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </div>
+              <div class='text'>
+                <span>Delete</span>
+              </div>
+            </button>
+            {% endif %}
           </i>
-          {% if alternative.status != 3 %}
-          <button class='btng centerMe removeParent' type="submit" value="X"
-                  data-field-id="#alternative{{ alternative.id }}"
-                  data-type="alternative"
-                  data-href="{% url 'remove_property' alternative.id %}">
-            <div class='icon'>
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </div>
-            <div class='text'>
-              <span>Delete</span>
-            </div>
-          </button>
-          {% endif %}
         </div>
       {% endfor %}
     </div>
   </div>
 
   <!-- Definition -->
-  <div class="definition text-area">
+  <div class="definition text-area element">
     <h5 class="h5">Definition</h5>
       {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
       {% if concept.default_definition %}
-        <p class="alert" id="definitionEmpty">
+        <p class="alert empty-text" id="definitionEmpty">
           Definition is not available for the current language.
         </p>
       {% endif %}
   </div>
 
   <!--Source-->
-  <div class="source text-area">
+  <div class="source text-area element">
     <span>Source:</span>
       {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
       {% if not concept.source %}
-        <p class="alert" id="sourceEmpty"> Source is not available. </p>
+        <p class="alert empty-text" id="sourceEmpty"> Source is not available. </p>
       {% endif %}
   </div>
 
@@ -183,11 +186,19 @@
   <div class="other-relations text-area">
     <h5 class="h5">Other relations</h5>
     <div class="element">
+      <div class="input-area" hidden>
+        <label class="otherInput" for="Value" >Value:</label>
+        <input class="otherInput" type="text" id='otherValue' value="" data-type="other" />
+        <label class="otherInput" for="Url" >Url:</label>
+        <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
+        <select id="otherSelect"></select>
+      </div>
       <div class="button-elements">
         <button class='btng add' type="button"
                 id="otherAdd" value="Add Other Term" title="Add"
                 data-toggle="tooltip"
                 data-type="other"
+                data-input-id="#otherSelect"
                 data-href="{% url 'add_other' language.code concept.id %}">
           <div class='icon'>
             <i class="fa fa-plus" aria-hidden="true"></i>
@@ -197,10 +208,6 @@
           </div>
         </button>
 
-        <label class="otherInput" for="Value" hidden>Value:</label>
-        <input class="otherInput" type="text" id='otherValue' value="" data-type="other" hidden />
-        <label class="otherInput" for="Url" hidden>Url:</label>
-        <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" hidden />
         <button class='btng cancel' type="button"
                 id="otherCancel" value="Cancel" title="Cancel"
                 data-toggle="tooltip"
@@ -219,6 +226,10 @@
                 data-langcode="{{ language.code }}"
                 data-concept="{{ concept.id }}"
                 data-type="other"
+                data-url-input-id="#otherUrl"
+                data-field-id="#otherList"
+                data-value-input-id="#otherValue"
+                data-select-id="#otherSelect"
                 data-href="{% url 'add_other' language.code concept.id %}" hidden>
           <div class='icon'>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
@@ -229,10 +240,10 @@
         </button>
       </div>
     </div>
-    <ul class="dl-inline no-list" id="all-other">
+    <ul class="dl-inline no-list" id="otherList">
       {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
       {% for foreign_relation in foreign_relations %}
-      <div class="foreign-relation">
+      <div class="foreign-relation" data-value="{{ foreign_relation.grouper }}">
         <li>
           <span class="">{{ foreign_relation.grouper }}</span>
           <div class="foreign-elements">
@@ -262,11 +273,11 @@
   </div>
 
   <!-- Scope -->
-  <div class="scope text-area">
+  <div class="scope text-area element">
     <h5 class="h5">Scope note</h5>
       {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
       {% if not concept.scopeNote %}
-        <span id='scopeNoteEmpty' class="alert">Scope note is not available.</span>
+        <span id='scopeNoteEmpty' class="alert empty-text">Scope note is not available.</span>
       {% endif %}
   </div>
 

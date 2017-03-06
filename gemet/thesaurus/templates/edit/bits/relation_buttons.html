@@ -5,11 +5,12 @@
           data-href="{% url 'concepts_json' language.code concept.code type %}">
   </select>
 </div>
+
 <div class="button-elements">
   <button class='btng add' type="button" value="{{ button_label }}"
+          title="Add" data-toggle="tooltip"
           id="{{ type }}Add"
-          data-type="{{ type }}"
-          data-link="{{ link }}">
+          data-type="{{ type }}">
     <div class='icon'>
       <i class="fa fa-plus" aria-hidden="true"></i>
     </div>
@@ -33,6 +34,10 @@
           id="{{ type }}Save"
           data-langcode="{{ language.code }}"
           data-concept="{{ id }}"
+          data-input-id="#{{ type }}Input"
+          data-link="{{ link }}"
+          data-field-id="#{{ type }}list"
+          data-save-type="concept"
           data-type="{{ type }}" hidden>
     <div class='icon'>
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
