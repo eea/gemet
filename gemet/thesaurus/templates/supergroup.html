@@ -6,54 +6,68 @@
 
 {% block content %}
   {% include 'header.html' with view='supergroup' id=supergroup.id %}
-
-  <!-- Concept -->
-  <h3 class="h3">{{ supergroup.name }}</h3>
   <!-- Side bar -->
-  <div class="side-bar box">
-    <!-- Translations -->
-    <h6 class="no-margin-top">Translations</h6>
-    <ul id="translations" class="dl-inline no-list">
-      {% for translation in supergroup.translations %}
-      <li class="clearfix">
-        <div class="dt">{{ translation.language__name }}</div>
-        <div class="dd">{{ translation.value }}</div>
-      </li>
+    <div class="side-bar box">
+      <!-- Translations -->
+      <h6 class="no-margin-top">Translations</h6>
+      <ul id="translations" class="dl-inline no-list">
+        {% for translation in supergroup.translations %}
+        <li class="clearfix">
+          <div class="dt">{{ translation.language__name }}</div>
+          <div class="dd">{{ translation.value }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Concept -->
+    <h3 class="h3">{{ supergroup.name }}</h3>
+  
+
+  <div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area">
+
+    <!-- Definition -->
+  <div class="text-area">
+    <h5 class="h5 hidden-desktop">Definition</h5>
+    {% if not supergroup.definition %}
+      <p class="alert">Definition is not available.</p>
+    {% else %}
+      <p id="definition">{{ supergroup.definition }}</p>
+    {% endif %}
+  </div>
+
+    <!-- Scope -->
+  <div class="text-area">
+    <h5 class="h5">Scope note</h5>
+    {% if not supergroup.scopeNote %}
+      <p class="alert">Scope note is not available.</p>
+    {% else %}
+      <p id="scope-note">{{ supergroup.scopeNote }}</p>
+    {% endif %}
+  </div>
+
+    <!-- Groups -->
+    {% if supergroup.narrower_concepts %}
+  <div class="text-area">
+    <h5 class="h5">Groups</h5>
+    <ul class="listing">
+      {% for group in supergroup.narrower_concepts %}
+        <li>{{ group.name }}</li>
       {% endfor %}
     </ul>
   </div>
+    {% endif %}
 
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definition</h5>
-  {% if not supergroup.definition %}
-    <p class="alert">Definition is not available.</p>
-  {% else %}
-    <p id="definition">{{ supergroup.definition }}</p>
-  {% endif %}
-
-  <!-- Scope -->
-  <h5 class="h5">Scope note</h5>
-  {% if not supergroup.scopeNote %}
-    <p class="alert">Scope note is not available.</p>
-  {% else %}
-    <p id="scope-note">{{ supergroup.scopeNote }}</p>
-  {% endif %}
-
-  <!-- Groups -->
-  {% if supergroup.narrower_concepts %}
-  <h5 class="h5">Groups</h5>
-  <ul class="listing">
-    {% for group in supergroup.narrower_concepts %}
-      <li>{{ group.name }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ supergroup.url }}
-  </h5>
-
+    <!-- Concept URL -->
+  <div class="text-area">
+    <h5 class="h5 h5-url">Concept URL:
+    {{ supergroup.url }}
+    </h5>
+  </div>
+</div>
+</div>
 {% endblock %}
 {% block version %}
     {% include 'version.html' with version=ns_version %}

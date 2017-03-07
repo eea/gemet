@@ -8,7 +8,7 @@ Groups list
 
 {% block content %}
   {% include 'header.html' with view='groups' %}
-
+<div class="beautiful-listing">
   <h1>Groups</h1>
 
   <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
@@ -27,6 +27,7 @@ Groups list
       </li>
     {% endfor %}
   </ul>
+</div>
 {% endblock %}
 {% block version %}
     {% include 'version.html' with version=ns_version %}

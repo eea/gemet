@@ -54,8 +54,10 @@ class TestRelationsView(GemetTest):
                                }),
                    exp=exp_encrypt(str(concept.id)))
         )
-        self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(0)').text(),
-                         '+')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > '
+                                      'li a:eq(0) i').attr('class'),
+                         'fa fa-plus')
+
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) > li a:eq(1)').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',

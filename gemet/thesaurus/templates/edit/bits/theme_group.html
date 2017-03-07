@@ -1,10 +1,13 @@
 {% load gemet_tags %}
+<div>
   <ul id="{{ type }}" class="listing">
+    <div class="elements-list" id="{{ type }}list" >
     {% for parent in concept_list %}
       <li id="{{ type }}{{ parent.id }}"
           value="{{ parent.id }}"
           class="status-{{ parent.status }}">
         {{ parent.name }}
+          {% if parent.status != 3 %}
           <button class='btng centerMe removeParent' type="button" data-field-id="#{{ type }}{{ parent.id }}"
                        data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
                        data-type="{{ type }}">
@@ -15,6 +18,9 @@
               <span>Delete</span>
            </div>
           </button>
+          {% endif %}
       </li>
     {% endfor %}
+    </div>
   </ul>
+</div>

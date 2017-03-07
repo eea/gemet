@@ -1,51 +1,68 @@
 {% load gemet_tags %}
-
-<div id="parent-{{ property_name }}"
-     data-href="{% url 'edit_property' language.code concept.id property_name %}">
-  {% for property in concept|getattr:property_name %}
-    <div class="status-{{ property.status }}"
-    {% if property.editable %}
-        data-status="{{ property.status }}"
-        id="{{ property.name }}"
-        data-value="{{ property.value }}"
-    {% endif %}
-        >{{ property.value }}</div>
-  {% endfor %}
+<div class="element">
+<div id="parent-{{ property_name }}" class="text-field">
+{% for property in concept|getattr:property_name %}
+  <div class="status-{{ property.status }}"
+  {% if property.editable %}
+      data-status="{{ property.status }}"
+      id="{{ property.name }}"
+      data-value="{{ property.value }}"
+  {% endif %}
+      >{{ property.value }}
+  </div>
+{% endfor %}
 </div>
+<div class="input-area" hidden>
+  {% if property_name == 'definition' %}
+    <textarea id="{{ property_name }}Input" ></textarea>
+  {% else %}
+    <input id="{{ property_name }}Input" />
+  {% endif %}
+</div>
+<div class="button-elements">
+  <button class='btng edit' type="button" value="Edit" title="Edit"
+          id="{{ property_name }}Edit"
+          data-toggle="tooltip"
+          data-type="{{ property_name }}"
+          data-input-id="#{{ property_name }}Input"
+          data-text-id="#{{ property_name }}"
+          data-html-tag="{{ html_tag }}"
+          data-edit-type="property">
+    <div class='icon'>
+      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Edit</span>
+    </div>
+  </button>
 
-<button class='btng edit' type="button" value="Edit" title="Edit"
-        id="{{ property_name }}Edit"
-        data-toggle="tooltip"
-        data-type="{{ property_name }}"
-        data-html-tag="{{ html_tag }}">
-  <div class='icon'>
-    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Edit</span>
-  </div>
-</button>
+  <button class='btng cancel' type="button" value="Cancel" title="Cancel"
+          id="{{ property_name }}Cancel"
+          data-type="{{ property_name }}"
+          data-toggle="tooltip" hidden>
+    <div class='icon'>
+      <i class="fa fa-stop-circle" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Cancel</span>
+    </div>
+  </button>
 
-<button class='btng cancel' type="button" value="Cancel" title="Cancel"
-        id="{{ property_name }}Cancel"
-        data-type="{{ property_name }}"
-        data-toggle="tooltip" hidden>
-  <div class='icon'>
-    <i class="fa fa-stop-circle" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Cancel</span>
-  </div>
-</button>
-
-<button class='btng save' type="button" value="Save" title="Save"
-        id="{{ property_name }}Save"
-        data-type="{{ property_name }}"
-        data-toggle="tooltip" hidden>
-  <div class='icon'>
-    <i class="fa fa-floppy-o" aria-hidden="true"></i>
-  </div>
-  <div class='text'>
-    <span>Save</span>
-  </div>
-</button>
+  <button class='btng save' type="button" value="Save" title="Save"
+          id="{{ property_name }}Save"
+          data-type="{{ property_name }}"
+          data-input-id="#{{ property_name }}Input"
+          data-text-id="#{{ property_name }}"
+          data-parent-id="#parent-{{ property_name }}"
+          data-save-type="property"
+          data-href="{% url 'edit_property' language.code concept.id property_name %}"
+          data-toggle="tooltip" hidden>
+    <div class='icon'>
+      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    </div>
+    <div class='text'>
+      <span>Save</span>
+    </div>
+  </button>
+</div>
+</div>
