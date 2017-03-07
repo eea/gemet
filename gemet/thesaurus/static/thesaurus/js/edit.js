@@ -61,7 +61,6 @@ $(document).ready(function () {
   $('[data-save-type="property"]').click(saveProperty); // binds every save button for save property
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
-  $('#otherAdd').click(activateOtherFieldAdd);
   $('#otherSave').click(saveOtherRelation);
   $('.removeParent').click(removeParent);
 });
@@ -207,35 +206,6 @@ $(document).ready(function () {
     }
   });
  };
-
-  function getAllConcepts(url, elementId, type){
-    $(elementId).empty(); // removes previous option elements from select
-    $.ajax({ // ajax call to retrieve all concepts used as options
-      type: "GET",
-      url: url,
-      error: function(e) {
-      },
-      success: function(data){
-        var relation_types = data['relation_types'];
-        for(index in relation_types){
-         // creating options using received data
-         var $option = $('<option value=' + relation_types[index]['id'] + '>'
-                            + relation_types[index]['label'] + '</option>');
-         var labelName = relation_types[index]['name'];
-         $option.attr('data-label', labelName);
-         $(elementId).append($option);
-        }
-    }
-    });
-  };
-
-  /* other relations enable editing */
-  function activateOtherFieldAdd(){
-    var fieldName = $(this).data('type');
-    var inputId = $(this).data('input-id');
-    var url = $(this).data('href');
-    getAllConcepts(url, inputId, fieldName);
-  }
 
   /* other relations save foreign relation */
   function saveOtherRelation(){

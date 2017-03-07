@@ -191,15 +191,18 @@
         <input class="otherInput" type="text" id='otherValue' value="" data-type="other" />
         <label class="otherInput" for="Url" >Url:</label>
         <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
-        <select id="otherSelect"></select>
+        <select id="otherSelect">
+          {% for type in foreign_relation_types %}
+            <option value="{{ type.id }}" data-label="{{ type.name }}">{{ type.label }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="button-elements">
         <button class='btng add' type="button"
                 id="otherAdd" value="Add Other Term" title="Add"
                 data-toggle="tooltip"
                 data-type="other"
-                data-input-id="#otherSelect"
-                data-href="{% url 'add_other' language.code concept.id %}">
+                data-input-id="#otherSelect">
           <div class='icon'>
             <i class="fa fa-plus" aria-hidden="true"></i>
           </div>

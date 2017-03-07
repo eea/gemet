@@ -33,6 +33,15 @@ class TermEditView(TermView):
     template_name = "edit/concept_edit.html"
     model = EditableTerm
 
+    def get_context_data(self, **kwargs):
+        context = super(TermEditView, self).get_context_data(**kwargs)
+        foreign_relation_types = PropertyType.objects.filter(
+            name__in=FOREIGN_RELATION_TYPES)
+        context.update({
+            "foreign_relation_types": foreign_relation_types,
+        })
+        return context
+
 
 class ThemeEditView(ThemeView):
     template_name = "edit/theme_edit.html"
@@ -300,15 +309,6 @@ class RemovePropertyView(JsonResponseMixin, View):
 
 
 class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
-
-    def get(self, request, langcode, id):
-        relation_types = [{"name": prop.name,
-                           "label": prop.label,
-                           "id": prop.id}
-                          for prop in PropertyType.objects.all()
-                          if prop.name in FOREIGN_RELATION_TYPES]
-        data = {"relation_types": relation_types}
-        return self._get_response(data, 'success', 200)
 
     def post(self, request, langcode, id):
         try:
