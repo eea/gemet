@@ -59,7 +59,7 @@ $(document).ready(function () {
 
   $('[data-edit-type="property"]').click(editProperty); // binds every edit button for edit property
   $('[data-save-type="property"]').click(saveProperty); // binds every save button for save property
-  $('[data-save-type="concept"').click(saveConceptRelation); // binds every save button for save relation
+  $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherAdd').click(activateOtherFieldAdd);
   $('#otherSave').click(saveOtherRelation);
