@@ -24,9 +24,9 @@ class TestThemeView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(1)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
                          "Scope note is not available.")
         self.assertEqual(resp.pyquery('.content ul:eq(0)').size(), 1)
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
@@ -50,9 +50,9 @@ class TestThemeView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(1)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
                          "Scope note is not available.")
         self.assertEqual(resp.pyquery('.content .listing li').size(), 1)
         self.assertEqual(resp.pyquery('.content .listing li').text(),
@@ -89,9 +89,9 @@ class TestThemeView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
-        self.assertEqual(resp.pyquery('.content p.alert:eq(1)').text(),
+        self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
                          "Scope note is not available.")
         self.assertEqual(resp.pyquery('.content .listing li').size(), 2)
         self.assertEqual(resp.pyquery('.content .listing li:eq(0)').text(),

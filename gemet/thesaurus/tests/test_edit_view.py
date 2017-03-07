@@ -206,17 +206,6 @@ class TestAddForeignRelationView(GemetTest):
         self.lang = LanguageFactory()
         self.concept = TermFactory()
 
-    def test_get_retrives_property_types(self):
-        url = reverse('add_other', kwargs={'id': self.concept.id,
-                                           'langcode': self.lang.code})
-        response = self.app.get(url)
-        relations = json.loads(response.body)['relation_types']
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(relations[0]['label'], 'has exact Match')
-        self.assertEqual(relations[0]['name'], 'exactMatch')
-        self.assertEqual(relations[1]['label'], 'has close Match')
-        self.assertEqual(relations[1]['name'], 'closeMatch')
-
     def test_post_bad_request(self):
         url = reverse('add_other', kwargs={'id': 10, 'langcode': 'en'})
         response = self.app.post(url, expect_errors=True,

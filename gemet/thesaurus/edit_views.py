@@ -33,6 +33,15 @@ class TermEditView(TermView):
     template_name = "edit/concept_edit.html"
     model = EditableTerm
 
+    def get_context_data(self, **kwargs):
+        context = super(TermEditView, self).get_context_data(**kwargs)
+        foreign_relation_types = PropertyType.objects.filter(
+            name__in=FOREIGN_RELATION_TYPES)
+        context.update({
+            "foreign_relation_types": foreign_relation_types,
+        })
+        return context
+
 
 class ThemeEditView(ThemeView):
     template_name = "edit/theme_edit.html"
@@ -117,7 +126,7 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
 
         page = int(request.GET.get('page', '1'))
         start, end = 30 * (page-1), 30 * page
-        query = request.GET.get('q')
+        query = request.GET.get('q') or ''
 
         concepts = self._get_concepts(langcode, relation, query)
         items = self._set_reverse_urls(concepts[start:end], langcode, relation)
@@ -196,10 +205,9 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         if published:
             published.status = Property.DELETED_PENDING
             published.save()
-        if pending:
-            pending.status = Property.DELETED_PENDING
-            pending.save()
         if relation:
+            if pending:
+                pending.delete()
             data = {}
             return self._get_response(data, 'success', 200)
         data = {"message": 'Object does not exist.'}
@@ -292,21 +300,15 @@ class RemovePropertyView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        field.status = Property.DELETED_PENDING
-        field.save()
+        if field.status == Property.PENDING:
+            field.delete()
+        else:
+            field.status = Property.DELETED_PENDING
+            field.save()
         return self._get_response({}, 'success', 200)
 
 
 class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
-
-    def get(self, request, langcode, id):
-        relation_types = [{"name": prop.name,
-                           "label": prop.label,
-                           "id": prop.id}
-                          for prop in PropertyType.objects.all()
-                          if prop.name in FOREIGN_RELATION_TYPES]
-        data = {"relation_types": relation_types}
-        return self._get_response(data, 'success', 200)
 
     def post(self, request, langcode, id):
         try:
@@ -340,7 +342,10 @@ class RemoveForeignRelationView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        foreign_relation.status = Property.DELETED_PENDING
-        foreign_relation.save()
+        if foreign_relation.status == Property.PENDING:
+            foreign_relation.delete()
+        else:
+            foreign_relation.status = Property.DELETED_PENDING
+            foreign_relation.save()
         data = {}
         return self._get_response(data, 'success', 200)

@@ -8,9 +8,7 @@
 {% block content %}
   {% include 'header.html' with view='inspire_theme' id=inspire_theme.code %}
 
-  <!-- Theme -->
-  <h3 class="h3">{{ inspire_theme.name }}</h3>
-  <!-- Side bar -->
+ <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
     <h6 class="no-margin-top">Translations</h6>
@@ -23,39 +21,57 @@
       {% endfor %}
     </ul>
   </div>
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definiton</h5>
-  {% if not inspire_theme.definition %}
-    <p class="alert">Definition is not available.</p>
-  {% else %}
-    {{ inspire_theme.definition }}
-  {% endif %}
-  <!-- Other relations -->
-  <h5 class="h5">Other relations</h5>
-  <ul class="dl-inline no-list">
-    {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
-    {% for foreign_relation in foreign_relations %}
-    <li>
-      <div class="dt">{{ foreign_relation.grouper }}</div>
-      {% for relation in foreign_relation.list %}
-          <div class="dd">
-          <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
-      {% endfor %}
-    </li>
-    {% endfor %}
-  </ul>
-  <!-- Scope note -->
-  <h5 class="h5">Scope note:</h5>
-  {% if not inspire_theme.scopeNote %}
-    <p class="alert">Scope note is not available.</p>
-  {% else %}
-    <p>{{ inspire_theme.scopeNote }}</p>
-  {% endif %}
-  <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-    {{ inspire_theme.url }}
-  </h5>
+  <!-- Theme -->
+  <h3 class="h3">{{ inspire_theme.name }}</h3>
+ 
+<div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area" id="definition">
 
+    <div class="text-area">
+      <h5 class="h5 hidden-desktop">Definiton</h5>
+      {% if not inspire_theme.definition %}
+        <p class="alert">Definition is not available.</p>
+      {% else %}
+        {{ inspire_theme.definition }}
+      {% endif %}
+    </div>
+
+    <!-- Other relations -->
+    <div class="text-area">
+      <h5 class="h5">Other relations</h5>
+      <ul class="dl-inline no-list">
+        {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
+        {% for foreign_relation in foreign_relations %}
+        <li>
+          <div class="dt">{{ foreign_relation.grouper }}</div>
+          {% for relation in foreign_relation.list %}
+              <div class="dd">
+              <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
+          {% endfor %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Scope note -->
+    <div class="text-area">
+      <h5 class="h5">Scope note:</h5>
+      {% if not inspire_theme.scopeNote %}
+        <p class="alert">Scope note is not available.</p>
+      {% else %}
+        <p>{{ inspire_theme.scopeNote }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Concept URL -->
+    <div class="text-area">
+      <h5 class="h5 h5-url">Concept URL:
+        {{ inspire_theme.url }}
+      </h5>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block version %}
     {% include 'version.html' with version=ns_version %}
