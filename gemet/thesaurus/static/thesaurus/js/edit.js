@@ -1,4 +1,3 @@
-
 function formatConcept (concept) {
   return concept.name;
 }
@@ -58,9 +57,9 @@ $(document).ready(function () {
     });
   });
 
-  $('[data-edit-type="property"]').click(EditProperty); // binds every edit button for edit property
+  $('[data-edit-type="property"]').click(editProperty); // binds every edit button for edit property
   $('[data-save-type="property"]').click(saveProperty); // binds every save button for save property
-  $('[data-save-type="concept"').click(saveConceptRelation); //binds every save button for save relation
+  $('[data-save-type="concept"').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherAdd').click(activateOtherFieldAdd);
   $('#otherSave').click(saveOtherRelation);
@@ -72,10 +71,10 @@ $(document).ready(function () {
     $(this).addClass('hidden'); // hide edit/add button
     $(this).parent().siblings('.input-area').addClass('visible'); // show input area
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
-    $(this).parent().parent().siblings('.empty-text').addClass('hidden'); //hide empty text
+    $(this).parent().parent().siblings('.empty-text').addClass('hidden'); // hide empty text
   });
   $('.btng.cancel').on('click', function(){
-    $(this).parent().parent().siblings('.empty-text').removeClass('hidden'); //show empty text
+    $(this).parent().parent().siblings('.empty-text').removeClass('hidden'); // show empty text
   });
   $('.btng.save, .btng.cancel').on('click', function(){
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
@@ -85,7 +84,7 @@ $(document).ready(function () {
   });
 
   /* prefLabel, definition, scopeNote, source enable editing */
-  function EditProperty(){
+  function editProperty(){
     var inputId = $(this).data('input-id'); //get input id from data
     var textId = $(this).data('text-id'); // get text id from data
     var $inputElement = $(inputId) // get input element
@@ -240,7 +239,7 @@ $(document).ready(function () {
 
   /* other relations save foreign relation */
   function saveOtherRelation(){
-    var selectId = $(this).data('select-id')
+    var selectId = $(this).data('select-id');
     var selector = selectId + " option:selected";
     var propertyTypeId = $(selector).val();
     var propertyTypeName = $(selector).text();
@@ -248,8 +247,8 @@ $(document).ready(function () {
     var parentUrl = $($(this).data('url-input-id')).val();
     var addUrl = $(this).data('href');
     var $fieldList  = $($(this).data('field-id')).find("[data-value='" +
-    propertyTypeName + "']").find('.foreign-elements').first()
-    var fieldId = $(this).data('field-id')
+    propertyTypeName + "']").find('.foreign-elements').first();
+    var fieldId = $(this).data('field-id');
     $.ajax({
        type: "POST",
        url: addUrl,
@@ -262,15 +261,15 @@ $(document).ready(function () {
              },
        error: function(e) {
        },
-       success: function(data){
+       success: function(data) {
          var $relationField = $("<div class='status-0 other-item' id='other" +
          data['id'] + "'><a href=" + parentUrl + ">" + propertyLabel + "</a></div>")
          var $deleteButton = createDeleteButton(data['remove_url'], 'other');
          $relationField.append($deleteButton);
-         if ($fieldList.length){
+         if ($fieldList.length) {
            $fieldList.append($relationField);
          }
-         else{
+         else {
            var $newType = $("<div class='foreign-relation' data-value='" +
            propertyTypeName + "'><span>" + propertyTypeName + "</span>");
            var $newList = $("<div class='foreign-elements'></div>");
