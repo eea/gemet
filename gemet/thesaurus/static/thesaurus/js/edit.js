@@ -117,12 +117,12 @@ $(document).ready(function () {
         }
         if (fieldStatus == 1){ // published field
           var oldField = $textElement.clone();
-          oldField.attr('class', 'status-3');
+          oldField.attr('class', DELETED_PENDING_CLASS);
           oldField.removeAttr('data-status');
           oldField.removeAttr('id');
           oldField.removeAttr('data-value');
           oldField.removeAttr('data-href');
-          $textElement.attr('class', 'status-0');
+          $textElement.attr('class', PENDING_CLASS);
           $textElement.data('status', '0');
           $textElement.text(data['value']);
           $textElement.data('value', data['value']);
@@ -133,7 +133,7 @@ $(document).ready(function () {
           $newPropertyTag.data('status', '0');
           $newPropertyTag.attr('id', fieldName);
           $newPropertyTag.data('value', data['value']);
-          $newPropertyTag.attr('class', 'status-0');
+          $newPropertyTag.attr('class', PENDING_CLASS);
           $textList.append($newPropertyTag);
         }
       }
@@ -144,7 +144,7 @@ $(document).ready(function () {
   function addElement(fieldId, parentId, parentText, url, fieldName, conceptUrl, link_tag){
     if (link_tag == true) // make field link if necessary
         parentText = "<a href='" + conceptUrl + "'> " + parentText + "</a></li>";
-    var $newParent = $('<li class=status-0 value="' + parentId + '">'
+    var $newParent = $('<li class="' + PENDING_CLASS + '"value="' + parentId + '">'
                     + parentText + '</li>');
     var $DeleteButton = createDeleteButton(url, fieldName);
     $($newParent).append($DeleteButton);
@@ -232,7 +232,7 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data) {
-         var $relationField = $("<div class='status-0 other-item' id='other" +
+         var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
          data['id'] + "'><a href=" + parentUrl + ">" + propertyLabel + "</a></div>")
          var $deleteButton = createDeleteButton(data['remove_url'], 'other');
          $relationField.append($deleteButton);
@@ -258,7 +258,7 @@ $(document).ready(function () {
         return;
     }
     var url = $(this).data('href');
-    var deleteFieldId = $(this).parent(); //the field to delete is the parent of the button
+    var deleteFieldId = $(this).parent(); // the field to delete is the parent of the button
     var deleteButton = $(this);
     $.ajax({
        type: "POST",
@@ -271,11 +271,11 @@ $(document).ready(function () {
        },
        success: function(data){
 
-         if ($(deleteFieldId).hasClass('status-0')){ //if pending hard delete
+         if ($(deleteFieldId).hasClass(PENDING_CLASS)){ // if pending hard delete
             $(deleteFieldId).remove();
          }
          // else it is just marked as deleted pending
-         $(deleteFieldId).attr('class', 'status-3'); // Change status
+         $(deleteFieldId).attr('class', DELETED_PENDING_CLASS); // Change status
          $(deleteButton).remove();
        }
     });

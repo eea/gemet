@@ -1,6 +1,5 @@
 {% extends layout_template %}
 {% load gemet_tags %}
-{% load staticfiles %}
 
 {% block title %}
   Edit {{ concept.name }}
@@ -89,7 +88,7 @@
           <i id="alternative{{ alternative.id }}"
              class="status-{{ alternative.status }}">
             {{ alternative.value }};
-            {% if alternative.status != 3 %}
+            {% if alternative.status != DELETED_PENDING %}
             <button class='btng centerMe removeParent' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
@@ -253,7 +252,7 @@
           {% for relation in foreign_relation.list %}
             <div class="status-{{ relation.status }} other-item" id="other{{ relation.id }}">
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
-              {% if relation.status != 3 %}
+              {% if relation.status != DELETED_PENDING %}
               <button class='btng centerMe removeParent' type="button" value="Delete"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
@@ -296,7 +295,5 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="{% static 'thesaurus/js/js.cookie.js' '%}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
+  {% include 'edit/bits/js_scripts.html' %}
 {% endblock %}

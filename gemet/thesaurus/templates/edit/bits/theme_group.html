@@ -7,7 +7,7 @@
           value="{{ parent.id }}"
           class="status-{{ parent.status }}">
         {{ parent.name }}
-          {% if parent.status != 3 %}
+          {% if parent.status != DELETED_PENDING %}
           <button class='btng centerMe removeParent' type="button" data-field-id="#{{ type }}{{ parent.id }}"
                        data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
                        data-type="{{ type }}">

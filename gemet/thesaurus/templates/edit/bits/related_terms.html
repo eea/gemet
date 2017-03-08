@@ -4,23 +4,28 @@
     <ul id="{{ type }}" class="dd-list">
       <div class="elements-list" id="{{ type }}list">
         {% for cp in concept_list %}
+
         <li id="{{ type }}{{ cp.id }}" class="status-{{ cp.status }}">
           <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
-        {% if cp.status != 3 %}
-        <button class='btng centerMe removeParent' type="button" data-field-id="#{{ type }}{{ cp.id }}"
-               data-href="{% url 'remove_parent' language.code concept.id cp.id type %}"
-               data-type="{{ type }}" value="x">
-          <div class='icon'>
-          <i class="fa fa-times" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
+
+          {% if cp.status != DELETED_PENDING %}
+          <button class='btng centerMe removeParent'
+                  type="button"
+                  data-field-id="#{{ type }}{{ cp.id }}"
+                  data-href="{% url 'remove_parent' language.code concept.id cp.id type %}"
+                  data-type="{{ type }}" value="x">
+            <div class='icon'>
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </div>
+            <div class='text'>
               <span>Delete</span>
             </div>
-        </button>
-        {% endif %}
+          </button>
+          {% endif %}
+
         </li>
         {% endfor %}
-        </div>
+      </div>
     </ul>
   </ul>
 </div>
