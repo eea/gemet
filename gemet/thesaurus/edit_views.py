@@ -4,11 +4,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
+from django.shortcuts import redirect
 
-from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, RELATION_TYPES
-from gemet.thesaurus.models import Concept, Group, SuperGroup, Theme, Term
-from gemet.thesaurus.models import ForeignRelation, Relation, Language
-from gemet.thesaurus.models import Property, PropertyType, Version
+from gemet.thesaurus.models import Concept, ForeignRelation
+from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, InspireTheme
+from gemet.thesaurus.models import Language, Namespace, Property, PropertyType
+from gemet.thesaurus.models import Relation, RELATION_TYPES, SuperGroup
+from gemet.thesaurus.models import Theme, Term, Version
 from gemet.thesaurus.models import EditableGroup, EditableTerm, EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
@@ -429,3 +431,24 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         data = {'restore_url': restore_url}
 
         return self._get_response(data, 'success', 200)
+
+
+class AddNewConceptView(JsonResponseMixin, View):
+
+    def get(self, request, langcode):
+
+        version = Version.objects.create()
+        namespace = Namespace.objects.get(heading=Term.NAMESPACE)
+        new_concept = Term(version_added=version,
+                           namespace=namespace,
+                           status=Term.PENDING)
+        codes = (Concept.objects
+                 .exclude(namespace__heading=InspireTheme.NAMESPACE)
+                 .exclude(code='')
+                 .values_list('code', flat=True))
+        new_code = max(map(int, codes)) + 1
+        new_concept.code = str(new_code).decode("utf-8")
+        new_concept.save()
+        url = reverse('concept_edit', kwargs={'langcode': langcode,
+                                              'code': new_code})
+        return redirect(url)
