@@ -26,15 +26,13 @@
 
   <div class="text-area-wrapper">
  <!-- Definition -->
-  <div class="text-area">
-
-    <!-- Definition -->
+  <div class="text-area" id="definition">
   <div class="text-area">
     <h5 class="h5 hidden-desktop">Definition</h5>
     {% if not supergroup.definition %}
       <p class="alert">Definition is not available.</p>
     {% else %}
-      <p id="definition">{{ supergroup.definition }}</p>
+      <p >{{ supergroup.definition }}</p>
     {% endif %}
   </div>
 
