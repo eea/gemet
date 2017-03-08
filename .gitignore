@@ -104,3 +104,6 @@ sandbox/
 
 # SQL files
 *.sql
+
+# Pycharm:
+.idea
