@@ -1,5 +1,6 @@
 import unicodedata
 from django import template
+from django.core.urlresolvers import reverse
 
 from gemet.thesaurus.models import Concept
 from gemet.thesaurus import DEFAULT_LANGCODE
@@ -81,3 +82,21 @@ def getattr(obj, args):
         return obj.__dict__.get(attribute, default)
     except:
         return default
+
+
+@register.simple_tag
+def active(request, name, **kwargs):
+    """ Return the string 'active' current request.path is same as the reverse
+    of name and its arguments
+
+    Aruguments:
+    request  -- Django request object
+    name     -- name of the url or the actual path
+    kwargs   -- arguments of the url
+    """
+    path = reverse(name, kwargs=kwargs)
+
+    if request.path == path:
+        return ' active '
+
+    return ''
