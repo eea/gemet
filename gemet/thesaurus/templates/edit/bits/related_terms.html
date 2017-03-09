@@ -8,7 +8,21 @@
         <li id="{{ type }}{{ cp.id }}" class="status-{{ cp.status }}">
           <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
 
-          {% if cp.status != DELETED_PENDING %}
+          {% if cp.status == DELETED_PENDING %}
+          <button class='btng centerMe restoreParent'
+                  type="button"
+                  data-field-id="#{{ type }}{{ cp.id }}"
+                  data-href="{% url 'restore_parent' language.code concept.id cp.id type %}"
+                  data-type="{{ type }}">
+            <div class='icon'>
+              <i class="fa fa-undo" aria-hidden="true"></i>
+            </div>
+            <div class='text'>
+              <span>Restore</span>
+            </div>
+          </button>
+
+          {% else %}
           <button class='btng centerMe removeParent'
                   type="button"
                   data-field-id="#{{ type }}{{ cp.id }}"

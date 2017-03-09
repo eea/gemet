@@ -88,6 +88,7 @@
           <i id="alternative{{ alternative.id }}"
              class="status-{{ alternative.status }}">
             {{ alternative.value }};
+
             {% if alternative.status != DELETED_PENDING %}
             <button class='btng centerMe removeParent' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
@@ -252,8 +253,24 @@
           {% for relation in foreign_relation.list %}
             <div class="status-{{ relation.status }} other-item" id="other{{ relation.id }}">
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
-              {% if relation.status != DELETED_PENDING %}
-              <button class='btng centerMe removeParent' type="button" value="Delete"
+
+              {% if relation.status == DELETED_PENDING %}
+              <button class='btng centerMe restoreParent'
+                      type="button"
+                      data-type="other"
+                      data-field-id="#other{{ relation.id }}"
+                      data-href="{% url 'restore_other' language.code concept.id relation.id %}">
+                <div class='icon'>
+                  <i class="fa fa-undo" aria-hidden="true"></i>
+                </div>
+                <div class='text'>
+                  <span>Restore</span>
+                </div>
+              </button>
+
+              {% else %}
+              <button class='btng centerMe removeParent'
+                      type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
                       data-href="{% url 'remove_other' language.code concept.id relation.id %}">

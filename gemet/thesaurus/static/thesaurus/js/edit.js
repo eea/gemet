@@ -11,18 +11,26 @@ function formatConceptSelection (concept) {
   return $selection;
 }
 
+function createButton(href, type, bindFunc, cls, icon, text) {
+  var $button = $("<button type='button'></button>");
+  $button.attr('class', 'btng centerMe');
+  $button.addClass(cls);
+  $button.attr("data-href", href);
+  $button.attr("data-type", type);
+  var $buttonStyle = $("<div class='icon'><i class='fa fa-" + icon + "' aria-hidden='true'></i></div>");
+  var $buttonText = $("<div class='text'><span>" + text + "</span></div>");
+  $button.append($buttonStyle);
+  $button.append($buttonText);
+  $button.bind('click', bindFunc);
+  return $button;
+}
+
 function createDeleteButton(href, type){
-  var $deleteButton = $("<button type='button'></button>");
-  $deleteButton.attr('value', 'X');
-  $deleteButton.attr('class', 'btng centerMe removeParent');
-  $deleteButton.attr("data-href", href);
-  $deleteButton.attr("data-type", type);
-  var $buttonStyle = $("<div class='icon'><i class='fa fa-times' aria-hidden='true'></i></div>");
-  var $buttonText = $("<div class='text'><span>Delete</span></div>");
-  $deleteButton.append($buttonStyle);
-  $deleteButton.append($buttonText);
-  $deleteButton.bind('click', removeParent);
-  return $deleteButton;
+  return createButton(href, type, removeParent, 'removeParent', 'times', 'Delete');
+}
+
+function createRestoreButton(href, type){
+  return createButton(href, type, restoreParent, 'restoreParent', 'undo', 'Restore');
 }
 
 $(document).ready(function () {
@@ -63,6 +71,7 @@ $(document).ready(function () {
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherSave').click(saveOtherRelation);
   $('.removeParent').click(removeParent);
+  $('.restoreParent').click(restoreParent);
 });
 
   $('.btng.edit, .btng.add').on('click', function(){
@@ -253,11 +262,12 @@ $(document).ready(function () {
 
   /* remove concept, alternative or other relation */
   function removeParent(){
-    var strconfirm = confirm("Are you sure you want to delete?");
+    var strconfirm = confirm("Are you sure you want to delete this object?");
     if (strconfirm == false) {
         return;
     }
     var url = $(this).data('href');
+    var relationType = $(this).data('type');
     var deleteFieldId = $(this).parent(); // the field to delete is the parent of the button
     var deleteButton = $(this);
     $.ajax({
@@ -277,6 +287,36 @@ $(document).ready(function () {
          // else it is just marked as deleted pending
          $(deleteFieldId).attr('class', DELETED_PENDING_CLASS); // Change status
          $(deleteButton).remove();
+         var $restoreButton = createRestoreButton(data['restore_url'], relationType);
+         deleteFieldId.append($restoreButton);
+       }
+    });
+  };
+
+  /* restore concept, alternative or other relation */
+  function restoreParent(){
+    var strconfirm = confirm("Are you sure you want to restore this object?");
+    if (strconfirm == false) {
+        return;
+    }
+    var restoreButton = $(this);
+    var url = $(this).data('href');
+    var relationType = $(this).data('type');
+    var relationDiv = $(this).parent(); // the field to restore is the parent of the button
+    $.ajax({
+       type: "POST",
+       url: url,
+       data: {
+              'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+              'value': $(relationDiv).data('value'),
+             },
+       error: function(e) {
+       },
+       success: function(data){
+         $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status
+         $(restoreButton).remove();
+         var $deleteButton = createDeleteButton(data['remove_url'], relationType);
+         relationDiv.append($deleteButton);
        }
     });
   };

@@ -186,6 +186,42 @@ class EditPropertyView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
+class RestoreParentRelationView(JsonResponseMixin, ConceptMixin, View):
+
+    def post(self, request, langcode, id, parent_id, rel_type):
+        try:
+            concept = Concept.objects.get(id=id)
+            self._set_concept_model(rel_type, concept.namespace.heading)
+            parent_concept = self.model.objects.get(id=parent_id)
+        except ObjectDoesNotExist:
+            data = {"message": 'Object does not exist.'}
+            return self._get_response(data, 'error', 400)
+
+        relation = Relation.objects.filter(
+            source=concept,
+            target=parent_concept,
+            property_type__name=rel_type,
+            status=Relation.DELETED_PENDING,
+        ).first()
+
+        if not relation:
+            data = {"message": 'Object does not exist.'}
+            return self._get_response(data, 'error', 400)
+
+        relation.status = Relation.PUBLISHED
+        relation.save()
+
+        remove_url = reverse('remove_parent', kwargs={
+            'langcode': langcode,
+            'id': id,
+            'parent_id': parent_id,
+            'rel_type': rel_type,
+        })
+        data = {'remove_url': remove_url}
+
+        return self._get_response(data, 'success', 200)
+
+
 class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, langcode, id, parent_id, rel_type):
@@ -214,7 +250,15 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         elif relation.status == Relation.PENDING:
             relation.delete()
 
-        return self._get_response({}, 'success', 200)
+        restore_url = reverse('restore_parent', kwargs={
+            'langcode': langcode,
+            'id': id,
+            'parent_id': parent_id,
+            'rel_type': rel_type,
+        })
+        data = {'restore_url': restore_url}
+
+        return self._get_response(data, 'success', 200)
 
 
 class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
@@ -340,6 +384,29 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
         return self._get_response(data, 'error', 400)
 
 
+class RestoreForeignRelationView(JsonResponseMixin, View):
+
+    def post(self, request, langcode, id, relation_id):
+        try:
+            foreign_relation = ForeignRelation.objects.get(id=relation_id)
+        except ObjectDoesNotExist:
+            data = {"message": 'Object does not exist.'}
+            return self._get_response(data, 'error', 400)
+
+        foreign_relation.status = ForeignRelation.PUBLISHED
+        foreign_relation.save()
+
+        remove_url = reverse('remove_other', kwargs={
+            'langcode': langcode,
+            'id': id,
+            'relation_id': relation_id,
+        })
+
+        data = {'remove_url': remove_url}
+
+        return self._get_response(data, 'success', 200)
+
+
 class RemoveForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, langcode, id, relation_id):
@@ -355,4 +422,12 @@ class RemoveForeignRelationView(JsonResponseMixin, View):
         elif foreign_relation.status == ForeignRelation.PENDING:
             foreign_relation.delete()
 
-        return self._get_response({}, 'success', 200)
+        restore_url = reverse('restore_other', kwargs={
+            'langcode': langcode,
+            'id': id,
+            'relation_id': relation_id,
+        })
+
+        data = {'restore_url': restore_url}
+
+        return self._get_response(data, 'success', 200)

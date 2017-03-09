@@ -41,6 +41,7 @@ from gemet.thesaurus.views import (
 from .edit_views import AddForeignRelationView, AddPropertyView
 from .edit_views import AddParentRelationView, EditPropertyView
 from .edit_views import RemoveParentRelationView, RemoveForeignRelationView
+from .edit_views import RestoreParentRelationView, RestoreForeignRelationView
 from .edit_views import RemovePropertyView, UnrelatedConcepts
 from gemet.thesaurus.edit_views import GroupEditView, SuperGroupEditView
 from gemet.thesaurus.edit_views import TermEditView, ThemeEditView
@@ -147,11 +148,16 @@ urlpatterns = [
     url(r'^(?P<langcode>[a-zA-Z-]+)/concept/(?P<id>\d+)/edit/', include([
         url(r'^other/(?P<relation_id>\d+)/remove/$',
             RemoveForeignRelationView.as_view(), name='remove_other'),
+        url(r'^other/(?P<relation_id>\d+)/restore/$',
+            RestoreForeignRelationView.as_view(), name='restore_other'),
         url(r'^other/add/$',
             AddForeignRelationView.as_view(), name='add_other'),
         url(r'^parent-concept/(?P<parent_id>\d+)/type/(?P<rel_type>[a-zA-Z-]+)'
             r'/remove',
             RemoveParentRelationView.as_view(), name='remove_parent'),
+        url(r'^parent-concept/(?P<parent_id>\d+)/type/(?P<rel_type>[a-zA-Z-]+)'
+            r'/restore',
+            RestoreParentRelationView.as_view(), name='restore_parent'),
         url(r'^parent-concept/(?P<parent_id>\d+)/type/'
             r'(?P<rel_type>[a-zA-Z-]+)/$', AddParentRelationView.as_view(),
             name='add_parent'),
