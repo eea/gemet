@@ -90,10 +90,10 @@
             {{ alternative.value }};
 
             {% if alternative.status != DELETED_PENDING %}
-            <button class='btng centerMe removeParent' type="submit" value="X"
+            <button class='btng centerMe deleteParent' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
-                    data-href="{% url 'remove_property' alternative.id %}">
+                    data-href="{% url 'delete_property' alternative.id %}">
               <div class='icon'>
                 <i class="fa fa-times" aria-hidden="true"></i>
               </div>
@@ -269,11 +269,11 @@
               </button>
 
               {% else %}
-              <button class='btng centerMe removeParent'
+              <button class='btng centerMe deleteParent'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'remove_other' language.code concept.id relation.id %}">
+                      data-href="{% url 'delete_other' language.code concept.id relation.id %}">
                 <div class='icon'>
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </div>

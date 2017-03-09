@@ -9,10 +9,10 @@
         {{ parent.name }}
 
           {% if parent.status == DELETED_PENDING %}
-          <button class='btng centerMe removeParent'
+          <button class='btng centerMe deleteParent'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
-                  data-href="{% url 'restore_parent' language.code concept.id parent.id type %}"
+                  data-href="{% url 'restore_relation' language.code concept.id parent.id type %}"
                   data-type="{{ type }}">
             <div class='icon'>
               <i class="fa fa-undo" aria-hidden="true"></i>
@@ -23,10 +23,10 @@
           </button>
 
           {% else %}
-          <button class='btng centerMe removeParent'
+          <button class='btng centerMe deleteParent'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
-                  data-href="{% url 'remove_parent' language.code concept.id parent.id type %}"
+                  data-href="{% url 'delete_relation' language.code concept.id parent.id type %}"
                   data-type="{{ type }}">
             <div class='icon'>
               <i class="fa fa-times" aria-hidden="true"></i>

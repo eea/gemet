@@ -4,7 +4,7 @@ function formatConcept (concept) {
 
 function formatConceptSelection (concept) {
   var $selection = $("<div selected>" + concept.name + "</div>");
-  $selection.attr('data-href', concept.remove_url);
+  $selection.attr('data-href', concept.delete_url);
   $selection.attr('data-href_add', concept.add_url);
   $selection.attr('data-href_concept', concept.concept_url);
   $selection.attr('value', concept.id);
@@ -26,7 +26,7 @@ function createButton(href, type, bindFunc, cls, icon, text) {
 }
 
 function createDeleteButton(href, type){
-  return createButton(href, type, removeParent, 'removeParent', 'times', 'Delete');
+  return createButton(href, type, deleteParent, 'deleteParent', 'times', 'Delete');
 }
 
 function createRestoreButton(href, type){
@@ -70,7 +70,7 @@ $(document).ready(function () {
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherSave').click(saveOtherRelation);
-  $('.removeParent').click(removeParent);
+  $('.deleteParent').click(deleteParent);
   $('.restoreParent').click(restoreParent);
 });
 
@@ -168,7 +168,7 @@ $(document).ready(function () {
     var parentId = $(selector).attr('value');
     var parentText = $(selector).text();
     var addUrl = $(selector).data('href_add');
-    var removeUrl = $(selector).data('href');
+    var deleteUrl = $(selector).data('href');
     var fieldName = $(this).data('type');
     var url = $(this).data('href');
     var link_tag = $(this).data('link');
@@ -183,7 +183,7 @@ $(document).ready(function () {
        error: function(e) {
        },
        success: function(data){
-         addElement(fieldId, parentId, parentText, removeUrl, fieldName,
+         addElement(fieldId, parentId, parentText, deleteUrl, fieldName,
                     conceptUrl, link_tag);
        }
     });
@@ -243,7 +243,7 @@ $(document).ready(function () {
        success: function(data) {
          var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
          data['id'] + "'><a href=" + parentUrl + ">" + propertyLabel + "</a></div>")
-         var $deleteButton = createDeleteButton(data['remove_url'], 'other');
+         var $deleteButton = createDeleteButton(data['delete_url'], 'other');
          $relationField.append($deleteButton);
          if ($fieldList.length) {
            $fieldList.append($relationField);
@@ -261,7 +261,7 @@ $(document).ready(function () {
   }
 
   /* remove concept, alternative or other relation */
-  function removeParent(){
+  function deleteParent(){
     var strconfirm = confirm("Are you sure you want to delete this object?");
     if (strconfirm == false) {
         return;
@@ -315,7 +315,7 @@ $(document).ready(function () {
        success: function(data){
          $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status
          $(restoreButton).remove();
-         var $deleteButton = createDeleteButton(data['remove_url'], relationType);
+         var $deleteButton = createDeleteButton(data['delete_url'], relationType);
          relationDiv.append($deleteButton);
        }
     });

@@ -51,19 +51,19 @@ class ThemeEditView(ThemeView):
 
 class ConceptMixin(object):
 
-    def _set_concept_model(self, parent_type, namespace):
-        if parent_type not in RELATION_TYPES:
+    def _set_concept_model(self, relation_type, namespace):
+        if relation_type not in RELATION_TYPES:
             raise Http404
-        if parent_type == 'group':
+        if relation_type == 'group':
             self.model = Group
-        elif parent_type == 'theme':
+        elif relation_type == 'theme':
             self.model = Theme
-        elif parent_type == 'broader' and namespace == Group.NAMESPACE:
+        elif relation_type == 'broader' and namespace == Group.NAMESPACE:
             self.model = SuperGroup
-        elif parent_type == 'narrower' and namespace == SuperGroup.NAMESPACE:
+        elif relation_type == 'narrower' and namespace == SuperGroup.NAMESPACE:
             self.model = Group
-        elif parent_type in ['broader', 'narrower', 'related', 'groupMember',
-                             'themeMember']:
+        elif relation_type in ['broader', 'narrower', 'related', 'groupMember',
+                               'themeMember']:
             self.model = Term
 
 
@@ -87,14 +87,14 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
                 'parent_id': concept['id'],
                 'rel_type': relation,
             }
-            add_url = reverse('add_parent', kwargs=url_kwargs)
-            remove_url = reverse('remove_parent', kwargs=url_kwargs)
+            add_url = reverse('add_relation', kwargs=url_kwargs)
+            delete_url = reverse('delete_relation', kwargs=url_kwargs)
             concept_url = reverse('concept', kwargs={
                 'langcode': langcode,
                 'code': concept['concept__code'],
             })
             concept['add_url'] = add_url
-            concept['remove_url'] = remove_url
+            concept['delete_url'] = delete_url
             concept['concept_url'] = concept_url
         return concepts
 
@@ -186,7 +186,7 @@ class EditPropertyView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class RestoreParentRelationView(JsonResponseMixin, ConceptMixin, View):
+class RestoreRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, langcode, id, parent_id, rel_type):
         try:
@@ -211,18 +211,18 @@ class RestoreParentRelationView(JsonResponseMixin, ConceptMixin, View):
         relation.status = Relation.PUBLISHED
         relation.save()
 
-        remove_url = reverse('remove_parent', kwargs={
+        delete_url = reverse('delete_relation', kwargs={
             'langcode': langcode,
             'id': id,
             'parent_id': parent_id,
             'rel_type': rel_type,
         })
-        data = {'remove_url': remove_url}
+        data = {'delete_url': delete_url}
 
         return self._get_response(data, 'success', 200)
 
 
-class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
+class DeleteRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, langcode, id, parent_id, rel_type):
         try:
@@ -250,7 +250,7 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         elif relation.status == Relation.PENDING:
             relation.delete()
 
-        restore_url = reverse('restore_parent', kwargs={
+        restore_url = reverse('restore_relation', kwargs={
             'langcode': langcode,
             'id': id,
             'parent_id': parent_id,
@@ -261,7 +261,7 @@ class RemoveParentRelationView(JsonResponseMixin, ConceptMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddParentRelationView(JsonResponseMixin, ConceptMixin, View):
+class AddRelationView(JsonResponseMixin, ConceptMixin, View):
 
     def post(self, request, langcode, id, parent_id, rel_type):
         try:
@@ -328,18 +328,18 @@ class AddPropertyView(JsonResponseMixin, View):
                                         concept=concept,
                                         name=name,
                                         **form.cleaned_data)
-        remove_url = reverse('remove_property', kwargs={'pk': field.pk})
+        delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
         data = {
             "value": field.value,
             "id": field.id,
             "status": field.status,
-            "url": remove_url,
+            "url": delete_url,
         }
         return self._get_response(data, 'success', 200)
 
 
-class RemovePropertyView(JsonResponseMixin, View):
+class DeletePropertyView(JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
@@ -370,7 +370,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
         form = ForeignRelationForm(request.POST)
         if form.is_valid():
             version = Version.objects.create()
-            # todo remove version when stable
+            # TODO Remove version when stable
             new_relation = ForeignRelation.objects.create(
                 version_added=version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)
@@ -378,7 +378,7 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
                           'id': id,
                           'relation_id': new_relation.id}
             data = {'id': new_relation.id,
-                    'remove_url': reverse('remove_other', kwargs=url_kwargs)}
+                    'delete_url': reverse('delete_other', kwargs=url_kwargs)}
             return self._get_response(data, 'success', 200)
         data = {"message": form.errors}
         return self._get_response(data, 'error', 400)
@@ -396,18 +396,18 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
         foreign_relation.status = ForeignRelation.PUBLISHED
         foreign_relation.save()
 
-        remove_url = reverse('remove_other', kwargs={
+        delete_url = reverse('delete_other', kwargs={
             'langcode': langcode,
             'id': id,
             'relation_id': relation_id,
         })
 
-        data = {'remove_url': remove_url}
+        data = {'delete_url': delete_url}
 
         return self._get_response(data, 'success', 200)
 
 
-class RemoveForeignRelationView(JsonResponseMixin, View):
+class DeleteForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, langcode, id, relation_id):
         try:
