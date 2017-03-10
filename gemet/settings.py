@@ -53,6 +53,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.request',
                 'gemet.layout.layout_context_processor',
+                'gemet.thesaurus.context_processors.globals',
             ],
         },
     },

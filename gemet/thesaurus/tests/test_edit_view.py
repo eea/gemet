@@ -106,29 +106,29 @@ class TestRemoveParentRelationView(GemetTest):
                                'parent_id': self.theme.id,
                                'rel_type': 'theme'}
 
-    def test_remove_relation_bad_concept(self):
-        url = reverse('remove_parent', kwargs={'langcode': 'en',
-                                               'id': 31,
-                                               'parent_id': self.theme.id,
-                                               'rel_type': 'theme'})
+    def test_delete_relation_bad_concept(self):
+        url = reverse('delete_relation', kwargs={'langcode': 'en',
+                                                 'id': 31,
+                                                 'parent_id': self.theme.id,
+                                                 'rel_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_relation_bad_parent(self):
-        url = reverse('remove_parent', kwargs={'langcode': 'en',
-                                               'id': self.term.id,
-                                               'parent_id': 99,
-                                               'rel_type': 'theme'})
+    def test_delete_relation_bad_parent(self):
+        url = reverse('delete_relation', kwargs={'langcode': 'en',
+                                                 'id': self.term.id,
+                                                 'parent_id': 99,
+                                                 'rel_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_relation_no_relation(self):
-        url = reverse('remove_parent', kwargs=self.request_kwargs)
+    def test_delete_relation_no_relation(self):
+        url = reverse('delete_relation', kwargs=self.request_kwargs)
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_relation_correct_request(self):
-        url = reverse('remove_parent', kwargs=self.request_kwargs)
+    def test_delete_relation_correct_request(self):
+        url = reverse('delete_relation', kwargs=self.request_kwargs)
         RelationFactory(source=self.term, target=self.theme,
                         property_type=self.property_type,
                         status=Property.PUBLISHED)
@@ -156,19 +156,19 @@ class TestAddParentRelationView(GemetTest):
                                                  name='theme', id=10)
 
     def test_post_no_concept_no_parent_object(self):
-        url = reverse('add_parent', kwargs={'id': 33,
-                                            'langcode': 'en',
-                                            'parent_id': 45,
-                                            'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'id': 33,
+                                              'langcode': 'en',
+                                              'parent_id': 45,
+                                              'rel_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_parent', kwargs={'id': self.term.id,
-                                            'langcode': 'en',
-                                            'parent_id': self.theme.id,
-                                            'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'id': self.term.id,
+                                              'langcode': 'en',
+                                              'parent_id': self.theme.id,
+                                              'rel_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(200, response.status_code)
@@ -181,13 +181,13 @@ class TestRemovePropertyView(GemetTest):
         self.property = PropertyFactory(value='new property',
                                         status=Property.PUBLISHED)
 
-    def test_remove_property_bad_concept(self):
-        url = reverse('remove_property', kwargs={'pk': 43})
+    def test_delete_property_bad_concept(self):
+        url = reverse('delete_property', kwargs={'pk': 43})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_property_correct_request(self):
-        url = reverse('remove_property', kwargs={'pk': self.property.pk})
+    def test_delete_property_correct_request(self):
+        url = reverse('delete_property', kwargs={'pk': self.property.pk})
         response = self.app.post(url, params={'value': 'new property'})
         self.assertEqual(200, response.status_code)
 
@@ -239,15 +239,15 @@ class TestRemoveForeignRelationView(GemetTest):
         self.foreign_relation = ForeignRelationFactory(
             concept=self.term, property_type=self.property_type, id=8)
 
-    def test_remove_foreign_relation_no_relation(self):
-        url = reverse('remove_other', kwargs={'id': 1,
+    def test_delete_foreign_relation_no_relation(self):
+        url = reverse('delete_other', kwargs={'id': 1,
                                               'relation_id': 7,
                                               'langcode': 'en'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_remove_foreign_relation_correct_request(self):
-        url = reverse('remove_other', kwargs={'id': 1,
+    def test_delete_foreign_relation_correct_request(self):
+        url = reverse('delete_other', kwargs={'id': 1,
                                               'relation_id': 8,
                                               'langcode': 'en'})
         response = self.app.post(url, expect_errors=True)
