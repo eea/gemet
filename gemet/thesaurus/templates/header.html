@@ -8,41 +8,34 @@
   </div>
   <div class="gemet-menu">
   <a href="{% url 'themes' language.code %}">Thematic Listings</a>
-  <!-- &nbsp;|&nbsp; -->
   <a href="{% url 'inspire_themes' language.code %}">INSPIRE Spatial Data Themes</a>
-  <!-- &nbsp;|&nbsp; -->
   <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
-  <!-- &nbsp;|&nbsp; -->
   <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-  <!-- &nbsp;|&nbsp; -->
-  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
   <a >Search Thesaurus</a>
 </div>
 
-
-
-
 <div class="search_bar huge">
   <div class="search_dropdown">
-    <!-- <label for="select-language">Select language</label> -->
-      <select name="select-language" id="js-change-language">
-        {% for lang in languages %}
-          <option value="{{ lang.code }}"
-          href="{% if id %}{% url view lang.code id %}{% else %}{% url view lang.code %}{% endif %}{% if get_params %}?{{ get_params }}{%  endif %}"
-          {% if language.code == lang.code%}selected="selected"{% endif %}
-            >{{ lang.name }}</option>
-        {% endfor %}
-      </select>
+    <select name="select-language" id="js-change-language">
+      {% for lang in languages %}
+        <option value="{{ lang.code }}"
+        href="{% if code %}{% url view lang.code code %}{% else %}{% url view lang.code %}{% endif %}{% if get_params %}?{{ get_params }}{% endif %}"
+        {% if language.code == lang.code%}selected="selected"{% endif %}
+          >{{ lang.name }}</option>
+      {% endfor %}
+    </select>
   </div>
 
-   <form method="post" action='{% url 'search' language.code %}' id='search-form' name="search-query" placeholder="Concepts, Groups, Themes...">
-        {% csrf_token %}
-        
-          {{ search_form }}
-     <button type="submit" value="Search">Search</button>
-      </form>
+  <form method="post"
+        action='{% url 'search' language.code %}'
+        id='search-form'
+        name="search-query"
+        placeholder="Concepts, Groups, Themes...">
+    {% csrf_token %}
+    {{ search_form }}
+    <button type="submit" value="Search">Search</button>
+  </form>
 
-  
 </div>
 
 </div>
