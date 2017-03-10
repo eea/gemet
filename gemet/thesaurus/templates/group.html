@@ -21,10 +21,14 @@
     </ul>
   </div>
   <!-- Group -->
-  <h3 class="h3">{{ group.name }}</h3>
-
-
-
+  <div class="selected-word">
+    <span>{{ group.name }}</span>
+    <span>
+      <a class="btn btn-primary"
+         href="{% url 'group_edit' language.code group.code %}"
+         >Edit</a>
+    </span>
+  </div>
 
 <div class="text-area-wrapper">
  <!-- Definition -->

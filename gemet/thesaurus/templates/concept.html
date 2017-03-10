@@ -8,7 +8,6 @@
 {% block content %}
   {% include 'header.html' with view='concept' code=concept.code %}
 
-
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
@@ -25,7 +24,14 @@
   </div>
 
   <!-- Concept -->
-  <h1 class="selected-word" id="prefLabel">{{ concept.name }}</h1>
+  <div class="selected-word" id="prefLabel">
+    <span>{{ concept.name }}</span>
+    <span>
+      <a class="btn btn-primary"
+         href="{% url 'concept_edit' language.code concept.code %}"
+         >Edit</a>
+    </span>
+  </div>
 
   <div class="text-area-wrapper">
 

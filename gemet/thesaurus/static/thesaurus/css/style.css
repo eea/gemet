@@ -1749,8 +1749,10 @@ h6.inline {
 display: inline-flex!important;
 }
 
-
 .hidden {
-display:none;
+  display:none;
 }
 
+a.btn {
+  color: #fff;
+}

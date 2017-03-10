@@ -22,7 +22,15 @@
     </ul>
   </div>
   <!-- Theme -->
-  <h3 class="h3">{{ theme.name }}</h3>
+  <div class="selected-word">
+    <span>{{ theme.name }}</span>
+    <span>
+      <a class="btn btn-primary"
+         href="{% url 'theme_edit' language.code theme.code %}"
+         >Edit</a>
+    </span>
+  </div>
+
 <div class="text-area-wrapper">
  <!-- Definition -->
  <div class="text-area" id="definition">
