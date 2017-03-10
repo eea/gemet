@@ -51,7 +51,7 @@ urlpatterns = [
         url(r'^concept/(?P<code>\d+)$', views.TermView.as_view(),
             name='concept'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view()),
-        url(r'^concept/add$', edit_views.AddNewConceptView.as_view(),
+        url(r'^concept/add$', edit_views.AddConceptView.as_view(),
             name='concept_add'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),

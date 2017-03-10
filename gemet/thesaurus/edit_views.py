@@ -5,13 +5,14 @@ from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
+from gemet.thesaurus.definitions import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
+from gemet.thesaurus.definitions import RELATION_TYPES
 from gemet.thesaurus.forms import ConceptForm
-from gemet.thesaurus.models import Concept, ForeignRelation, EDIT_URL_NAMES
-from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group
+from gemet.thesaurus.models import Concept, ForeignRelation, Group
 from gemet.thesaurus.models import Language, Property, PropertyType
-from gemet.thesaurus.models import Relation, RELATION_TYPES, SuperGroup
-from gemet.thesaurus.models import Theme, Term, Version
-from gemet.thesaurus.models import EditableGroup, EditableTerm, EditableTheme
+from gemet.thesaurus.models import Relation, SuperGroup, Theme
+from gemet.thesaurus.models import Term, Version, EditableGroup, EditableTerm
+from gemet.thesaurus.models import EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
@@ -433,7 +434,7 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddNewConceptView(View):
+class AddConceptView(View):
 
     def get(self, request, langcode):
         form = ConceptForm()
@@ -446,7 +447,6 @@ class AddNewConceptView(View):
     def post(self, request, langcode):
         language = Language.objects.get(code=langcode)
         form = ConceptForm(request.POST)
-        import pdb;pdb.set_trace()
         if form.is_valid():
             version = Version.objects.create()
             namespace = form.cleaned_data['namespace']
