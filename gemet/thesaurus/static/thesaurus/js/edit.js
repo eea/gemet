@@ -33,6 +33,22 @@ function createRestoreButton(href, type){
   return createButton(href, type, restoreParent, 'restoreParent', 'undo', 'Restore');
 }
 
+function errorMessage(message){
+  var n = noty({
+    text: message,
+    layout: 'top',
+    theme: 'bootstrapTheme', // or relax
+    type: 'error',
+    timeout: 2000,
+    animation: {
+      open: {height: 'toggle'},
+      close: {height: 'toggle'},
+      easing: 'swing',
+      speed: 500 // opening & closing animation speed
+    }
+  });
+}
+
 $(document).ready(function () {
   // select 2 infinite scroll
   $(".select-ajax").each(function() {
@@ -117,6 +133,7 @@ $(document).ready(function () {
              'csrfmiddlewaretoken': Cookies.get('csrftoken')
             },
       error: function(e) {
+        errorMessage(e.responseJSON.message)
       },
       success: function(data){
         $emptyElement.remove(); //remove empty text after a successful post
@@ -181,6 +198,7 @@ $(document).ready(function () {
               'csrfmiddlewaretoken': Cookies.get('csrftoken'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
          addElement(fieldId, parentId, parentText, deleteUrl, fieldName,
@@ -203,6 +221,7 @@ $(document).ready(function () {
               'csrfmiddlewaretoken': Cookies.get('csrftoken'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
         $alternativeWrapper = $("<div class='alternative-item'></div>");
@@ -239,6 +258,7 @@ $(document).ready(function () {
               'property_type': propertyTypeId,
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data) {
          var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
@@ -278,6 +298,7 @@ $(document).ready(function () {
               'value': $(deleteFieldId).data('value'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
 
@@ -311,6 +332,7 @@ $(document).ready(function () {
               'value': $(relationDiv).data('value'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
          $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status
