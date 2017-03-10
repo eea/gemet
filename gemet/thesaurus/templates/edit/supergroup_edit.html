@@ -5,54 +5,56 @@
 {{ concept.name }}
 {% endblock %}
 
-  {% block content %}
-<div class="edit-page">
+{% block content %}
     {% include 'header.html' with view='supergroup' id=concept.id %}
+<div class="edit-page">
+
+  <!-- Side bar -->
+  <div class="side-bar box">
+    <!-- Translations -->
+    <button class="expand-button">Translation</button>
+    <h6 class="no-margin-top">Translations</h6>
+    <ul id="translations" class="dl-inline no-list">
+      {% for translation in concept.translations %}
+      <li class="clearfix">
+        <div class="dt">{{ translation.language__name }}</div>
+        <div class="dd">{{ translation.value }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 
   <!-- Concept -->
   <div class="h3">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>
 
-    <!-- Side bar -->
-    <div class="side-bar box">
-      <!-- Translations -->
-      <h6 class="no-margin-top">Translations</h6>
-      <ul id="translations" class="dl-inline no-list">
-        {% for translation in concept.translations %}
-        <li class="clearfix">
-          <div class="dt">{{ translation.language__name }}</div>
-          <div class="dd">{{ translation.value }}</div>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-      <!-- Definition -->
-    <div class="text-area">
-      <h5 class="h5 hidden-desktop">Definition</h5>
-     {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-      {% if not concept.definition %}
-        <p class="alert">Definition is not available.</p>
-      {% endif %}
-    </div>
+  <!-- Definition -->
+  <div class="definition text-area element">
+    <h5 class="h5">Definition</h5>
+    {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+    {% if not concept.definition %}
+      <p class="alert empty-text" id="definitionEmpty">Definition is not available.</p>
+    {% endif %}
+  </div>
 
-      <!-- Scope -->
-    <div class="text-area">
-      <h5 class="h5">Scope note</h5>
-   {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-      {% if not concept.scopeNote %}
-        <p class="alert">Scope note is not available.</p>
-      {% endif %}
-    </div>
+  <!-- Scope -->
+  <div class="scope text-area element">
+    <h5 class="h5">Scope note</h5>
+    {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+    {% if not concept.scopeNote %}
+      <span id='scopeNoteEmpty' class="alert empty-text">Scope note is not available.</span>
+    {% endif %}
+  </div>
 
-      <!-- Groups -->
+  <!-- Groups -->
     <div class="text-area">
       <h5 class="h5">Groups</h5>
-       {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
-  {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
+      {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Groups' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='narrower' concept_list=concept.narrower_concepts %}
     </div>
 
-      <!-- Concept URL -->
+  <!-- Concept URL -->
     <div class="text-area">
       <h5 class="h5 h5-url">Concept URL:
       {{ concept.url }}
@@ -60,7 +62,9 @@
     </div>
 
 </div>
-  {% endblock %}
+
+{% endblock %}
+
 {% block version %}
     {% include 'version.html' with version=ns_version %}
 {% endblock %}

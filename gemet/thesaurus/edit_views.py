@@ -118,8 +118,8 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
             .values('name', 'id', 'concept__code')
         )
 
-    def get(self, request, langcode, code, relation):
-        self.concept = Concept.objects.get(code=code)
+    def get(self, request, langcode, id, relation):
+        self.concept = Concept.objects.get(id=id)
         self._set_concept_model(relation, self.concept.namespace.heading)
 
         page = int(request.GET.get('page', '1'))

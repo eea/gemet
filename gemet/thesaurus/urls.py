@@ -79,7 +79,7 @@ urlpatterns = [
             name='definition_sources'),
         url(r'^webservices/$', views.WebServicesView.as_view(),
             name='webservices'),
-        url(r'^concepts/except/(?P<code>\d+)/relation/(?P<relation>[a-zA-Z]+)$',
+        url(r'^concepts/except/(?P<id>\d+)/relation/(?P<relation>[a-zA-Z]+)$',
             edit_views.UnrelatedConcepts.as_view(), name='concepts_json'),
         ])),
     url(r'^exports/', include([

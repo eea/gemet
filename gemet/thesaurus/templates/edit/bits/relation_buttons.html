@@ -2,7 +2,7 @@
 <div id="{{ type }}Input" class="input-area" style="width: 50%;" hidden>
   <select class="select-ajax"
           style="width: 100%;"
-          data-href="{% url 'concepts_json' language.code concept.code type %}">
+          data-href="{% url 'concepts_json' language.code concept.id type %}">
   </select>
 </div>
 

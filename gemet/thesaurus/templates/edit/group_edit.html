@@ -4,17 +4,15 @@
 {% block title %}
  Edit {{ concept.name }}
 {% endblock %}
-{% block content %}
-<div class="edit-page">
-  {% include 'header.html' with view='group' id=concept.code %}
 
-  <!-- Group -->
-  <div class="h3">
-    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
-  </div>
+{% block content %}
+{% include 'header.html' with view='group' id=concept.code %}
+<div class="edit-page">
+
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
+    <button class="expand-button">Translations</button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}
@@ -26,35 +24,42 @@
     </ul>
   </div>
 
+  <!-- Group -->
+  <div class="h3 element">
+    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
+  </div>
+
   <!-- Definition -->
-  <div class="text-area">
-    <h5 class="h5 hidden-desktop">Definition</h5>
-  {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+  <div class="definition text-area element">
+    <h5 class="h5">Definition</h5>
+    {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
     {% if not concept.definition %}
-      <p class="alert" id="definitionEmpty">Definition is not available.</p>
+      <p class="alert empty-text" id="definitionEmpty">Definition is not available.</p>
     {% endif %}
   </div>
 
   <!-- Broader -->
-  <div class="text-area">
+  <div class="broader text-area">
     <h5 class="h5">Super groups</h5>
-  {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Super Group' link='false' %}
-  {% include 'edit/bits/theme_group.html' with type='broader' concept_list=concept.broader_concepts %}
+    <div class="element">
+    {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Super Group' link='false' %}
+    {% include 'edit/bits/theme_group.html' with type='broader' concept_list=concept.broader_concepts %}
+    </div>
   </div>
 
   <!-- Concepts -->
-  <div class="text-area">
+  <div class="groupMember text-area">
     <h5 class="h5">Concepts</h5>
-  {% include 'edit/bits/relation_buttons.html' with type='groupMember' button_label='Add Concepts' link='false' %}
-  {% include 'edit/bits/theme_group.html' with type='groupMember' concept_list=concept.groupMember_concepts %}
+    <div class="element">
+    {% include 'edit/bits/relation_buttons.html' with type='groupMember' button_label='Add Concepts' link='false' %}
+    {% include 'edit/bits/theme_group.html' with type='groupMember' concept_list=concept.groupMember_concepts %}
+    </div>
   </div>
 
   <!-- Concept URL -->
-  <div class="text-area">
-    <h5 class="h5 h5-url">Concept URL:
-    {{ concept.url }}
-    </h5>
-  </div>
+  <h5 class="h5 h5-url">
+    Concept URL: {{ concept.url }}
+  </h5>
 
 </div>
 {% endblock %}
