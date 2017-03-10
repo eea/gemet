@@ -5,16 +5,14 @@ from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
 
-from gemet.thesaurus.models import Concept, ForeignRelation
-from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, Group, Language
-from gemet.thesaurus.models import Property, PropertyType, Relation
-from gemet.thesaurus.models import RELATION_TYPES, SuperGroup, Theme, Term
-from gemet.thesaurus.models import Version
+from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, RELATION_TYPES
+from gemet.thesaurus.models import Concept, Group, SuperGroup, Theme, Term
+from gemet.thesaurus.models import ForeignRelation, Relation, Language
+from gemet.thesaurus.models import Property, PropertyType, Version
 from gemet.thesaurus.models import EditableGroup, EditableTerm, EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
-from gemet.thesaurus.views import GroupView, SuperGroupView
-from gemet.thesaurus.views import TermView, ThemeView
+from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 
 
 class GroupEditView(GroupView):
