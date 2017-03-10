@@ -1,6 +1,5 @@
 {% extends layout_template %}
 {% load gemet_tags %}
-{% load staticfiles %}
 
 {% block title %}
 {{ concept.name }}
@@ -71,7 +70,5 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/js.cookie.js' '%}"></script>
+  {% include 'edit/bits/js_scripts.html' %}
 {% endblock %}

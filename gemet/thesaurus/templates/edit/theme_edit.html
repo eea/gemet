@@ -1,14 +1,13 @@
 {% extends layout_template %}
 {% load gemet_tags %}
-{% load staticfiles %}
 
 {% block title %}
-Edit {{ concept.name }}
+  Edit {{ concept.name }}
 {% endblock %}
 
 {% block content %}
-    {% include 'header.html' with view='theme' id=concept.id %}
-<div class="edit-page">
+  {% include 'header.html' with view='theme' id=concept.id %}
+  <div class="edit-page">
 
   <!-- Side bar -->
   <div class="side-bar box">
@@ -52,6 +51,7 @@ Edit {{ concept.name }}
 
   <!-- Concepts -->
   <div class="themeMember text-area">
+
     <h5 class="h5">Concepts</h5>
     <div class="element">
       {% include 'edit/bits/relation_buttons.html' with type='themeMember' button_label='Add Concepts' link='false' %}
@@ -71,7 +71,5 @@ Edit {{ concept.name }}
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'thesaurus/js/js.cookie.js' '%}"></script>
+  {% include 'edit/bits/js_scripts.html' %}
 {% endblock %}
