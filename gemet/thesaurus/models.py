@@ -25,6 +25,13 @@ FOREIGN_RELATION_TYPES = [
     'seeAlso',
 ]
 
+EDIT_URL_NAMES = {
+    'Themes': 'theme_edit',
+    'Groups': 'group_edit',
+    'Concepts': 'concept_edit',
+    'Super groups': 'supergroup_edit'
+}
+
 
 class Version(models.Model):
     identifier = models.CharField(max_length=255)

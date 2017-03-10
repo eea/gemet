@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
-from gemet.thesaurus.models import Language, ForeignRelation, Property
+from gemet.thesaurus.models import Concept, ForeignRelation, Language, Namespace
+from gemet.thesaurus.models import Property
 
 
 class SearchForm(forms.Form):
@@ -37,3 +38,10 @@ class ForeignRelationForm(ModelForm):
     class Meta:
         model = ForeignRelation
         fields = ('label', 'uri')
+
+
+class ConceptForm(forms.Form):
+
+    name = forms.CharField(max_length=16000)
+    namespace = forms.ModelChoiceField(queryset=Namespace.objects.all())
+
