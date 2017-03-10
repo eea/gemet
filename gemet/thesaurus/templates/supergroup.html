@@ -22,7 +22,7 @@
 
   <!-- Concept -->
   <div class="selected-word">
-    <span>{{ supergroup.name }}</span>
+    <span id="prefLabel">{{ supergroup.name }}</span>
     <span>
       <a class="btn btn-primary"
          href="{% url 'supergroup_edit' language.code supergroup.code %}"

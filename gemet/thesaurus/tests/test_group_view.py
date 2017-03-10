@@ -1,13 +1,7 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    TermFactory,
-    GroupFactory,
-    SuperGroupFactory,
-)
+from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
+from .factories import RelationFactory, SuperGroupFactory, TermFactory
 from . import GemetTest, ERROR_404
 
 
@@ -24,7 +18,8 @@ class TestGroupView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
         self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
@@ -58,7 +53,8 @@ class TestGroupView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
         self.assertEqual(resp.pyquery('.content p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('.content ul').size(), 3)

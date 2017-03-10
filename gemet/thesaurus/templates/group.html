@@ -22,7 +22,7 @@
   </div>
   <!-- Group -->
   <div class="selected-word">
-    <span>{{ group.name }}</span>
+    <span id="prefLabel">{{ group.name }}</span>
     <span>
       <a class="btn btn-primary"
          href="{% url 'group_edit' language.code group.code %}"

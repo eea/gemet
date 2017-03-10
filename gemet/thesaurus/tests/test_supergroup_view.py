@@ -1,12 +1,7 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    GroupFactory,
-    SuperGroupFactory,
-)
+from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
+from .factories import RelationFactory, SuperGroupFactory
 from . import GemetTest, ERROR_404
 
 
@@ -22,7 +17,7 @@ class TestSuperGroupView(GemetTest):
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
@@ -48,7 +43,7 @@ class TestSuperGroupView(GemetTest):
         resp = self.app.get(url)
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
@@ -90,7 +85,7 @@ class TestSuperGroupView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),

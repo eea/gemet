@@ -23,7 +23,7 @@
   </div>
   <!-- Theme -->
   <div class="selected-word">
-    <span>{{ theme.name }}</span>
+    <span id="prefLabel">{{ theme.name }}</span>
     <span>
       <a class="btn btn-primary"
          href="{% url 'theme_edit' language.code theme.code %}"

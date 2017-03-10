@@ -1,13 +1,7 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    TermFactory,
-    ThemeFactory,
-    GroupFactory,
-)
+from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
+from .factories import RelationFactory, TermFactory, ThemeFactory
 from . import GemetTest, ERROR_404
 
 

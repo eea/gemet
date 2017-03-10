@@ -1,12 +1,7 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    TermFactory,
-    ThemeFactory,
-)
+from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory
+from .factories import TermFactory, ThemeFactory
 from . import GemetTest, ERROR_404
 
 
@@ -23,7 +18,7 @@ class TestThemeView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
@@ -49,7 +44,7 @@ class TestThemeView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
@@ -88,7 +83,7 @@ class TestThemeView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
+        self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
         self.assertEqual(resp.pyquery('p.alert:eq(0)').text(),
                          "Definition is not available.")
         self.assertEqual(resp.pyquery('p.alert:eq(1)').text(),
