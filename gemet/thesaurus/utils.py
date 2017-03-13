@@ -94,7 +94,7 @@ def insite_search(query, language, heading):
         )
         .extra(
             where=['value like convert(_utf8%s using utf8)'],
-            params=['%%' + SEPARATOR + query + '%%'],
+            params=['%%' + query + '%%'],
         )
         .extra(
             select={
