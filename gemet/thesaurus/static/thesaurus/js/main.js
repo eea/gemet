@@ -14,9 +14,35 @@ $(document).ready(function () {
 
 $('.relations ul').filter(function(){return $(this).text().trim().length==0}).remove();
 
-$('.expand-button').on('click', function(){
-  $('.side-bar').toggleClass('expand')
+if (window.matchMedia("(max-width: 800px)").matches) {
+ $('.expand-button').on('click', function(){
+  $(this).parent().toggleClass('expand');
+  $('body').toggleClass('sidebar-open');
+});
+
+$('.backdrop').on('click',function(){
+    $('.gemet-menu').removeClass('expand');
+    $('.side-bar').removeClass('expand');
+  $('body').removeClass('sidebar-open');
 })
+
+}
+
+
+
+
+$first_menu_item = $('.gemet-menu a:first-of-type');
+$last_menu_item = $('.gemet-menu a:last-of-type');
+
+if($first_menu_item.hasClass('active')) {
+  $('.search_bar').css ('border-top-left-radius', '0');
+  console.log('first');
+}
+
+if($last_menu_item.hasClass('active')) {
+   $('.search_bar').css ('border-top-right-radius', '0');
+   console.log('last');
+}
 
 });
 /**

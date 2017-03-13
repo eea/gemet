@@ -1,3 +1,5 @@
+{% load gemet_tags %}
+
 <!-- header -->
 <div class="gemet-header">
   <!-- title -->
@@ -6,11 +8,23 @@
     <div class="subtitle">General Multilingual Environmental Thesaurus</div>
   </div>
   <div class="gemet-menu">
-  <a href="{% url 'themes' language.code %}">Thematic Listings</a>
-  <a href="{% url 'inspire_themes' language.code %}">INSPIRE Spatial Data Themes</a>
-  <a href="{% url 'groups' language.code %}">Hierarchical Listings</a>
-  <a href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
-  <a >Search Thesaurus</a>
+      <button class="expand-button menu-button"><i class="fa fa-bars" aria-hidden="true"></i> Menu</button>
+  <a class="{% active request 'themes' langcode=language.code %}"
+     href="{% url 'themes' language.code %}">Thematic Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a class="{% active request 'inspire_themes' langcode=language.code %}"
+     href="{% url 'inspire_themes' language.code %}">INSPIRE Spatial Data Themes</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a class="{% active request 'groups' langcode=language.code %}"
+     href="{% url 'groups' language.code %}">Hierarchical Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <a class="{% active request 'alphabetic' langcode=language.code %}"
+     href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
+  <!-- &nbsp;|&nbsp; -->
+  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
+  <a class="{% active request 'search' langcode=language.code %}">
+    Search Thesaurus
+  </a>
 </div>
 
 <div class="search_bar huge">

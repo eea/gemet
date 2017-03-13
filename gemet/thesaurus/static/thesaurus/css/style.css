@@ -6,7 +6,7 @@
 }
 
 #workarea {
-    font-family: 'Lato', sans-serif;
+font-family: 'Roboto', sans-serif;
 }
 
 .direction-rtl ul,
@@ -68,7 +68,7 @@
 /* regular */
 
 .regular {
-    font-family: "Nimbus sans L", Helvetica, Arial, Verdana, sans-serif;
+font-family: 'Roboto', sans-serif;
     font-size: 14px;
 }
 
@@ -133,7 +133,7 @@
     margin-top: 0;
     margin-bottom: 0;
     margin-right: 12px;
-    font-family: "Nimbus sans L", Helvetica, Arial, Verdana, sans-serif;
+  font-family: 'Muli', sans-serif;
     font-weight: normal;
 }
 
@@ -449,7 +449,7 @@ hr {
 
 .side-bar {
     float: right;
-   width: 0;
+   max-width: 420px;
     padding: 12px;
     font-size: smaller;
       margin-left: 0;
@@ -459,8 +459,8 @@ hr {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     position: relative;
-           right: -26px;
-           border-top-left-radius: 0;
+           /*right: -26px;*/
+           /*border-top-left-radius: 0;*/
 
            transition: all 300ms;
 }
@@ -470,13 +470,7 @@ hr {
          margin-left: -12px;
 }
 
-@media (max-width: 700px) {
-    .side-bar {
-        width: auto;
-        float: none;
-        margin-left: auto;
-    }
-}
+
 
 
 /* download */
@@ -499,7 +493,7 @@ hr {
 }
 
 #translations .dt {
-    width: 72px;
+    width: 76px;
     float: left;
 }
 
@@ -711,7 +705,7 @@ hr {
 }
 
 #workarea {
-    padding-bottom: 60px;
+    /*padding-bottom: 60px;*/
     margin-left: 0;
     overflow-x: hidden;
     font-size: 110%;
@@ -843,14 +837,13 @@ hr {
 /* menu */
 
 .gemet-menu a {
-    display: inline-block;
+     display: inline-block;
     color: white;
-    padding: 1rem;
+       padding: 1rem 11.97px;
     color: #0065A5;
-    ;
 }
 
-.gemet-menu a:last-of-type {
+.gemet-menu a.active {
     background: #0065A5;
     color: white;
     border-top-left-radius: 6px;
@@ -878,7 +871,7 @@ hr {
     border-top: 1px solid #ddd;
     margin-top: 1em;
     margin-bottom: 1em;
-    position: absolute;
+    /*position: absolute;*/
     bottom: 0;
 }
 
@@ -1107,7 +1100,6 @@ li:hover .btn-remove-down {
     width: 0;
     height: 30px;
     overflow: hidden;
-    font-family: "Roboto", sans-serif;
     text-align: center;
     line-height: 30px;
     color: #F34541;
@@ -1199,6 +1191,15 @@ li:hover .btn-remove-down {
     overflow: hidden;
 }
 
+.text-area#definition .text-area:first-of-type p:first-of-type {
+        /* color: #0065a5; */
+    font-size: 1.8rem;
+    /* font-weight: 500; */
+    border-left: 5px solid #0065a5;
+    padding-left: 1rem;
+    /* border-radius: 2rem; */
+}
+
 .dl-header {
     display: flex;
     justify-content: flex-start;
@@ -1236,6 +1237,26 @@ li:hover .btn-remove-down {
 .text-area .alternative-item > i:before {
     content: "\f0da";
     font-family: FontAwesome;
+}
+
+.selected-word .pull-right {
+    margin-right: 4rem;
+}
+
+.selected-word .pull-right a {
+        margin-bottom: -21px;
+    border: none;
+    box-shadow: 0px 0px 2px #aaa;
+    background: none;
+    color: #AAA;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.selected-word .pull-right a:hover {
+ background: #0065a5;
+ color: white;
 }
 
 .text-area ul {
@@ -1297,11 +1318,10 @@ li:hover .btn-remove-down {
     border: #b7b7b7 solid 1px;
     border-radius: 6px;
     position: relative;
-    font-family: 'Source Sans Pro', sans-serif;
     margin-left: auto;
     margin-right: auto;
     border: 11px solid #0065A5;
-    border-top-right-radius: 0;
+
 }
 
 .search_bar input[type=text] {
@@ -1367,7 +1387,7 @@ li:hover .btn-remove-down {
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 10000;
+        z-index: 50;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -1483,8 +1503,8 @@ li:hover .btn-remove-down {
 #workarea h3,
 #workarea h2,
 #workarea h4 {
-    color: #0065a5;
-    font-weight: bold;
+/*    color: #0065a5;
+    font-weight: bold;*/
 }
 
 .related-terms {
@@ -1560,7 +1580,7 @@ li:hover .btn-remove-down {
     width: 100%;
     box-shadow: 0px 0px 2px #aaa;
     padding-left: 1.5rem;
-    background: #fbfbfb;
+    /*background: #fbfbfb;*/
         border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
 }
@@ -1663,7 +1683,7 @@ h6.inline {
 }
 
 .beautiful-listing li {
-  font: 200 15px/1.5 Lato;
+  font: 200 15px/1.5 inherit;
 }
 
 
@@ -1705,6 +1725,7 @@ h6.inline {
 }
 
 .expand-button {
+    display: none;
     position: absolute;
     background: #fbfbfb;
     border: 1px solid #ddd;
@@ -1726,11 +1747,7 @@ h6.inline {
     outline:none;
 }
 
-.expand {
-    width: 240px;
-    right: 0;
-        margin-left: 2rem!important;
-}
+
 
 .btng.cancel ,
 .btng.save {
@@ -1755,4 +1772,112 @@ display: inline-flex!important;
 
 a.btn {
   color: #fff;
+}
+
+
+/*mobile*/ 
+
+@media (max-width: 800px){
+
+.side-bar {
+        position: fixed;
+    top: 0;
+    right: -13px;
+    width: 0;
+    z-index: 99;
+    bottom: 0;
+
+}
+
+.expand-button {
+     top: 51%;
+    display: block;
+}
+
+
+
+#translations {
+    overflow-y: auto;
+max-height: 95%;
+}
+
+.gemet-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -4px;
+    background: white;
+    z-index: 100;
+    text-align: left;
+    width: 0;
+    border-left: 3px solid #0065A5;
+    transition: all 300ms;
+}
+
+.gemet-menu a {
+    display: block;
+    white-space: nowrap;
+    margin-top: 2rem;
+    border-radius: 0!important;
+
+}
+
+.backdrop {
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 80;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+    right: 0;
+}
+
+.menu-button {
+    top: 25%;
+    left: -52px;
+    background: #0065A5;
+    color: white;
+    white-space: nowrap;
+    border: none;
+}
+
+.sidebar-open .backdrop {
+display: block;
+}
+
+.sidebar-open {
+    overflow: hidden;
+}
+
+.expand {
+    width: 240px!important;
+    right: 0!important;
+        margin: 0;
+        z-index: 200;
+/*overflow: auto!important;*/
+}
+
+.search_bar input[type=text] {
+    margin-left: 38%;
+    /* margin-right: -7%; */
+    width: 49%;
+}
+
+.search_bar.huge {
+    max-width: 88%;
+}
+
+.search_bar {
+            border-width: 2px;
+}
+
+#workarea .content {
+        padding: 0 1rem;
+}
+
+#workarea {
+    margin-top:0;
+}
+
 }
