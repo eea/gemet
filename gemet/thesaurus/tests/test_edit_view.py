@@ -101,24 +101,21 @@ class TestRemoveParentRelationView(GemetTest):
         self.term = TermFactory()
         self.theme = ThemeFactory()
         self.property_type = PropertyTypeFactory(label='Theme', name='theme')
-        self.request_kwargs = {'langcode': 'en',
-                               'id': self.term.id,
-                               'parent_id': self.theme.id,
-                               'rel_type': 'theme'}
+        self.request_kwargs = {'source_id': self.term.id,
+                               'target_id': self.theme.id,
+                               'relation_type': 'theme'}
 
     def test_delete_relation_bad_concept(self):
-        url = reverse('delete_relation', kwargs={'langcode': 'en',
-                                                 'id': 31,
-                                                 'parent_id': self.theme.id,
-                                                 'rel_type': 'theme'})
+        url = reverse('delete_relation', kwargs={'source_id': 31,
+                                                 'target_id': self.theme.id,
+                                                 'relation_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_relation_bad_parent(self):
-        url = reverse('delete_relation', kwargs={'langcode': 'en',
-                                                 'id': self.term.id,
-                                                 'parent_id': 99,
-                                                 'rel_type': 'theme'})
+        url = reverse('delete_relation', kwargs={'source_id': self.term.id,
+                                                 'target_id': 99,
+                                                 'relation_type': 'theme'})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
@@ -156,19 +153,17 @@ class TestAddParentRelationView(GemetTest):
                                                  name='theme', id=10)
 
     def test_post_no_concept_no_parent_object(self):
-        url = reverse('add_relation', kwargs={'id': 33,
-                                              'langcode': 'en',
-                                              'parent_id': 45,
-                                              'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'source_id': 33,
+                                              'target_id': 45,
+                                              'relation_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_relation', kwargs={'id': self.term.id,
-                                              'langcode': 'en',
-                                              'parent_id': self.theme.id,
-                                              'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'source_id': self.term.id,
+                                              'target_id': self.theme.id,
+                                              'relation_type': 'theme'})
 
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(200, response.status_code)

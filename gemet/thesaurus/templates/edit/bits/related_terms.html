@@ -12,7 +12,7 @@
           <button class='btng centerMe restoreParent'
                   type="button"
                   data-field-id="#{{ type }}{{ cp.id }}"
-                  data-href="{% url 'restore_relation' language.code concept.id cp.id type %}"
+                  data-href="{% url 'restore_relation' concept.id cp.id type %}"
                   data-type="{{ type }}">
             <div class='icon'>
               <i class="fa fa-undo" aria-hidden="true"></i>
@@ -26,7 +26,7 @@
           <button class='btng centerMe deleteParent'
                   type="button"
                   data-field-id="#{{ type }}{{ cp.id }}"
-                  data-href="{% url 'delete_relation' language.code concept.id cp.id type %}"
+                  data-href="{% url 'delete_relation' concept.id cp.id type %}"
                   data-type="{{ type }}" value="x">
             <div class='icon'>
               <i class="fa fa-times" aria-hidden="true"></i>
