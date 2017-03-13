@@ -360,7 +360,7 @@ class DeletePropertyView(JsonResponseMixin, View):
 
 class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
 
-    def post(self, request, langcode, id):
+    def post(self, request, id):
         try:
             concept = Concept.objects.get(id=id)
             version = Version.under_work()
@@ -368,26 +368,28 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
+
         form = ForeignRelationForm(request.POST)
         if form.is_valid():
             new_relation = ForeignRelation.objects.create(
                 version_added=version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)
-            url_kwargs = {'langcode': langcode,
-                          'id': id,
-                          'relation_id': new_relation.id}
-            data = {'id': new_relation.id,
-                    'delete_url': reverse('delete_other', kwargs=url_kwargs)}
+            delete_url = reverse('delete_other', kwargs={'pk': new_relation.id})
+            data = {
+                'id': new_relation.id,
+                'delete_url': delete_url,
+            }
             return self._get_response(data, 'success', 200)
+
         data = {"message": form.errors}
         return self._get_response(data, 'error', 400)
 
 
 class RestoreForeignRelationView(JsonResponseMixin, View):
 
-    def post(self, request, langcode, id, relation_id):
+    def post(self, request, pk):
         try:
-            foreign_relation = ForeignRelation.objects.get(id=relation_id)
+            foreign_relation = ForeignRelation.objects.get(id=pk)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -395,22 +397,17 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
         foreign_relation.status = ForeignRelation.PUBLISHED
         foreign_relation.save()
 
-        delete_url = reverse('delete_other', kwargs={
-            'langcode': langcode,
-            'id': id,
-            'relation_id': relation_id,
-        })
+        delete_url = reverse('delete_other', kwargs={'pk': pk})
 
         data = {'delete_url': delete_url}
-
         return self._get_response(data, 'success', 200)
 
 
 class DeleteForeignRelationView(JsonResponseMixin, View):
 
-    def post(self, request, langcode, id, relation_id):
+    def post(self, request, pk):
         try:
-            foreign_relation = ForeignRelation.objects.get(id=relation_id)
+            foreign_relation = ForeignRelation.objects.get(pk=pk)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -421,14 +418,9 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         elif foreign_relation.status == ForeignRelation.PENDING:
             foreign_relation.delete()
 
-        restore_url = reverse('restore_other', kwargs={
-            'langcode': langcode,
-            'id': id,
-            'relation_id': relation_id,
-        })
+        restore_url = reverse('restore_other', kwargs={'pk': pk})
 
         data = {'restore_url': restore_url}
-
         return self._get_response(data, 'success', 200)
 
 

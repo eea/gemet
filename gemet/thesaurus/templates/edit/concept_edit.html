@@ -233,7 +233,7 @@
                 data-field-id="#otherList"
                 data-value-input-id="#otherValue"
                 data-select-id="#otherSelect"
-                data-href="{% url 'add_other' language.code concept.id %}" hidden>
+                data-href="{% url 'add_other' concept.id %}" hidden>
           <div class='icon'>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
           </div>
@@ -259,7 +259,7 @@
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'restore_other' language.code concept.id relation.id %}">
+                      data-href="{% url 'restore_other' relation.id %}">
                 <div class='icon'>
                   <i class="fa fa-undo" aria-hidden="true"></i>
                 </div>
@@ -273,7 +273,7 @@
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'delete_other' language.code concept.id relation.id %}">
+                      data-href="{% url 'delete_other' relation.id %}">
                 <div class='icon'>
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </div>

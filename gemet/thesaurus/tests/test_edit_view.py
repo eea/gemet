@@ -207,19 +207,19 @@ class TestAddForeignRelationView(GemetTest):
         self.concept = TermFactory()
 
     def test_post_bad_request(self):
-        url = reverse('add_other', kwargs={'id': 10, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 10})
         response = self.app.post(url, expect_errors=True,
                                  params={'rel_type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_bad_form(self):
-        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 1})
         response = self.app.post(url, expect_errors=True,
                                  params={'rel_type': 10})
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
+        url = reverse('add_other', kwargs={'id': 1})
         response = self.app.post(url, expect_errors=True,
                                  params={'uri': 'Uri', 'rel_type': 10,
                                          'label': 'Label'})
@@ -240,16 +240,12 @@ class TestRemoveForeignRelationView(GemetTest):
             concept=self.term, property_type=self.property_type, id=8)
 
     def test_delete_foreign_relation_no_relation(self):
-        url = reverse('delete_other', kwargs={'id': 1,
-                                              'relation_id': 7,
-                                              'langcode': 'en'})
+        url = reverse('delete_other', kwargs={'pk': 7})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_foreign_relation_correct_request(self):
-        url = reverse('delete_other', kwargs={'id': 1,
-                                              'relation_id': 8,
-                                              'langcode': 'en'})
+        url = reverse('delete_other', kwargs={'pk': 8})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(200, response.status_code)
         foreign_relation = ForeignRelation.objects.get(id=8)

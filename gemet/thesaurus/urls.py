@@ -103,14 +103,6 @@ urlpatterns = [
         ])),
 
     url(r'^(?P<langcode>[a-zA-Z-]+)/concept/(?P<id>\d+)/edit/', include([
-        url(r'^other/(?P<relation_id>\d+)/delete/$',
-            edit_views.DeleteForeignRelationView.as_view(),
-            name='delete_other'),
-        url(r'^other/(?P<relation_id>\d+)/restore/$',
-            edit_views.RestoreForeignRelationView.as_view(),
-            name='restore_other'),
-        url(r'^other/add/$',
-            edit_views.AddForeignRelationView.as_view(), name='add_other'),
         url(r'^parent-concept/(?P<parent_id>\d+)/type/(?P<rel_type>[a-zA-Z-]+)'
             r'/delete',
             edit_views.DeleteRelationView.as_view(), name='delete_relation'),
@@ -128,6 +120,13 @@ urlpatterns = [
 
     url(r'^property/(?P<pk>\d+)/delete/$',
         edit_views.DeletePropertyView.as_view(), name='delete_property'),
+
+    url(r'^concept/(?P<id>\d+)/relation/foreing/add/$',
+        edit_views.AddForeignRelationView.as_view(), name='add_other'),
+    url(r'^relation/foreign/(?P<pk>\d+)/delete/$',
+        edit_views.DeleteForeignRelationView.as_view(), name='delete_other'),
+    url(r'^relation/foreign/(?P<pk>\d+)/restore/$',
+        edit_views.RestoreForeignRelationView.as_view(), name='restore_other'),
 
     # Exports
     url(r'^exports/', include([
