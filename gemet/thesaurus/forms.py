@@ -43,5 +43,5 @@ class ForeignRelationForm(ModelForm):
 class ConceptForm(forms.Form):
 
     name = forms.CharField(max_length=16000)
-    namespace = forms.ModelChoiceField(queryset=Namespace.objects.all())
-
+    namespace = forms.ModelChoiceField(queryset=Namespace.objects.all(),
+                                       empty_label=None)
