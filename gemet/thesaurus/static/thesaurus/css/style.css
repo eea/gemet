@@ -6,7 +6,7 @@
 }
 
 #workarea {
-    font-family: 'Lato', sans-serif;
+font-family: 'Roboto', sans-serif;
 }
 
 .direction-rtl ul,
@@ -68,7 +68,7 @@
 /* regular */
 
 .regular {
-    font-family: "Nimbus sans L", Helvetica, Arial, Verdana, sans-serif;
+font-family: 'Roboto', sans-serif;
     font-size: 14px;
 }
 
@@ -133,7 +133,7 @@
     margin-top: 0;
     margin-bottom: 0;
     margin-right: 12px;
-    font-family: "Nimbus sans L", Helvetica, Arial, Verdana, sans-serif;
+  font-family: 'Muli', sans-serif;
     font-weight: normal;
 }
 
@@ -839,7 +839,7 @@ hr {
 .gemet-menu a {
      display: inline-block;
     color: white;
-    padding: 1rem 1.42rem;
+       padding: 1rem 11.97px;
     color: #0065A5;
 }
 
@@ -1100,7 +1100,6 @@ li:hover .btn-remove-down {
     width: 0;
     height: 30px;
     overflow: hidden;
-    font-family: "Roboto", sans-serif;
     text-align: center;
     line-height: 30px;
     color: #F34541;
@@ -1192,6 +1191,15 @@ li:hover .btn-remove-down {
     overflow: hidden;
 }
 
+.text-area#definition .text-area:first-of-type p:first-of-type {
+        /* color: #0065a5; */
+    font-size: 1.8rem;
+    /* font-weight: 500; */
+    border-left: 5px solid #0065a5;
+    padding-left: 1rem;
+    /* border-radius: 2rem; */
+}
+
 .dl-header {
     display: flex;
     justify-content: flex-start;
@@ -1229,6 +1237,26 @@ li:hover .btn-remove-down {
 .text-area .alternative-item > i:before {
     content: "\f0da";
     font-family: FontAwesome;
+}
+
+.selected-word .pull-right {
+    margin-right: 4rem;
+}
+
+.selected-word .pull-right a {
+        margin-bottom: -21px;
+    border: none;
+    box-shadow: 0px 0px 2px #aaa;
+    background: none;
+    color: #AAA;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.selected-word .pull-right a:hover {
+ background: #0065a5;
+ color: white;
 }
 
 .text-area ul {
@@ -1290,7 +1318,6 @@ li:hover .btn-remove-down {
     border: #b7b7b7 solid 1px;
     border-radius: 6px;
     position: relative;
-    font-family: 'Source Sans Pro', sans-serif;
     margin-left: auto;
     margin-right: auto;
     border: 11px solid #0065A5;
@@ -1476,8 +1503,8 @@ li:hover .btn-remove-down {
 #workarea h3,
 #workarea h2,
 #workarea h4 {
-    color: #0065a5;
-    font-weight: bold;
+/*    color: #0065a5;
+    font-weight: bold;*/
 }
 
 .related-terms {
@@ -1553,7 +1580,7 @@ li:hover .btn-remove-down {
     width: 100%;
     box-shadow: 0px 0px 2px #aaa;
     padding-left: 1.5rem;
-    background: #fbfbfb;
+    /*background: #fbfbfb;*/
         border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
 }
@@ -1656,7 +1683,7 @@ h6.inline {
 }
 
 .beautiful-listing li {
-  font: 200 15px/1.5 Lato;
+  font: 200 15px/1.5 inherit;
 }
 
 
@@ -1792,6 +1819,7 @@ max-height: 95%;
     white-space: nowrap;
     margin-top: 2rem;
     border-radius: 0!important;
+
 }
 
 .backdrop {
