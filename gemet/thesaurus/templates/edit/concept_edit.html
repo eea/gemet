@@ -34,36 +34,35 @@
       <span id="alternative">
         Alternatives:
       </span>
-      <div class="input-area" hidden>
-        <input id="alternativeInput"/>
+      <div class="input-area input-field" hidden>
+          <label for="alternativeInput">Alternatives</label>
+               <input id="alternativeInput" type="text" class="validate">
       </div>
+
+
+
+
+
       <div class="button-elements">
-        <button class='btng edit' type="button"
+        <button class='btng edit waves-effect waves-light btn' type="button"
                 id="alternativeAdd" value="Add Alternative" title="Add"
                 data-toggle="tooltip"
                 data-type="alternative"
                 data-html-tag="input">
-          <div class='icon'>
+     
             <i class="fa fa-plus" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Add</span>
-          </div>
+          add
         </button>
 
-        <button class='btng cancel' type="button"
+        <button class='btng cancel waves-effect waves-light btn' type="button"
                 id="alternativeCancel" value="Cancel" title="Cancel"
                 data-toggle="tooltip"
                 data-type="alternative" hidden>
-          <div class='icon'>
             <i class="fa fa-stop-circle" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Cancel</span>
-          </div>
+      Cancel
         </button>
 
-        <button class='btng save' type="button"
+        <button class='btng save waves-effect waves-light btn' type="button"
                 id="alternativeSave" value="Save" title="Save"
                 data-toggle="tooltip"
                 data-langcode="{{ language.code }}"
@@ -72,12 +71,8 @@
                 data-parent-id="#alternativeList"
                 data-href="{% url 'add_property' language.code concept.id 'altLabel' %}"
                 data-type="alternative" hidden>
-          <div class='icon'>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Save</span>
-          </div>
+    save
         </button>
       </div>
     </div>
@@ -90,7 +85,7 @@
             {{ alternative.value }};
 
             {% if alternative.status != DELETED_PENDING %}
-            <button class='btng centerMe deleteParent' type="submit" value="X"
+            <button class='btng waves-effect waves-light btn deleteParent' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
                     data-href="{% url 'delete_property' alternative.id %}">
@@ -186,44 +181,44 @@
   <div class="other-relations text-area">
     <h5 class="h5">Other relations</h5>
     <div class="element">
+
       <div class="input-area" hidden>
-        <label class="otherInput" for="Value" >Value:</label>
+      <div class="input-field">
+         <label class="otherInput" for="otherValue" >Value:</label>
         <input class="otherInput" type="text" id='otherValue' value="" data-type="other" />
-        <label class="otherInput" for="Url" >Url:</label>
+       </div>
+       
+       <div class="input-field">
+        <label class="otherInput" for="otherUrl" >Url:</label>
         <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
+        </div>
         <select id="otherSelect">
           {% for type in foreign_relation_types %}
             <option value="{{ type.id }}" data-label="{{ type.name }}">{{ type.label }}</option>
           {% endfor %}
         </select>
       </div>
+
       <div class="button-elements">
-        <button class='btng add' type="button"
+        <button class='btng add waves-effect waves-light btn' type="button"
                 id="otherAdd" value="Add Other Term" title="Add"
                 data-toggle="tooltip"
                 data-type="other"
                 data-input-id="#otherSelect">
-          <div class='icon'>
             <i class="fa fa-plus" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Add Other Term</span>
-          </div>
+       Add Other Term
         </button>
 
-        <button class='btng cancel' type="button"
+        <button class='btng cancel waves-effect waves-light btn' type="button"
                 id="otherCancel" value="Cancel" title="Cancel"
                 data-toggle="tooltip"
                 data-type="other" hidden>
-          <div class='icon'>
             <i class="fa fa-stop-circle" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Cancel</span>
-          </div>
+         Cancel
+
         </button>
 
-        <button class='btng save' type="button"
+        <button class='btng save waves-effect waves-light btn' type="button"
                 id="otherSave" value="Save" title="Save"
                 data-toggle="tooltip"
                 data-langcode="{{ language.code }}"
@@ -234,12 +229,9 @@
                 data-value-input-id="#otherValue"
                 data-select-id="#otherSelect"
                 data-href="{% url 'add_other' language.code concept.id %}" hidden>
-          <div class='icon'>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
-          </div>
-          <div class='text'>
-            <span>Save</span>
-          </div>
+    
+      save
         </button>
       </div>
     </div>
@@ -255,31 +247,25 @@
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
 
               {% if relation.status == DELETED_PENDING %}
-              <button class='btng centerMe restoreParent'
+              <button class='btng waves-effect waves-light btn restoreParent'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
                       data-href="{% url 'restore_other' language.code concept.id relation.id %}">
-                <div class='icon'>
+          
                   <i class="fa fa-undo" aria-hidden="true"></i>
-                </div>
-                <div class='text'>
-                  <span>Restore</span>
-                </div>
+              Restore
               </button>
 
               {% else %}
-              <button class='btng centerMe deleteParent'
+              <button class='btng waves-effect waves-light btn deleteParent'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
                       data-href="{% url 'delete_other' language.code concept.id relation.id %}">
-                <div class='icon'>
+          
                   <i class="fa fa-times" aria-hidden="true"></i>
-                </div>
-                <div class='text'>
-                  <span>Delete</span>
-                </div>
+                  Delete
               </button>
               {% endif %}
             </div>

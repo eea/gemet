@@ -466,8 +466,9 @@ hr {
 }
 
 .edit-page .side-bar {
-      top: -16px;
-         margin-left: -12px;
+    margin-right: -34px;
+    margin-left: 1rem;
+        margin-bottom: 0;
 }
 
 
@@ -1057,7 +1058,7 @@ li:hover .btn-remove-down {
     color: #069641;
 }
 
-.btng {
+/*.btng {
     opacity: 0;
     display: inline-flex;
     cursor: pointer;
@@ -1177,15 +1178,17 @@ li:hover .btn-remove-down {
 .h2:hover .btng,
 .h3:hover .btng {
     opacity: 1;
-}
+}*/
 
 .edit-page .text-area {
-    border-radius: 6px;
-    box-shadow: 0px 0px 2px #676161;
-    overflow: hidden;
+    /*border-radius: 6px;*/
+    /*box-shadow: 0px 0px 2px #676161;*/
+    /*overflow: hidden;*/
     margin-bottom: 1rem;
-    border-bottom: none;
-    background: white;
+    
+    border: 1px solid #eee;
+
+    /*background: white;*/
 }
 
 .text-area {
@@ -1195,7 +1198,7 @@ li:hover .btn-remove-down {
 
 .text-area#definition .text-area:first-of-type p:first-of-type {
         /* color: #0065a5; */
-    font-size: 1.8rem;
+    font-size: 1rem;
     /* font-weight: 500; */
     border-left: 5px solid #0065a5;
     padding-left: 1rem;
@@ -1241,25 +1244,6 @@ li:hover .btn-remove-down {
     font-family: FontAwesome;
 }
 
-.selected-word .pull-right {
-    margin-right: 4rem;
-}
-
-.selected-word .pull-right a {
-        margin-bottom: -21px;
-    border: none;
-    box-shadow: 0px 0px 2px #aaa;
-    background: none;
-    color: #AAA;
-    border-bottom: none;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.selected-word .pull-right a:hover {
- background: #0065a5;
- color: white;
-}
 
 .text-area ul {
     margin: 0!important;
@@ -1529,7 +1513,7 @@ li:hover .btn-remove-down {
 }
 
 .selected-word {
-    font-size: 3rem!important;
+    font-size: 2rem!important;
     margin: 3rem 0rem 1rem 0!important;
     color: #0065a5!important;
 }
@@ -1596,13 +1580,13 @@ li:hover .btn-remove-down {
 }
 
 .edit-page {
-    background: #f8fcff;
-    margin-left: -15px;
-    margin-right: -15px;
+    /*background: #f8fcff;*/
+    /*margin-left: -15px;*/
+    /*margin-right: -15px;*/
     padding: 15px;
-    border-top-left-radius: 1rem;
+    /*border-top-left-radius: 1rem;*/
     /*border-top-right-radius: 1rem;*/
-    box-shadow: 0px -1px 3px 0px #b1b1b1;
+    /*box-shadow: 0px -1px 3px 0px #b1b1b1;*/
 }
 
 .modified {
@@ -1750,6 +1734,10 @@ h6.inline {
     outline:none;
 }
 
+.btn {
+        margin: .5rem;
+}
+
 
 
 .btng.cancel ,
@@ -1766,7 +1754,7 @@ h6.inline {
 .visible.textarea div,
 .visible.text-field div,
 .visible.input-area{
-display: inline-flex!important;
+display: inline-block!important;
 }
 
 .hidden {
