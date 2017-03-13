@@ -50,24 +50,6 @@ class ThemeEditView(ThemeView):
     context_object_name = 'concept'
 
 
-class ConceptMixin(object):
-
-    def _set_concept_model(self, relation_type, namespace):
-        if relation_type not in RELATION_TYPES:
-            raise Http404
-        if relation_type == 'group':
-            self.model = Group
-        elif relation_type == 'theme':
-            self.model = Theme
-        elif relation_type == 'broader' and namespace == Group.NAMESPACE:
-            self.model = SuperGroup
-        elif relation_type == 'narrower' and namespace == SuperGroup.NAMESPACE:
-            self.model = Group
-        elif relation_type in ['broader', 'narrower', 'related', 'groupMember',
-                               'themeMember']:
-            self.model = Term
-
-
 class JsonResponseMixin(object):
 
     def _get_response(self, data, status, status_code):
@@ -78,7 +60,7 @@ class JsonResponseMixin(object):
         return response
 
 
-class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
+class UnrelatedConcepts(JsonResponseMixin, View):
 
     def _set_reverse_urls(self, concepts, langcode, relation):
         for concept in concepts:
@@ -104,7 +86,7 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
             .filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept__namespace__heading=self.model.NAMESPACE,
+                concept__namespace__heading=self.concept.namespace.heading,
                 status__in=(Property.PENDING, Property.PUBLISHED),
                 value__istartswith=query,
             )
@@ -123,7 +105,6 @@ class UnrelatedConcepts(JsonResponseMixin, ConceptMixin, View):
 
     def get(self, request, langcode, id, relation):
         self.concept = Concept.objects.get(id=id)
-        self._set_concept_model(relation, self.concept.namespace.heading)
 
         page = int(request.GET.get('page', '1'))
         start, end = 30 * (page-1), 30 * page
