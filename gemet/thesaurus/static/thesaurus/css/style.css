@@ -499,7 +499,7 @@ hr {
 }
 
 #translations .dt {
-    width: 72px;
+    width: 76px;
     float: left;
 }
 
@@ -843,14 +843,13 @@ hr {
 /* menu */
 
 .gemet-menu a {
-    display: inline-block;
+     display: inline-block;
     color: white;
-    padding: 1rem;
+    padding: 1rem 1.42rem;
     color: #0065A5;
-    ;
 }
 
-.gemet-menu a:last-of-type {
+.gemet-menu a.active {
     background: #0065A5;
     color: white;
     border-top-left-radius: 6px;
@@ -1301,7 +1300,7 @@ li:hover .btn-remove-down {
     margin-left: auto;
     margin-right: auto;
     border: 11px solid #0065A5;
-    border-top-right-radius: 0;
+
 }
 
 .search_bar input[type=text] {

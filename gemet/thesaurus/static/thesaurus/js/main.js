@@ -18,6 +18,19 @@ $('.expand-button').on('click', function(){
   $('.side-bar').toggleClass('expand')
 })
 
+$first_menu_item = $('.gemet-menu a:first-of-type');
+$last_menu_item = $('.gemet-menu a:last-of-type');
+
+if($first_menu_item.hasClass('active')) {
+  $('.search_bar').css ('border-top-left-radius', '0');
+  console.log('first');
+}
+
+if($last_menu_item.hasClass('active')) {
+   $('.search_bar').css ('border-top-right-radius', '0');
+   console.log('last');
+}
+
 });
 /**
  *  BootTree Treeview plugin for Bootstrap.
