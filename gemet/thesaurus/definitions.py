@@ -1,4 +1,3 @@
-from models import Group, SuperGroup, Theme, Term
 RELATION_TYPES = [
     'theme',
     'group',
@@ -25,11 +24,4 @@ EDIT_URL_NAMES = {
     'Groups': 'group_edit',
     'Concepts': 'concept_edit',
     'Super groups': 'supergroup_edit',
-}
-
-CONCEPT_TYPES = {
-    'Themes': Theme,
-    'Groups': Group,
-    'Concepts': Term,
-    'Super groups': SuperGroup,
 }

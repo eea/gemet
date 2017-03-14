@@ -5,8 +5,8 @@ from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from gemet.thesaurus.definitions import CONCEPT_TYPES, EDIT_URL_NAMES
-from gemet.thesaurus.definitions import FOREIGN_RELATION_TYPES, RELATION_TYPES
+from gemet.thesaurus.definitions import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
+from gemet.thesaurus.definitions import RELATION_TYPES
 from gemet.thesaurus.forms import ConceptForm
 from gemet.thesaurus.models import Concept, ForeignRelation, Group
 from gemet.thesaurus.models import Language, Property, PropertyType
@@ -450,10 +450,9 @@ class AddConceptView(View):
         if form.is_valid():
             version = Version.objects.create()
             namespace = form.cleaned_data['namespace']
-            Concept_class = CONCEPT_TYPES[namespace.heading]
-            new_concept = Concept_class(version_added=version,
-                                        namespace=namespace,
-                                        status=Concept.PENDING)
+            new_concept = Concept(version_added=version,
+                                  namespace=namespace,
+                                  status=Concept.PENDING)
 
             codes = (Concept.objects
                      .filter(namespace=namespace)
