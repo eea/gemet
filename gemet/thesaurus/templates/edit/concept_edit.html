@@ -38,11 +38,6 @@
           <label for="alternativeInput">Alternatives</label>
                <input id="alternativeInput" type="text" class="validate">
       </div>
-
-
-
-
-
       <div class="button-elements">
         <button class='btng edit waves-effect waves-light btn' type="button"
                 id="alternativeAdd" value="Add Alternative" title="Add"
@@ -77,10 +72,10 @@
       </div>
     </div>
 
-    <div id="alternativeList">
+    <ul id="alternativeList">
       {% for alternative in concept.altLabel %}
-        <div class="alternative-item">
-          <i id="alternative{{ alternative.id }}"
+        <li class="alternative-item clearfix">
+          <span id="alternative{{ alternative.id }}"
              class="status-{{ alternative.status }}">
             {{ alternative.value }};
 
@@ -89,19 +84,17 @@
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
                     data-href="{% url 'delete_property' alternative.id %}">
-              <div class='icon'>
                 <i class="fa fa-times" aria-hidden="true"></i>
-              </div>
-              <div class='text'>
-                <span>Delete</span>
-              </div>
+             Delete
             </button>
             {% endif %}
-          </i>
-        </div>
+          </span>
+        </li>
       {% endfor %}
-    </div>
+    </ul>
   </div>
+
+
 
   <!-- Definition -->
   <div class="definition text-area element">
@@ -148,8 +141,8 @@
     <!-- Broader -->
     <div class="dl-inline">
       <div class="element">
-        <div class="dl-header">
-          <h6 class="dt">Broader</h6>
+        <div class="dl-header clearfix">
+          <h6>Broader</h6>
           {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
         </div>
         {% include 'edit/bits/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
@@ -158,8 +151,8 @@
     <!-- Related -->
     <div class="dl-inline">
       <div class="element">
-        <div class="dl-header">
-          <h6 class="dt">Related</h6>
+        <div class="dl-header clearfix">
+          <h6>Related</h6>
           {% include 'edit/bits/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
         </div>
         {% include 'edit/bits/related_terms.html' with type='related' concept_list=concept.related_concepts %}
@@ -168,8 +161,8 @@
     <!-- Narrower -->
     <div class="dl-inline">
       <div class="element">
-        <div class="dl-header">
-          <h6 class="dt">Narrower</h6>
+        <div class="dl-header clearfix">
+          <h6 class="">Narrower</h6>
           {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
         </div>
         {% include 'edit/bits/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
@@ -192,11 +185,17 @@
         <label class="otherInput" for="otherUrl" >Url:</label>
         <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
         </div>
-        <select id="otherSelect">
-          {% for type in foreign_relation_types %}
-            <option value="{{ type.id }}" data-label="{{ type.name }}">{{ type.label }}</option>
-          {% endfor %}
-        </select>
+
+<div class="input-field">
+ <select id="otherSelect">
+      <option value="" disabled selected>Choose your option</option>
+      {% for type in foreign_relation_types %}
+  <option value="{{ type.id }}" data-label="{{ type.name }}">{{ type.label }}</option>
+     {% endfor %}
+    </select>
+    </div>
+
+
       </div>
 
       <div class="button-elements">
@@ -206,7 +205,7 @@
                 data-type="other"
                 data-input-id="#otherSelect">
             <i class="fa fa-plus" aria-hidden="true"></i>
-       Add Other Term
+       Add
         </button>
 
         <button class='btng cancel waves-effect waves-light btn' type="button"

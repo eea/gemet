@@ -20,7 +20,7 @@ if (window.matchMedia("(max-width: 800px)").matches) {
   $('body').toggleClass('sidebar-open');
 });
 
-$('.backdrop').on('click',function(){
+$('.backdrop-site').on('click',function(){
     $('.gemet-menu').removeClass('expand');
     $('.side-bar').removeClass('expand');
   $('body').removeClass('sidebar-open');

@@ -12,9 +12,9 @@
   </div>
 {% endfor %}
 </div>
-<div class="input-area" hidden>
+<div class="input-area input-field" hidden>
   {% if property_name == 'definition' %}
-    <textarea id="{{ property_name }}Input" ></textarea>
+     <textarea id="{{ property_name }}Input" class="materialize-textarea"></textarea>
   {% else %}
     <input id="{{ property_name }}Input" />
   {% endif %}
