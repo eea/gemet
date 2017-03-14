@@ -9,7 +9,7 @@
         {{ parent.name }}
 
           {% if parent.status == DELETED_PENDING %}
-          <button class='btng centerMe deleteParent'
+          <button class='btng centerMe restoreRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
                   data-href="{% url 'restore_relation' concept.id parent.id type %}"
@@ -23,7 +23,7 @@
           </button>
 
           {% else %}
-          <button class='btng centerMe deleteParent'
+          <button class='btng centerMe deleteRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
                   data-href="{% url 'delete_relation' concept.id parent.id type %}"

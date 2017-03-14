@@ -94,7 +94,7 @@ class TestAddPropertyView(GemetTest):
         self.assertEquals(new_property.status, Property.PENDING)
 
 
-class TestRemoveParentRelationView(GemetTest):
+class TestDeleteRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
@@ -137,7 +137,7 @@ class TestRemoveParentRelationView(GemetTest):
         # todo could test for status=pending when the behaviour will differ
 
 
-class TestAddParentRelationView(GemetTest):
+class TestAddRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):

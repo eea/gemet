@@ -90,7 +90,7 @@
             {{ alternative.value }};
 
             {% if alternative.status != DELETED_PENDING %}
-            <button class='btng centerMe deleteParent' type="submit" value="X"
+            <button class='btng centerMe deleteRelation' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
                     data-href="{% url 'delete_property' alternative.id %}">
@@ -255,7 +255,7 @@
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
 
               {% if relation.status == DELETED_PENDING %}
-              <button class='btng centerMe restoreParent'
+              <button class='btng centerMe restoreRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
@@ -269,7 +269,7 @@
               </button>
 
               {% else %}
-              <button class='btng centerMe deleteParent'
+              <button class='btng centerMe deleteRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"

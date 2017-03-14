@@ -1271,14 +1271,14 @@ li:hover .btn-remove-down {
     margin-right: 1rem;
 }
 
-.other-item .removeParent {
+.other-item .deleteRelation {
     position: absolute;
     right: -18px;
     top: -2px;
     left: auto;
 }
 
-.removeParent {
+.deleteRelation {
     position: absolute;
     left: 100%;
     top: -2px;
@@ -1290,7 +1290,7 @@ li:hover .btn-remove-down {
     clear: left;
 }
 
-.alternative-item .removeParent {
+.alternative-item .deleteRelation {
     position: absolute;
     left: 100%;
     top: -7px;
