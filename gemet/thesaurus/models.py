@@ -32,6 +32,10 @@ class Version(models.Model):
     changed_note = models.TextField()
     is_current = models.BooleanField(default=False)
 
+    @staticmethod
+    def under_work():
+        return Version.objects.get(identifier="")
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):

@@ -142,6 +142,7 @@ class EditPropertyView(JsonResponseMixin, View):
         try:
             language = Language.objects.get(code=langcode)
             concept = Concept.objects.get(id=id)
+            version = Version.under_work()
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -149,6 +150,7 @@ class EditPropertyView(JsonResponseMixin, View):
         if not form.is_valid():
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
+
         field = Property.objects.filter(language=langcode,
                                         concept__id=id,
                                         name=name)
@@ -171,8 +173,6 @@ class EditPropertyView(JsonResponseMixin, View):
                 published_field.save()
                 is_resource = published_field.is_resource
 
-            version = Version.objects.create()
-            # Todo: Remove when version is stable
             field = Property.objects.create(status=Property.PENDING,
                                             is_resource=is_resource,
                                             version_added=version,
@@ -264,6 +264,7 @@ class AddRelationView(JsonResponseMixin, ConceptMixin, View):
     def post(self, request, langcode, id, parent_id, rel_type):
         try:
             concept = Concept.objects.get(id=id)
+            version = Version.under_work()
             self._set_concept_model(rel_type, concept.namespace.heading)
             parent_concept = self.model.objects.get(id=parent_id)
         except ObjectDoesNotExist:
@@ -286,7 +287,6 @@ class AddRelationView(JsonResponseMixin, ConceptMixin, View):
         check_relation_status = relations.filter(status__in=[Property.PUBLISHED,
                                                              Property.PENDING])
         if not check_relation_status:
-            version = Version.objects.create()
             theme_property = PropertyType.objects.get(name=rel_type)
             field = Relation(source=concept, target=parent_concept,
                              status=Property.PENDING, version_added=version,
@@ -302,6 +302,7 @@ class AddPropertyView(JsonResponseMixin, View):
         try:
             language = Language.objects.get(code=langcode)
             concept = Concept.objects.get(id=id)
+            version = Version.under_work()
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -318,8 +319,6 @@ class AddPropertyView(JsonResponseMixin, View):
         if prop:
             data = {"message": 'Value must be unique.'}
             return self._get_response(data, 'error', 400)
-        # TODO: Remove when version is stable
-        version = Version.objects.create()
         field = Property.objects.create(status=Property.PENDING,
                                         version_added=version,
                                         language=language,
@@ -361,14 +360,13 @@ class AddForeignRelationView(JsonResponseMixin, ConceptMixin, View):
     def post(self, request, langcode, id):
         try:
             concept = Concept.objects.get(id=id)
+            version = Version.under_work()
             prop_type = PropertyType.objects.get(id=request.POST['rel_type'])
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
         form = ForeignRelationForm(request.POST)
         if form.is_valid():
-            version = Version.objects.create()
-            # TODO Remove version when stable
             new_relation = ForeignRelation.objects.create(
                 version_added=version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)

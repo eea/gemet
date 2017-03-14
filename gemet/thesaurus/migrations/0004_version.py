@@ -16,7 +16,7 @@ def forwards_func(apps, schema_editor):
     except Concept.DoesNotExist:
         return
     Version.objects.create(
-        identifier="2.0",  # This identifier will probably change
+        identifier="4.0.0",
         publication_date=latest_concept.date_changed,
         is_current=True,
     )
