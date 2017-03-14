@@ -13,7 +13,7 @@
   <form action="{% url 'concept_add' language.code %}" method="POST" class="post-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" value="Save">Submit</button>
+    <button type="submit" value="Save">Save</button>
   </form>
 
 {% endblock %}
