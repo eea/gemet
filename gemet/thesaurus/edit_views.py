@@ -4,12 +4,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 from django.views import View
 from django.urls import reverse
-
-from gemet.thesaurus.models import FOREIGN_RELATION_TYPES, RELATION_TYPES
-from gemet.thesaurus.models import Concept, Group, SuperGroup, Theme, Term
-from gemet.thesaurus.models import ForeignRelation, Relation, Language
-from gemet.thesaurus.models import Property, PropertyType, Version
-from gemet.thesaurus.models import EditableGroup, EditableTerm, EditableTheme
+from django.shortcuts import redirect, render
+from gemet.thesaurus.definitions import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
+from gemet.thesaurus.definitions import RELATION_TYPES
+from gemet.thesaurus.forms import ConceptForm
+from gemet.thesaurus.models import Concept, ForeignRelation, Group
+from gemet.thesaurus.models import Language, Property, PropertyType
+from gemet.thesaurus.models import Relation, SuperGroup, Theme
+from gemet.thesaurus.models import Term, Version, EditableGroup, EditableTerm
+from gemet.thesaurus.models import EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
@@ -427,3 +430,43 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         data = {'restore_url': restore_url}
 
         return self._get_response(data, 'success', 200)
+
+
+class AddConceptView(View):
+
+    def get(self, request, langcode):
+        form = ConceptForm()
+        context = {
+            'language': Language.objects.get(code=langcode),
+            'form': form,
+        }
+        return render(request, 'edit/concept_add.html', context)
+
+    def post(self, request, langcode):
+        language = Language.objects.get(code=langcode)
+        form = ConceptForm(request.POST)
+        if form.is_valid():
+            version = Version.objects.create()
+            namespace = form.cleaned_data['namespace']
+            new_concept = Concept(version_added=version,
+                                  namespace=namespace,
+                                  status=Concept.PENDING)
+
+            codes = (Concept.objects
+                     .filter(namespace=namespace)
+                     .exclude(code='')
+                     .values_list('code', flat=True))
+            new_code = max(map(int, codes)) + 1
+            new_concept.code = unicode(new_code)
+            new_concept.save()
+            # create prefLabel property for the new concept
+            Property.objects.create(status=Property.PENDING,
+                                    version_added=version,
+                                    concept=new_concept,
+                                    language=language,
+                                    name='prefLabel',
+                                    value=form.cleaned_data['name'])
+            url_name = EDIT_URL_NAMES[namespace.heading]
+            url = reverse(url_name, kwargs={'langcode': langcode,
+                                            'code': new_code})
+            return redirect(url)
