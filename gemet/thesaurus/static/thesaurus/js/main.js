@@ -30,7 +30,7 @@ $('.backdrop-site').on('click',function(){
 
 
 
-
+if (window.matchMedia("(min-width: 800px)").matches) {
 $first_menu_item = $('.gemet-menu a:first-of-type');
 $last_menu_item = $('.gemet-menu a:last-of-type');
 
@@ -43,8 +43,9 @@ if($last_menu_item.hasClass('active')) {
    $('.search_bar').css ('border-top-right-radius', '0');
    console.log('last');
 }
-
+}
 });
+
 /**
  *  BootTree Treeview plugin for Bootstrap.
  *

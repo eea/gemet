@@ -1841,6 +1841,8 @@ a.btn {
     color: white;
     white-space: nowrap;
     border: none;
+        font-size: 19px;
+    padding: 8px;
     }
 
     .menu-button:focus {
