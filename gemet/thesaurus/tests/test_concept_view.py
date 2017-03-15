@@ -95,9 +95,9 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
-        self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme.id)), 1)
+        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
+        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme.code), 1)
 
     def test_concept_two_themes(self):
         self.set_concept_two_theme()
@@ -130,10 +130,10 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
-        self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme1.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme2.id)), 1)
+        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
+        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme1.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme2.code), 1)
 
     def test_redirect(self):
         url = reverse('concept', kwargs={'code': self.concept.code,

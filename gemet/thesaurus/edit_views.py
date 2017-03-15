@@ -1,17 +1,16 @@
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from gemet.thesaurus.definitions import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
-from gemet.thesaurus.definitions import RELATION_TYPES
 from gemet.thesaurus.forms import ConceptForm
-from gemet.thesaurus.models import Concept, ForeignRelation, Group
+from gemet.thesaurus.models import Concept, ForeignRelation
 from gemet.thesaurus.models import Language, Property, PropertyType
-from gemet.thesaurus.models import Relation, SuperGroup, Theme
-from gemet.thesaurus.models import Term, Version, EditableGroup, EditableTerm
+from gemet.thesaurus.models import Relation
+from gemet.thesaurus.models import Version, EditableGroup, EditableTerm
 from gemet.thesaurus.models import EditableTheme
 from gemet.thesaurus.models import EditableSuperGroup
 from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
@@ -357,7 +356,10 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
-            foreign_relation = ForeignRelation.objects.get(id=pk)
+            foreign_relation = ForeignRelation.objects.get(
+                pk=pk,
+                status=ForeignRelation.DELETED_PENDING,
+            )
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)

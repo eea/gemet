@@ -137,6 +137,56 @@ class TestDeleteRelationView(GemetTest):
         # todo could test for status=pending when the behaviour will differ
 
 
+class TestRestoreRelationView(GemetTest):
+    csrf_checks = False
+
+    def setUp(self):
+        self.relation = RelationFactory(status=Relation.DELETED_PENDING)
+        self.request_kwargs = {
+            'source_id': self.relation.source.id,
+            'target_id': self.relation.target.id,
+            'relation_type': self.relation.property_type.name,
+        }
+
+    def test_restore_relation_bad_source(self):
+        self.request_kwargs['source_id'] = 99
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_bad_target(self):
+        self.request_kwargs['target_id'] = 99
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_no_relation(self):
+        self.request_kwargs['relation_type'] = 'test'
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_bad_status(self):
+        relation = RelationFactory(status=Property.PENDING)
+        request_kwargs = {
+            'source_id': relation.source.id,
+            'target_id': relation.target.id,
+            'relation_type': relation.property_type.name,
+        }
+        url = reverse('restore_relation', kwargs=request_kwargs)
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+        relation.refresh_from_db()
+        self.assertEqual(relation.status, Property.PENDING)
+
+    def test_restore_relation_correct_request(self):
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url)
+        self.assertEqual(200, response.status_code)
+        self.relation.refresh_from_db()
+        self.assertEqual(self.relation.status, Property.PUBLISHED)
+
+
 class TestAddRelationView(GemetTest):
     csrf_checks = False
 
@@ -169,7 +219,7 @@ class TestAddRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
 
 
-class TestRemovePropertyView(GemetTest):
+class TestDeletePropertyView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
@@ -199,7 +249,7 @@ class TestAddForeignRelationView(GemetTest):
         self.property_type2 = PropertyTypeFactory(label='has close Match',
                                                   name='closeMatch', id=20)
         self.lang = LanguageFactory()
-        self.concept = TermFactory()
+        self.concept = TermFactory(id=1)
 
     def test_post_bad_request(self):
         url = reverse('add_other', kwargs={'id': 10})
@@ -225,23 +275,46 @@ class TestAddForeignRelationView(GemetTest):
         self.assertEqual(foreign_relation.id, data['id'])
 
 
-class TestRemoveForeignRelationView(GemetTest):
+class TestDeleteForeignRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.term = TermFactory()
-        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
-        self.foreign_relation = ForeignRelationFactory(
-            concept=self.term, property_type=self.property_type, id=8)
+        self.foreign_relation = ForeignRelationFactory()
 
     def test_delete_foreign_relation_no_relation(self):
-        url = reverse('delete_other', kwargs={'pk': 7})
+        url = reverse('delete_other', kwargs={'pk': 99})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_foreign_relation_correct_request(self):
-        url = reverse('delete_other', kwargs={'pk': 8})
+        url = reverse('delete_other', kwargs={'pk': self.foreign_relation.pk})
         response = self.app.post(url, expect_errors=True)
+        self.foreign_relation.refresh_from_db()
         self.assertEqual(200, response.status_code)
-        foreign_relation = ForeignRelation.objects.get(id=8)
-        self.assertEqual(foreign_relation.status, Property.DELETED_PENDING)
+        self.assertEqual(self.foreign_relation.status, Property.DELETED_PENDING)
+
+
+class TestRestoreForeignRelationView(GemetTest):
+    csrf_checks = False
+
+    def test_restore_foreign_relation_no_relation(self):
+        url = reverse('restore_other', kwargs={'pk': 99})
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_foreign_relation_not_deleted(self):
+        foreign_relation = ForeignRelationFactory(status=Relation.PENDING)
+        url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
+        response = self.app.post(url, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+        foreign_relation.refresh_from_db()
+        self.assertEqual(foreign_relation.status, Property.PENDING)
+
+    def test_restore_foreign_relation_correct_request(self):
+        foreign_relation = ForeignRelationFactory(
+            status=Relation.DELETED_PENDING)
+        url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
+        response = self.app.post(url)
+        self.assertEqual(200, response.status_code)
+        foreign_relation.refresh_from_db()
+        self.assertEqual(foreign_relation.status, Property.PUBLISHED)

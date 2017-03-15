@@ -14,13 +14,6 @@ class VersionFactory(factory.django.DjangoModelFactory):
     is_current = True
 
 
-class ForeignRelationFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = ForeignRelation
-
-    version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
-
-
 class LanguageFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Language
     FACTORY_DJANGO_GET_OR_CREATE = ('code',)
@@ -40,7 +33,6 @@ class ConceptFactory(factory.django.DjangoModelFactory):
 class TermFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Term
 
-    id = 1
     code = '1'
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
@@ -49,7 +41,6 @@ class TermFactory(factory.django.DjangoModelFactory):
 class GroupFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Group
 
-    id = 2
     code = '2'
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
@@ -58,7 +49,6 @@ class GroupFactory(factory.django.DjangoModelFactory):
 class SuperGroupFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = SuperGroup
 
-    id = 3
     code = '3'
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
@@ -67,7 +57,6 @@ class SuperGroupFactory(factory.django.DjangoModelFactory):
 class ThemeFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Theme
 
-    id = 4
     code = '4'
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
@@ -87,7 +76,6 @@ class PropertyFactory(factory.django.DjangoModelFactory):
 class PropertyTypeFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = PropertyType
 
-    id = 1
     name = "themeMember"
     label = "Theme member"
 
@@ -96,8 +84,17 @@ class RelationFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Relation
 
     property_type = factory.SubFactory(PropertyTypeFactory)
-    source = factory.SubFactory(ConceptFactory)
-    target = factory.SubFactory(ConceptFactory)
+    source = factory.SubFactory(TermFactory)
+    target = factory.SubFactory(ThemeFactory)
+    version_added = factory.SubFactory(VersionFactory)
+    status = VersionableModel.PUBLISHED
+
+
+class ForeignRelationFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = ForeignRelation
+
+    property_type = factory.SubFactory(PropertyTypeFactory)
+    concept = factory.SubFactory(TermFactory)
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
 
@@ -109,7 +106,6 @@ class DataSourceFactory(factory.django.DjangoModelFactory):
 class InspireThemeFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = InspireTheme
 
-    id = 5
     code = 'ad'
     version_added = factory.SubFactory(VersionFactory)
     status = VersionableModel.PUBLISHED
