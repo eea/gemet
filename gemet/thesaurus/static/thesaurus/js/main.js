@@ -20,7 +20,7 @@ if (window.matchMedia("(max-width: 800px)").matches) {
   $('body').toggleClass('sidebar-open');
 });
 
-$('.backdrop').on('click',function(){
+$('.backdrop-site').on('click',function(){
     $('.gemet-menu').removeClass('expand');
     $('.side-bar').removeClass('expand');
   $('body').removeClass('sidebar-open');
@@ -30,7 +30,7 @@ $('.backdrop').on('click',function(){
 
 
 
-
+if (window.matchMedia("(min-width: 800px)").matches) {
 $first_menu_item = $('.gemet-menu a:first-of-type');
 $last_menu_item = $('.gemet-menu a:last-of-type');
 
@@ -43,8 +43,9 @@ if($last_menu_item.hasClass('active')) {
    $('.search_bar').css ('border-top-right-radius', '0');
    console.log('last');
 }
-
+}
 });
+
 /**
  *  BootTree Treeview plugin for Bootstrap.
  *
