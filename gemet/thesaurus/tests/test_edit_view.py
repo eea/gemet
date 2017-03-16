@@ -1,11 +1,13 @@
+import json
+
 from django.core.urlresolvers import reverse
 
 from .factories import ForeignRelation, ForeignRelationFactory
 from .factories import LanguageFactory, Property, PropertyFactory
 from .factories import PropertyTypeFactory, RelationFactory, Relation
 from .factories import TermFactory, ThemeFactory
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from . import GemetTest
-import json
 
 
 class TestEditPropertyView(GemetTest):
@@ -47,20 +49,20 @@ class TestEditPropertyView(GemetTest):
         self.assertIsNotNone(new_property)
         self.assertEquals(new_property.name, 'prefLabel')
         self.assertEquals(new_property.value, 'name1')
-        self.assertEquals(new_property.status, Property.PENDING)
+        self.assertEquals(new_property.status, PENDING)
 
     def test_edit_property_correct_request_published_property(self):
         property = PropertyFactory(concept=self.concept, language=self.language,
                                    name='prefLabel', value='test',
-                                   status=Property.PUBLISHED)
+                                   status=PUBLISHED)
         url = reverse('edit_property', kwargs=self.request_kwargs)
         response = self.app.post(url, params={'value': 'name1'})
         self.assertEqual(200, response.status_code)
         self.assertEqual(json.loads(response.body)['value'], 'name1')
         property.refresh_from_db()
-        self.assertEquals(property.status, Property.DELETED_PENDING)
+        self.assertEquals(property.status, DELETED_PENDING)
         self.assertEquals(property.value, 'test')
-        new_property = Property.objects.filter(status=Property.PENDING).first()
+        new_property = Property.objects.filter(status=PENDING).first()
         self.assertIsNotNone(new_property)
         self.assertEquals(new_property.name, 'prefLabel')
         self.assertEquals(new_property.value, 'name1')
@@ -68,7 +70,7 @@ class TestEditPropertyView(GemetTest):
     def test_edit_property_correct_request_pending_property(self):
         property = PropertyFactory(concept=self.concept, language=self.language,
                                    name='prefLabel', value='test',
-                                   status=Property.PENDING)
+                                   status=PENDING)
         url = reverse('edit_property', kwargs=self.request_kwargs)
         response = self.app.post(url, params={'value': 'name1'})
         self.assertEqual(200, response.status_code)
@@ -76,7 +78,7 @@ class TestEditPropertyView(GemetTest):
         property.refresh_from_db()
         self.assertEquals(property.name, 'prefLabel')
         self.assertEquals(property.value, 'name1')
-        self.assertEquals(property.status, Property.PENDING)
+        self.assertEquals(property.status, PENDING)
 
 
 class TestAddPropertyView(GemetTest):
@@ -117,14 +119,14 @@ class TestAddPropertyView(GemetTest):
         self.assertIsNotNone(new_property)
         self.assertEquals(new_property.name, 'prefLabel')
         self.assertEquals(new_property.value, 'name1')
-        self.assertEquals(new_property.status, Property.PENDING)
+        self.assertEquals(new_property.status, PENDING)
 
 
 class TestDeleteRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.relation = RelationFactory(status=Relation.DELETED_PENDING)
+        self.relation = RelationFactory(status=DELETED_PENDING)
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -150,16 +152,16 @@ class TestDeleteRelationView(GemetTest):
         self.assertEqual(400, response.status_code)
 
     def test_delete_relation_correct_request_published_relation(self):
-        self.relation.status = Relation.PUBLISHED
+        self.relation.status = PUBLISHED
         self.relation.save()
         url = reverse('delete_relation', kwargs=self.request_kwargs)
         response = self.app.post(url)
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
-        self.assertEqual(self.relation.status, Property.DELETED_PENDING)
+        self.assertEqual(self.relation.status, DELETED_PENDING)
 
     def test_delete_relation_correct_request_pending_relation(self):
-        self.relation.status = Relation.PENDING
+        self.relation.status = PENDING
         self.relation.save()
         url = reverse('delete_relation', kwargs=self.request_kwargs)
         response = self.app.post(url)
@@ -171,7 +173,7 @@ class TestRestoreRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.relation = RelationFactory(status=Relation.DELETED_PENDING)
+        self.relation = RelationFactory(status=DELETED_PENDING)
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -197,20 +199,20 @@ class TestRestoreRelationView(GemetTest):
         self.assertEqual(400, response.status_code)
 
     def test_restore_relation_bad_status(self):
-        self.relation.status = Property.PENDING
+        self.relation.status = PENDING
         self.relation.save()
         url = reverse('restore_relation', kwargs=self.request_kwargs)
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
         self.relation.refresh_from_db()
-        self.assertEqual(self.relation.status, Property.PENDING)
+        self.assertEqual(self.relation.status, PENDING)
 
     def test_restore_relation_correct_request(self):
         url = reverse('restore_relation', kwargs=self.request_kwargs)
         response = self.app.post(url)
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
-        self.assertEqual(self.relation.status, Property.PUBLISHED)
+        self.assertEqual(self.relation.status, PUBLISHED)
 
 
 class TestAddRelationView(GemetTest):
@@ -224,7 +226,7 @@ class TestAddRelationView(GemetTest):
                                         concept=self.theme,
                                         name='prefLabel',
                                         value='Theme 1',
-                                        status=Property.PUBLISHED)
+                                        status=PUBLISHED)
         self.property_type = PropertyTypeFactory(label='Theme', name='theme')
 
     def test_post_no_concept_no_parent_object(self):
@@ -248,8 +250,7 @@ class TestDeletePropertyView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.property = PropertyFactory(value='new property',
-                                        status=Property.PUBLISHED)
+        self.property = PropertyFactory(value='new property', status=PUBLISHED)
 
     def test_delete_property_bad_concept(self):
         url = reverse('delete_property', kwargs={'pk': 43})
@@ -261,7 +262,7 @@ class TestDeletePropertyView(GemetTest):
         response = self.app.post(url, params={'value': 'new property'})
         self.assertEqual(200, response.status_code)
         self.property.refresh_from_db()
-        self.assertEqual(self.property.status, Property.DELETED_PENDING)
+        self.assertEqual(self.property.status, DELETED_PENDING)
 
 
 class TestAddForeignRelationView(GemetTest):
@@ -315,7 +316,7 @@ class TestDeleteForeignRelationView(GemetTest):
         response = self.app.post(url)
         self.foreign_relation.refresh_from_db()
         self.assertEqual(200, response.status_code)
-        self.assertEqual(self.foreign_relation.status, Property.DELETED_PENDING)
+        self.assertEqual(self.foreign_relation.status, DELETED_PENDING)
 
 
 class TestRestoreForeignRelationView(GemetTest):
@@ -327,18 +328,17 @@ class TestRestoreForeignRelationView(GemetTest):
         self.assertEqual(400, response.status_code)
 
     def test_restore_foreign_relation_not_deleted(self):
-        foreign_relation = ForeignRelationFactory(status=Relation.PENDING)
+        foreign_relation = ForeignRelationFactory(status=PENDING)
         url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
         response = self.app.post(url, expect_errors=True)
         self.assertEqual(400, response.status_code)
         foreign_relation.refresh_from_db()
-        self.assertEqual(foreign_relation.status, Property.PENDING)
+        self.assertEqual(foreign_relation.status, PENDING)
 
     def test_restore_foreign_relation_correct_request(self):
-        foreign_relation = ForeignRelationFactory(
-            status=Relation.DELETED_PENDING)
+        foreign_relation = ForeignRelationFactory(status=DELETED_PENDING)
         url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
         response = self.app.post(url)
         self.assertEqual(200, response.status_code)
         foreign_relation.refresh_from_db()
-        self.assertEqual(foreign_relation.status, Property.PUBLISHED)
+        self.assertEqual(foreign_relation.status, PUBLISHED)

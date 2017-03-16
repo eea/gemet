@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from gemet.thesaurus.definitions import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
+from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus.forms import ConceptForm
 from gemet.thesaurus.models import Concept, ForeignRelation
 from gemet.thesaurus.models import Language, Property, PropertyType
@@ -86,14 +87,13 @@ class UnrelatedConcepts(JsonResponseMixin, View):
                 name='prefLabel',
                 language__code=langcode,
                 concept__namespace__heading=self.concept.namespace.heading,
-                status__in=(Property.PENDING, Property.PUBLISHED),
+                status__in=(PENDING, PUBLISHED),
                 value__istartswith=query,
             )
             .exclude(
                 concept_id__in=self.concept.source_relations.filter(
                     property_type__name=relation,
-                    status__in=(Relation.PENDING, Relation.PUBLISHED,
-                                Relation.DELETED_PENDING),
+                    status__in=(PENDING, PUBLISHED, DELETED_PENDING),
                 )
                 .values_list('target_id', flat=True)
             )
@@ -138,8 +138,8 @@ class EditPropertyView(JsonResponseMixin, View):
                                         concept__id=id,
                                         name=name)
 
-        published_field = field.filter(status=Property.PUBLISHED).first()
-        pending_field = field.filter(status=Property.PENDING).first()
+        published_field = field.filter(status=PUBLISHED).first()
+        pending_field = field.filter(status=PENDING).first()
 
         if pending_field:
             pending_field.value = form.cleaned_data['value']
@@ -152,12 +152,12 @@ class EditPropertyView(JsonResponseMixin, View):
                 if published_field.value == form.cleaned_data['value']:
                     data = {"message": 'Value already used.'}
                     return self._get_response(data, 'error', 400)
-                published_field.status = Property.DELETED_PENDING
+                published_field.status = DELETED_PENDING
                 published_field.save()
                 is_resource = published_field.is_resource
 
             version = Version.under_work()
-            field = Property.objects.create(status=Property.PENDING,
+            field = Property.objects.create(status=PENDING,
                                             is_resource=is_resource,
                                             version_added=version,
                                             concept=concept,
@@ -182,7 +182,7 @@ class AddRelationView(JsonResponseMixin, View):
             Relation.objects
             .filter(source=source, target=target,
                     property_type__name=relation_type)
-            .exclude(status=Property.DELETED)
+            .exclude(status=DELETED)
         )
         # This case should't appear for a request made from the web interface
         if relation.exists():
@@ -192,7 +192,7 @@ class AddRelationView(JsonResponseMixin, View):
         property_type = PropertyType.objects.get(name=relation_type)
         version = Version.under_work()
         relation = Relation(source=source, target=target,
-                            status=Property.PENDING, version_added=version,
+                            status=PENDING, version_added=version,
                             property_type=property_type)
         relation.save()
         data = {}
@@ -213,16 +213,16 @@ class DeleteRelationView(JsonResponseMixin, View):
             source=source,
             target=target,
             property_type__name=relation_type,
-            status__in=(Relation.PUBLISHED, Relation.PENDING)
+            status__in=(PUBLISHED, PENDING)
         ).first()
         if not relation:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        if relation.status == Relation.PUBLISHED:
-            relation.status = Relation.DELETED_PENDING
+        if relation.status == PUBLISHED:
+            relation.status = DELETED_PENDING
             relation.save()
-        elif relation.status == Relation.PENDING:
+        elif relation.status == PENDING:
             relation.delete()
 
         restore_url = reverse('restore_relation', kwargs={
@@ -248,13 +248,13 @@ class RestoreRelationView(JsonResponseMixin, View):
             source=source,
             target=target,
             property_type__name=relation_type,
-            status=Relation.DELETED_PENDING,
+            status=DELETED_PENDING,
         ).first()
         if not relation:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        relation.status = Relation.PUBLISHED
+        relation.status = PUBLISHED
         relation.save()
 
         delete_url = reverse('delete_relation', kwargs={
@@ -288,14 +288,14 @@ class AddPropertyView(JsonResponseMixin, View):
                 name=name,
                 value=form.cleaned_data['value'],
             )
-            .exclude(status=Property.DELETED)
+            .exclude(status=DELETED)
         )
         if prop.exists():
             data = {"message": 'A property with this value already exists.'}
             return self._get_response(data, 'error', 400)
 
         version = Version.under_work()
-        field = Property.objects.create(status=Property.PENDING,
+        field = Property.objects.create(status=PENDING,
                                         version_added=version,
                                         language=language,
                                         concept=concept,
@@ -322,10 +322,10 @@ class DeletePropertyView(JsonResponseMixin, View):
             return self._get_response(data, 'error', 400)
 
         # Soft delete for published records / hard delete for pending ones
-        if field.status == Property.PUBLISHED:
-            field.status = Property.DELETED_PENDING
+        if field.status == PUBLISHED:
+            field.status = DELETED_PENDING
             field.save()
-        elif field.status == Property.PENDING:
+        elif field.status == PENDING:
             field.delete()
 
         return self._get_response({}, 'success', 200)
@@ -364,13 +364,13 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
         try:
             foreign_relation = ForeignRelation.objects.get(
                 pk=pk,
-                status=ForeignRelation.DELETED_PENDING,
+                status=DELETED_PENDING,
             )
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        foreign_relation.status = ForeignRelation.PUBLISHED
+        foreign_relation.status = PUBLISHED
         foreign_relation.save()
 
         delete_url = reverse('delete_other', kwargs={'pk': pk})
@@ -388,10 +388,10 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        if foreign_relation.status == ForeignRelation.PUBLISHED:
-            foreign_relation.status = ForeignRelation.DELETED_PENDING
+        if foreign_relation.status == PUBLISHED:
+            foreign_relation.status = DELETED_PENDING
             foreign_relation.save()
-        elif foreign_relation.status == ForeignRelation.PENDING:
+        elif foreign_relation.status == PENDING:
             foreign_relation.delete()
 
         restore_url = reverse('restore_other', kwargs={'pk': pk})
@@ -418,7 +418,7 @@ class AddConceptView(View):
             namespace = form.cleaned_data['namespace']
             new_concept = Concept(version_added=version,
                                   namespace=namespace,
-                                  status=Concept.PENDING)
+                                  status=PENDING)
 
             codes = (Concept.objects
                      .filter(namespace=namespace)
@@ -428,7 +428,7 @@ class AddConceptView(View):
             new_concept.code = unicode(new_code)
             new_concept.save()
             # create prefLabel property for the new concept
-            Property.objects.create(status=Property.PENDING,
+            Property.objects.create(status=PENDING,
                                     version_added=version,
                                     concept=new_concept,
                                     language=language,

@@ -1,9 +1,9 @@
 import factory
 
+from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import (
     Concept, DefinitionSource, ForeignRelation, Group, InspireTheme, Language,
     Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
-    VersionableModel
 )
 
 
@@ -27,7 +27,7 @@ class ConceptFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Concept
 
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class TermFactory(factory.django.DjangoModelFactory):
@@ -35,7 +35,7 @@ class TermFactory(factory.django.DjangoModelFactory):
 
     code = '1'
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
@@ -43,7 +43,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
 
     code = '2'
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class SuperGroupFactory(factory.django.DjangoModelFactory):
@@ -51,7 +51,7 @@ class SuperGroupFactory(factory.django.DjangoModelFactory):
 
     code = '3'
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):
@@ -59,7 +59,7 @@ class ThemeFactory(factory.django.DjangoModelFactory):
 
     code = '4'
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class PropertyFactory(factory.django.DjangoModelFactory):
@@ -70,7 +70,7 @@ class PropertyFactory(factory.django.DjangoModelFactory):
     version_added = factory.SubFactory(VersionFactory)
     name = 'prefLabel'
     value = 'administration'
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class PropertyTypeFactory(factory.django.DjangoModelFactory):
@@ -87,7 +87,7 @@ class RelationFactory(factory.django.DjangoModelFactory):
     source = factory.SubFactory(TermFactory)
     target = factory.SubFactory(ThemeFactory)
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class ForeignRelationFactory(factory.django.DjangoModelFactory):
@@ -96,7 +96,7 @@ class ForeignRelationFactory(factory.django.DjangoModelFactory):
     property_type = factory.SubFactory(PropertyTypeFactory)
     concept = factory.SubFactory(TermFactory)
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED
 
 
 class DataSourceFactory(factory.django.DjangoModelFactory):
@@ -108,4 +108,4 @@ class InspireThemeFactory(factory.django.DjangoModelFactory):
 
     code = 'ad'
     version_added = factory.SubFactory(VersionFactory)
-    status = VersionableModel.PUBLISHED
+    status = PUBLISHED

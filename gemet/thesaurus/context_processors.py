@@ -1,10 +1,10 @@
-from gemet.thesaurus.models import Concept
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING, DELETED
 
 
 def globals(request):
     return {
-        'PENDING': Concept.PENDING,
-        'PUBLISHED': Concept.PUBLISHED,
-        'DELETED': Concept.DELETED,
-        'DELETED_PENDING': Concept.DELETED_PENDING,
+        'PENDING': PENDING,
+        'PUBLISHED': PUBLISHED,
+        'DELETED': DELETED,
+        'DELETED_PENDING': DELETED_PENDING,
     }
