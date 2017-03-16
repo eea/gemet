@@ -1885,7 +1885,6 @@ a.btn {
     }
 }
 
-
 a.search-button {
     display: none;
 }
@@ -1899,4 +1898,8 @@ a.search-button {
 
 .active.search-button:before {
     display: none;
+
+.publish-form select{
+    display: block;
+
 }

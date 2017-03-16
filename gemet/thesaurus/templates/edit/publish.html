@@ -1,0 +1,22 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+ Publish new version
+{% endblock %}
+
+{% block content %}
+<h1> Publish new version </h1>
+
+<form method="post" action='{% url "publish_version" language.code %}' >
+  {% csrf_token %}
+  <div class="publish-form">
+    {{ form.as_p }}
+  </div>
+  <button type="submit">Publish</button>
+</form>
+{% endblock %}
+
+{% block version %}
+    {% include 'version.html' with version=ns_version %}
+{% endblock %}
