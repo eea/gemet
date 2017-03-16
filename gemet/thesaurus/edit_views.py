@@ -489,9 +489,8 @@ class PublishVersionView(View):
         objects_with_status.update(status=new_status)
 
     def get(self, request, langcode):
-        version = models.Version.objects.get(is_current=True)
         context = {
-            'form': models.VersionForm(),
+            'form': VersionForm(),
             'language': models.Language.objects.get(code=langcode),
         }
         return render(request, 'edit/publish.html', context)
