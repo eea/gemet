@@ -21,17 +21,15 @@ class TestConceptView(GemetTest):
         PropertyFactory(concept=self.group, value="Group Parent")
         PropertyFactory(concept=self.theme, value="Theme Parent")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt2, source=self.concept,
                         target=self.group)
         RelationFactory(property_type=pt1, source=self.group,
                         target=self.concept)
 
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
-                                  label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        pt3 = PropertyTypeFactory(name="themeMember", label="Theme member")
+        pt4 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt4, source=self.concept,
                         target=self.theme)
         RelationFactory(property_type=pt3, source=self.theme,
@@ -39,24 +37,23 @@ class TestConceptView(GemetTest):
 
     def set_concept_two_theme(self):
         self.group = GroupFactory()
-        self.theme1 = ThemeFactory(id=4, code="4")
-        self.theme2 = ThemeFactory(id=5, code="5")
+        self.theme1 = ThemeFactory(code="4")
+        self.theme2 = ThemeFactory(code="5")
 
         PropertyFactory(concept=self.group, value="Group Parent")
         PropertyFactory(concept=self.theme1, value="ThemeP1")
         PropertyFactory(concept=self.theme2, value="ThemeP2")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt2, source=self.concept,
                         target=self.group)
         RelationFactory(property_type=pt1, source=self.group,
                         target=self.concept)
 
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
+        pt3 = PropertyTypeFactory(name="themeMember",
                                   label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        pt4 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt4, source=self.concept,
                         target=self.theme1)
         RelationFactory(property_type=pt3, source=self.theme1,

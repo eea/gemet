@@ -31,9 +31,9 @@ class TestThemeView(GemetTest):
         concept = TermFactory()
         PropertyFactory(concept=concept, name="prefLabel",
                         value="concept prefLabel")
-        pt1 = PropertyTypeFactory(id=1, name="themeMember",
+        pt1 = PropertyTypeFactory(name="themeMember",
                                   label="Theme member")
-        pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
+        pt2 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt1, source=self.theme,
                         target=concept)
         RelationFactory(property_type=pt2, source=concept,
@@ -60,19 +60,19 @@ class TestThemeView(GemetTest):
         concept1 = TermFactory()
         PropertyFactory(concept=concept1, name="prefLabel",
                         value="concept1 prefLabel")
-        pt1 = PropertyTypeFactory(id=1, name="themeMember",
+        pt1 = PropertyTypeFactory(name="themeMember",
                                   label="Theme member")
-        pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
+        pt2 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt1, source=self.theme,
                         target=concept1)
         RelationFactory(property_type=pt2, source=concept1,
                         target=self.theme)
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, name="prefLabel",
                         value="concept2 prefLabel")
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
+        pt3 = PropertyTypeFactory(name="themeMember",
                                   label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        pt4 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt3, source=self.theme,
                         target=concept2)
         RelationFactory(property_type=pt4, source=concept2,

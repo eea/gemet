@@ -225,8 +225,7 @@ class TestAddRelationView(GemetTest):
                                         name='prefLabel',
                                         value='Theme 1',
                                         status=Property.PUBLISHED)
-        self.property_type = PropertyTypeFactory(label='Theme',
-                                                 name='theme', id=10)
+        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
 
     def test_post_no_concept_no_parent_object(self):
         url = reverse('add_relation', kwargs={'source_id': 33,

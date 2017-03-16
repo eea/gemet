@@ -41,9 +41,9 @@ class TestThemesView(GemetTest):
                          u'administration')
 
     def test_contains_more_themes(self):
-        theme1 = ThemeFactory(id=1, code="1")
+        theme1 = ThemeFactory(code="1")
         PropertyFactory(concept=theme1, value="Theme 1")
-        theme2 = ThemeFactory(id=2, code="2")
+        theme2 = ThemeFactory(code="2")
         PropertyFactory(concept=theme2, value="Theme 2")
 
         url = reverse('themes', kwargs={'langcode': 'en'})

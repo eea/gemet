@@ -60,9 +60,9 @@ class TestAlphabeticView(GemetTest):
         )
 
     def test_more_concepts(self):
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value="Concept1")
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value="Concept2")
 
         url = reverse('alphabetic', kwargs={'langcode': 'en'})
@@ -87,9 +87,9 @@ class TestAlphabeticView(GemetTest):
                          )
 
     def test_letter_selected_filter_one_language(self):
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value="A_Concept")
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value="B_Concept")
 
         url = '{url}?letter={letter}'\
@@ -107,9 +107,9 @@ class TestAlphabeticView(GemetTest):
                          )
 
     def test_wrong_letter_selected(self):
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value="A_Concept")
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value="B_Concept")
 
         url = '{url}?letter={letter}'\
@@ -121,9 +121,9 @@ class TestAlphabeticView(GemetTest):
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
 
     def test_other_selected(self):
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value='"A_Concept"')
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value='"B_Concept"')
 
         url = '{url}?letter={letter}'\
@@ -151,10 +151,10 @@ class TestAlphabeticView(GemetTest):
     def test_letter_selected_filter_two_concepts_two_languages(self):
         spanish = LanguageFactory(code='es', name='Spanish')
 
-        english_concept = TermFactory(id=1, code="1")
+        english_concept = TermFactory(code="1")
         PropertyFactory(concept=english_concept, value="A_EN_Concept")
 
-        spanish_concept = TermFactory(id=2, code="2")
+        spanish_concept = TermFactory(code="2")
         PropertyFactory(concept=spanish_concept, language=spanish,
                         name="prefLabel", value="A_ES_Concept")
 
