@@ -18,7 +18,7 @@ class TestOldConceptRedirectView(GemetTest):
         url = "{url}?ns={ns}&cp={cp}"\
               .format(url=reverse('old_concept_redirect'),
                       ns=concept.namespace.id,
-                      cp=concept.id)
+                      cp=concept.code)
         resp = self.app.get(url)
 
         self.assertEqual(302, resp.status_int)
@@ -81,7 +81,7 @@ class TestOldConceptRedirectView(GemetTest):
         url = "{url}?ns={ns}&cp={cp}"\
               .format(url=reverse('old_concept_redirect'),
                       ns=5,
-                      cp=concept.id)
+                      cp=concept.code)
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)
@@ -106,7 +106,7 @@ class TestOldConceptRedirectView(GemetTest):
 
         url = "{url}?cp={cp}"\
               .format(url=reverse('old_concept_redirect'),
-                      cp=concept.id)
+                      cp=concept.code)
         resp = self.app.get(url, expect_errors=True)
 
         self.assertEqual(404, resp.status_int)

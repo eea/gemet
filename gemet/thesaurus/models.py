@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.functional import cached_property
 
 from gemet.thesaurus import NS_VIEW_MAPPING
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
+
 
 class Version(models.Model):
     identifier = models.CharField(max_length=255)
@@ -24,10 +26,6 @@ class PublishedManager(models.Manager):
 
 
 class VersionableModel(models.Model):
-    PENDING = 0
-    PUBLISHED = 1
-    DELETED = 2
-    DELETED_PENDING = 3
     STATUS_CHOICES = (
         (PENDING, 'pending'),
         (PUBLISHED, 'published'),
@@ -327,8 +325,7 @@ class PublishedConceptManager(ConceptManager):
     def get_queryset(self):
         return (
             super(PublishedConceptManager, self).get_queryset()
-            .filter(status__in=[
-                VersionableModel.PUBLISHED, VersionableModel.DELETED_PENDING])
+            .filter(status__in=[PUBLISHED, DELETED_PENDING])
         )
 
 
@@ -389,7 +386,7 @@ class InspireTheme(Concept):
 
 
 class EditMixin(object):
-    status_list = [Concept.PUBLISHED, Concept.PENDING, Concept.DELETED_PENDING]
+    status_list = [PUBLISHED, PENDING, DELETED_PENDING]
     extra_values = ['status']
 
     def name(self):
@@ -401,7 +398,7 @@ class EditMixin(object):
     def set_attributes(self, langcode, property_list):
         properties = self.get_attributes(langcode, property_list)
         for prop in properties:
-            prop['editable'] = prop['status'] in (self.PUBLISHED, self.PENDING)
+            prop['editable'] = prop['status'] in (PUBLISHED, PENDING)
             value = getattr(self, prop['name'], [])
             value.append(prop)
             setattr(self, prop['name'], value)

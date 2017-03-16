@@ -5,11 +5,7 @@ from xmlrpclib import Fault
 from urllib import urlencode
 
 from django.http import Http404, StreamingHttpResponse
-from django.shortcuts import (
-    render,
-    get_object_or_404,
-    redirect,
-)
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views.generic import TemplateView, ListView
@@ -17,28 +13,14 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.conf import settings
 
-from gemet.thesaurus.models import (
-    Language,
-    Theme,
-    Namespace,
-    SuperGroup,
-    Term,
-    Group,
-    Property,
-    DefinitionSource,
-    Relation,
-    InspireTheme,
-    ForeignRelation,
-    Concept,
-)
+from gemet.thesaurus.models import Concept, DefinitionSource, ForeignRelation
+from gemet.thesaurus.models import Group, Language, InspireTheme, Namespace
+from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
-from gemet.thesaurus import (
-    DEFAULT_LANGCODE,
-    NR_CONCEPTS_ON_PAGE,
-    NS_ID_VIEW_MAPPING,
-)
+from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
+from gemet.thesaurus import NS_ID_VIEW_MAPPING
 
 
 class HeaderMixin(object):
@@ -126,8 +108,8 @@ class InspireThemesView(ThemesView):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
         languages = (
             Language.objects
-            .filter(properties__concept__namespace__heading=
-                    InspireTheme.NAMESPACE)
+            .filter(
+                properties__concept__namespace__heading=InspireTheme.NAMESPACE)
             .distinct()
             .values('code', 'name')
             .order_by('name')

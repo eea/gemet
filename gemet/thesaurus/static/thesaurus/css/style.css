@@ -1251,14 +1251,14 @@ padding-bottom: 1rem;
     margin-right: 1rem;
 }
 
-.other-item .removeParent {
+.other-item .deleteRelation {
     position: absolute;
     right: -18px;
     top: -2px;
     left: auto;
 }
 
-.removeParent {
+.deleteRelation {
     position: absolute;
     left: 100%;
     top: -2px;
@@ -1270,7 +1270,7 @@ padding-bottom: 1rem;
     clear: left;
 }
 
-.alternative-item .removeParent {
+.alternative-item .deleteRelation {
     position: absolute;
     left: 100%;
     top: -7px;

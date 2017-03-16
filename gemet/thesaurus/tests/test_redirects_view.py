@@ -19,11 +19,11 @@ class TestRedirectsView(GemetTest):
 
         self.assertEqual(301, resp.status_int)
 
-    def test_index_html(self):
+    def test_theme_concepts(self):
         theme = ThemeFactory()
         resp = self.app.get(u'/theme_concepts?th={th}&langcode={langcode}'
                             .format(
-                                th = theme.id,
+                                th=theme.code,
                                 langcode='en-US',
                             ))
         self.assertEqual(301, resp.status_int)

@@ -26,11 +26,11 @@ function createButton(href, type, bindFunc, cls, icon, text) {
 }
 
 function createDeleteButton(href, type){
-  return createButton(href, type, deleteParent, 'deleteParent', 'times', 'Delete');
+  return createButton(href, type, deleteRelation, 'deleteRelation', 'times', 'Delete');
 }
 
 function createRestoreButton(href, type){
-  return createButton(href, type, restoreParent, 'restoreParent', 'undo', 'Restore');
+  return createButton(href, type, restoreRelation, 'restoreRelation', 'undo', 'Restore');
 }
 
 function errorMessage(message){
@@ -86,8 +86,8 @@ $(document).ready(function () {
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherSave').click(saveOtherRelation);
-  $('.deleteParent').click(deleteParent);
-  $('.restoreParent').click(restoreParent);
+  $('.deleteRelation').click(deleteRelation);
+  $('.restoreRelation').click(restoreRelation);
 });
 
   $('.btng.edit, .btng.add').on('click', function(){
@@ -281,7 +281,7 @@ $(document).ready(function () {
   }
 
   /* remove concept, alternative or other relation */
-  function deleteParent(){
+  function deleteRelation(){
     var strconfirm = confirm("Are you sure you want to delete this object?");
     if (strconfirm == false) {
         return;
@@ -315,7 +315,7 @@ $(document).ready(function () {
   };
 
   /* restore concept, alternative or other relation */
-  function restoreParent(){
+  function restoreRelation(){
     var strconfirm = confirm("Are you sure you want to restore this object?");
     if (strconfirm == false) {
         return;

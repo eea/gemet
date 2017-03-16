@@ -80,7 +80,7 @@
             {{ alternative.value }};
 
             {% if alternative.status != DELETED_PENDING %}
-            <button class='btng waves-effect waves-light btn deleteParent' type="submit" value="X"
+            <button class='btng waves-effect waves-light btn deleteRelation' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
                     data-href="{% url 'delete_property' alternative.id %}">
@@ -227,7 +227,7 @@
                 data-field-id="#otherList"
                 data-value-input-id="#otherValue"
                 data-select-id="#otherSelect"
-                data-href="{% url 'add_other' language.code concept.id %}" hidden>
+                data-href="{% url 'add_other' concept.id %}" hidden>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
     
       save
@@ -246,23 +246,22 @@
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
 
               {% if relation.status == DELETED_PENDING %}
-              <button class='btng waves-effect waves-light btn restoreParent'
+              <button class='btng waves-effect waves-light btn restoreRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'restore_other' language.code concept.id relation.id %}">
-          
+                      data-href="{% url 'restore_other' relation.id %}">
+
                   <i class="fa fa-undo" aria-hidden="true"></i>
               Restore
               </button>
 
               {% else %}
-              <button class='btng waves-effect waves-light btn deleteParent'
+              <button class='btng waves-effect waves-light btn deleteRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'delete_other' language.code concept.id relation.id %}">
-          
+                      data-href="{% url 'delete_other' relation.id %}">
                   <i class="fa fa-times" aria-hidden="true"></i>
                   Delete
               </button>
