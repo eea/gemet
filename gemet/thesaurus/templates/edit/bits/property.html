@@ -12,15 +12,15 @@
   </div>
 {% endfor %}
 </div>
-<div class="input-area" hidden>
+<div class="input-area input-field" hidden>
   {% if property_name == 'definition' %}
-    <textarea id="{{ property_name }}Input" ></textarea>
+     <textarea id="{{ property_name }}Input" class="materialize-textarea"></textarea>
   {% else %}
     <input id="{{ property_name }}Input" />
   {% endif %}
 </div>
 <div class="button-elements">
-  <button class='btng edit' type="button" value="Edit" title="Edit"
+  <button class='btng edit waves-effect waves-light btn' type="button" value="Edit" title="Edit"
           id="{{ property_name }}Edit"
           data-toggle="tooltip"
           data-type="{{ property_name }}"
@@ -28,27 +28,19 @@
           data-text-id="#{{ property_name }}"
           data-html-tag="{{ html_tag }}"
           data-edit-type="property">
-    <div class='icon'>
       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-    </div>
-    <div class='text'>
-      <span>Edit</span>
-    </div>
+    Edit
   </button>
 
-  <button class='btng cancel' type="button" value="Cancel" title="Cancel"
+  <button class='btng cancel waves-effect waves-light btn' type="button" value="Cancel" title="Cancel"
           id="{{ property_name }}Cancel"
           data-type="{{ property_name }}"
           data-toggle="tooltip" hidden>
-    <div class='icon'>
       <i class="fa fa-stop-circle" aria-hidden="true"></i>
-    </div>
-    <div class='text'>
-      <span>Cancel</span>
-    </div>
+   Cancel
   </button>
 
-  <button class='btng save' type="button" value="Save" title="Save"
+  <button class='btng save waves-effect waves-light btn' type="button" value="Save" title="Save"
           id="{{ property_name }}Save"
           data-type="{{ property_name }}"
           data-input-id="#{{ property_name }}Input"
@@ -57,12 +49,8 @@
           data-save-type="property"
           data-href="{% url 'edit_property' language.code concept.id property_name %}"
           data-toggle="tooltip" hidden>
-    <div class='icon'>
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
-    </div>
-    <div class='text'>
-      <span>Save</span>
-    </div>
+      Save
   </button>
 </div>
 </div>

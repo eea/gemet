@@ -9,31 +9,23 @@
           <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
 
           {% if cp.status == DELETED_PENDING %}
-          <button class='btng centerMe restoreRelation'
+          <button class='btng waves-effect waves-light btn restoreRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ cp.id }}"
                   data-href="{% url 'restore_relation' concept.id cp.id type %}"
                   data-type="{{ type }}">
-            <div class='icon'>
               <i class="fa fa-undo" aria-hidden="true"></i>
-            </div>
-            <div class='text'>
-              <span>Restore</span>
-            </div>
+            Restore
           </button>
 
           {% else %}
-          <button class='btng centerMe deleteRelation'
+          <button class='btng waves-effect waves-light btn deleteRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ cp.id }}"
                   data-href="{% url 'delete_relation' concept.id cp.id type %}"
                   data-type="{{ type }}" value="x">
-            <div class='icon'>
               <i class="fa fa-times" aria-hidden="true"></i>
-            </div>
-            <div class='text'>
-              <span>Delete</span>
-            </div>
+           Delete
           </button>
           {% endif %}
 
