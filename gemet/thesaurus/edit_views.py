@@ -128,6 +128,7 @@ class EditPropertyView(JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
+
         form = PropertyForm(request.POST)
         if not form.is_valid():
             data = {"message": form.errors}
@@ -279,13 +280,18 @@ class AddPropertyView(JsonResponseMixin, View):
         if not form.is_valid():
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
-        prop = Property.objects.filter(status=Property.PENDING,
-                                       language=language,
-                                       concept=concept,
-                                       name=name,
-                                       value=form.cleaned_data['value'])
-        if prop:
-            data = {"message": 'Value must be unique.'}
+
+        prop = (
+            Property.objects.filter(
+                language=language,
+                concept=concept,
+                name=name,
+                value=form.cleaned_data['value'],
+            )
+            .exclude(status=Property.DELETED)
+        )
+        if prop.exists():
+            data = {"message": 'A property with this value already exists.'}
             return self._get_response(data, 'error', 400)
 
         version = Version.under_work()
