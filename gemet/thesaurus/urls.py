@@ -95,6 +95,8 @@ urlpatterns = [
             edit_views.ConceptSourcesView.as_view(), name='concept_sources'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),
             name='group_edit'),
+        url(r'^publish_version/$', edit_views.PublishVersionView.as_view(),
+            name='publish_version'),
         url(r'^supergroup/(?P<code>\d+)/edit$',
             edit_views.SuperGroupEditView.as_view(),
             name='supergroup_edit'),

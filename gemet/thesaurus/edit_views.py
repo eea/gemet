@@ -14,6 +14,7 @@ from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
+from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -432,7 +433,6 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         new_concept = models.Concept(version_added=self.pending_version,
                                      namespace=namespace,
                                      status=PENDING)
-
         codes = (
             models.Concept.objects
             .filter(namespace=namespace)
@@ -479,3 +479,53 @@ class ConceptSourcesView(View):
                    'language': models.Language.objects.get(code=langcode)}
 
         return render(request, self.template_name, context)
+
+
+class PublishVersionView(View):
+
+    def change_status(self, Class_model, current_status, new_status):
+        objects_with_status = Class_model.objects.filter(
+            status=current_status)
+        objects_with_status.update(status=new_status)
+
+    def get(self, request, langcode):
+        version = models.Version.objects.get(is_current=True)
+
+        version_numbers = version.identifier.split(".")
+        context = {
+            'form': models.VersionForm(),
+            'language': models.Language.objects.get(code=langcode),
+            'version_numbers': version_numbers,
+        }
+        return render(request, 'edit/publish.html', context)
+
+    def post(self, request, langcode):
+        version = models.Version.objects.get(is_current=True)
+        new_version = models.Version.under_work()
+        version.is_current = False
+        version.save()
+        form = VersionForm(request.POST)
+        if form.is_valid():
+            new_version.identifier = form.cleaned_data['version']
+            new_version.is_current = True
+            new_version.save()
+            self.change_status(models.Property, models.Property.PENDING,
+                               models.Property.PUBLISHED)
+            self.change_status(models.Property, models.Property.DELETED_PENDING,
+                               models.Property.DELETED)
+            self.change_status(models.Concept, models.Concept.PENDING,
+                               models.Concept.PUBLISHED)
+            self.change_status(models.Concept, models.Concept.DELETED_PENDING,
+                               models.Concept.DELETED)
+            self.change_status(models.Relation, models.Relation.PENDING,
+                               models.Relation.PUBLISHED)
+            self.change_status(models.Relation, models.Relation.DELETED_PENDING,
+                               models.Relation.DELETED)
+            self.change_status(models.ForeignRelation, models.ForeignRelation.PENDING,
+                               models.ForeignRelation.PUBLISHED)
+            self.change_status(models.ForeignRelation,
+                               models.ForeignRelation.DELETED_PENDING,
+                               models.ForeignRelation.DELETED)
+        url = reverse('themes', kwargs={'langcode': langcode})
+        return redirect(url)
+
