@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm
+
 from gemet.thesaurus.models import ForeignRelation, Language, Namespace
 from gemet.thesaurus.models import Property
 

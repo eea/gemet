@@ -5,38 +5,33 @@ from django.http import HttpResponse
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
+
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
-from gemet.thesaurus.forms import ConceptForm
-from gemet.thesaurus.models import Concept, ForeignRelation
-from gemet.thesaurus.models import Language, Property, PropertyType
-from gemet.thesaurus.models import Relation
-from gemet.thesaurus.models import Version, EditableGroup, EditableTerm
-from gemet.thesaurus.models import EditableTheme
-from gemet.thesaurus.models import EditableSuperGroup
-from gemet.thesaurus.forms import PropertyForm, ForeignRelationForm
+from gemet.thesaurus import models
+from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 
 
 class GroupEditView(GroupView):
     context_object_name = 'concept'
     template_name = "edit/group_edit.html"
-    model = EditableGroup
+    model = models.EditableGroup
 
 
 class SuperGroupEditView(SuperGroupView):
     context_object_name = 'concept'
     template_name = "edit/supergroup_edit.html"
-    model = EditableSuperGroup
+    model = models.EditableSuperGroup
 
 
 class TermEditView(TermView):
     template_name = "edit/concept_edit.html"
-    model = EditableTerm
+    model = models.EditableTerm
 
     def get_context_data(self, **kwargs):
         context = super(TermEditView, self).get_context_data(**kwargs)
-        foreign_relation_types = PropertyType.objects.filter(
+        foreign_relation_types = models.PropertyType.objects.filter(
             name__in=FOREIGN_RELATION_TYPES)
         context.update({
             "foreign_relation_types": foreign_relation_types,
@@ -46,7 +41,7 @@ class TermEditView(TermView):
 
 class ThemeEditView(ThemeView):
     template_name = "edit/theme_edit.html"
-    model = EditableTheme
+    model = models.EditableTheme
     context_object_name = 'concept'
 
 
@@ -82,7 +77,7 @@ class UnrelatedConcepts(JsonResponseMixin, View):
 
     def _get_concepts(self, langcode, relation, query):
         return (
-            Property.objects
+            models.Property.objects
             .filter(
                 name='prefLabel',
                 language__code=langcode,
@@ -103,7 +98,7 @@ class UnrelatedConcepts(JsonResponseMixin, View):
         )
 
     def get(self, request, langcode, id, relation):
-        self.concept = Concept.objects.get(id=id)
+        self.concept = models.Concept.objects.get(id=id)
 
         page = int(request.GET.get('page', '1'))
         start, end = 30 * (page-1), 30 * page
@@ -123,8 +118,8 @@ class EditPropertyView(JsonResponseMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
-            language = Language.objects.get(code=langcode)
-            concept = Concept.objects.get(id=id)
+            language = models.Language.objects.get(code=langcode)
+            concept = models.Concept.objects.get(id=id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -134,9 +129,9 @@ class EditPropertyView(JsonResponseMixin, View):
             data = {"message": form.errors}
             return self._get_response(data, 'error', 400)
 
-        field = Property.objects.filter(language=langcode,
-                                        concept__id=id,
-                                        name=name)
+        field = models.Property.objects.filter(language=langcode,
+                                               concept__id=id,
+                                               name=name)
 
         published_field = field.filter(status=PUBLISHED).first()
         pending_field = field.filter(status=PENDING).first()
@@ -156,14 +151,14 @@ class EditPropertyView(JsonResponseMixin, View):
                 published_field.save()
                 is_resource = published_field.is_resource
 
-            version = Version.under_work()
-            field = Property.objects.create(status=PENDING,
-                                            is_resource=is_resource,
-                                            version_added=version,
-                                            concept=concept,
-                                            language=language,
-                                            name=name,
-                                            **form.cleaned_data)
+            version = models.Version.under_work()
+            field = models.Property.objects.create(status=PENDING,
+                                                   is_resource=is_resource,
+                                                   version_added=version,
+                                                   concept=concept,
+                                                   language=language,
+                                                   name=name,
+                                                   **form.cleaned_data)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
@@ -172,14 +167,14 @@ class AddRelationView(JsonResponseMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
-            source = Concept.objects.get(id=source_id)
-            target = Concept.objects.get(id=target_id)
+            source = models.Concept.objects.get(id=source_id)
+            target = models.Concept.objects.get(id=target_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
         relation = (
-            Relation.objects
+            models.Relation.objects
             .filter(source=source, target=target,
                     property_type__name=relation_type)
             .exclude(status=DELETED)
@@ -189,11 +184,11 @@ class AddRelationView(JsonResponseMixin, View):
             data = {"message": 'A relation between the objects exists.'}
             return self._get_response(data, 'error', 400)
 
-        property_type = PropertyType.objects.get(name=relation_type)
-        version = Version.under_work()
-        relation = Relation(source=source, target=target,
-                            status=PENDING, version_added=version,
-                            property_type=property_type)
+        property_type = models.PropertyType.objects.get(name=relation_type)
+        version = models.Version.under_work()
+        relation = models.Relation(source=source, target=target,
+                                   status=PENDING, version_added=version,
+                                   property_type=property_type)
         relation.save()
         data = {}
         return self._get_response(data, 'success', 200)
@@ -203,13 +198,13 @@ class DeleteRelationView(JsonResponseMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
-            source = Concept.objects.get(id=source_id)
-            target = Concept.objects.get(id=target_id)
+            source = models.Concept.objects.get(id=source_id)
+            target = models.Concept.objects.get(id=target_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        relation = Relation.objects.filter(
+        relation = models.Relation.objects.filter(
             source=source,
             target=target,
             property_type__name=relation_type,
@@ -238,13 +233,13 @@ class RestoreRelationView(JsonResponseMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
-            source = Concept.objects.get(id=source_id)
-            target = Concept.objects.get(id=target_id)
+            source = models.Concept.objects.get(id=source_id)
+            target = models.Concept.objects.get(id=target_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
-        relation = Relation.objects.filter(
+        relation = models.Relation.objects.filter(
             source=source,
             target=target,
             property_type__name=relation_type,
@@ -270,8 +265,8 @@ class AddPropertyView(JsonResponseMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
-            language = Language.objects.get(code=langcode)
-            concept = Concept.objects.get(id=id)
+            language = models.Language.objects.get(code=langcode)
+            concept = models.Concept.objects.get(id=id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -282,7 +277,7 @@ class AddPropertyView(JsonResponseMixin, View):
             return self._get_response(data, 'error', 400)
 
         prop = (
-            Property.objects.filter(
+            models.Property.objects.filter(
                 language=language,
                 concept=concept,
                 name=name,
@@ -294,13 +289,13 @@ class AddPropertyView(JsonResponseMixin, View):
             data = {"message": 'A property with this value already exists.'}
             return self._get_response(data, 'error', 400)
 
-        version = Version.under_work()
-        field = Property.objects.create(status=PENDING,
-                                        version_added=version,
-                                        language=language,
-                                        concept=concept,
-                                        name=name,
-                                        **form.cleaned_data)
+        version = models.Version.under_work()
+        field = models.Property.objects.create(status=PENDING,
+                                               version_added=version,
+                                               language=language,
+                                               concept=concept,
+                                               name=name,
+                                               **form.cleaned_data)
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
         data = {
@@ -316,7 +311,7 @@ class DeletePropertyView(JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
-            field = Property.objects.get(pk=pk)
+            field = models.Property.objects.get(pk=pk)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -335,16 +330,17 @@ class AddForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, id):
         try:
-            concept = Concept.objects.get(id=id)
-            prop_type = PropertyType.objects.get(id=request.POST['rel_type'])
+            concept = models.Concept.objects.get(id=id)
+            proptype_id = request.POST.get('rel_type')
+            prop_type = models.PropertyType.objects.get(id=proptype_id)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
         form = ForeignRelationForm(request.POST)
         if form.is_valid():
-            version = Version.under_work()
-            new_relation = ForeignRelation.objects.create(
+            version = models.Version.under_work()
+            new_relation = models.ForeignRelation.objects.create(
                 version_added=version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)
             delete_url = reverse('delete_other', kwargs={'pk': new_relation.id})
@@ -362,7 +358,7 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
-            foreign_relation = ForeignRelation.objects.get(
+            foreign_relation = models.ForeignRelation.objects.get(
                 pk=pk,
                 status=DELETED_PENDING,
             )
@@ -383,7 +379,7 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
-            foreign_relation = ForeignRelation.objects.get(pk=pk)
+            foreign_relation = models.ForeignRelation.objects.get(pk=pk)
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
@@ -405,22 +401,22 @@ class AddConceptView(View):
     def get(self, request, langcode):
         form = ConceptForm()
         context = {
-            'language': Language.objects.get(code=langcode),
+            'language': models.Language.objects.get(code=langcode),
             'form': form,
         }
         return render(request, 'edit/concept_add.html', context)
 
     def post(self, request, langcode):
-        language = Language.objects.get(code=langcode)
-        version = Version.under_work()
+        language = models.Language.objects.get(code=langcode)
+        version = models.Version.under_work()
         form = ConceptForm(request.POST)
         if form.is_valid():
             namespace = form.cleaned_data['namespace']
-            new_concept = Concept(version_added=version,
-                                  namespace=namespace,
-                                  status=PENDING)
+            new_concept = models.Concept(version_added=version,
+                                         namespace=namespace,
+                                         status=PENDING)
 
-            codes = (Concept.objects
+            codes = (models.Concept.objects
                      .filter(namespace=namespace)
                      .exclude(code='')
                      .values_list('code', flat=True))
@@ -428,12 +424,12 @@ class AddConceptView(View):
             new_concept.code = unicode(new_code)
             new_concept.save()
             # create prefLabel property for the new concept
-            Property.objects.create(status=PENDING,
-                                    version_added=version,
-                                    concept=new_concept,
-                                    language=language,
-                                    name='prefLabel',
-                                    value=form.cleaned_data['name'])
+            models.Property.objects.create(status=PENDING,
+                                           version_added=version,
+                                           concept=new_concept,
+                                           language=language,
+                                           name='prefLabel',
+                                           value=form.cleaned_data['name'])
             url_name = EDIT_URL_NAMES[namespace.heading]
             url = reverse(url_name, kwargs={'langcode': langcode,
                                             'code': new_code})
