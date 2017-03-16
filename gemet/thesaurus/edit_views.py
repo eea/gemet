@@ -490,12 +490,9 @@ class PublishVersionView(View):
 
     def get(self, request, langcode):
         version = models.Version.objects.get(is_current=True)
-
-        version_numbers = version.identifier.split(".")
         context = {
             'form': models.VersionForm(),
             'language': models.Language.objects.get(code=langcode),
-            'version_numbers': version_numbers,
         }
         return render(request, 'edit/publish.html', context)
 
