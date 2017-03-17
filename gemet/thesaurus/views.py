@@ -16,6 +16,7 @@ from django.conf import settings
 from gemet.thesaurus.models import Concept, DefinitionSource, ForeignRelation
 from gemet.thesaurus.models import Group, Language, InspireTheme, Namespace
 from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
+from gemet.thesaurus.models import Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
@@ -42,6 +43,14 @@ class HeaderMixin(object):
             'search_form': SearchForm(),
         })
         return context
+
+
+class VersionMixin(object):
+
+    def __init__(self, *args, **kwargs):
+        super(VersionMixin, self).__init__(*args, **kwargs)
+        self.current_version = Version.objects.get(is_current=True)
+        self.pending_version = Version.under_work()
 
 
 class AboutView(HeaderMixin, TemplateView):
@@ -220,8 +229,9 @@ class RelationsView(HeaderMixin, TemplateView):
         return context
 
 
-class ConceptView(HeaderMixin, DetailView):
+class ConceptView(HeaderMixin, VersionMixin, DetailView):
     attributes = ['prefLabel', 'definition', 'scopeNote']
+    override_languages = True
 
     def get_object(self):
         code = self.kwargs.get('code')
@@ -246,18 +256,19 @@ class ConceptView(HeaderMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ConceptView, self).get_context_data(**kwargs)
 
-        languages = (
-            Language.objects
-            .filter(properties__concept=self.object,
-                    properties__value__isnull=False)
-            .values('code', 'name')
-            .order_by('name')
-            .distinct()
-        )
+        if self.override_languages:
+            languages = (
+                Language.objects
+                .filter(properties__concept=self.object,
+                        properties__value__isnull=False)
+                .values('code', 'name')
+                .order_by('name')
+                .distinct()
+            )
+            context['languages'] = languages
 
         context.update({
-            "languages": languages,
-            "ns_version": self.model.objects.get_ns().version
+            "ns_version": self.current_version.identifier,
         })
         return context
 

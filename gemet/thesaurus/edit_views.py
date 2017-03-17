@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -13,24 +13,27 @@ from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
-from gemet.thesaurus.views import HeaderMixin
+from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
 
 class GroupEditView(GroupView):
     context_object_name = 'concept'
     template_name = "edit/group_edit.html"
     model = models.EditableGroup
+    override_languages = False
 
 
 class SuperGroupEditView(SuperGroupView):
     context_object_name = 'concept'
     template_name = "edit/supergroup_edit.html"
     model = models.EditableSuperGroup
+    override_languages = False
 
 
 class TermEditView(TermView):
     template_name = "edit/concept_edit.html"
     model = models.EditableTerm
+    override_languages = False
 
     def get_context_data(self, **kwargs):
         context = super(TermEditView, self).get_context_data(**kwargs)
@@ -46,6 +49,7 @@ class ThemeEditView(ThemeView):
     template_name = "edit/theme_edit.html"
     model = models.EditableTheme
     context_object_name = 'concept'
+    override_languages = False
 
 
 class JsonResponseMixin(object):
@@ -119,7 +123,7 @@ class UnrelatedConcepts(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class EditPropertyView(JsonResponseMixin, View):
+class EditPropertyView(JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -156,19 +160,20 @@ class EditPropertyView(JsonResponseMixin, View):
                 published_field.save()
                 is_resource = published_field.is_resource
 
-            version = models.Version.under_work()
-            field = models.Property.objects.create(status=PENDING,
-                                                   is_resource=is_resource,
-                                                   version_added=version,
-                                                   concept=concept,
-                                                   language=language,
-                                                   name=name,
-                                                   **form.cleaned_data)
+            field = models.Property.objects.create(
+                status=PENDING,
+                is_resource=is_resource,
+                version_added=self.pending_version,
+                concept=concept,
+                language=language,
+                name=name,
+                **form.cleaned_data
+            )
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
 
-class AddRelationView(JsonResponseMixin, View):
+class AddRelationView(JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
@@ -190,9 +195,9 @@ class AddRelationView(JsonResponseMixin, View):
             return self._get_response(data, 'error', 400)
 
         property_type = models.PropertyType.objects.get(name=relation_type)
-        version = models.Version.under_work()
         relation = models.Relation(source=source, target=target,
-                                   status=PENDING, version_added=version,
+                                   status=PENDING,
+                                   version_added=self.pending_version,
                                    property_type=property_type)
         relation.save()
         data = {}
@@ -266,7 +271,7 @@ class RestoreRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddPropertyView(JsonResponseMixin, View):
+class AddPropertyView(JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -294,13 +299,14 @@ class AddPropertyView(JsonResponseMixin, View):
             data = {"message": 'A property with this value already exists.'}
             return self._get_response(data, 'error', 400)
 
-        version = models.Version.under_work()
-        field = models.Property.objects.create(status=PENDING,
-                                               version_added=version,
-                                               language=language,
-                                               concept=concept,
-                                               name=name,
-                                               **form.cleaned_data)
+        field = models.Property.objects.create(
+            status=PENDING,
+            version_added=self.pending_version,
+            language=language,
+            concept=concept,
+            name=name,
+            **form.cleaned_data
+        )
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
         data = {
@@ -331,7 +337,7 @@ class DeletePropertyView(JsonResponseMixin, View):
         return self._get_response({}, 'success', 200)
 
 
-class AddForeignRelationView(JsonResponseMixin, View):
+class AddForeignRelationView(JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, id):
         try:
@@ -344,9 +350,8 @@ class AddForeignRelationView(JsonResponseMixin, View):
 
         form = ForeignRelationForm(request.POST)
         if form.is_valid():
-            version = models.Version.under_work()
             new_relation = models.ForeignRelation.objects.create(
-                version_added=version, property_type=prop_type,
+                version_added=self.pending_version, property_type=prop_type,
                 concept=concept, **form.cleaned_data)
             delete_url = reverse('delete_other', kwargs={'pk': new_relation.id})
             data = {
@@ -401,31 +406,33 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddConceptView(HeaderMixin, FormView):
+class AddConceptView(HeaderMixin, VersionMixin, FormView):
     template_name = 'edit/concept_add.html'
     form_class = ConceptForm
 
     def form_valid(self, form):
-        version = models.Version.under_work()
         namespace = form.cleaned_data['namespace']
-        new_concept = models.Concept(version_added=version,
-                                        namespace=namespace,
-                                        status=PENDING)
+        new_concept = models.Concept(version_added=self.pending_version,
+                                     namespace=namespace,
+                                     status=PENDING)
 
-        codes = (models.Concept.objects
-                    .filter(namespace=namespace)
-                    .exclude(code='')
-                    .values_list('code', flat=True))
+        codes = (
+            models.Concept.objects
+            .filter(namespace=namespace)
+            .exclude(code='')
+            .values_list('code', flat=True)
+        )
         new_code = max(map(int, codes)) + 1
         new_concept.code = unicode(new_code)
         new_concept.save()
+
         # create prefLabel property for the new concept
         models.Property.objects.create(status=PENDING,
-                                        version_added=version,
-                                        concept=new_concept,
-                                        language=self.language,
-                                        name='prefLabel',
-                                        value=form.cleaned_data['name'])
+                                       version_added=self.pending_version,
+                                       concept=new_concept,
+                                       language=self.language,
+                                       name='prefLabel',
+                                       value=form.cleaned_data['name'])
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_code})
