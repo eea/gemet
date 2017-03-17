@@ -36,8 +36,6 @@
         {% endblock %}
       </div>
 
-      
-
       <div class="well">
         <a href="{% url 'download' language.code %}">Download</a>
         &nbsp;|&nbsp;
@@ -45,9 +43,13 @@
         &nbsp;|&nbsp;
         <a href="{% url 'about' language.code %}">About GEMET</a>
         &nbsp;|&nbsp;
+        <a href="{% url 'webservices' language.code %}">Web Services</a>
+        &nbsp;|&nbsp;
         <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
         &nbsp;|&nbsp;
         <a href="{% url 'changes' language.code %}">History of changes</a>
+        &nbsp;|&nbsp;
+        <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
         {% block version %}
         {% endblock %}
       </div>

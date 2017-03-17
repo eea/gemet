@@ -1762,6 +1762,10 @@ a.btn {
     color: #fff;
 }
 
+.post-form select{
+    display: block;
+}
+
 
 /*mobile*/
 

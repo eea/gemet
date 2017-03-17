@@ -7,13 +7,14 @@
 {% endblock %}
 
 {% block content %}
+  {% include 'header.html' with view='concept_add' %}
 
   <h1> Create new concept </h1>
 
   <form action="{% url 'concept_add' language.code %}" method="POST" class="post-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" value="Save">Save</button>
+    <button class="btn" type="submit" value="Save">Save</button>
   </form>
 
 {% endblock %}
