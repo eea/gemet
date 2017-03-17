@@ -94,11 +94,8 @@ $(document).ready(function () {
     $(this).addClass('hidden'); // hide edit/add button
     $(this).parent().siblings('.input-area').addClass('visible'); // show input area
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
-    $(this).parent().parent().siblings('.empty-text').addClass('hidden'); // hide empty text
   });
-  $('.btng.cancel').on('click', function(){
-    $(this).parent().parent().siblings('.empty-text').removeClass('hidden'); // show empty text
-  });
+
   $('.btng.save, .btng.cancel').on('click', function(){
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
     $(this).parent().siblings('.input-area').removeClass('visible'); // hide input area
@@ -123,7 +120,6 @@ $(document).ready(function () {
     var fieldName = $(this).data('type'); // type of property sent to request
     var url = $(this).data('href'); // url for editing
     var fieldStatus = $textElement.data('status'); // status of property edited
-    var $emptyElement = $(this).parent().parent().siblings('.empty-text') // get empty text element
     $.ajax({
       type: "POST",
       url: url,
@@ -135,7 +131,6 @@ $(document).ready(function () {
         errorMessage(e.responseJSON.message)
       },
       success: function(data){
-        $emptyElement.remove(); //remove empty text after a successful post
         if (fieldStatus == 0) { // pending field
           $textElement.text(data['value']);
           $textElement.data('value', data['value']);

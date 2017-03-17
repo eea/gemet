@@ -33,18 +33,12 @@
   <div class="definition text-area element">
     <h5 class="h5">Definition</h5>
     {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-    {% if not concept.definition %}
-      <p class="alert empty-text" id="definitionEmpty">Definition is not available.</p>
-    {% endif %}
   </div>
 
   <!-- Scope -->
   <div class="scope text-area element">
     <h5 class="h5">Scope note</h5>
     {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-    {% if not concept.scopeNote %}
-      <span id='scopeNoteEmpty' class="alert empty-text">Scope note is not available.</span>
-    {% endif %}
   </div>
 
   <!-- Groups -->
