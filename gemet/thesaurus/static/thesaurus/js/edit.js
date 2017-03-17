@@ -221,6 +221,7 @@ $(document).ready(function () {
              },
        error: function(e) {
          errorMessage(e.responseJSON.message)
+         $inputElement.val('');
        },
        success: function(data){
         $alternativeWrapper = $("<div class='alternative-item'></div>");
@@ -230,6 +231,7 @@ $(document).ready(function () {
         $alternative.append($deleteButton);
         $alternativeWrapper.append($alternative);
         $textList.append($alternativeWrapper);
+        $inputElement.val('');
     }
   });
  };
