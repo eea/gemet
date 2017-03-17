@@ -8,6 +8,9 @@ FOOTER_URL = ZOPE_URL + '/standard_html_footer'
 
 def layout_context_processor(request):
     if settings.USE_ZOPE_LAYOUT:
+        return {'layout_template': 'layout_zope_temp.html'}
+
+        # Temporarily removing all this processing
         auth_header = request.META.get('HTTP_AUTHORIZATION')
         resp = requests.get(HEADER_URL, headers={'Authorization': auth_header})
         header_text = prepare_html(resp.text)
