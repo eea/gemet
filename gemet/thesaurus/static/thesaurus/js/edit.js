@@ -13,14 +13,13 @@ function formatConceptSelection (concept) {
 
 function createButton(href, type, bindFunc, cls, icon, text) {
   var $button = $("<button type='button'></button>");
-  $button.attr('class', 'btng centerMe');
+  $button.attr('class', 'btng waves-effect waves-light btn');
   $button.addClass(cls);
   $button.attr("data-href", href);
   $button.attr("data-type", type);
-  var $buttonStyle = $("<div class='icon'><i class='fa fa-" + icon + "' aria-hidden='true'></i></div>");
-  var $buttonText = $("<div class='text'><span>" + text + "</span></div>");
+  var $buttonStyle = $("<i class='fa fa-" + icon + "' aria-hidden='true'></i>");
   $button.append($buttonStyle);
-  $button.append($buttonText);
+  $button.append(" " + text);
   $button.bind('click', bindFunc);
   return $button;
 }

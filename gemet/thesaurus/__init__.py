@@ -39,3 +39,15 @@ EDIT_URL_NAMES = {
     'Concepts': 'concept_edit',
     'Super groups': 'supergroup_edit',
 }
+
+SOURCE_RELATION_TO_TARGET = {
+    ('Concepts', 'group'): 'Groups',
+    ('Concepts', 'theme'): 'Themes',
+    ('Concepts', 'broader'): 'Concepts',
+    ('Concepts', 'narrower'): 'Concepts',
+    ('Concepts', 'related'): 'Concepts',
+    ('Groups', 'groupMember'): 'Concepts',
+    ('Groups', 'broader'): 'Super groups',
+    ('Super groups', 'narrower'): 'Groups',
+    ('Themes', 'themeMember'): 'Concepts',
+}

@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
+from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
@@ -75,13 +76,13 @@ class UnrelatedConcepts(JsonResponseMixin, View):
             concept['concept_url'] = concept_url
         return concepts
 
-    def _get_concepts(self, langcode, relation, query):
+    def _get_concepts(self, langcode, relation, target_namespace, query):
         return (
             models.Property.objects
             .filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept__namespace__heading=self.concept.namespace.heading,
+                concept__namespace__heading=target_namespace,
                 status__in=(PENDING, PUBLISHED),
                 value__istartswith=query,
             )
@@ -99,12 +100,14 @@ class UnrelatedConcepts(JsonResponseMixin, View):
 
     def get(self, request, langcode, id, relation):
         self.concept = models.Concept.objects.get(id=id)
+        target_ns = SOURCE_RELATION_TO_TARGET.get(
+            (self.concept.namespace.heading, relation), models.Term.NAMESPACE)
 
         page = int(request.GET.get('page', '1'))
         start, end = 30 * (page-1), 30 * page
         query = request.GET.get('q') or ''
 
-        concepts = self._get_concepts(langcode, relation, query)
+        concepts = self._get_concepts(langcode, relation, target_ns, query)
         items = self._set_reverse_urls(concepts[start:end], langcode, relation)
 
         data = {
