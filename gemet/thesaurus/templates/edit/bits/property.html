@@ -2,14 +2,16 @@
 <div class="element">
 <div id="parent-{{ property_name }}" class="text-field">
 {% for property in concept|getattr:property_name %}
-  <div class="status-{{ property.status }}"
-  {% if property.editable %}
+   {% if not property_name == 'definition'  or not concept.default_definition %}
+    <div class="status-{{ property.status }}"
+    {% if property.editable %}
       data-status="{{ property.status }}"
       id="{{ property.name }}"
       data-value="{{ property.value }}"
-  {% endif %}
+    {% endif %}
       >{{ property.value }}
-  </div>
+    </div>
+  {% endif %}
 {% endfor %}
 </div>
 <div class="input-area input-field" hidden>
