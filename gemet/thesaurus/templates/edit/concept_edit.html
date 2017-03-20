@@ -23,6 +23,13 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Back to concept -->
+  <span>
+    <a class="btn"
+       href="{% url 'concept' language.code concept.code %}"
+       >Back to concept</a>
+  </span>
+
   <!-- Concept -->
   <div class="h3 element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}

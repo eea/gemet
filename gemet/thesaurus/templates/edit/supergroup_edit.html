@@ -24,7 +24,14 @@
     </ul>
   </div>
 
-  <!-- Concept -->
+  <!-- Back to supergroup -->
+  <span>
+    <a class="btn btn-primary"
+       href="{% url 'supergroup' language.code concept.code %}"
+       >Back to supergroup</a>
+  </span>
+
+  <!-- Supergroup -->
   <div class="h3">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
   </div>

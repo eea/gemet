@@ -24,6 +24,13 @@
     </ul>
   </div>
 
+  <!-- Back to theme -->
+  <span>
+    <a class="btn btn-primary"
+       href="{% url 'theme' language.code concept.code %}"
+       >Back to theme</a>
+  </span>
+
   <!-- Theme -->
   <div class="h3 element">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}

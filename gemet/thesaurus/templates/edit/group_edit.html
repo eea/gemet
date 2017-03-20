@@ -24,6 +24,12 @@
     </ul>
   </div>
 
+  <!-- Back to group -->
+  <span>
+    <a class="btn btn-primary"
+       href="{% url 'group' language.code concept.code %}"
+       >Back to group</a>
+  </span>
   <!-- Group -->
   <div class="h3 element">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
