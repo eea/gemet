@@ -47,7 +47,23 @@
       {{ concept.definition }}
       {% if concept.source %}
         <div class="source text-area" hidden>
-            <span>(Source: {{ concept.source }})</span>
+            <div class="text-area">
+            <h5 class="h5">Source:</h5>
+              <p>
+                {% for source, link in template_sources %}
+                  {% if link %}
+                    <a href="{% url 'definition_sources' language.code  %}#{{ source }}">{{ source }}</a>
+                  {% else %}
+                    <span>
+                      {% autoescape off %}
+                        {{ source }}
+                      {% endautoescape %}
+                    </span>
+                  {% endif %}
+                  </br>
+                {% endfor %}
+              </p>
+            </div>
         </div>
         <button class="btn source input-area">Show source</button>
       {% endif %}

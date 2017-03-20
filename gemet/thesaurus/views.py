@@ -1,6 +1,7 @@
 from itertools import chain
 from collections import OrderedDict
 import sys
+import re
 from xmlrpclib import Fault
 from urllib import urlencode
 
@@ -293,6 +294,27 @@ class TermView(ConceptView):
             term.set_attributes(DEFAULT_LANGCODE, ['definition'])
             term.default_definition = True
         return term
+
+    def get_context_data(self, **kwargs):
+        context = super(TermView, self).get_context_data(**kwargs)
+        '''
+        todo editableterm keep source as a dictionary, while term objects
+        keep source as a simple string
+        '''
+        if hasattr(self.object, 'source') and not self.object.EDITABLE:
+            sources = self.object.source.split(' / ')
+            template_sources = []
+            for source in sources:
+                source = source.strip()
+                found = DefinitionSource.objects.filter(abbr=source).first()
+                if found:
+                    template_sources.append((source, True))
+                else:
+                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
+                                    source)
+                    template_sources.append((str(source), False))
+            context.update({'template_sources': template_sources})
+        return context
 
 
 class InspireThemeView(ConceptView):
