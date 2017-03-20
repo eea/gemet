@@ -11,6 +11,10 @@ $(document).ready(function () {
     return false;
   });
 
+  $('.source.input-area').on('click', function(){
+    $(this).siblings('.source.text-area').toggle();
+    $(this).text($(this).text() === "Show source" ? "Hide source" : "Show source");
+  });
 
 $('.relations ul').filter(function(){return $(this).text().trim().length==0}).remove();
 
