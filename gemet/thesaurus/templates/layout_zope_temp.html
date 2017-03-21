@@ -104,8 +104,6 @@ function addsite() {
           <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
         </div>
         <div id="righttools">
-          <a id="loginlink"
-              href="http://eionet.europa.eu/login/login_form?came_from=http://www.eionet.europa.eu/">OLD Login</a>
           {% if user.is_authenticated %}
             <a id="logoutlink" href="{% url 'logout' %}">Logout</a>
             <a id="profilelink"

@@ -1,7 +1,7 @@
 import json
 import re
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
@@ -16,6 +16,10 @@ from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
+
+
+class LoginRequiredMixin(mixins.LoginRequiredMixin):
+    login_url = '/auth/login'
 
 
 class GroupEditView(LoginRequiredMixin, GroupView):
