@@ -36,6 +36,13 @@ class TermEditView(TermView):
     model = models.EditableTerm
     override_languages = False
 
+    def get_object(self):
+        term = super(TermEditView, self).get_object()
+        if hasattr(term, 'default_definition'):
+            if term.default_definition:
+                delattr(term, 'definition')
+        return term
+
     def get_context_data(self, **kwargs):
         context = super(TermEditView, self).get_context_data(**kwargs)
         foreign_relation_types = models.PropertyType.objects.filter(
