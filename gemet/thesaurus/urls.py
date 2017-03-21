@@ -1,8 +1,9 @@
 from django.conf.urls import url, include
 from django.conf import settings
 
-from gemet.thesaurus import views
+from gemet.thesaurus import auth_views
 from gemet.thesaurus import edit_views
+from gemet.thesaurus import views
 from gemet.thesaurus.api import ApiView
 
 
@@ -159,6 +160,8 @@ urlpatterns = [
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$',
         views.concept_redirect,
         name='concept_redirect'),
+    url(r'^auth/login/$', auth_views.LoginView.as_view(), name='login'),
+    url(r'^auth/logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:

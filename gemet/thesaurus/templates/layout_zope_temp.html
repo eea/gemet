@@ -104,7 +104,15 @@ function addsite() {
           <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
         </div>
         <div id="righttools">
-          <a id="loginlink" href="http://eionet.europa.eu/login/login_form?came_from=http://www.eionet.europa.eu/">Login</a>
+          <a id="loginlink"
+              href="http://eionet.europa.eu/login/login_form?came_from=http://www.eionet.europa.eu/">OLD Login</a>
+          {% if user.is_authenticated %}
+            <a id="logoutlink" href="{% url 'logout' %}">Logout</a>
+            <a id="profilelink"
+               href="http://www.eionet.europa.eu/directory/user?uid={{ user.username}}">({{ user.username }})</a>
+          {% else %}
+            <a id="loginlink" href="{% url 'login' %}">Login</a>
+          {% endif %}
 
           <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
           <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
@@ -246,19 +254,22 @@ function addsite() {
 
 <!-- footer -->
 <div class="footer-menu">
-  <a href="{% url 'download' language.code %}">Download</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'alphabets' language.code %}">Alphabets</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'about' language.code %}">About GEMET</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'webservices' language.code %}">Web Services</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'changes' language.code %}">History of changes</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+
+  {% block footer %}
+    <a href="{% url 'download' language.code %}">Download</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'about' language.code %}">About GEMET</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'webservices' language.code %}">Web Services</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'changes' language.code %}">History of changes</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+  {% endblock %}
 
   {% block version %}
   {% endblock %}
