@@ -303,17 +303,17 @@ class TermView(ConceptView):
         '''
         if hasattr(self.object, 'source') and not self.object.EDITABLE:
             sources = self.object.source.split(' / ')
-            template_sources = []
+            definition_sources = []
             for source in sources:
                 source = source.strip()
                 found = DefinitionSource.objects.filter(abbr=source).first()
                 if found:
-                    template_sources.append((source, True))
+                    definition_sources.append((source, True))
                 else:
                     source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
                                     source)
-                    template_sources.append((str(source), False))
-            context.update({'template_sources': template_sources})
+                    definition_sources.append((str(source), False))
+            context.update({'definition_sources': definition_sources})
         return context
 
 
