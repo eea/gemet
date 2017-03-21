@@ -42,8 +42,11 @@
     <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
     &nbsp;|&nbsp;
     <a href="{% url 'changes' language.code %}">History of changes</a>
+
+    {% if user.is_authenticated %}
     &nbsp;|&nbsp;
     <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+    {% endif %}
   {% endblock %}
 
   {% block version %}

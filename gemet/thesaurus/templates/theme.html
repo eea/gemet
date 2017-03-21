@@ -24,11 +24,13 @@
   <!-- Theme -->
   <div class="selected-word">
     <span id="prefLabel">{{ theme.name }}</span>
-    <span>
-      <a class="btn btn-primary"
-         href="{% url 'theme_edit' language.code theme.code %}"
-         >Edit</a>
-    </span>
+    {% if user.is_authenticated %}
+      <span>
+        <a class="btn btn-primary"
+           href="{% url 'theme_edit' language.code theme.code %}"
+           >Edit</a>
+      </span>
+    {% endif %}
   </div>
 
 <div class="text-area-wrapper">
