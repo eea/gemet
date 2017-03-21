@@ -1,11 +1,12 @@
 import json
+import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -34,6 +35,13 @@ class TermEditView(TermView):
     template_name = "edit/concept_edit.html"
     model = models.EditableTerm
     override_languages = False
+
+    def get_object(self):
+        term = super(TermEditView, self).get_object()
+        if hasattr(term, 'default_definition'):
+            if term.default_definition:
+                delattr(term, 'definition')
+        return term
 
     def get_context_data(self, **kwargs):
         context = super(TermEditView, self).get_context_data(**kwargs)
@@ -437,3 +445,28 @@ class AddConceptView(HeaderMixin, VersionMixin, FormView):
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_code})
         return redirect(url)
+
+
+class ConceptSourcesView(View):
+    template_name = 'edit/bits/concept_definition_sources.html'
+
+    def get(self, request, langcode, id):
+        concept = models.Concept.objects.get(id=id)
+        concept.set_attributes(langcode, ['source'])
+        definition_sources = []
+        if hasattr(concept, 'source'):
+            sources = concept.source.split(' / ')
+            for source in sources:
+                source = source.strip()
+                found = models.DefinitionSource.objects.filter(abbr=source)
+                if found.first():
+                    definition_sources.append((source, True))
+                else:
+                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
+                                    source)
+                    definition_sources.append((str(source), False))
+
+        context = {'definition_sources': definition_sources,
+                   'language': models.Language.objects.get(code=langcode)}
+
+        return render(request, self.template_name, context)

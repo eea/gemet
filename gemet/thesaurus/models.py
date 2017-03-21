@@ -59,7 +59,7 @@ class Concept(VersionableModel):
     code = models.CharField(max_length=10)
     date_entered = models.DateTimeField(blank=True, null=True)
     date_changed = models.DateTimeField(blank=True, null=True)
-
+    EDITABLE = False
     parents_relations = []
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
     extra_values = []
@@ -387,6 +387,7 @@ class InspireTheme(Concept):
 
 class EditMixin(object):
     status_list = [PUBLISHED, PENDING, DELETED_PENDING]
+    EDITABLE = True
     extra_values = ['status']
 
     def name(self):

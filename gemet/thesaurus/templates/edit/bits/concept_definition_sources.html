@@ -1,0 +1,17 @@
+<div class="text-area">
+<h5 class="h5">Source:</h5>
+  <p>
+    {% for source, link in definition_sources %}
+      {% if link %}
+        <a href="{% url 'definition_sources' language.code %}#{{ source }}">{{ source }}</a>
+      {% else %}
+        <span>
+          {% autoescape off %}
+            {{ source }}
+          {% endautoescape %}
+        </span>
+      {% endif %}
+      </br>
+    {% endfor %}
+  </p>
+</div>

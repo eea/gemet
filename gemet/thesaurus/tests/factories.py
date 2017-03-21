@@ -3,7 +3,7 @@ import factory
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import (
     Concept, DefinitionSource, ForeignRelation, Group, InspireTheme, Language,
-    Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
+    Namespace, Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
 )
 
 
@@ -29,6 +29,12 @@ class ConceptFactory(factory.django.DjangoModelFactory):
 
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+
+class NamespaceFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Namespace
+
+    heading = 'Concepts'
 
 
 class TermFactory(factory.django.DjangoModelFactory):

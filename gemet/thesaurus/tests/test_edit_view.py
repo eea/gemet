@@ -2,11 +2,14 @@ import json
 
 from django.core.urlresolvers import reverse
 
-from .factories import ForeignRelation, ForeignRelationFactory
-from .factories import LanguageFactory, Property, PropertyFactory
-from .factories import PropertyTypeFactory, RelationFactory, Relation
-from .factories import TermFactory, ThemeFactory
+from .factories import ConceptFactory, ForeignRelation, ForeignRelationFactory
+from .factories import LanguageFactory, NamespaceFactory, Property
+from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory
+from .factories import Relation, TermFactory, ThemeFactory
+
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
+from gemet.thesaurus import forms
+from gemet.thesaurus import models
 from . import GemetTest
 
 
@@ -342,3 +345,30 @@ class TestRestoreForeignRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
         foreign_relation.refresh_from_db()
         self.assertEqual(foreign_relation.status, PUBLISHED)
+
+
+class TestAddNewConcept(GemetTest):
+    csrf_checks = False
+
+    def setUp(self):
+        self.language = LanguageFactory()
+        self.namespace = NamespaceFactory()
+        self.concept = ConceptFactory(namespace=self.namespace, code='200')
+
+    def test_get_sets_form(self):
+        url = reverse('concept_add', kwargs={'langcode': self.language.code})
+        response = self.app.get(url)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(forms.ConceptForm, type(response.context['form']))
+
+    def test_post_correct_form(self):
+        url = reverse('concept_add', kwargs={'langcode': self.language.code})
+        response = self.app.post(url, params={'name': 'test',
+                                              'namespace': self.namespace.id})
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(2, len(models.Concept.objects.all()))
+        self.assertEqual('201', models.Concept.objects.last().code)
+        self.assertEqual('test',
+                         Property.objects.get(name='prefLabel',
+                                              concept__code='201').value)

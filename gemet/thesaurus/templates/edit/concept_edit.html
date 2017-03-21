@@ -23,6 +23,13 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Back to concept -->
+  <span>
+    <a class="btn"
+       href="{% url 'concept' language.code concept.code %}"
+       >Back</a>
+  </span>
+
   <!-- Concept -->
   <div class="h3 element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
@@ -100,20 +107,12 @@
   <div class="definition text-area element">
     <h5 class="h5">Definition</h5>
       {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-      {% if concept.default_definition %}
-        <p class="alert empty-text" id="definitionEmpty">
-          Definition is not available for the current language.
-        </p>
-      {% endif %}
   </div>
 
   <!--Source-->
   <div class="source text-area element">
     <span>Source:</span>
       {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
-      {% if not concept.source %}
-        <p class="alert empty-text" id="sourceEmpty"> Source is not available. </p>
-      {% endif %}
   </div>
 
   <!-- Themes -->
@@ -279,9 +278,6 @@
   <div class="scope text-area element">
     <h5 class="h5">Scope note</h5>
       {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-      {% if not concept.scopeNote %}
-        <span id='scopeNoteEmpty' class="alert empty-text">Scope note is not available.</span>
-      {% endif %}
   </div>
 
   <!-- Concept URL -->
