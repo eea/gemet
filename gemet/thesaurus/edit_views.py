@@ -448,6 +448,7 @@ class AddConceptView(HeaderMixin, VersionMixin, FormView):
 
 
 class ConceptSourcesView(View):
+    template_name = 'edit/bits/concept_definition_sources.html'
 
     def get(self, request, langcode, id):
         concept = models.Concept.objects.get(id=id)
@@ -457,8 +458,8 @@ class ConceptSourcesView(View):
             sources = concept.source.split(' / ')
             for source in sources:
                 source = source.strip()
-                found = models.DefinitionSource.objects.get(abbr=source)
-                if found:
+                found = models.DefinitionSource.objects.filter(abbr=source)
+                if found.first():
                     definition_sources.append((source, True))
                 else:
                     source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
@@ -467,5 +468,5 @@ class ConceptSourcesView(View):
 
         context = {'definition_sources': definition_sources,
                    'language': models.Language.objects.get(code=langcode)}
-        template = 'edit/bits/concept_definition_sources.html'
-        return render(request, template, context)
+
+        return render(request, self.template_name, context)
