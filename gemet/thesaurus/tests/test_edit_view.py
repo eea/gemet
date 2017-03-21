@@ -352,8 +352,8 @@ class TestAddNewConcept(GemetTest):
 
     def setUp(self):
         self.language = LanguageFactory()
-        self.namespace = NamespaceFactory(id=10)
-        self.concept = ConceptFactory(namespace=self.namespace, code=200)
+        self.namespace = NamespaceFactory()
+        self.concept = ConceptFactory(namespace=self.namespace, code='200')
 
     def test_get_sets_form(self):
         url = reverse('concept_add', kwargs={'langcode': self.language.code})
@@ -368,7 +368,7 @@ class TestAddNewConcept(GemetTest):
 
         self.assertEqual(302, response.status_code)
         self.assertEqual(2, len(models.Concept.objects.all()))
-        self.assertEqual(u'201', models.Concept.objects.last().code)
+        self.assertEqual('201', models.Concept.objects.last().code)
         self.assertEqual('test',
                          Property.objects.get(name='prefLabel',
-                                              concept__code=201).value)
+                                              concept__code='201').value)
