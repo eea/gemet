@@ -1,7 +1,8 @@
 from django.utils.http import is_safe_url
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
 from django.views.generic import FormView, RedirectView
+
+from gemet.thesaurus.forms import LDAPAuthenticationForm
 
 
 class LoginView(FormView):
@@ -9,7 +10,7 @@ class LoginView(FormView):
     Provides the ability to login as a user with a username and password
     """
     success_url = '/'
-    form_class = AuthenticationForm
+    form_class = LDAPAuthenticationForm
     template_name = 'login.html'
 
     def form_valid(self, form):
