@@ -90,6 +90,8 @@ urlpatterns = [
             name='concept_add'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),
+        url(r'^concept/(?P<id>\d+)/sources$',
+            edit_views.ConceptSourcesView.as_view(), name='concept_sources'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),
             name='group_edit'),
         url(r'^supergroup/(?P<code>\d+)/edit$',

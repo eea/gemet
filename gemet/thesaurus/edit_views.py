@@ -1,11 +1,12 @@
 import json
+import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -437,3 +438,26 @@ class AddConceptView(HeaderMixin, VersionMixin, FormView):
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_code})
         return redirect(url)
+
+
+class ConceptSourcesView(View):
+
+    def get(self, request, langcode, id):
+        concept = models.Concept.objects.get(id=id)
+        concept.set_attributes(langcode, ['source'])
+        definition_sources = []
+        if hasattr(concept, 'source'):
+            sources = concept.source.split(' / ')
+            for source in sources:
+                source = source.strip()
+                found = models.DefinitionSource.objects.filter(abbr=source).first()
+                if found:
+                    definition_sources.append((source, True))
+                else:
+                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
+                                    source)
+                    definition_sources.append((str(source), False))
+
+        context = {'definition_sources': definition_sources,
+                   'language': models.Language.objects.get(code=langcode)}
+        return render(request, 'edit/bits/concept_definition_sources.html', context)

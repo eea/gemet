@@ -12,8 +12,22 @@ $(document).ready(function () {
   });
 
   $('.source.input-area').on('click', function(){
-    $(this).siblings('.source.text-area').toggle();
-    $(this).text($(this).text() === "Show source" ? "Hide source" : "Show source");
+    var $textArea = $(this).siblings('.source.text-area').first();
+    var $button = $(this)
+    if ($button.text() === "Show source" &&
+    !($textArea.hasClass('contains-sources'))){
+      var url = $(this).data('href');
+      $.ajax({
+        type: "GET",
+        url: url,
+        success: function(data){
+          $textArea.html(data);
+        }
+      })
+    }
+    $textArea.toggle();
+    $textArea.addClass('contains-sources');
+    $button.text($button.text() === "Show source" ? "Hide source" : "Show source");
   });
 
 $('.relations ul').filter(function(){return $(this).text().trim().length==0}).remove();
