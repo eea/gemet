@@ -457,7 +457,7 @@ class ConceptSourcesView(View):
             sources = concept.source.split(' / ')
             for source in sources:
                 source = source.strip()
-                found = models.DefinitionSource.objects.filter(abbr=source).first()
+                found = models.DefinitionSource.objects.get(abbr=source)
                 if found:
                     definition_sources.append((source, True))
                 else:
@@ -467,4 +467,5 @@ class ConceptSourcesView(View):
 
         context = {'definition_sources': definition_sources,
                    'language': models.Language.objects.get(code=langcode)}
-        return render(request, 'edit/bits/concept_definition_sources.html', context)
+        template = 'edit/bits/concept_definition_sources.html'
+        return render(request, template, context)
