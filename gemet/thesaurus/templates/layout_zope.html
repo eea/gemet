@@ -12,7 +12,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/style.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap.min.css' %}">
 <!--   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap-theme.min.css' %}"> -->
-    <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/materialize.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/materialize.min.css' %}">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/select2.min.css' %}" />
 
@@ -29,19 +29,25 @@
 
 <!-- footer -->
 <div class="footer-menu">
-  <a href="{% url 'download' language.code %}">Download</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'alphabets' language.code %}">Alphabets</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'about' language.code %}">About GEMET</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'webservices' language.code %}">Web Services</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'changes' language.code %}">History of changes</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+
+  {% block footer %}
+    <a href="{% url 'download' language.code %}">Download</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'about' language.code %}">About GEMET</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'webservices' language.code %}">Web Services</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'changes' language.code %}">History of changes</a>
+
+    {% if user.is_authenticated %}
+    &nbsp;|&nbsp;
+    <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+    {% endif %}
+  {% endblock %}
 
   {% block version %}
   {% endblock %}

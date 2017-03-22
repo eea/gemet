@@ -1,4 +1,5 @@
 import factory
+from django.contrib.auth.models import User
 
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import (
@@ -116,3 +117,11 @@ class InspireThemeFactory(factory.django.DjangoModelFactory):
     code = 'ad'
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = User
+    FACTORY_DJANGO_GET_OR_CREATE = ('username',)
+
+    username = factory.Sequence(lambda n: "john%03d" % n)
+    password = '123456'

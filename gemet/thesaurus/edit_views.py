@@ -1,6 +1,7 @@
 import json
 import re
 
+from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
@@ -17,21 +18,25 @@ from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
 
-class GroupEditView(GroupView):
+class LoginRequiredMixin(mixins.LoginRequiredMixin):
+    login_url = '/auth/login'
+
+
+class GroupEditView(LoginRequiredMixin, GroupView):
     context_object_name = 'concept'
     template_name = "edit/group_edit.html"
     model = models.EditableGroup
     override_languages = False
 
 
-class SuperGroupEditView(SuperGroupView):
+class SuperGroupEditView(LoginRequiredMixin, SuperGroupView):
     context_object_name = 'concept'
     template_name = "edit/supergroup_edit.html"
     model = models.EditableSuperGroup
     override_languages = False
 
 
-class TermEditView(TermView):
+class TermEditView(LoginRequiredMixin, TermView):
     template_name = "edit/concept_edit.html"
     model = models.EditableTerm
     override_languages = False
@@ -53,7 +58,7 @@ class TermEditView(TermView):
         return context
 
 
-class ThemeEditView(ThemeView):
+class ThemeEditView(LoginRequiredMixin, ThemeView):
     template_name = "edit/theme_edit.html"
     model = models.EditableTheme
     context_object_name = 'concept'
@@ -70,7 +75,7 @@ class JsonResponseMixin(object):
         return response
 
 
-class UnrelatedConcepts(JsonResponseMixin, View):
+class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
 
     def _set_reverse_urls(self, concepts, langcode, relation):
         for concept in concepts:
@@ -131,7 +136,8 @@ class UnrelatedConcepts(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class EditPropertyView(JsonResponseMixin, VersionMixin, View):
+class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
+                       View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -181,7 +187,8 @@ class EditPropertyView(JsonResponseMixin, VersionMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddRelationView(JsonResponseMixin, VersionMixin, View):
+class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
+                      View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
@@ -212,7 +219,7 @@ class AddRelationView(JsonResponseMixin, VersionMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class DeleteRelationView(JsonResponseMixin, View):
+class DeleteRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
@@ -247,7 +254,7 @@ class DeleteRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class RestoreRelationView(JsonResponseMixin, View):
+class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
     def post(self, request, source_id, target_id, relation_type):
         try:
@@ -279,7 +286,8 @@ class RestoreRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddPropertyView(JsonResponseMixin, VersionMixin, View):
+class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
+                      View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -326,7 +334,7 @@ class AddPropertyView(JsonResponseMixin, VersionMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class DeletePropertyView(JsonResponseMixin, View):
+class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
@@ -345,7 +353,8 @@ class DeletePropertyView(JsonResponseMixin, View):
         return self._get_response({}, 'success', 200)
 
 
-class AddForeignRelationView(JsonResponseMixin, VersionMixin, View):
+class AddForeignRelationView(LoginRequiredMixin, JsonResponseMixin,
+                             VersionMixin, View):
 
     def post(self, request, id):
         try:
@@ -372,7 +381,7 @@ class AddForeignRelationView(JsonResponseMixin, VersionMixin, View):
         return self._get_response(data, 'error', 400)
 
 
-class RestoreForeignRelationView(JsonResponseMixin, View):
+class RestoreForeignRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
@@ -393,7 +402,7 @@ class RestoreForeignRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class DeleteForeignRelationView(JsonResponseMixin, View):
+class DeleteForeignRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
     def post(self, request, pk):
         try:
@@ -414,7 +423,7 @@ class DeleteForeignRelationView(JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddConceptView(HeaderMixin, VersionMixin, FormView):
+class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
     template_name = 'edit/concept_add.html'
     form_class = ConceptForm
 
