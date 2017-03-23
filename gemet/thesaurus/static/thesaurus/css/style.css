@@ -710,6 +710,7 @@ hr {
     margin-left: 0;
     overflow-x: hidden;
     font-size: 110%;
+    padding-top: 0;
 }
 
 
@@ -755,6 +756,7 @@ hr {
     margin-top: 1rem;
     margin-bottom: 1rem;
     text-align: center;
+        margin-bottom: -26px;
 }
 
 
@@ -838,30 +840,41 @@ hr {
 /* menu */
 
 .gemet-menu a {
+    position: relative;
     display: inline-block;
     color: white;
     padding: 1rem 11.97px;
-    color: #0065A5;
+    color: white;
+    transition: all 200ms;
+    // border-top: 3px solid transparent;
 }
 
-.gemet-menu a.active {
-    background: #0065A5;
-    color: white;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+.gemet-menu a.active:before {
+    content: "\f0d8";
+    font-size: 3rem;
+    position: absolute;
+    left: 40%;
+    bottom: -4px;
 }
+
+
 
 .gemet-menu {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 860px;
-    text-align: right;
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 2rem;
+    margin-left: -17px;
+    /* max-width: 860px; */
+    /* text-align: right; */
+    /* display: flex; */
+    width: 104%;
+    /* justify-content: space-between; */
+    background: #0065a5;
 }
 
 .gemet-menu a:hover {
     text-decoration: none;
+    color: white;
+    border-right: 3px solid white;
+        border-left: 3px solid white;
 }
 
 
@@ -1301,6 +1314,7 @@ padding-bottom: 1rem;
     position: relative;
     margin-left: auto;
     margin-right: auto;
+    border-top-right-radius: 0;
     border: 11px solid #0065A5;
 }
 
@@ -1478,13 +1492,12 @@ padding-bottom: 1rem;
 }
 
 .title {
-    font-size: 4rem;
-    color: #0065A5;
+    font-size: 4rem!important;
+    color: #0065A5!important;
 }
 
 .subtitle {
     font-size: 1.2rem;
-    margin-top: 1rem;
     color: #aaa;
     margin-left: .5rem;
 }
@@ -1881,4 +1894,40 @@ a.btn {
     .gemet-menu {
         display: block;
     }
+}
+
+
+.remove-active {
+    background: transparent!important;
+     color: #0065A5!important;
+}
+
+.search-link {
+    cursor: pointer;
+}
+
+.search-link {
+    padding: .4rem 11.97px;
+    float: right;
+    color: white;
+    padding: 1rem 11.97px;
+    transition: all 200ms;
+    background: #0065a5;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.search-label {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media(max-width: 800px){
+    display: none;
+}
+
+.search-label a:hover {
+color: white;
+text-decoration: none;
 }
