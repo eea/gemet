@@ -40,6 +40,24 @@ $(document).ready(function () {
     $button.text($button.text() === "Show source" ? "Hide source" : "Show source");
   });
 
+  $('.history-details.input-area').on('click', function(){
+    var $textArea = $(this).siblings('.history-details.text-area').first();
+    var $button = $(this)
+    if ($button.text() === "See details" &&
+    !($textArea.hasClass('contains-details'))){
+      var url = $(this).data('href');
+      $.ajax({
+        type: "GET",
+        url: url,
+        success: function(data){
+          $textArea.html(data);
+        }
+      })
+    }
+    $textArea.toggle();
+    $textArea.addClass('contains-details');
+    $button.text($button.text() === "See details" ? "Hide details" : "See details");
+  });
 $('.relations ul').filter(function(){return $(this).text().trim().length==0}).remove();
 
 if (window.matchMedia("(max-width: 800px)").matches) {

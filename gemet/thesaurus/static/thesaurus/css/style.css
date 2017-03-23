@@ -1901,5 +1901,12 @@ a.search-button {
 
 .publish-form select{
     display: block;
+}
 
+.history.status-0:before{
+    content: " + ";
+}
+
+.history.status-3:before{
+    content: " - "
 }

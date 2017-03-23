@@ -56,8 +56,8 @@ urlpatterns = [
         url(r'^webservices/$', views.WebServicesView.as_view(),
             name='webservices'),
         url(r'^alphabets/$', views.AlphabetsView.as_view(), name='alphabets'),
-        url(r'^definition-sources/$', views.DefinitionSourcesView.as_view(),
-            name='definition_sources'),
+
+
 
         # Search
         url(r'^search/$', views.SearchView.as_view(), name='search'),
@@ -86,26 +86,36 @@ urlpatterns = [
         url(r'^inspire-theme/(?P<code>[a-zA-Z]+)$',
             views.InspireThemeView.as_view(), name='inspire_theme'),
 
+        # Publish pages
+        url(r'^publish_version/$', edit_views.PublishVersionView.as_view(),
+            name='publish_version'),
+        url(r'^history_of_changes', edit_views.HistoryChangesView.as_view(),
+            name='history_changes'),
+        url(r'^concept/(?P<id>\d+)/sources$',
+            edit_views.ConceptSourcesView.as_view(), name='concept_sources'),
+        url(r'^concept/(?P<id>\d+)/changes/$',
+            edit_views.ConceptChangesView.as_view(),
+            name='concept_changes'),
+
         # Edit concept pages
         url(r'^concept/add$', edit_views.AddConceptView.as_view(),
             name='concept_add'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),
-        url(r'^concept/(?P<id>\d+)/sources$',
-            edit_views.ConceptSourcesView.as_view(), name='concept_sources'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),
             name='group_edit'),
-        url(r'^publish_version/$', edit_views.PublishVersionView.as_view(),
-            name='publish_version'),
         url(r'^supergroup/(?P<code>\d+)/edit$',
             edit_views.SuperGroupEditView.as_view(),
             name='supergroup_edit'),
         url(r'^theme/(?P<code>\d+)/edit$', edit_views.ThemeEditView.as_view(),
             name='theme_edit'),
-
         url(r'^concepts/except/(?P<id>\d+)/relation/(?P<relation>[a-zA-Z]+)$',
             edit_views.UnrelatedConcepts.as_view(), name='concepts_json'),
+        url(r'^definition-sources/$', views.DefinitionSourcesView.as_view(),
+            name='definition_sources'),
         ])),
+
+
 
     url(r'^(?P<langcode>[a-zA-Z-]+)/concept/(?P<id>\d+)/edit/', include([
         url(r'^property/type/(?P<name>[a-zA-Z-]+)/edit/$',

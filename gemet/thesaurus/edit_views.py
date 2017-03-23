@@ -3,6 +3,7 @@ import re
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
 from django.views import View
@@ -14,7 +15,7 @@ from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
-from gemet.thesaurus.forms import VersionForm
+from gemet.thesaurus.forms import SearchForm, VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -505,23 +506,101 @@ class PublishVersionView(View):
             new_version.identifier = form.cleaned_data['version']
             new_version.is_current = True
             new_version.save()
-            self.change_status(models.Property, models.Property.PENDING,
-                               models.Property.PUBLISHED)
-            self.change_status(models.Property, models.Property.DELETED_PENDING,
-                               models.Property.DELETED)
-            self.change_status(models.Concept, models.Concept.PENDING,
-                               models.Concept.PUBLISHED)
-            self.change_status(models.Concept, models.Concept.DELETED_PENDING,
-                               models.Concept.DELETED)
-            self.change_status(models.Relation, models.Relation.PENDING,
-                               models.Relation.PUBLISHED)
-            self.change_status(models.Relation, models.Relation.DELETED_PENDING,
-                               models.Relation.DELETED)
-            self.change_status(models.ForeignRelation, models.ForeignRelation.PENDING,
-                               models.ForeignRelation.PUBLISHED)
-            self.change_status(models.ForeignRelation,
-                               models.ForeignRelation.DELETED_PENDING,
-                               models.ForeignRelation.DELETED)
+            self.change_status(models.Property, PENDING, PUBLISHED)
+            self.change_status(models.Property, DELETED_PENDING, DELETED)
+            self.change_status(models.Concept, PENDING, PUBLISHED)
+            self.change_status(models.Concept, DELETED_PENDING, DELETED)
+            self.change_status(models.Relation, PENDING, PUBLISHED)
+            self.change_status(models.Relation, DELETED_PENDING, DELETED)
+            self.change_status(models.ForeignRelation, PENDING, PUBLISHED)
+            self.change_status(models.ForeignRelation, DELETED_PENDING, DELETED)
         url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
 
+
+class HistoryChangesView(View):
+
+    def get(self, request, langcode):
+        new_concepts = models.Concept.objects.filter(status=PENDING)\
+            .order_by('namespace')
+        language = models.Language.objects.get(code=langcode)
+        concepts = []
+        for concept in new_concepts:
+            concept_with_name = models.Property.objects\
+                .filter(concept__id=concept.id,
+                        name='prefLabel',
+                        status=PENDING)\
+                .values('concept__id',
+                        'value',
+                        'concept__namespace__heading').first()
+            url = concept.get_absolute_url(langcode)
+            concept_with_name.update({'url': url})
+            concepts.append(concept_with_name)
+
+        old_concepts = models.Concept.objects.filter(status=PUBLISHED).filter(
+            Q(properties__status__in=[PENDING, DELETED_PENDING],
+              properties__language=language) |
+            Q(source_relations__status__in=[PENDING, DELETED_PENDING]) |
+            Q(foreign_relations__status__in=[PENDING, DELETED_PENDING])).distinct()
+        for concept in old_concepts:
+            concept.set_attributes(langcode, ['prefLabel'])
+        context = {}
+        context.update({'new_concepts': concepts})
+        context.update({'old_concepts': old_concepts})
+        context.update({'language': language})
+        context.update({
+            'languages': (
+                models.Language.objects
+                .values('code', 'name')
+                .order_by('name')
+            ),
+            'search_form': SearchForm(),
+        })
+        return render(request, 'edit/history_of_changes.html', context)
+
+
+class ConceptChangesView(View):
+
+    def get(self, request, langcode, id):
+        concept = models.Concept.objects.get(id=id)
+        language = models.Language.objects.get(code=langcode)
+        concept_details = {'concept_id': concept.id}
+        properties = concept.properties\
+            .filter(status__in=[PENDING, DELETED_PENDING],
+                    language=language)\
+            .order_by('name', 'status')
+        for concept_property in properties:
+            if concept_property.name in concept_details.keys():
+                concept_details[concept_property.name].append(concept_property)
+            else:
+                concept_details[concept_property.name] = [concept_property]
+        relations = concept.source_relations.filter(
+            status__in=[PENDING, DELETED_PENDING])
+        relations = relations.values('status',
+                                     'target__id',
+                                     'property_type__name')
+        for relation in relations:
+            target_name = models.Property.objects.filter(
+                concept__id=relation['target__id'],
+                name='prefLabel',
+                language=language,
+                status__in=[PUBLISHED, DELETED_PENDING]).first()
+            if target_name:
+                target_name = target_name.value
+            else:
+                target_name = 'Name not available'
+            target_relation = {
+                'target': target_name,
+                'property_type': relation['property_type__name'],
+                'status': relation['status']
+            }
+            relation_type = relation['property_type__name']
+            if relation_type in concept_details.keys():
+                concept_details[relation_type].append(target_relation)
+            else:
+                concept_details[relation_type] = [target_relation]
+        foreign_relations = concept.foreign_relations.filter(
+            status__in=[PENDING, DELETED_PENDING]).order_by('property_type')
+        concept_details['foreign_relations'] = foreign_relations
+        concept_details['namespace'] = concept.namespace.heading
+        return render(request, 'edit/bits/concept_changes.html', concept_details)
