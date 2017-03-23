@@ -2,7 +2,7 @@
 {% load gemet_tags %}
 
 {% block title %}
-Concepts list
+List of concepts for {{ theme.name }}
 {% endblock %}
 
 {% block language_selector %}
@@ -11,7 +11,7 @@ Concepts list
 
 {% block header %}
   <h1>
-    Concepts list for <i>{{ theme.name }}</i>
+    List of concepts for <i>{{ theme.name }}</i>
   </h1>
   {% if language_warning %}
     <p>* Note: Theme name is not available for the current language</p>
