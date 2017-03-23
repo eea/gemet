@@ -3,7 +3,10 @@
 <!-- header -->
 <div class="gemet-header">
   <!-- title -->
- 
+  <div class="header-title">
+    <div class="title">GEMET</div>
+    <div class="subtitle">General Multilingual Environmental Thesaurus</div>
+  </div>
   <div class="gemet-menu">
       <button class="expand-button menu-button"><i class="fa fa-bars" aria-hidden="true"></i> Menu</button>
   <a class="{% active request 'themes' langcode=language.code %}"
@@ -15,19 +18,15 @@
   <a class="{% active request 'groups' langcode=language.code %}"
      href="{% url 'groups' language.code %}">Hierarchical Listings</a>
   <!-- &nbsp;|&nbsp; -->
-  <a class="{% active request 'alphabetic' langcode=language.code %}"
+  <a class="alphabet {% active request 'alphabetic' langcode=language.code %}"
      href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
   <!-- &nbsp;|&nbsp; -->
-</div>
- <div class="header-title">
-    <h1 class="title">GEMET</h1>
-    <div class="subtitle">General Multilingual Environmental Thesaurus</div>
-  </div>
-<div class="search-label clearfix">
-  <a class="search-link {% active request 'search' langcode=language.code %}">
+  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
+  <a class="search-button {% active request 'search' langcode=language.code %}">
     Search Thesaurus
   </a>
 </div>
+
 <div class="search_bar huge">
   <div class="search_dropdown">
     <select name="select-language" id="js-change-language">

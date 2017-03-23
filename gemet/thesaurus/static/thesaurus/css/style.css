@@ -710,7 +710,6 @@ hr {
     margin-left: 0;
     overflow-x: hidden;
     font-size: 110%;
-    padding-top: 0;
 }
 
 
@@ -756,7 +755,6 @@ hr {
     margin-top: 1rem;
     margin-bottom: 1rem;
     text-align: center;
-        margin-bottom: -26px;
 }
 
 
@@ -840,41 +838,33 @@ hr {
 /* menu */
 
 .gemet-menu a {
-    position: relative;
     display: inline-block;
     color: white;
     padding: 1rem 11.97px;
-    color: white;
-    transition: all 200ms;
-    // border-top: 3px solid transparent;
+    color: #0065A5;
+    position: relative;
 }
 
 .gemet-menu a.active:before {
-    content: "\f0d8";
-    font-size: 3rem;
+    content: "\f0d9";
+    top: 29%;
+    left: 96%;
+    color: #0065A5;
+    font-size: 2rem;
     position: absolute;
-    left: 40%;
-    bottom: -4px;
 }
 
-
-
 .gemet-menu {
-    margin-bottom: 2rem;
-    margin-left: -17px;
-    /* max-width: 860px; */
-    /* text-align: right; */
-    /* display: flex; */
-    width: 104%;
-    /* justify-content: space-between; */
-    background: #0065a5;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 860px;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
 }
 
 .gemet-menu a:hover {
     text-decoration: none;
-    color: white;
-    border-right: 3px solid white;
-        border-left: 3px solid white;
 }
 
 
@@ -1314,7 +1304,6 @@ padding-bottom: 1rem;
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    border-top-right-radius: 0;
     border: 11px solid #0065A5;
 }
 
@@ -1492,12 +1481,13 @@ padding-bottom: 1rem;
 }
 
 .title {
-    font-size: 4rem!important;
-    color: #0065A5!important;
+    font-size: 4rem;
+    color: #0065A5;
 }
 
 .subtitle {
     font-size: 1.2rem;
+    margin-top: 1rem;
     color: #aaa;
     margin-left: .5rem;
 }
@@ -1721,7 +1711,7 @@ h6.inline {
 
     transform: rotate(270deg);
     border-top-right-radius: 6px;
-    left: -84px;
+left: -84px;
     font-size: 1.7rem;
 }
 
@@ -1801,17 +1791,22 @@ a.btn {
     .side-bar {
         position: fixed;
         top: 0;
-        right: -13px;
-        width: 0;
+        right: 0;
         z-index: 99;
         bottom: 0;
+        width:240px;
+        transform:translateX(94%);
     }
 
     .edit-page .side-bar {
             margin-right: -15px;
     }
+
+    .gemet-menu.expand{
+        width: 240px;
+    }
     .expand-button {
-        top: 51%;
+        top: 54%;
         display: block;
             border-top-right-radius: 6px!important;
     }
@@ -1868,10 +1863,10 @@ a.btn {
         overflow: hidden;
     }
     .expand {
-        width: 240px!important;
-        right: 0!important;
+        // width: 240px!important;
         margin: 0;
         z-index: 200;
+        transform: translateX(0);
         /*overflow: auto!important;*/
     }
     .search_bar input[type=text] {
@@ -1894,40 +1889,29 @@ a.btn {
     .gemet-menu {
         display: block;
     }
+
+    .gemet-menu a.active:before {
+        display: none;
+    }
+
+    .gemet-menu a.active {
+        background: #0065A5;
+        color: white;
+    }
 }
 
 
-.remove-active {
-    background: transparent!important;
-     color: #0065A5!important;
+a.search-button {
+    display: none;
 }
 
-.search-link {
-    cursor: pointer;
-}
-
-.search-link {
-    padding: .4rem 11.97px;
-    float: right;
+.active.search-button {
+    background:  #0065A5;
     color: white;
-    padding: 1rem 11.97px;
-    transition: all 200ms;
-    background: #0065a5;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 }
 
-.search-label {
-    max-width: 860px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-@media(max-width: 800px){
+.active.search-button:before {
     display: none;
-}
-
-.search-label a:hover {
-color: white;
-text-decoration: none;
 }
