@@ -49,10 +49,12 @@ class Command(BaseCommand):
             'footer.html': FOOTER_TEXT,
         }
 
+        zope_path = os.path.join(
+            settings.BASE_DIR, 'gemet', 'thesaurus', 'templates', 'zope')
+        if not os.path.exists(zope_path):
+            os.makedirs(zope_path)
+
         for template_name, content in templates.iteritems():
-            template_path = os.path.join(
-                settings.BASE_DIR,
-                'gemet', 'thesaurus', 'templates', 'zope',
-                template_name)
+            template_path = os.path.join(zope_path, template_name)
             with open(template_path, 'w') as f:
                 f.write(content)
