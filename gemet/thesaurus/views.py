@@ -1,8 +1,8 @@
-from itertools import chain
-from collections import OrderedDict
 import sys
-from xmlrpclib import Fault
+from collections import OrderedDict
+from itertools import chain
 from urllib import urlencode
+from xmlrpclib import Fault
 
 from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -52,6 +52,13 @@ class VersionMixin(object):
         self.current_version = Version.objects.get(is_current=True)
         self.pending_version = Version.under_work()
 
+    def get_context_data(self, **kwargs):
+        context = super(VersionMixin, self).get_context_data(**kwargs)
+        context.update({
+            'version': self.current_version,
+        })
+        return context
+
 
 class AboutView(HeaderMixin, TemplateView):
     template_name = "about.html"
@@ -65,7 +72,7 @@ class WebServicesView(HeaderMixin, TemplateView):
     template_name = 'webservices.html'
 
 
-class ThemesView(HeaderMixin, TemplateView):
+class ThemesView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
@@ -100,7 +107,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
-            'ns_version': self.model_cls.published.get_ns().version,
+            'namespace': self.model_cls.NAMESPACE,
             'css_class': self.css_class,
         })
         return context
@@ -123,11 +130,13 @@ class InspireThemesView(ThemesView):
             .values('code', 'name')
             .order_by('name')
         )
-        context.update({'languages': languages})
+        context.update({
+            'languages': languages,
+        })
         return context
 
 
-class GroupsView(HeaderMixin, TemplateView):
+class GroupsView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
@@ -147,7 +156,7 @@ class GroupsView(HeaderMixin, TemplateView):
 
         context.update({
             "supergroups": supergroups,
-            "ns_version": Group.published.get_ns().version
+            "namespace": Group.NAMESPACE,
         })
         return context
 
@@ -175,7 +184,7 @@ class AlphabetsView(HeaderMixin, TemplateView):
         return context
 
 
-class SearchView(HeaderMixin, FormView):
+class SearchView(HeaderMixin, VersionMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
@@ -188,7 +197,7 @@ class SearchView(HeaderMixin, FormView):
         context.update({
             "query": self.query,
             "concepts": self.concepts,
-            "ns_version": Term.published.get_ns().version
+            "namespace": Term.NAMESPACE,
         })
         return context
 
@@ -202,7 +211,7 @@ class SearchView(HeaderMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RelationsView(HeaderMixin, TemplateView):
+class RelationsView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
@@ -224,7 +233,7 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
-            'ns_version': Term.published.get_ns().version
+            'namespace': Term.NAMESPACE,
         })
         return context
 
@@ -268,7 +277,7 @@ class ConceptView(HeaderMixin, VersionMixin, DetailView):
             context['languages'] = languages
 
         context.update({
-            "ns_version": self.current_version.identifier,
+            "namespace": self.model.NAMESPACE,
         })
         return context
 
@@ -323,7 +332,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(HeaderMixin, ListView):
+class PaginatorView(HeaderMixin, VersionMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
@@ -425,7 +434,7 @@ class ThemeConceptsView(PaginatorView):
             context.update({'language_warning': True})
         context.update({
             'theme': self.theme,
-            'ns_version': Term.published.get_ns().version
+            'namespace': Term.NAMESPACE,
         })
 
         return context
@@ -449,8 +458,7 @@ class AlphabeticView(PaginatorView):
 
     def get_context_data(self, **kwargs):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
-        context.update({"ns_version": Term.published.get_ns().version})
-
+        context.update({"namespace": Term.NAMESPACE})
         return context
 
 

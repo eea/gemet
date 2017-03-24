@@ -1,16 +1,14 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    LanguageFactory,
-    PropertyFactory,
-    TermFactory,
-)
+from .factories import LanguageFactory, PropertyFactory, TermFactory
+from .factories import VersionFactory
 from . import GemetTest, ERROR_404
 
 
 class TestAlphabeticView(GemetTest):
     def setUp(self):
         LanguageFactory()
+        VersionFactory()
 
     def test_no_concepts(self):
         url = reverse('alphabetic', kwargs={'langcode': 'en'})

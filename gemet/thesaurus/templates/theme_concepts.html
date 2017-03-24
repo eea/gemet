@@ -40,8 +40,9 @@ List of concepts for {{ theme.name }}
   {% else %}
     <a href="{% url 'theme_concepts' language.code theme.code %}?letter=99">other</a>
   {% endif %}
-</div>  
+</div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' %}
 {% endblock %}
