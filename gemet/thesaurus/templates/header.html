@@ -18,11 +18,11 @@
   <a class="{% active request 'inspire_themes' langcode=language.code %}"
      href="{% url 'inspire_themes' language.code %}">INSPIRE Spatial Data Themes</a>
   <!-- &nbsp;|&nbsp; -->
-  <a class="{% active request 'alphabetic' langcode=language.code %}"
+  <a class="alphabet {% active request 'alphabetic' langcode=language.code %}"
      href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
   <!-- &nbsp;|&nbsp; -->
   <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
-  <a class="{% active request 'search' langcode=language.code %}">
+  <a class="search-button {% active request 'search' langcode=language.code %}">
     Search Thesaurus
   </a>
 </div>

@@ -3,6 +3,16 @@ $(document).ready(function () {
   // change language
   // bind change event to select
 
+        if (window.location.href.indexOf("search") > -1) { 
+          $('.search-button').css('display','inline-block');
+         console.log('sfasfsa');
+        }
+
+         if($('.alphabet').hasClass('active')){
+              $('.search_bar').css ('border-top-right-radius', '0');
+          }
+
+
   $('#js-change-language').on('change', function () {
     var url = $(this).find(':selected').attr('href'); // get selected value
     if (url) { // require a URL
@@ -54,12 +64,12 @@ $last_menu_item = $('.gemet-menu a:last-of-type');
 
 if($first_menu_item.hasClass('active')) {
   $('.search_bar').css ('border-top-left-radius', '0');
-  console.log('first');
+  
 }
 
 if($last_menu_item.hasClass('active')) {
    $('.search_bar').css ('border-top-right-radius', '0');
-   console.log('last');
+   
 }
 }
 });

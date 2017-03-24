@@ -842,13 +842,16 @@ hr {
     color: white;
     padding: 1rem 11.97px;
     color: #0065A5;
+    position: relative;
 }
 
-.gemet-menu a.active {
-    background: #0065A5;
-    color: white;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+.gemet-menu a.active:before {
+    content: "\f0d9";
+    top: 29%;
+    left: 96%;
+    color: #0065A5;
+    font-size: 2rem;
+    position: absolute;
 }
 
 .gemet-menu {
@@ -1689,7 +1692,7 @@ h6.inline {
 
     transform: rotate(270deg);
     border-top-right-radius: 6px;
-    left: -84px;
+left: -84px;
     font-size: 1.7rem;
 }
 
@@ -1773,17 +1776,22 @@ a.btn {
     .side-bar {
         position: fixed;
         top: 0;
-        right: -13px;
-        width: 0;
+        right: 0;
         z-index: 99;
         bottom: 0;
+        width:240px;
+        transform:translateX(94%);
     }
 
     .edit-page .side-bar {
             margin-right: -15px;
     }
+
+    .gemet-menu.expand{
+        width: 240px;
+    }
     .expand-button {
-        top: 51%;
+        top: 54%;
         display: block;
             border-top-right-radius: 6px!important;
     }
@@ -1840,10 +1848,10 @@ a.btn {
         overflow: hidden;
     }
     .expand {
-        width: 240px!important;
-        right: 0!important;
+        // width: 240px!important;
         margin: 0;
         z-index: 200;
+        transform: translateX(0);
         /*overflow: auto!important;*/
     }
     .search_bar input[type=text] {
@@ -1866,4 +1874,29 @@ a.btn {
     .gemet-menu {
         display: block;
     }
+
+    .gemet-menu a.active:before {
+        display: none;
+    }
+
+    .gemet-menu a.active {
+        background: #0065A5;
+        color: white;
+    }
+}
+
+
+a.search-button {
+    display: none;
+}
+
+.active.search-button {
+    background:  #0065A5;
+    color: white;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.active.search-button:before {
+    display: none;
 }
