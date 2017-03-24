@@ -67,7 +67,8 @@ DATABASES = {
 # Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
 # GEMET_RDFGZ_PATH = '/path/to/gemet.rdf.gz'
 
-ZOPE_URL = 'http://eionet.europa.eu'
+ZOPE_URL = 'http://www.eionet.europa.eu'
+GEMET_URL = ZOPE_URL + '/gemet'
 
 # Fill in the following settings to enable LDAP authentication
 AUTH_LDAP_SERVER_URI = ""

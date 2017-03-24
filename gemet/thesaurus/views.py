@@ -258,7 +258,7 @@ class ConceptView(HeaderMixin, VersionMixin, DetailView):
             .values('language__name', 'value')
         )
         concept.set_attributes(self.langcode, self.attributes)
-        concept.url = self.request.build_absolute_uri(concept.get_about_url())
+        concept.url = settings.GEMET_URL + concept.get_about_url()
 
         return concept
 
@@ -889,7 +889,7 @@ def concept_redirect(request, concept_type, concept_code):
 def render_rdf(request, obj):
     context = {
         'concept': obj,
-        'base_url': request.build_absolute_uri('/')[:-1],
+        'base_url': settings.GEMET_URL,
         'relations': obj.source_relations.order_by('property_type__uri'),
         'properties': obj.properties.order_by('name')
     }
