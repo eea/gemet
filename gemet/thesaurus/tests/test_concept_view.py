@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
 from .factories import RelationFactory, TermFactory, ThemeFactory
@@ -137,8 +138,8 @@ class TestConceptView(GemetTest):
                                          'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content h5.h5-url').text().split()[-1]
-        # TODO: check why the url does not have an id
-        self.assertEqual(302, self.app.get(url).status_int)
+        self.assertTrue(settings.GEMET_URL in url)
+        self.assertTrue(url.endswith(self.concept.code))
 
     def test_redirect_rdf(self):
         url = reverse(

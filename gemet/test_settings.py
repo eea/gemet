@@ -23,6 +23,9 @@ NOSE_ARGS = [
 
 USE_ZOPE_LAYOUT = False
 
+ZOPE_URL = 'http://www.eionet.europa.eu'
+GEMET_URL = ZOPE_URL + '/gemet'
+
 try:
     from local_test_settings import *
 except ImportError:

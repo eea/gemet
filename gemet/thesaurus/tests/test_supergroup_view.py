@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
 from .factories import RelationFactory, SuperGroupFactory
@@ -108,7 +109,8 @@ class TestSuperGroupView(GemetTest):
                                             'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content h5.h5-url').text().split()[-1]
-        self.assertEqual(302, self.app.get(url).status_int)
+        self.assertTrue(settings.GEMET_URL in url)
+        self.assertTrue(url.endswith(self.supergroup.code))
 
     def test_404_error(self):
         url = reverse('supergroup', kwargs={'code': 1, 'langcode': 'en'})
