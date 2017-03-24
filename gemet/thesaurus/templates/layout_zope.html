@@ -1,26 +1,32 @@
 {% load staticfiles %}
 
-{% autoescape off %}
-{{ header_before_title }}
+{% include 'zope/header_before_title.html' %}
 
 {% block title %}
 {% endblock %}
 
-{{ header_after_title }}
+{% include 'zope/header_after_title.html' %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/style.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap.min.css' %}">
 <!--   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/bootstrap-theme.min.css' %}"> -->
-    <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/materialize.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/materialize.min.css' %}">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/select2.min.css' %}" />
-
 {% endblock %}
 
-{{ header_end }}
+{% include 'zope/header_before_login.html' %}
 
-{% endautoescape %}
+{% if user.is_authenticated %}
+  <a id="logoutlink" href="{% url 'logout' %}">Logout</a>
+  <a href="http://www.eionet.europa.eu/directory/user?uid={{ user.username }}"
+     id="profilelink">({{ user.username }})</a>
+{% else %}
+  <a id="loginlink" href="{% url 'login' %}">Login</a>
+{% endif %}
+
+{% include 'zope/header_after_login.html' %}
 
 <div class="content">
   {% block content %}
@@ -29,36 +35,38 @@
 
 <!-- footer -->
 <div class="footer-menu">
-  <a href="{% url 'download' language.code %}">Download</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'alphabets' language.code %}">Alphabets</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'about' language.code %}">About GEMET</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'webservices' language.code %}">Web Services</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
-  &nbsp;|&nbsp;
-  <a href="{% url 'changes' language.code %}">History of changes</a>
+
+  {% block footer %}
+    <a href="{% url 'download' language.code %}">Download</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'alphabets' language.code %}">Alphabets</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'about' language.code %}">About GEMET</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'webservices' language.code %}">Web Services</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'definition_sources' language.code %}">Definition sources</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'changes' language.code %}">History of changes</a>
+
+    {% if user.is_authenticated %}
+    &nbsp;|&nbsp;
+    <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+    {% endif %}
+  {% endblock %}
 
   {% block version %}
   {% endblock %}
 
 </div>
 
-{% autoescape off %}
-  {{ footer_text }}
-{% endautoescape %}
+{% include 'zope/footer.html' %}
+
 <div class="backdrop-site"></div>
 <script src="{% static 'thesaurus/js/jquery.min.js' %}"></script>
 <script src="{% static 'thesaurus/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'thesaurus/js/main.js' %}"></script>
 <script src="{% static 'thesaurus/js/materialize.min.js' %}"></script>
-<!-- <script>
-    $(document).ready(function() {
-    $('.edit-page select').material_select();
-  });
-</script> -->
 
 {% block js %}
 {% endblock %}

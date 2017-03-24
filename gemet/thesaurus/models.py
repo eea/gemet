@@ -3,27 +3,7 @@ from django.db import models
 from django.utils.functional import cached_property
 
 from gemet.thesaurus import NS_VIEW_MAPPING
-
-RELATION_TYPES = [
-    'theme',
-    'group',
-    'broader',
-    'narrower',
-    'related',
-    'groupMember',
-    'themeMember',
-]
-
-FOREIGN_RELATION_TYPES = [
-    'exactMatch',
-    'broadMatch',
-    'closeMatch',
-    'narrowMatch',
-    'relatedMatch',
-    'hasWikipediaArticle',
-    'sameEEAGlossary',
-    'seeAlso',
-]
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 
 
 class Version(models.Model):
@@ -31,6 +11,10 @@ class Version(models.Model):
     publication_date = models.DateTimeField(blank=True, null=True)
     changed_note = models.TextField()
     is_current = models.BooleanField(default=False)
+
+    @staticmethod
+    def under_work():
+        return Version.objects.get(identifier="")
 
 
 class PublishedManager(models.Manager):
@@ -42,10 +26,6 @@ class PublishedManager(models.Manager):
 
 
 class VersionableModel(models.Model):
-    PENDING = 0
-    PUBLISHED = 1
-    DELETED = 2
-    DELETED_PENDING = 3
     STATUS_CHOICES = (
         (PENDING, 'pending'),
         (PUBLISHED, 'published'),
@@ -79,7 +59,7 @@ class Concept(VersionableModel):
     code = models.CharField(max_length=10)
     date_entered = models.DateTimeField(blank=True, null=True)
     date_changed = models.DateTimeField(blank=True, null=True)
-
+    EDITABLE = False
     parents_relations = []
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
     extra_values = []
@@ -345,8 +325,7 @@ class PublishedConceptManager(ConceptManager):
     def get_queryset(self):
         return (
             super(PublishedConceptManager, self).get_queryset()
-            .filter(status__in=[
-                VersionableModel.PUBLISHED, VersionableModel.DELETED_PENDING])
+            .filter(status__in=[PUBLISHED, DELETED_PENDING])
         )
 
 
@@ -407,7 +386,8 @@ class InspireTheme(Concept):
 
 
 class EditMixin(object):
-    status_list = [Concept.PUBLISHED, Concept.PENDING, Concept.DELETED_PENDING]
+    status_list = [PUBLISHED, PENDING, DELETED_PENDING]
+    EDITABLE = True
     extra_values = ['status']
 
     def name(self):
@@ -419,7 +399,7 @@ class EditMixin(object):
     def set_attributes(self, langcode, property_list):
         properties = self.get_attributes(langcode, property_list)
         for prop in properties:
-            prop['editable'] = prop['status'] in (self.PUBLISHED, self.PENDING)
+            prop['editable'] = prop['status'] in (PUBLISHED, PENDING)
             value = getattr(self, prop['name'], [])
             value.append(prop)
             setattr(self, prop['name'], value)

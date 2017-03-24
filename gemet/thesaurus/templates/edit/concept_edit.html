@@ -23,6 +23,13 @@
       {% endfor %}
     </ul>
   </div>
+  <!-- Back to concept -->
+  <span>
+    <a class="btn"
+       href="{% url 'concept' language.code concept.code %}"
+       >Back</a>
+  </span>
+
   <!-- Concept -->
   <div class="h3 element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
@@ -80,7 +87,7 @@
             {{ alternative.value }};
 
             {% if alternative.status != DELETED_PENDING %}
-            <button class='btng waves-effect waves-light btn deleteParent' type="submit" value="X"
+            <button class='btng waves-effect waves-light btn deleteRelation' type="submit" value="X"
                     data-field-id="#alternative{{ alternative.id }}"
                     data-type="alternative"
                     data-href="{% url 'delete_property' alternative.id %}">
@@ -100,20 +107,12 @@
   <div class="definition text-area element">
     <h5 class="h5">Definition</h5>
       {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
-      {% if concept.default_definition %}
-        <p class="alert empty-text" id="definitionEmpty">
-          Definition is not available for the current language.
-        </p>
-      {% endif %}
   </div>
 
   <!--Source-->
   <div class="source text-area element">
     <span>Source:</span>
       {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
-      {% if not concept.source %}
-        <p class="alert empty-text" id="sourceEmpty"> Source is not available. </p>
-      {% endif %}
   </div>
 
   <!-- Themes -->
@@ -227,7 +226,7 @@
                 data-field-id="#otherList"
                 data-value-input-id="#otherValue"
                 data-select-id="#otherSelect"
-                data-href="{% url 'add_other' language.code concept.id %}" hidden>
+                data-href="{% url 'add_other' concept.id %}" hidden>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
     
       save
@@ -246,23 +245,22 @@
               <a href="{{ relation.uri }}">{{ relation.label }}</a>
 
               {% if relation.status == DELETED_PENDING %}
-              <button class='btng waves-effect waves-light btn restoreParent'
+              <button class='btng waves-effect waves-light btn restoreRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'restore_other' language.code concept.id relation.id %}">
-          
+                      data-href="{% url 'restore_other' relation.id %}">
+
                   <i class="fa fa-undo" aria-hidden="true"></i>
               Restore
               </button>
 
               {% else %}
-              <button class='btng waves-effect waves-light btn deleteParent'
+              <button class='btng waves-effect waves-light btn deleteRelation'
                       type="button"
                       data-type="other"
                       data-field-id="#other{{ relation.id }}"
-                      data-href="{% url 'delete_other' language.code concept.id relation.id %}">
-          
+                      data-href="{% url 'delete_other' relation.id %}">
                   <i class="fa fa-times" aria-hidden="true"></i>
                   Delete
               </button>
@@ -280,9 +278,6 @@
   <div class="scope text-area element">
     <h5 class="h5">Scope note</h5>
       {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
-      {% if not concept.scopeNote %}
-        <span id='scopeNoteEmpty' class="alert empty-text">Scope note is not available.</span>
-      {% endif %}
   </div>
 
   <!-- Concept URL -->

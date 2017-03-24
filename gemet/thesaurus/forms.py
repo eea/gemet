@@ -1,6 +1,9 @@
 from django import forms
-from django.forms import ModelForm
-from gemet.thesaurus.models import Language, ForeignRelation, Property
+from django.conf import settings
+from django.contrib.auth.forms import AuthenticationForm
+
+from gemet.thesaurus.models import ForeignRelation, Language, Namespace
+from gemet.thesaurus.models import Property
 
 
 class SearchForm(forms.Form):
@@ -25,15 +28,29 @@ class ExportForm(forms.Form):
     )
 
 
-class PropertyForm(ModelForm):
+class PropertyForm(forms.ModelForm):
 
     class Meta:
         model = Property
         fields = ('value', )
 
 
-class ForeignRelationForm(ModelForm):
+class ForeignRelationForm(forms.ModelForm):
 
     class Meta:
         model = ForeignRelation
         fields = ('label', 'uri')
+
+
+class ConceptForm(forms.Form):
+
+    name = forms.CharField(max_length=16000)
+    namespace = forms.ModelChoiceField(queryset=Namespace.objects.all(),
+                                       empty_label=None)
+
+
+class LDAPAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        if user.username not in settings.AUTHORIZED_USERS:
+            raise forms.ValidationError(
+                'Your account is not authorized to login to GEMET')

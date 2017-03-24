@@ -9,20 +9,20 @@
         {{ parent.name }}
 
           {% if parent.status == DELETED_PENDING %}
-          <button class='btng waves-effect waves-light btn deleteParent'
+          <button class='btng waves-effect waves-light btn restoreRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
-                  data-href="{% url 'restore_relation' language.code concept.id parent.id type %}"
+                  data-href="{% url 'restore_relation' concept.id parent.id type %}"
                   data-type="{{ type }}">
               <i class="fa fa-undo" aria-hidden="true"></i>
           Restore
           </button>
 
           {% else %}
-          <button class='btng waves-effect waves-light btn deleteParent'
+          <button class='btng waves-effect waves-light btn deleteRelation'
                   type="button"
                   data-field-id="#{{ type }}{{ parent.id }}"
-                  data-href="{% url 'delete_relation' language.code concept.id parent.id type %}"
+                  data-href="{% url 'delete_relation' concept.id parent.id type %}"
                   data-type="{{ type }}">
               <i class="fa fa-times" aria-hidden="true"></i>
           Delete

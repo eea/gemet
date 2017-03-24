@@ -1,11 +1,14 @@
+import json
+
 from django.core.urlresolvers import reverse
 
-from .factories import ForeignRelation, ForeignRelationFactory
-from .factories import LanguageFactory, Property, PropertyFactory
-from .factories import PropertyTypeFactory, RelationFactory, Relation
-from .factories import TermFactory, ThemeFactory
+from .factories import ForeignRelationFactory, RelationFactory, LanguageFactory
+from .factories import PropertyTypeFactory, PropertyFactory, ConceptFactory
+from .factories import ThemeFactory, UserFactory, NamespaceFactory, TermFactory
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
+from gemet.thesaurus import forms
+from gemet.thesaurus import models
 from . import GemetTest
-import json
 
 
 class TestEditPropertyView(GemetTest):
@@ -18,39 +21,67 @@ class TestEditPropertyView(GemetTest):
         self.request_kwargs = {'langcode': self.language.code,
                                'id': self.concept.id,
                                'name': 'prefLabel'}
+        user = UserFactory()
+        self.user = user.username
 
     def test_edit_property_bad_concept(self):
-
-        url = reverse('edit_property',  kwargs={'langcode': 'en',
-                                                'id': 43,
-                                                'name': 'prefLabel'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['id'] = 99
+        url = reverse('edit_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'},
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_edit_property_bad_language(self):
-        url = reverse('edit_property', kwargs={'langcode': 'abc',
-                                               'id': self.concept.id,
-                                               'name': 'prefLabel'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['langcode'] = 'abc'
+        url = reverse('edit_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'},
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_edit_property_request_no_value(self):
         url = reverse('edit_property', kwargs=self.request_kwargs)
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_edit_property_correct_request(self):
+    def test_edit_property_correct_request_no_property(self):
         url = reverse('edit_property', kwargs=self.request_kwargs)
-        response = self.app.post(url, params={'value': 'name1'})
+        response = self.app.post(url, user=self.user, params={'value': 'name1'})
         self.assertEqual(200, response.status_code)
         self.assertEqual(json.loads(response.body)['value'], 'name1')
         new_property = self.concept.properties.first()
         self.assertIsNotNone(new_property)
         self.assertEquals(new_property.name, 'prefLabel')
         self.assertEquals(new_property.value, 'name1')
-        self.assertEquals(new_property.status, Property.PENDING)
+        self.assertEquals(new_property.status, PENDING)
 
-    # todo test behaviour if a property with that name is already defined
+    def test_edit_property_correct_request_published_property(self):
+        property = PropertyFactory(concept=self.concept, language=self.language,
+                                   name='prefLabel', value='test',
+                                   status=PUBLISHED)
+        url = reverse('edit_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(json.loads(response.body)['value'], 'name1')
+        property.refresh_from_db()
+        self.assertEquals(property.status, DELETED_PENDING)
+        self.assertEquals(property.value, 'test')
+        new_property = models.Property.objects.filter(status=PENDING).first()
+        self.assertIsNotNone(new_property)
+        self.assertEquals(new_property.name, 'prefLabel')
+        self.assertEquals(new_property.value, 'name1')
+
+    def test_edit_property_correct_request_pending_property(self):
+        property = PropertyFactory(concept=self.concept, language=self.language,
+                                   name='prefLabel', value='test',
+                                   status=PENDING)
+        url = reverse('edit_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(json.loads(response.body)['value'], 'name1')
+        property.refresh_from_db()
+        self.assertEquals(property.name, 'prefLabel')
+        self.assertEquals(property.value, 'name1')
+        self.assertEquals(property.status, PENDING)
 
 
 class TestAddPropertyView(GemetTest):
@@ -62,85 +93,139 @@ class TestAddPropertyView(GemetTest):
         self.request_kwargs = {'langcode': self.language.code,
                                'id': self.concept.id,
                                'name': 'prefLabel'}
+        user = UserFactory()
+        self.user = user.username
 
     def test_add_property_bad_concept(self):
-        url = reverse('add_property', kwargs={'langcode': 'en',
-                                              'id': 43,
-                                              'name': 'prefLabel'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['id'] = 99
+        url = reverse('add_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'},
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_add_property_bad_language(self):
-        url = reverse('add_property', kwargs={'langcode': 'abc',
-                                              'id': self.concept.id,
-                                              'name': 'prefLabel'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['langcode'] = 'abc'
+        url = reverse('add_property', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, params={'value': 'name1'},
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_add_property_request_no_value(self):
         url = reverse('add_property', kwargs=self.request_kwargs)
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_add_property_correct_request(self):
         url = reverse('add_property', kwargs=self.request_kwargs)
-        response = self.app.post(url, params={'value': 'name1'})
+        response = self.app.post(url, user=self.user, params={'value': 'name1'})
         self.assertEqual(200, response.status_code)
         self.assertEqual(json.loads(response.body)['value'], 'name1')
         new_property = self.concept.properties.first()
         self.assertIsNotNone(new_property)
         self.assertEquals(new_property.name, 'prefLabel')
         self.assertEquals(new_property.value, 'name1')
-        self.assertEquals(new_property.status, Property.PENDING)
+        self.assertEquals(new_property.status, PENDING)
 
 
-class TestRemoveParentRelationView(GemetTest):
+class TestDeleteRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.term = TermFactory()
-        self.theme = ThemeFactory()
-        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
-        self.request_kwargs = {'langcode': 'en',
-                               'id': self.term.id,
-                               'parent_id': self.theme.id,
-                               'rel_type': 'theme'}
+        self.relation = RelationFactory(status=DELETED_PENDING)
+        self.request_kwargs = {
+            'source_id': self.relation.source.id,
+            'target_id': self.relation.target.id,
+            'relation_type': self.relation.property_type.name,
+        }
+        user = UserFactory()
+        self.user = user.username
 
     def test_delete_relation_bad_concept(self):
-        url = reverse('delete_relation', kwargs={'langcode': 'en',
-                                                 'id': 31,
-                                                 'parent_id': self.theme.id,
-                                                 'rel_type': 'theme'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['source_id'] = 99
+        url = reverse('delete_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_relation_bad_parent(self):
-        url = reverse('delete_relation', kwargs={'langcode': 'en',
-                                                 'id': self.term.id,
-                                                 'parent_id': 99,
-                                                 'rel_type': 'theme'})
-        response = self.app.post(url, expect_errors=True)
+        self.request_kwargs['target_id'] = 99
+        url = reverse('delete_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_relation_no_relation(self):
+        self.request_kwargs['relation_type'] = 'test'
         url = reverse('delete_relation', kwargs=self.request_kwargs)
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_delete_relation_correct_request(self):
+    def test_delete_relation_correct_request_published_relation(self):
+        self.relation.status = PUBLISHED
+        self.relation.save()
         url = reverse('delete_relation', kwargs=self.request_kwargs)
-        RelationFactory(source=self.term, target=self.theme,
-                        property_type=self.property_type,
-                        status=Property.PUBLISHED)
-        response = self.app.post(url)
+        response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
-        relation = Relation.objects.get(source=self.term, target=self.theme,
-                                        property_type=self.property_type)
-        self.assertEqual(relation.status, Property.DELETED_PENDING)
-        # todo could test for status=pending when the behaviour will differ
+        self.relation.refresh_from_db()
+        self.assertEqual(self.relation.status, DELETED_PENDING)
+
+    def test_delete_relation_correct_request_pending_relation(self):
+        self.relation.status = PENDING
+        self.relation.save()
+        url = reverse('delete_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user)
+        self.assertEqual(200, response.status_code)
+        self.assertFalse(models.Relation.objects.filter(
+            id=self.relation.id).exists())
 
 
-class TestAddParentRelationView(GemetTest):
+class TestRestoreRelationView(GemetTest):
+    csrf_checks = False
+
+    def setUp(self):
+        self.relation = RelationFactory(status=DELETED_PENDING)
+        self.request_kwargs = {
+            'source_id': self.relation.source.id,
+            'target_id': self.relation.target.id,
+            'relation_type': self.relation.property_type.name,
+        }
+        user = UserFactory()
+        self.user = user.username
+
+    def test_restore_relation_bad_source(self):
+        self.request_kwargs['source_id'] = 99
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_bad_target(self):
+        self.request_kwargs['target_id'] = 99
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_no_relation(self):
+        self.request_kwargs['relation_type'] = 'test'
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_relation_bad_status(self):
+        self.relation.status = PENDING
+        self.relation.save()
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+        self.relation.refresh_from_db()
+        self.assertEqual(self.relation.status, PENDING)
+
+    def test_restore_relation_correct_request(self):
+        url = reverse('restore_relation', kwargs=self.request_kwargs)
+        response = self.app.post(url, user=self.user)
+        self.assertEqual(200, response.status_code)
+        self.relation.refresh_from_db()
+        self.assertEqual(self.relation.status, PUBLISHED)
+
+
+class TestAddRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
@@ -151,106 +236,164 @@ class TestAddParentRelationView(GemetTest):
                                         concept=self.theme,
                                         name='prefLabel',
                                         value='Theme 1',
-                                        status=Property.PUBLISHED)
-        self.property_type = PropertyTypeFactory(label='Theme',
-                                                 name='theme', id=10)
+                                        status=PUBLISHED)
+        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
+        user = UserFactory()
+        self.user = user.username
 
     def test_post_no_concept_no_parent_object(self):
-        url = reverse('add_relation', kwargs={'id': 33,
-                                              'langcode': 'en',
-                                              'parent_id': 45,
-                                              'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'source_id': 33,
+                                              'target_id': 45,
+                                              'relation_type': 'theme'})
 
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_relation', kwargs={'id': self.term.id,
-                                              'langcode': 'en',
-                                              'parent_id': self.theme.id,
-                                              'rel_type': 'theme'})
+        url = reverse('add_relation', kwargs={'source_id': self.term.id,
+                                              'target_id': self.theme.id,
+                                              'relation_type': 'theme'})
 
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
 
 
-class TestRemovePropertyView(GemetTest):
+class TestDeletePropertyView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.property = PropertyFactory(value='new property',
-                                        status=Property.PUBLISHED)
+        self.property = PropertyFactory(value='new property', status=PUBLISHED)
+        user = UserFactory()
+        self.user = user.username
 
     def test_delete_property_bad_concept(self):
         url = reverse('delete_property', kwargs={'pk': 43})
-        response = self.app.post(url, expect_errors=True)
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_property_correct_request(self):
         url = reverse('delete_property', kwargs={'pk': self.property.pk})
-        response = self.app.post(url, params={'value': 'new property'})
+        response = self.app.post(url, user=self.user,
+                                 params={'value': 'new property'})
         self.assertEqual(200, response.status_code)
-
-        prop = Property.objects.get(pk=self.property.pk)
-        self.assertEqual(prop.status, Property.DELETED_PENDING)
+        self.property.refresh_from_db()
+        self.assertEqual(self.property.status, DELETED_PENDING)
 
 
 class TestAddForeignRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.property_type1 = PropertyTypeFactory(label='has exact Match',
-                                                  name='exactMatch', id=10)
-        self.property_type2 = PropertyTypeFactory(label='has close Match',
-                                                  name='closeMatch', id=20)
-        self.lang = LanguageFactory()
+        self.property_type = PropertyTypeFactory(label='has exact Match',
+                                                 name='exactMatch')
         self.concept = TermFactory()
+        self.params = {
+            'uri': 'http://some.bogus.url',
+            'rel_type': self.property_type.id,
+            'label': 'Test label',
+        }
+        user = UserFactory()
+        self.user = user.username
 
-    def test_post_bad_request(self):
-        url = reverse('add_other', kwargs={'id': 10, 'langcode': 'en'})
-        response = self.app.post(url, expect_errors=True,
-                                 params={'rel_type': 10})
+    def test_post_bad_concept_id(self):
+        url = reverse('add_other', kwargs={'id': 999})
+        response = self.app.post(url, user=self.user, params=self.params,
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
-    def test_post_bad_form(self):
-        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
-        response = self.app.post(url, expect_errors=True,
-                                 params={'rel_type': 10})
+    def test_post_bad_relation_type(self):
+        url = reverse('add_other', kwargs={'id': self.concept.id})
+        self.params['rel_type'] = 99
+        response = self.app.post(url, user=self.user, params=self.params,
+                                 expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_post_correct_request(self):
-        url = reverse('add_other', kwargs={'id': 1, 'langcode': 'en'})
-        response = self.app.post(url, expect_errors=True,
-                                 params={'uri': 'Uri', 'rel_type': 10,
-                                         'label': 'Label'})
+        url = reverse('add_other', kwargs={'id': self.concept.id})
+        response = self.app.post(url, user=self.user, params=self.params)
         self.assertEqual(200, response.status_code)
+        foreign_relation = models.ForeignRelation.objects.get(
+            concept=self.concept, property_type=self.property_type)
+        self.assertIsNotNone(foreign_relation)
         data = json.loads(response.body)
-        foreign_relation = ForeignRelation.objects.get(
-            concept=self.concept, property_type=self.property_type1)
         self.assertEqual(foreign_relation.id, data['id'])
 
 
-class TestRemoveForeignRelationView(GemetTest):
+class TestDeleteForeignRelationView(GemetTest):
     csrf_checks = False
 
     def setUp(self):
-        self.term = TermFactory()
-        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
-        self.foreign_relation = ForeignRelationFactory(
-            concept=self.term, property_type=self.property_type, id=8)
+        self.foreign_relation = ForeignRelationFactory()
+        user = UserFactory()
+        self.user = user.username
 
     def test_delete_foreign_relation_no_relation(self):
-        url = reverse('delete_other', kwargs={'id': 1,
-                                              'relation_id': 7,
-                                              'langcode': 'en'})
-        response = self.app.post(url, expect_errors=True)
+        url = reverse('delete_other', kwargs={'pk': 99})
+        response = self.app.post(url, user=self.user, expect_errors=True)
         self.assertEqual(400, response.status_code)
 
     def test_delete_foreign_relation_correct_request(self):
-        url = reverse('delete_other', kwargs={'id': 1,
-                                              'relation_id': 8,
-                                              'langcode': 'en'})
-        response = self.app.post(url, expect_errors=True)
+        url = reverse('delete_other', kwargs={'pk': self.foreign_relation.pk})
+        response = self.app.post(url, user=self.user)
+        self.foreign_relation.refresh_from_db()
         self.assertEqual(200, response.status_code)
-        foreign_relation = ForeignRelation.objects.get(id=8)
-        self.assertEqual(foreign_relation.status, Property.DELETED_PENDING)
+        self.assertEqual(self.foreign_relation.status, DELETED_PENDING)
+
+
+class TestRestoreForeignRelationView(GemetTest):
+    csrf_checks = False
+
+    def setUp(self):
+        user = UserFactory()
+        self.user = user.username
+
+    def test_restore_foreign_relation_no_relation(self):
+        url = reverse('restore_other', kwargs={'pk': 99})
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+
+    def test_restore_foreign_relation_not_deleted(self):
+        foreign_relation = ForeignRelationFactory(status=PENDING)
+        url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
+        response = self.app.post(url, user=self.user, expect_errors=True)
+        self.assertEqual(400, response.status_code)
+        foreign_relation.refresh_from_db()
+        self.assertEqual(foreign_relation.status, PENDING)
+
+    def test_restore_foreign_relation_correct_request(self):
+        foreign_relation = ForeignRelationFactory(status=DELETED_PENDING)
+        url = reverse('restore_other', kwargs={'pk': foreign_relation.pk})
+        response = self.app.post(url, user=self.user)
+        self.assertEqual(200, response.status_code)
+        foreign_relation.refresh_from_db()
+        self.assertEqual(foreign_relation.status, PUBLISHED)
+
+
+class TestAddNewConcept(GemetTest):
+    csrf_checks = False
+
+    def setUp(self):
+        self.language = LanguageFactory()
+        self.namespace = NamespaceFactory()
+        self.concept = ConceptFactory(namespace=self.namespace, code='200')
+        user = UserFactory()
+        self.user = user.username
+
+    def test_get_sets_form(self):
+        url = reverse('concept_add', kwargs={'langcode': self.language.code})
+        response = self.app.get(url, user=self.user)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(forms.ConceptForm, type(response.context['form']))
+
+    def test_post_correct_form(self):
+        url = reverse('concept_add', kwargs={'langcode': self.language.code})
+        response = self.app.post(url, user=self.user,
+                                 params={'name': 'test',
+                                         'namespace': self.namespace.id})
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(2, len(models.Concept.objects.all()))
+        self.assertEqual('201', models.Concept.objects.last().code)
+        self.assertEqual('test',
+                         models.Property.objects.get(name='prefLabel',
+                                                     concept__code='201').value)

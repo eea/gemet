@@ -23,11 +23,13 @@
   <!-- Group -->
   <div class="selected-word">
     <span id="prefLabel">{{ group.name }}</span>
-    <span>
-      <a class="btn btn-primary"
-         href="{% url 'group_edit' language.code group.code %}"
-         >Edit</a>
-    </span>
+    {% if user.is_authenticated %}
+      <span>
+        <a class="btn btn-primary"
+           href="{% url 'group_edit' language.code group.code %}"
+           >Edit</a>
+      </span>
+    {% endif %}
   </div>
 
 <div class="text-area-wrapper">
@@ -79,5 +81,5 @@
 
 {% endblock %}
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+    {% include 'version.html' %}
 {% endblock %}

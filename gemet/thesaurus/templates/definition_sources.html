@@ -12,7 +12,7 @@ Definition sources used by gemet
     {% if definitions %}
     <ol id="definition-sources">
         {% for definition in definitions %}
-        <li>
+        <li id="{{ definition.abbr }}">
             <strong>{{definition.abbr}}</strong>
             {% if definition.url %}
             <a href="{{definition.url}}">{{definition.url}}</a>

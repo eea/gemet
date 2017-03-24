@@ -9,18 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.shortcuts import redirect
 
-from gemet.thesaurus.models import (
-    Namespace,
-    Language,
-    Concept,
-    Term,
-    Theme,
-    Group,
-    SuperGroup,
-    InspireTheme,
-    Property,
-    Relation,
-)
+from gemet.thesaurus.models import Concept, Group, Language, InspireTheme
+from gemet.thesaurus.models import Namespace, Property, Relation, SuperGroup
+from gemet.thesaurus.models import Term, Theme
 from gemet.thesaurus import DEFAULT_LANGCODE, NS_VIEW_MAPPING
 from gemet.thesaurus.utils import search_queryset, regex_search
 

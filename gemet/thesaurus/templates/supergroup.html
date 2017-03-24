@@ -23,11 +23,13 @@
   <!-- Concept -->
   <div class="selected-word">
     <span id="prefLabel">{{ supergroup.name }}</span>
-    <span>
-      <a class="btn btn-primary"
-         href="{% url 'supergroup_edit' language.code supergroup.code %}"
-         >Edit</a>
-    </span>
+    {% if user.is_authenticated %}
+      <span>
+        <a class="btn btn-primary"
+           href="{% url 'supergroup_edit' language.code supergroup.code %}"
+           >Edit</a>
+      </span>
+    {% endif %}
   </div>
 
   <div class="text-area-wrapper">
@@ -73,6 +75,7 @@
 </div>
 </div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' %}
 {% endblock %}

@@ -13,24 +13,39 @@ function formatConceptSelection (concept) {
 
 function createButton(href, type, bindFunc, cls, icon, text) {
   var $button = $("<button type='button'></button>");
-  $button.attr('class', 'btng centerMe');
+  $button.attr('class', 'btng waves-effect waves-light btn');
   $button.addClass(cls);
   $button.attr("data-href", href);
   $button.attr("data-type", type);
-  var $buttonStyle = $("<div class='icon'><i class='fa fa-" + icon + "' aria-hidden='true'></i></div>");
-  var $buttonText = $("<div class='text'><span>" + text + "</span></div>");
+  var $buttonStyle = $("<i class='fa fa-" + icon + "' aria-hidden='true'></i>");
   $button.append($buttonStyle);
-  $button.append($buttonText);
+  $button.append(" " + text);
   $button.bind('click', bindFunc);
   return $button;
 }
 
 function createDeleteButton(href, type){
-  return createButton(href, type, deleteParent, 'deleteParent', 'times', 'Delete');
+  return createButton(href, type, deleteRelation, 'deleteRelation', 'times', 'Delete');
 }
 
 function createRestoreButton(href, type){
-  return createButton(href, type, restoreParent, 'restoreParent', 'undo', 'Restore');
+  return createButton(href, type, restoreRelation, 'restoreRelation', 'undo', 'Restore');
+}
+
+function errorMessage(message){
+  var n = noty({
+    text: message,
+    layout: 'top',
+    theme: 'bootstrapTheme', // or relax
+    type: 'error',
+    timeout: 2000,
+    animation: {
+      open: {height: 'toggle'},
+      close: {height: 'toggle'},
+      easing: 'swing',
+      speed: 500 // opening & closing animation speed
+    }
+  });
 }
 
 $(document).ready(function () {
@@ -70,8 +85,8 @@ $(document).ready(function () {
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
   $('#alternativeSave').click(saveAlternativeProperty);
   $('#otherSave').click(saveOtherRelation);
-  $('.deleteParent').click(deleteParent);
-  $('.restoreParent').click(restoreParent);
+  $('.deleteRelation').click(deleteRelation);
+  $('.restoreRelation').click(restoreRelation);
 });
 
   $('.btng.edit, .btng.add').on('click', function(){
@@ -79,11 +94,8 @@ $(document).ready(function () {
     $(this).addClass('hidden'); // hide edit/add button
     $(this).parent().siblings('.input-area').addClass('visible'); // show input area
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
-    $(this).parent().parent().siblings('.empty-text').addClass('hidden'); // hide empty text
   });
-  $('.btng.cancel').on('click', function(){
-    $(this).parent().parent().siblings('.empty-text').removeClass('hidden'); // show empty text
-  });
+
   $('.btng.save, .btng.cancel').on('click', function(){
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
     $(this).parent().siblings('.input-area').removeClass('visible'); // hide input area
@@ -108,7 +120,6 @@ $(document).ready(function () {
     var fieldName = $(this).data('type'); // type of property sent to request
     var url = $(this).data('href'); // url for editing
     var fieldStatus = $textElement.data('status'); // status of property edited
-    var $emptyElement = $(this).parent().parent().siblings('.empty-text') // get empty text element
     $.ajax({
       type: "POST",
       url: url,
@@ -117,9 +128,9 @@ $(document).ready(function () {
              'csrfmiddlewaretoken': Cookies.get('csrftoken')
             },
       error: function(e) {
+        errorMessage(e.responseJSON.message)
       },
       success: function(data){
-        $emptyElement.remove(); //remove empty text after a successful post
         if (fieldStatus == 0) { // pending field
           $textElement.text(data['value']);
           $textElement.data('value', data['value']);
@@ -181,6 +192,7 @@ $(document).ready(function () {
               'csrfmiddlewaretoken': Cookies.get('csrftoken'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
          addElement(fieldId, parentId, parentText, deleteUrl, fieldName,
@@ -203,6 +215,8 @@ $(document).ready(function () {
               'csrfmiddlewaretoken': Cookies.get('csrftoken'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
+         $inputElement.val('');
        },
        success: function(data){
         $alternativeWrapper = $("<div class='alternative-item'></div>");
@@ -212,6 +226,7 @@ $(document).ready(function () {
         $alternative.append($deleteButton);
         $alternativeWrapper.append($alternative);
         $textList.append($alternativeWrapper);
+        $inputElement.val('');
     }
   });
  };
@@ -239,6 +254,7 @@ $(document).ready(function () {
               'property_type': propertyTypeId,
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data) {
          var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
@@ -261,7 +277,7 @@ $(document).ready(function () {
   }
 
   /* remove concept, alternative or other relation */
-  function deleteParent(){
+  function deleteRelation(){
     var strconfirm = confirm("Are you sure you want to delete this object?");
     if (strconfirm == false) {
         return;
@@ -278,6 +294,7 @@ $(document).ready(function () {
               'value': $(deleteFieldId).data('value'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
 
@@ -294,7 +311,7 @@ $(document).ready(function () {
   };
 
   /* restore concept, alternative or other relation */
-  function restoreParent(){
+  function restoreRelation(){
     var strconfirm = confirm("Are you sure you want to restore this object?");
     if (strconfirm == false) {
         return;
@@ -311,6 +328,7 @@ $(document).ready(function () {
               'value': $(relationDiv).data('value'),
              },
        error: function(e) {
+         errorMessage(e.responseJSON.message)
        },
        success: function(data){
          $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status

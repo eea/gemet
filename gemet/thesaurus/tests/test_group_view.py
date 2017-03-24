@@ -30,9 +30,8 @@ class TestGroupView(GemetTest):
         concept = TermFactory()
         PropertyFactory(concept=concept, name="prefLabel",
                         value="concept prefLabel")
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt1, source=self.group,
                         target=concept)
         RelationFactory(property_type=pt2, source=concept,
@@ -41,12 +40,10 @@ class TestGroupView(GemetTest):
         supergroup = SuperGroupFactory()
         PropertyFactory(concept=supergroup, name="prefLabel",
                         value="supergroup prefLabel")
-        pt3 = PropertyTypeFactory(id=3, name="broader", label="broader term")
-        pt4 = PropertyTypeFactory(id=4, name="narrower", label="narrower term")
-        RelationFactory(property_type=pt3, source=self.group,
-                        target=supergroup)
-        RelationFactory(property_type=pt4, source=supergroup,
-                        target=self.group)
+        pt3 = PropertyTypeFactory(name="broader", label="broader term")
+        pt4 = PropertyTypeFactory(name="narrower", label="narrower term")
+        RelationFactory(property_type=pt3, source=self.group, target=supergroup)
+        RelationFactory(property_type=pt4, source=supergroup, target=self.group)
         url = reverse('group', kwargs={'code': self.group.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)

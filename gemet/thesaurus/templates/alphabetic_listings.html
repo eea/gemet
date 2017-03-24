@@ -14,7 +14,7 @@ Alphabetic listing of terms
 
 {% block letter_pagination %}
 <div class="letter-pagination">
-  List by letters: 
+  List by letters:
   {% if letter == 0 %}
     <span class="selected-elm">all</span>
   {% else %}
@@ -36,6 +36,7 @@ Alphabetic listing of terms
   {% endif %}
 </div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+    {% include 'version.html' %}
 {% endblock %}

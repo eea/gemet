@@ -1,15 +1,11 @@
-from itertools import chain
-from collections import OrderedDict
 import sys
-from xmlrpclib import Fault
+from collections import OrderedDict
+from itertools import chain
 from urllib import urlencode
+from xmlrpclib import Fault
 
 from django.http import Http404, StreamingHttpResponse
-from django.shortcuts import (
-    render,
-    get_object_or_404,
-    redirect,
-)
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views.generic import TemplateView, ListView
@@ -17,28 +13,15 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.conf import settings
 
-from gemet.thesaurus.models import (
-    Language,
-    Theme,
-    Namespace,
-    SuperGroup,
-    Term,
-    Group,
-    Property,
-    DefinitionSource,
-    Relation,
-    InspireTheme,
-    ForeignRelation,
-    Concept,
-)
+from gemet.thesaurus.models import Concept, DefinitionSource, ForeignRelation
+from gemet.thesaurus.models import Group, Language, InspireTheme, Namespace
+from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
+from gemet.thesaurus.models import Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
-from gemet.thesaurus import (
-    DEFAULT_LANGCODE,
-    NR_CONCEPTS_ON_PAGE,
-    NS_ID_VIEW_MAPPING,
-)
+from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
+from gemet.thesaurus import NS_ID_VIEW_MAPPING
 
 
 class HeaderMixin(object):
@@ -62,6 +45,21 @@ class HeaderMixin(object):
         return context
 
 
+class VersionMixin(object):
+
+    def __init__(self, *args, **kwargs):
+        super(VersionMixin, self).__init__(*args, **kwargs)
+        self.current_version = Version.objects.get(is_current=True)
+        self.pending_version = Version.under_work()
+
+    def get_context_data(self, **kwargs):
+        context = super(VersionMixin, self).get_context_data(**kwargs)
+        context.update({
+            'version': self.current_version,
+        })
+        return context
+
+
 class AboutView(HeaderMixin, TemplateView):
     template_name = "about.html"
 
@@ -74,7 +72,7 @@ class WebServicesView(HeaderMixin, TemplateView):
     template_name = 'webservices.html'
 
 
-class ThemesView(HeaderMixin, TemplateView):
+class ThemesView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
@@ -109,7 +107,7 @@ class ThemesView(HeaderMixin, TemplateView):
             'page_title': self.page_title,
             'theme_url': self.theme_url,
             'view_name': self.view_name,
-            'ns_version': self.model_cls.published.get_ns().version,
+            'namespace': self.model_cls.NAMESPACE,
             'css_class': self.css_class,
         })
         return context
@@ -126,17 +124,19 @@ class InspireThemesView(ThemesView):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
         languages = (
             Language.objects
-            # TODO Replace hardcoded value after merging task_81147
-            .filter(properties__concept__namespace__heading='Inspire Themes')
+            .filter(
+                properties__concept__namespace__heading=InspireTheme.NAMESPACE)
+            .distinct()
             .values('code', 'name')
             .order_by('name')
         )
-
-        context.update({'languages': languages})
+        context.update({
+            'languages': languages,
+        })
         return context
 
 
-class GroupsView(HeaderMixin, TemplateView):
+class GroupsView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
@@ -156,7 +156,7 @@ class GroupsView(HeaderMixin, TemplateView):
 
         context.update({
             "supergroups": supergroups,
-            "ns_version": Group.published.get_ns().version
+            "namespace": Group.NAMESPACE,
         })
         return context
 
@@ -184,7 +184,7 @@ class AlphabetsView(HeaderMixin, TemplateView):
         return context
 
 
-class SearchView(HeaderMixin, FormView):
+class SearchView(HeaderMixin, VersionMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
@@ -197,7 +197,7 @@ class SearchView(HeaderMixin, FormView):
         context.update({
             "query": self.query,
             "concepts": self.concepts,
-            "ns_version": Term.published.get_ns().version
+            "namespace": Term.NAMESPACE,
         })
         return context
 
@@ -211,7 +211,7 @@ class SearchView(HeaderMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RelationsView(HeaderMixin, TemplateView):
+class RelationsView(HeaderMixin, VersionMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
@@ -233,13 +233,14 @@ class RelationsView(HeaderMixin, TemplateView):
             'group': group,
             'expand_list': expand_list,
             'get_params': self.request.GET.urlencode(),
-            'ns_version': Term.published.get_ns().version
+            'namespace': Term.NAMESPACE,
         })
         return context
 
 
-class ConceptView(HeaderMixin, DetailView):
+class ConceptView(HeaderMixin, VersionMixin, DetailView):
     attributes = ['prefLabel', 'definition', 'scopeNote']
+    override_languages = True
 
     def get_object(self):
         code = self.kwargs.get('code')
@@ -264,18 +265,19 @@ class ConceptView(HeaderMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ConceptView, self).get_context_data(**kwargs)
 
-        languages = (
-            Language.objects
-            .filter(properties__concept=self.object,
-                    properties__value__isnull=False)
-            .values('code', 'name')
-            .order_by('name')
-            .distinct()
-        )
+        if self.override_languages:
+            languages = (
+                Language.objects
+                .filter(properties__concept=self.object,
+                        properties__value__isnull=False)
+                .values('code', 'name')
+                .order_by('name')
+                .distinct()
+            )
+            context['languages'] = languages
 
         context.update({
-            "languages": languages,
-            "ns_version": self.model.objects.get_ns().version
+            "namespace": self.model.NAMESPACE,
         })
         return context
 
@@ -330,7 +332,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(HeaderMixin, ListView):
+class PaginatorView(HeaderMixin, VersionMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
@@ -432,7 +434,7 @@ class ThemeConceptsView(PaginatorView):
             context.update({'language_warning': True})
         context.update({
             'theme': self.theme,
-            'ns_version': Term.published.get_ns().version
+            'namespace': Term.NAMESPACE,
         })
 
         return context
@@ -456,8 +458,7 @@ class AlphabeticView(PaginatorView):
 
     def get_context_data(self, **kwargs):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
-        context.update({"ns_version": Term.published.get_ns().version})
-
+        context.update({"namespace": Term.NAMESPACE})
         return context
 
 

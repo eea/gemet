@@ -26,12 +26,13 @@
   <!-- Concept -->
   <div class="selected-word">
     <span id="prefLabel">{{ concept.name }}</span>
-    <span>
-      <a class="btn"
-         href="{% url 'concept_edit' language.code concept.code %}"
-         >Edit</a>
-       
-    </span>
+    {% if user.is_authenticated %}
+      <span>
+        <a class="btn"
+           href="{% url 'concept_edit' language.code concept.code %}"
+           >Edit</a>
+      </span>
+    {% endif %}
   </div>
 
   <div class="text-area-wrapper">
@@ -46,7 +47,10 @@
     <p>
       {{ concept.definition }}
       {% if concept.source %}
-        <span>(Source: {{ concept.source }})</span>
+        <div class="source text-area" hidden>
+        </div>
+        <button class="btn source input-area"
+                data-href="{% url 'concept_sources' language.code concept.id %}">Show source</button>
       {% endif %}
     </p>
     {% if concept.default_definition %}
@@ -176,5 +180,5 @@
 
 {% endblock %}
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+    {% include 'version.html' %}
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends layout_template %}
+
+{% block title %}
+  Login to GEMET
+{% endblock %}
+
+{% block content %}
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Login</button>
+  </form>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
