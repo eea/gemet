@@ -87,7 +87,7 @@ urlpatterns = [
             views.InspireThemeView.as_view(), name='inspire_theme'),
 
         # Publish pages
-        url(r'^release_version/$', edit_views.ReleaseVersionView.as_view(),
+        url(r'^version/release$', edit_views.ReleaseVersionView.as_view(),
             name='release_version'),
         url(r'^history_of_changes', edit_views.HistoryChangesView.as_view(),
             name='history_changes'),
