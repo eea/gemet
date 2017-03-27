@@ -58,20 +58,15 @@ class LDAPAuthenticationForm(AuthenticationForm):
 
 def my_choices():
     current_identifier = Version.objects.get(is_current=True).identifier
-    version_numbers = map(int, current_identifier.split("."))
-    choices = []
-    version_numbers[2] += 1
-    identifier = ".".join(map(str, version_numbers))
-    choices.append((identifier, identifier))
-    version_numbers[2] = 0
-    version_numbers[1] += 1
-    identifier = ".".join(map(str, version_numbers))
-    choices.append((identifier, identifier))
-    version_numbers[1] = 0
-    version_numbers[0] += 1
-    identifier = ".".join(map(str, version_numbers))
-    choices.append((identifier, identifier))
-    return choices
+    major, middle, minor = map(int, current_identifier.split("."))
+    choices = (
+        ".".join(map(str, version_parts)) for version_parts in (
+            (major, middle, minor+1),
+            (major, middle+1, 0),
+            (major+1, 0, 0),
+        )
+    )
+    return ((choice, choice) for choice in choices)
 
 
 class VersionForm(forms.Form):
