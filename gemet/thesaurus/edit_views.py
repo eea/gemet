@@ -484,8 +484,8 @@ class ConceptSourcesView(View):
 
 class ReleaseVersionView(VersionMixin, View):
 
-    def change_status(self, Class_model, current_status, new_status):
-        objects_with_status = Class_model.objects.filter(
+    def change_status(self, model_cls, current_status, new_status):
+        objects_with_status = model_cls.objects.filter(
             status=current_status)
         objects_with_status.update(status=new_status)
 
