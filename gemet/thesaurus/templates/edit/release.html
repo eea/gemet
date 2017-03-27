@@ -2,18 +2,18 @@
 {% load gemet_tags %}
 
 {% block title %}
- Publish new version
+ Release this version
 {% endblock %}
 
 {% block content %}
-<h1> Publish new version </h1>
+<h1> Release this version </h1>
 
-<form method="post" action='{% url "publish_version" language.code %}' >
+<form method="post" action='{% url "release_version" language.code %}' >
   {% csrf_token %}
-  <div class="publish-form">
+  <div class="release-form">
     {{ form.as_p }}
   </div>
-  <button type="submit">Publish</button>
+  <button type="submit">Release</button>
 </form>
 {% endblock %}
 

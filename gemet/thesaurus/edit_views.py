@@ -482,7 +482,7 @@ class ConceptSourcesView(View):
         return render(request, self.template_name, context)
 
 
-class PublishVersionView(View):
+class ReleaseVersionView(View):
 
     def change_status(self, Class_model, current_status, new_status):
         objects_with_status = Class_model.objects.filter(
@@ -494,18 +494,16 @@ class PublishVersionView(View):
             'form': VersionForm(),
             'language': models.Language.objects.get(code=langcode),
         }
-        return render(request, 'edit/publish.html', context)
+        return render(request, 'edit/release.html', context)
 
     def post(self, request, langcode):
         version = models.Version.objects.get(is_current=True)
         new_version = models.Version.under_work()
         version.is_current = False
-        version.save()
         form = VersionForm(request.POST)
         if form.is_valid():
             new_version.identifier = form.cleaned_data['version']
             new_version.is_current = True
-            new_version.save()
             self.change_status(models.Property, PENDING, PUBLISHED)
             self.change_status(models.Property, DELETED_PENDING, DELETED)
             self.change_status(models.Concept, PENDING, PUBLISHED)
@@ -514,6 +512,9 @@ class PublishVersionView(View):
             self.change_status(models.Relation, DELETED_PENDING, DELETED)
             self.change_status(models.ForeignRelation, PENDING, PUBLISHED)
             self.change_status(models.ForeignRelation, DELETED_PENDING, DELETED)
+            version.save()
+            new_version.save()
+            models.Version.objects.create(is_current=False)
         url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
 
