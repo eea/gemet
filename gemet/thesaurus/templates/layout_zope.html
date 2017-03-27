@@ -52,6 +52,8 @@
     {% if user.is_authenticated %}
     &nbsp;|&nbsp;
     <a href="{% url 'concept_add' language.code %}">Add a new concept</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'release_version' language.code %}">Release this version</a>
     {% endif %}
   {% endblock %}
 
