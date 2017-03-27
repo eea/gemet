@@ -457,7 +457,8 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         return redirect(url)
 
 
-class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):
+class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
+                         FormView):
     template_name = 'edit/release_version.html'
     form_class = VersionForm
 
@@ -484,7 +485,7 @@ class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):
         model_cls.objects.filter(status=old_status).update(status=new_status)
 
 
-class HistoryChangesView(HeaderMixin, TemplateView):
+class HistoryChangesView(LoginRequiredMixin, HeaderMixin, TemplateView):
     template_name = 'edit/history_of_changes.html'
 
     def get_context_data(self, **kwargs):
@@ -531,7 +532,7 @@ class HistoryChangesView(HeaderMixin, TemplateView):
         return context
 
 
-class ConceptChangesView(View):
+class ConceptChangesView(LoginRequiredMixin, View):
 
     def get(self, request, langcode, id):
         concept = models.Concept.objects.get(id=id)
