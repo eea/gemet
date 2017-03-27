@@ -482,7 +482,7 @@ class ConceptSourcesView(View):
         return render(request, self.template_name, context)
 
 
-class ReleaseVersionView(View):
+class ReleaseVersionView(VersionMixin, View):
 
     def change_status(self, Class_model, current_status, new_status):
         objects_with_status = Class_model.objects.filter(
@@ -497,19 +497,17 @@ class ReleaseVersionView(View):
         return render(request, 'edit/release.html', context)
 
     def post(self, request, langcode):
-        version = models.Version.objects.get(is_current=True)
-        new_version = models.Version.under_work()
-        version.is_current = False
+        self.current_version.is_current = False
         form = VersionForm(request.POST)
         if form.is_valid():
-            new_version.identifier = form.cleaned_data['version']
-            new_version.is_current = True
+            self.pending_version.identifier = form.cleaned_data['version']
+            self.pending_version.is_current = True
             versionable_classes = models.VersionableModel.__subclasses__()
             for versionable_class in versionable_classes:
                 self.change_status(versionable_class, PENDING, PUBLISHED)
                 self.change_status(versionable_class, DELETED_PENDING, DELETED)
-            version.save()
-            new_version.save()
+            self.current_version.save()
+            self.pending_version.save()
             models.Version.objects.create(is_current=False)
         url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
