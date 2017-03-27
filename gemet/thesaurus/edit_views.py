@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import re
 
@@ -488,22 +489,25 @@ class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):
 
     def form_valid(self, form):
         self.current_version.is_current = False
+        self.current_version.save()
+
         self.pending_version.is_current = True
         self.pending_version.identifier = form.cleaned_data['version']
+        self.pending_version.publication_date = datetime.now()
+        self.pending_version.save()
+
+        models.Version.objects.create(is_current=False)
+
         versionable_classes = models.VersionableModel.__subclasses__()
         for versionable_class in versionable_classes:
             self._change_status(versionable_class, PENDING, PUBLISHED)
             self._change_status(versionable_class, DELETED_PENDING, DELETED)
-        self.current_version.save()
-        self.pending_version.save()
-        models.Version.objects.create(is_current=False)
+
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)
 
-    def _change_status(self, model_cls, current_status, new_status):
-        objects_with_status = model_cls.objects.filter(
-            status=current_status)
-        objects_with_status.update(status=new_status)
+    def _change_status(self, model_cls, old_status, new_status):
+        model_cls.objects.filter(status=old_status).update(status=new_status)
 
 
 class HistoryChangesView(HeaderMixin, TemplateView):
