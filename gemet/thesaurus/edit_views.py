@@ -47,7 +47,7 @@ class TermEditView(LoginRequiredMixin, TermView):
     def get_object(self):
         term = super(TermEditView, self).get_object()
         if hasattr(term, 'default_definition'):
-            if term.default_definition:
+            if term.default_definition and hasattr(self, 'definition'):
                 delattr(term, 'definition')
         return term
 
