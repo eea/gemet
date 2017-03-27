@@ -4,6 +4,7 @@ import re
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
@@ -14,7 +15,7 @@ from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
-from gemet.thesaurus.forms import SearchForm, VersionForm
+from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -481,43 +482,38 @@ class ConceptSourcesView(View):
         return render(request, self.template_name, context)
 
 
-class ReleaseVersionView(VersionMixin, View):
+class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):
+    template_name = 'edit/release_version.html'
+    form_class = VersionForm
 
-    def change_status(self, model_cls, current_status, new_status):
+    def form_valid(self, form):
+        self.current_version.is_current = False
+        self.pending_version.is_current = True
+        self.pending_version.identifier = form.cleaned_data['version']
+        versionable_classes = models.VersionableModel.__subclasses__()
+        for versionable_class in versionable_classes:
+            self._change_status(versionable_class, PENDING, PUBLISHED)
+            self._change_status(versionable_class, DELETED_PENDING, DELETED)
+        self.current_version.save()
+        self.pending_version.save()
+        models.Version.objects.create(is_current=False)
+        url = reverse('themes', kwargs={'langcode': self.langcode})
+        return redirect(url)
+
+    def _change_status(self, model_cls, current_status, new_status):
         objects_with_status = model_cls.objects.filter(
             status=current_status)
         objects_with_status.update(status=new_status)
 
-    def get(self, request, langcode):
-        context = {
-            'form': VersionForm(),
-            'language': models.Language.objects.get(code=langcode),
-        }
-        return render(request, 'edit/release.html', context)
 
-    def post(self, request, langcode):
-        self.current_version.is_current = False
-        form = VersionForm(request.POST)
-        if form.is_valid():
-            self.pending_version.identifier = form.cleaned_data['version']
-            self.pending_version.is_current = True
-            versionable_classes = models.VersionableModel.__subclasses__()
-            for versionable_class in versionable_classes:
-                self.change_status(versionable_class, PENDING, PUBLISHED)
-                self.change_status(versionable_class, DELETED_PENDING, DELETED)
-            self.current_version.save()
-            self.pending_version.save()
-            models.Version.objects.create(is_current=False)
-        url = reverse('themes', kwargs={'langcode': langcode})
-        return redirect(url)
+class HistoryChangesView(HeaderMixin, TemplateView):
+    template_name = 'edit/history_of_changes.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(HistoryChangesView, self).get_context_data(**kwargs)
 
-class HistoryChangesView(View):
-
-    def get(self, request, langcode):
         new_concepts = models.Concept.objects.filter(status=PENDING)\
             .order_by('namespace')
-        language = models.Language.objects.get(code=langcode)
         concepts = []
         for concept in new_concepts:
             concept_with_name = models.Property.objects\
@@ -529,7 +525,7 @@ class HistoryChangesView(View):
                         'concept__namespace__heading').first()
             if not concept_with_name:
                 continue
-            url = concept.get_absolute_url(langcode)
+            url = concept.get_absolute_url(self.langcode)
             concept_with_name.update({'url': url})
             concepts.append(concept_with_name)
 
@@ -548,20 +544,13 @@ class HistoryChangesView(View):
         )
 
         for concept in old_concepts:
-            concept.set_attributes(langcode, ['prefLabel'])
+            concept.set_attributes(self.langcode, ['prefLabel'])
 
-        context = {
+        context.update({
             'new_concepts': concepts,
             'old_concepts': old_concepts,
-            'language': language,
-            'languages': (
-                models.Language.objects
-                .values('code', 'name')
-                .order_by('name')
-            ),
-            'search_form': SearchForm(),
-        }
-        return render(request, 'edit/history_of_changes.html', context)
+        })
+        return context
 
 
 class ConceptChangesView(View):
