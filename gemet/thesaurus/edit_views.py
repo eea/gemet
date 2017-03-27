@@ -504,14 +504,10 @@ class ReleaseVersionView(View):
         if form.is_valid():
             new_version.identifier = form.cleaned_data['version']
             new_version.is_current = True
-            self.change_status(models.Property, PENDING, PUBLISHED)
-            self.change_status(models.Property, DELETED_PENDING, DELETED)
-            self.change_status(models.Concept, PENDING, PUBLISHED)
-            self.change_status(models.Concept, DELETED_PENDING, DELETED)
-            self.change_status(models.Relation, PENDING, PUBLISHED)
-            self.change_status(models.Relation, DELETED_PENDING, DELETED)
-            self.change_status(models.ForeignRelation, PENDING, PUBLISHED)
-            self.change_status(models.ForeignRelation, DELETED_PENDING, DELETED)
+            versionable_classes = models.VersionableModel.__subclasses__()
+            for versionable_class in versionable_classes:
+                self.change_status(versionable_class, PENDING, PUBLISHED)
+                self.change_status(versionable_class, DELETED_PENDING, DELETED)
             version.save()
             new_version.save()
             models.Version.objects.create(is_current=False)
