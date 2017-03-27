@@ -1,3 +1,4 @@
+import re
 import sys
 from collections import OrderedDict
 from itertools import chain
@@ -8,6 +9,7 @@ from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.views import View
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
@@ -460,6 +462,31 @@ class AlphabeticView(PaginatorView):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
         context.update({"namespace": Term.NAMESPACE})
         return context
+
+
+class ConceptSourcesView(View):
+    template_name = 'edit/bits/concept_definition_sources.html'
+
+    def get(self, request, langcode, id):
+        concept = Concept.objects.get(id=id)
+        concept.set_attributes(langcode, ['source'])
+        definition_sources = []
+        if hasattr(concept, 'source'):
+            sources = concept.source.split(' / ')
+            for source in sources:
+                source = source.strip()
+                found = DefinitionSource.objects.filter(abbr=source)
+                if found.first():
+                    definition_sources.append((source, True))
+                else:
+                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
+                                    source)
+                    definition_sources.append((str(source), False))
+
+        context = {'definition_sources': definition_sources,
+                   'language': Language.objects.get(code=langcode)}
+
+        return render(request, self.template_name, context)
 
 
 class BackboneView(TemplateView):

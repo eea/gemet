@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-import re
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
@@ -456,31 +455,6 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_code})
         return redirect(url)
-
-
-class ConceptSourcesView(View):
-    template_name = 'edit/bits/concept_definition_sources.html'
-
-    def get(self, request, langcode, id):
-        concept = models.Concept.objects.get(id=id)
-        concept.set_attributes(langcode, ['source'])
-        definition_sources = []
-        if hasattr(concept, 'source'):
-            sources = concept.source.split(' / ')
-            for source in sources:
-                source = source.strip()
-                found = models.DefinitionSource.objects.filter(abbr=source)
-                if found.first():
-                    definition_sources.append((source, True))
-                else:
-                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
-                                    source)
-                    definition_sources.append((str(source), False))
-
-        context = {'definition_sources': definition_sources,
-                   'language': models.Language.objects.get(code=langcode)}
-
-        return render(request, self.template_name, context)
 
 
 class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):

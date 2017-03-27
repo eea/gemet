@@ -86,13 +86,15 @@ urlpatterns = [
         url(r'^inspire-theme/(?P<code>[a-zA-Z]+)$',
             views.InspireThemeView.as_view(), name='inspire_theme'),
 
+        # Detail snippets
+        url(r'^concept/(?P<id>\d+)/sources$',
+            views.ConceptSourcesView.as_view(), name='concept_sources'),
+
         # Publish pages
         url(r'^version/release$', edit_views.ReleaseVersionView.as_view(),
             name='release_version'),
         url(r'^history_of_changes', edit_views.HistoryChangesView.as_view(),
             name='history_changes'),
-        url(r'^concept/(?P<id>\d+)/sources$',
-            edit_views.ConceptSourcesView.as_view(), name='concept_sources'),
         url(r'^concept/(?P<id>\d+)/changes/$',
             edit_views.ConceptChangesView.as_view(),
             name='concept_changes'),
