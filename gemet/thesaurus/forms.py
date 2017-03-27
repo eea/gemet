@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 
 from gemet.thesaurus.models import ForeignRelation, Language, Namespace
-from gemet.thesaurus.models import Property, Version
+from gemet.thesaurus.models import Property
+from gemet.thesaurus.utils import get_version_choices
 
 
 class SearchForm(forms.Form):
@@ -56,19 +57,6 @@ class LDAPAuthenticationForm(AuthenticationForm):
                 'Your account is not authorized to login to GEMET')
 
 
-def my_choices():
-    current_identifier = Version.objects.get(is_current=True).identifier
-    major, middle, minor = map(int, current_identifier.split("."))
-    choices = (
-        ".".join(map(str, version_parts)) for version_parts in (
-            (major, middle, minor+1),
-            (major, middle+1, 0),
-            (major+1, 0, 0),
-        )
-    )
-    return ((choice, choice) for choice in choices)
-
-
 class VersionForm(forms.Form):
 
-    version = forms.ChoiceField(choices=my_choices)
+    version = forms.ChoiceField(choices=get_version_choices)

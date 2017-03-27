@@ -1,7 +1,7 @@
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
-from models import Property
+from models import Property, Version
 
 SEPARATOR = '\t'
 
@@ -105,6 +105,19 @@ def insite_search(query, language, heading):
         )
         .values('id', 'search_text', 'concept__code')
     )
+
+
+def get_version_choices():
+    current_identifier = Version.objects.get(is_current=True).identifier
+    major, middle, minor = map(int, current_identifier.split("."))
+    choices = (
+        ".".join(map(str, version_parts)) for version_parts in (
+            (major, middle, minor+1),
+            (major, middle+1, 0),
+            (major+1, 0, 0),
+        )
+    )
+    return ((choice, choice) for choice in choices)
 
 
 def exp_encrypt(exp):
