@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.functional import cached_property
 
-from gemet.thesaurus import NS_VIEW_MAPPING
+from gemet.thesaurus import EDIT_URL_NAMES, NS_VIEW_MAPPING
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 
 
@@ -63,6 +63,11 @@ class Concept(VersionableModel):
     parents_relations = []
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
     extra_values = []
+
+    def get_absolute_url(self, langcode):
+        return reverse(EDIT_URL_NAMES[self.namespace.heading],
+                       kwargs={'langcode': langcode,
+                               'code': self.code})
 
     @cached_property
     def visible_foreign_relations(self):

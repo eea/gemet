@@ -1,0 +1,44 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+  History of changes
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' with view='history_changes' %}
+
+  <h1>History of changes</h1>
+
+  <h3>New concepts</h3>
+  {% regroup new_concepts by concept__namespace__heading as concepts_list %}
+  <div>
+    {% for concepts in concepts_list %}
+      <div class="well">
+        <h5>{{ concepts.grouper }}</h5>
+
+        {% for concept in concepts.list %}
+          <p><a href="{{ concept.url }}">{{ concept.value }}</a></p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <h3>Modified concepts</h3>
+  {% regroup old_concepts by namespace as concepts_list %}
+  <div>
+    {% for concepts in concepts_list %}
+      <h5>{{ concepts.grouper }}</h5>
+        {% for concept in concepts.list %}
+          <div class="well">
+            <h5>{{ concept.prefLabel }}</h5>
+            <div class="history-details text-area" hidden>
+            </div>
+            <button class="btn history-details input-area"
+                    data-href="{% url 'concept_changes' language.code concept.id %}"
+            >See details</button>
+          </div>
+        {% endfor %}
+    {% endfor %}
+  </div>
+{% endblock %}

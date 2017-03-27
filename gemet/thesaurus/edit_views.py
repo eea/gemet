@@ -1,9 +1,11 @@
+from datetime import datetime
 import json
 import re
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
@@ -14,6 +16,7 @@ from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
+from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -432,7 +435,6 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         new_concept = models.Concept(version_added=self.pending_version,
                                      namespace=namespace,
                                      status=PENDING)
-
         codes = (
             models.Concept.objects
             .filter(namespace=namespace)
@@ -479,3 +481,125 @@ class ConceptSourcesView(View):
                    'language': models.Language.objects.get(code=langcode)}
 
         return render(request, self.template_name, context)
+
+
+class ReleaseVersionView(HeaderMixin, VersionMixin, FormView):
+    template_name = 'edit/release_version.html'
+    form_class = VersionForm
+
+    def form_valid(self, form):
+        self.current_version.is_current = False
+        self.current_version.save()
+
+        self.pending_version.is_current = True
+        self.pending_version.identifier = form.cleaned_data['version']
+        self.pending_version.publication_date = datetime.now()
+        self.pending_version.save()
+
+        models.Version.objects.create(is_current=False)
+
+        versionable_classes = models.VersionableModel.__subclasses__()
+        for versionable_class in versionable_classes:
+            self._change_status(versionable_class, PENDING, PUBLISHED)
+            self._change_status(versionable_class, DELETED_PENDING, DELETED)
+
+        url = reverse('themes', kwargs={'langcode': self.langcode})
+        return redirect(url)
+
+    def _change_status(self, model_cls, old_status, new_status):
+        model_cls.objects.filter(status=old_status).update(status=new_status)
+
+
+class HistoryChangesView(HeaderMixin, TemplateView):
+    template_name = 'edit/history_of_changes.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryChangesView, self).get_context_data(**kwargs)
+
+        new_concepts = models.Concept.objects.filter(status=PENDING)\
+            .order_by('namespace')
+        concepts = []
+        for concept in new_concepts:
+            concept_with_name = models.Property.objects\
+                .filter(concept__id=concept.id,
+                        name='prefLabel',
+                        status=PENDING)\
+                .values('concept__id',
+                        'value',
+                        'concept__namespace__heading').first()
+            if not concept_with_name:
+                continue
+            url = concept.get_absolute_url(self.langcode)
+            concept_with_name.update({'url': url})
+            concepts.append(concept_with_name)
+
+        published_concepts = models.Concept.objects.filter(status=PUBLISHED)
+        old_concepts = (
+            set(published_concepts
+                .filter(properties__status__in=[PENDING, DELETED_PENDING]))
+            |
+            set(published_concepts
+                .filter(
+                    source_relations__status__in=[PENDING, DELETED_PENDING]))
+            |
+            set(published_concepts
+                .filter(
+                    foreign_relations__status__in=[PENDING, DELETED_PENDING]))
+        )
+
+        for concept in old_concepts:
+            concept.set_attributes(self.langcode, ['prefLabel'])
+
+        context.update({
+            'new_concepts': concepts,
+            'old_concepts': old_concepts,
+        })
+        return context
+
+
+class ConceptChangesView(View):
+
+    def get(self, request, langcode, id):
+        concept = models.Concept.objects.get(id=id)
+        language = models.Language.objects.get(code=langcode)
+        concept_details = {'concept_id': concept.id}
+        properties = concept.properties\
+            .filter(status__in=[PENDING, DELETED_PENDING],
+                    language=language)\
+            .order_by('name', 'status')
+        for concept_property in properties:
+            if concept_property.name in concept_details.keys():
+                concept_details[concept_property.name].append(concept_property)
+            else:
+                concept_details[concept_property.name] = [concept_property]
+        relations = concept.source_relations.filter(
+            status__in=[PENDING, DELETED_PENDING])
+        relations = relations.values('status',
+                                     'target__id',
+                                     'property_type__name')
+        for relation in relations:
+            target_name = models.Property.objects.filter(
+                concept__id=relation['target__id'],
+                name='prefLabel',
+                language=language,
+                status__in=[PUBLISHED, DELETED_PENDING]).first()
+            if target_name:
+                target_name = target_name.value
+            else:
+                target_name = 'Name not available'
+            target_relation = {
+                'target': target_name,
+                'property_type': relation['property_type__name'],
+                'status': relation['status']
+            }
+            relation_type = relation['property_type__name']
+            if relation_type in concept_details.keys():
+                concept_details[relation_type].append(target_relation)
+            else:
+                concept_details[relation_type] = [target_relation]
+        foreign_relations = concept.foreign_relations.filter(
+            status__in=[PENDING, DELETED_PENDING]).order_by('property_type')
+        concept_details['foreign_relations'] = foreign_relations
+        concept_details['namespace'] = concept.namespace.heading
+        return render(request, 'edit/bits/concept_changes.html',
+                      concept_details)
