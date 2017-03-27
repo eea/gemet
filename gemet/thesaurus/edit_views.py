@@ -3,7 +3,6 @@ import re
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
 from django.views import View
@@ -528,29 +527,40 @@ class HistoryChangesView(View):
                 .values('concept__id',
                         'value',
                         'concept__namespace__heading').first()
+            if not concept_with_name:
+                continue
             url = concept.get_absolute_url(langcode)
             concept_with_name.update({'url': url})
             concepts.append(concept_with_name)
 
-        old_concepts = models.Concept.objects.filter(status=PUBLISHED).filter(
-            Q(properties__status__in=[PENDING, DELETED_PENDING],
-              properties__language=language) |
-            Q(source_relations__status__in=[PENDING, DELETED_PENDING]) |
-            Q(foreign_relations__status__in=[PENDING, DELETED_PENDING])).distinct()
+        published_concepts = models.Concept.objects.filter(status=PUBLISHED)
+        old_concepts = (
+            set(published_concepts
+                .filter(properties__status__in=[PENDING, DELETED_PENDING]))
+            |
+            set(published_concepts
+                .filter(
+                    source_relations__status__in=[PENDING, DELETED_PENDING]))
+            |
+            set(published_concepts
+                .filter(
+                    foreign_relations__status__in=[PENDING, DELETED_PENDING]))
+        )
+
         for concept in old_concepts:
             concept.set_attributes(langcode, ['prefLabel'])
-        context = {}
-        context.update({'new_concepts': concepts})
-        context.update({'old_concepts': old_concepts})
-        context.update({'language': language})
-        context.update({
+
+        context = {
+            'new_concepts': concepts,
+            'old_concepts': old_concepts,
+            'language': language,
             'languages': (
                 models.Language.objects
                 .values('code', 'name')
                 .order_by('name')
             ),
             'search_form': SearchForm(),
-        })
+        }
         return render(request, 'edit/history_of_changes.html', context)
 
 
@@ -598,4 +608,5 @@ class ConceptChangesView(View):
             status__in=[PENDING, DELETED_PENDING]).order_by('property_type')
         concept_details['foreign_relations'] = foreign_relations
         concept_details['namespace'] = concept.namespace.heading
-        return render(request, 'edit/bits/concept_changes.html', concept_details)
+        return render(request, 'edit/bits/concept_changes.html',
+                      concept_details)
