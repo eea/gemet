@@ -8,7 +8,10 @@
 {% block content %}
   {% include 'header.html' with view='history_changes' %}
 
-  <h1>History of changes</h1>
+  <h1>
+    History of changes since version {{ version.identifier }}
+    {% if version.publication_date %}({{ version.publication_date }}){% endif %}
+  </h1>
 
   <h3>New concepts</h3>
   {% regroup new_concepts by concept__namespace__heading as concepts_list %}

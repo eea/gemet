@@ -485,7 +485,8 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
         model_cls.objects.filter(status=old_status).update(status=new_status)
 
 
-class HistoryChangesView(LoginRequiredMixin, HeaderMixin, TemplateView):
+class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
+                         TemplateView):
     template_name = 'edit/history_of_changes.html'
 
     def get_context_data(self, **kwargs):
