@@ -1950,3 +1950,14 @@ a.search-button {
 .release-page .release-form {
     margin-bottom: 1rem;
 }
+
+@media (max-width: 800px) {
+    .edit-page.history .well {
+        flex-basis: 90%;
+    min-width: 90%;
+    margin: 1rem;
+    padding: 1rem;
+    padding-top: 0;
+
+}
+}
