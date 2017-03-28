@@ -9,6 +9,9 @@ import sys
 
 
 def forwards_func(apps, schema_editor):
+    if 'test' in sys.argv:
+        return
+
     # We get the model from the versioned app registry;
     # if we directly import it, it'll be the wrong version
     Concept = apps.get_model("thesaurus", "Concept")
@@ -16,19 +19,14 @@ def forwards_func(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     try:
         latest_concept = Concept.objects.using(db_alias).latest('date_changed')
+        publication_date = latest_concept.date_changed
     except Concept.DoesNotExist:
         # version created for import
-        if not 'test' in sys.argv:
-            current_date = timezone.now().strftime("%Y-%m-%d %H:%M:%S%z")
-            Version.objects.create(
-                identifier="4.0.0",
-                publication_date=current_date,
-                is_current=True,
-            )
-        return
+        publication_date = timezone.now()
+
     Version.objects.create(
         identifier="4.0.0",
-        publication_date=latest_concept.date_changed,
+        publication_date=publication_date,
         is_current=True,
     )
 
