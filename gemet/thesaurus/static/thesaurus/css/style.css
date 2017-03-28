@@ -1753,6 +1753,15 @@ a.btn {
 }
 
 
+.errorlist li {
+    list-style-image: none;
+    color: red;
+}
+
+.errorlist {
+    margin-left: 0!important;
+}
+
 /*mobile*/
 
 @media (max-width: 800px) {
