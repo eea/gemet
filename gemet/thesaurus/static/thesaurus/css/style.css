@@ -1,5 +1,8 @@
 /* before */
 
+
+
+
 .direction-rtl {
     direction: rtl;
     text-align: right !important;
@@ -257,7 +260,6 @@ a.no-visit:visited {
 #workarea h6,
 h6 #workarea .h6,
 .h6 {
-    font-size: 14px;
     font-weight: bold;
     margin-bottom: 8px;
     border: 0!important;
@@ -267,7 +269,6 @@ h6 #workarea .h6,
 
 #workarea .h5,
 .h5 {
-    font-size: 19px;
     /*font-weight: bold;*/
     padding-bottom: 2px;
     /*border-bottom: 1px solid #ddd;*/
@@ -286,7 +287,6 @@ h6 #workarea .h6,
 
 #workarea .h3,
 .h3 {
-    font-size: 20px;
     font-weight: bold;
     padding: 0 0 6px 0!important;
     /*border-bottom: 1px solid #ddd!important;*/
@@ -299,7 +299,6 @@ h6 #workarea .h6,
 .h2,
 #workarea .about-header,
 .about-header {
-    font-size: 24px;
     font-weight: bold;
     padding: 0 0 6px 0!important;
     /*border-bottom: 1px solid #ddd!important;*/
@@ -1468,13 +1467,7 @@ padding-bottom: 1rem;
     margin-left: .5rem;
 }
 
-#workarea h5,
-#workarea h3,
-#workarea h2,
-#workarea h4 {
-    /*    color: #00446a;
-    font-weight: bold;*/
-}
+
 
 .related-terms {
     display: flex;
