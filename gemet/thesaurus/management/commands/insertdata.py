@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from gemet.thesaurus.models import Property, Concept, Language
+from gemet.thesaurus import PUBLISHED
+from gemet.thesaurus.models import Property, Concept, Language, Version
 from gemet.thesaurus.utils import SEPARATOR
 
 SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']
@@ -11,6 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         concept_ids = set(Concept.objects.values_list('id', flat=True))
         language_codes = Language.objects.values_list('code', flat=True)
+        version = Version.objects.get(is_current=True)
         new_properties = []
 
         for language_code in language_codes:
@@ -49,6 +51,8 @@ class Command(BaseCommand):
                     name='searchText',
                     value=search_text,
                     is_resource=0,
+                    status=PUBLISHED,
+                    version_added_id=version.id
                 )
                 new_properties.append(search_property)
 
