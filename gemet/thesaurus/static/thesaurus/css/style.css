@@ -1918,17 +1918,26 @@ a.search-button {
 }
 
 
-
+@media (min-width:800px){
+    
 .text-area-wrapper {
-    width: 77%;
+    width: 75%;
+        box-sizing: border-box;
 }
 
 .text-area {
     float: left;
-    width: 77%;
+    width: 75%;
+        box-sizing: border-box;
 }
 
 .edit-page .text-area {
     float: none;
     width: auto;
+}
+
+.side-bar {
+    max-width: 25%;
+    box-sizing: border-box;
+}
 }
