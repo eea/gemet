@@ -3,8 +3,9 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-
 from django.utils import timezone
+
+import sys
 
 
 def forwards_func(apps, schema_editor):
@@ -17,12 +18,13 @@ def forwards_func(apps, schema_editor):
         latest_concept = Concept.objects.using(db_alias).latest('date_changed')
     except Concept.DoesNotExist:
         # version created for import
-        current_date = timezone.now().strftime("%Y-%m-%d %H:%M:%S%z")
-        Version.objects.create(
-            identifier="4.0.0",
-            publication_date=current_date,
-            is_current=True,
-        )
+        if not 'test' in sys.argv:
+            current_date = timezone.now().strftime("%Y-%m-%d %H:%M:%S%z")
+            Version.objects.create(
+                identifier="4.0.0",
+                publication_date=current_date,
+                is_current=True,
+            )
         return
     Version.objects.create(
         identifier="4.0.0",
