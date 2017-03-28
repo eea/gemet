@@ -1940,3 +1940,13 @@ a.search-button {
 .edit-page.history .well * {
     transition: all 300ms;
 }
+
+
+.release-page {
+        width: 30%;
+    max-width: 500px;
+}
+
+.release-page .release-form {
+    margin-bottom: 1rem;
+}
