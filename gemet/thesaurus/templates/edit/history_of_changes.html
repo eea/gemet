@@ -7,7 +7,8 @@
 
 {% block content %}
   {% include 'header.html' with view='history_changes' %}
-
+<div class="edit-page history">
+  
   <h1>
     History of changes since version {{ version.identifier }}
     {% if version.publication_date %}({{ version.publication_date }}){% endif %}
@@ -29,11 +30,11 @@
 
   <h3>Modified concepts</h3>
   {% regroup old_concepts by namespace as concepts_list %}
-  <div>
+  <div class="modified-container">
     {% for concepts in concepts_list %}
-      <h5>{{ concepts.grouper }}</h5>
         {% for concept in concepts.list %}
           <div class="well">
+            <h4>{{ concepts.grouper }}</h4>
             <h5>{{ concept.prefLabel }}</h5>
             <div class="history-details text-area" hidden>
             </div>
@@ -44,4 +45,5 @@
         {% endfor %}
     {% endfor %}
   </div>
+</div>
 {% endblock %}
