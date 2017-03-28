@@ -1523,8 +1523,8 @@ padding-bottom: 1rem;
 #definition h5,
 #definition h6 {
     margin-right: .5rem;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
 .inline {
@@ -1908,4 +1908,33 @@ a.search-button {
     background: none;
     border-top: none;
     padding: 0;
+}
+
+.edit-page.history .text-area {
+        padding: 0;
+    padding-left: 0rem;
+    border: none;
+    background: transparent;
+}
+
+
+.edit-page.history .well {
+    min-width: 30%;
+    margin: 1rem;
+    padding: 1rem;
+    padding-top: 0;
+}
+
+.edit-page.history .modified-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.page-title .button-elements {
+    margin-left: 0;
+}
+
+
+.edit-page.history .well * {
+    transition: all 300ms;
 }
