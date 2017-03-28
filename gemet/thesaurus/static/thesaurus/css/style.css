@@ -1960,4 +1960,8 @@ a.search-button {
     padding-top: 0;
 
 }
+.release-page {
+        width: 100%;
+    max-width: 500px;
+}
 }
