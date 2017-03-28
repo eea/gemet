@@ -3,9 +3,15 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.utils import timezone
+
+import sys
 
 
 def forwards_func(apps, schema_editor):
+    if 'test' in sys.argv:
+        return
+
     # We get the model from the versioned app registry;
     # if we directly import it, it'll be the wrong version
     Concept = apps.get_model("thesaurus", "Concept")
@@ -13,11 +19,14 @@ def forwards_func(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     try:
         latest_concept = Concept.objects.using(db_alias).latest('date_changed')
+        publication_date = latest_concept.date_changed
     except Concept.DoesNotExist:
-        return
+        # version created for import
+        publication_date = timezone.now()
+
     Version.objects.create(
         identifier="4.0.0",
-        publication_date=latest_concept.date_changed,
+        publication_date=publication_date,
         is_current=True,
     )
 
