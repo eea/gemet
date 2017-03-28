@@ -1919,10 +1919,12 @@ a.search-button {
 
 
 .edit-page.history .well {
+        flex-basis: 30%;
     min-width: 30%;
     margin: 1rem;
     padding: 1rem;
     padding-top: 0;
+
 }
 
 .edit-page.history .modified-container {
