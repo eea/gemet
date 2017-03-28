@@ -9,9 +9,8 @@
   {% include 'header.html' with view='release_version' %}
   <h1>Release this version</h1>
 
-  <div class="text-area">
+  <div class="text-area release-page">
     <a href="{% url 'history_changes' language.code %}">See changes to be released</a>
-  </div>
   <form method="post" action='{% url "release_version" language.code %}' >
     {% csrf_token %}
     <div class="release-form">
@@ -19,5 +18,6 @@
     </div>
     <button class="btn" type="submit">Release</button>
   </form>
+  </div>
 
 {% endblock %}
