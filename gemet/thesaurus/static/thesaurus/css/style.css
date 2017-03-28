@@ -257,26 +257,7 @@ a.no-visit:visited {
 
 /* headings */
 
-#workarea h6,
-h6 #workarea .h6,
-.h6 {
-    font-weight: bold;
-    margin-bottom: 8px;
-    border: 0!important;
-    padding: 0!important;
-    background: none!important;
-}
 
-#workarea .h5,
-.h5 {
-    /*font-weight: bold;*/
-    padding-bottom: 2px;
-    /*border-bottom: 1px solid #ddd;*/
-    margin-bottom: 9px;
-    border-top: 0!important;
-    padding: 0 0 6px 0!important;
-    background: none!important;
-}
 
 #workarea .h5-url,
 .h5-url {
@@ -285,27 +266,7 @@ h6 #workarea .h6,
     clear: both;
 }
 
-#workarea .h3,
-.h3 {
-    font-weight: bold;
-    padding: 0 0 6px 0!important;
-    /*border-bottom: 1px solid #ddd!important;*/
-    border-top: 0!important;
-    margin-bottom: 12px;
-    background: none!important;
-}
 
-#workarea .h2,
-.h2,
-#workarea .about-header,
-.about-header {
-    font-weight: bold;
-    padding: 0 0 6px 0!important;
-    /*border-bottom: 1px solid #ddd!important;*/
-    border-top: 0!important;
-    margin-bottom: 12px;
-    background: none!important;
-}
 
 
 /* table */
@@ -642,9 +603,9 @@ hr {
     float: none;
 }
 
-#workarea .listing .listing {
+/*#workarea .listing .listing {
     margin-left: 1.5em!important;
-}
+}*/
 
 #workarea .listing.direction-rtl .listing {
     margin-left: auto!important;
@@ -1054,9 +1015,7 @@ li:hover .btn-remove-down {
     line-height: 28px!important;
 }
 
-.edit-page .h3.element .button-elements {
-    margin-left: 0;
-}
+
 
 .edit-page .dl-inline {
     margin-bottom: 0;
@@ -1282,7 +1241,7 @@ padding-bottom: 1rem;
     border: 3px solid #00446a;
 }
 
-.edit-page > .element.h3 > .element > .input-field.visible {
+.edit-page > .element > .element > .input-field.visible {
     display: inline-block!important;
 }
 
@@ -1919,7 +1878,7 @@ a.search-button {
 
 
 @media (min-width:800px){
-    
+
 .text-area-wrapper {
     width: 75%;
         box-sizing: border-box;
@@ -1940,4 +1899,13 @@ a.search-button {
     max-width: 25%;
     box-sizing: border-box;
 }
+}
+
+
+#workarea h2,
+#workarea h3, 
+#workarea h4 {
+    background: none;
+    border-top: none;
+    padding: 0;
 }
