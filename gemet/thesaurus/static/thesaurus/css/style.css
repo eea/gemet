@@ -1766,6 +1766,16 @@ a.btn {
     transform: translateX(100%);
     }
 
+    .listing.columns > li {
+            margin-right: 18px;
+    }
+
+    #workarea ul li {
+    word-wrap: break-word;
+}
+
+
+
     .edit-page .side-bar {
             margin-right: 0!important;
             margin-left: 0!important;
@@ -1883,6 +1893,10 @@ a.search-button {
     color: white;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
+}
+
+.search-button.active {
+    color: white!important;
 }
 
 .active.search-button:before {
