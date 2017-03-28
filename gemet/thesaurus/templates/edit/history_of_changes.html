@@ -16,7 +16,7 @@
 
   <h3>New concepts</h3>
   {% regroup new_concepts by concept__namespace__heading as concepts_list %}
-  <div>
+  <div class="modified-container">
     {% for concepts in concepts_list %}
       <div class="well">
         <h5>{{ concepts.grouper }}</h5>
