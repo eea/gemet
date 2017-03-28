@@ -841,17 +841,12 @@ hr {
     display: inline-block;
     color: white;
     padding: 1rem 11.97px;
-    color: #0065A5;
+    color: #333;
     position: relative;
 }
 
-.gemet-menu a.active:before {
-    content: "\f0d9";
-    top: 29%;
-    left: 96%;
-    color: #0065A5;
-    font-size: 2rem;
-    position: absolute;
+.gemet-menu a.active {
+    color: #00446a;
 }
 
 .gemet-menu {
@@ -1150,10 +1145,10 @@ li:hover .btn-remove-down {
     /*overflow: hidden;*/
     margin-bottom: 1rem;
     border: 1px solid #aaa;
-    /*border: 1px solid #0065a5;*/
+    /*border: 1px solid #00446a;*/
     /*box-shadow: 1px 1px 5px 0px #b7b7b7;*/
     /*background: white;*/
-    /*box-shadow: 0px 0px 1px 0px #0065a5;*/
+    /*box-shadow: 0px 0px 1px 0px #00446a;*/
 }
 
 .edit-page .side-bar {
@@ -1200,10 +1195,10 @@ padding-bottom: 1rem;
 }
 
 .text-area#definition .text-area:first-of-type p:first-of-type {
-    /* color: #0065a5; */
+    /* color: #00446a; */
     font-size: 1rem;
     /* font-weight: 500; */
-    border-left: 5px solid #0065a5;
+    border-left: 5px solid #00446a;
     padding-left: 1rem;
     /* border-radius: 2rem; */
 }
@@ -1230,12 +1225,12 @@ padding-bottom: 1rem;
 .text-area li:after {
     content: ",";
     color: inherit;
-    /*color: #0065a5;*/
+    /*color: #00446a;*/
 }
 
 .text-area li:last-of-type:after {
     content: '';
-    color: #0065a5;
+    color: #00446a;
 }
 
 .edit-page .text-area li:before {
@@ -1285,7 +1280,7 @@ padding-bottom: 1rem;
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    border: 11px solid #0065A5;
+    border: 3px solid #00446a;
 }
 
 .edit-page > .element.h3 > .element > .input-field.visible {
@@ -1311,7 +1306,7 @@ padding-bottom: 1rem;
 .search_bar button[type=submit] {
     background: white;
     color: rgba(255, 255, 255, 0);
-    border: 1px solid #0065A5;
+    border: 1px solid #00446a;
     border-left: none;
     width: 10%;
     min-width: 56px;
@@ -1331,7 +1326,7 @@ padding-bottom: 1rem;
 
 .search_bar button[type=submit]:after {
     content: '\f002';
-    color: #0065A5;
+    color: #00446a;
     position: absolute;
     top: 25%;
     right: 0;
@@ -1463,7 +1458,7 @@ padding-bottom: 1rem;
 
 .title {
     font-size: 4rem;
-    color: #0065A5;
+    color: #00446a;
 }
 
 .subtitle {
@@ -1477,7 +1472,7 @@ padding-bottom: 1rem;
 #workarea h3,
 #workarea h2,
 #workarea h4 {
-    /*    color: #0065a5;
+    /*    color: #00446a;
     font-weight: bold;*/
 }
 
@@ -1507,7 +1502,7 @@ padding-bottom: 1rem;
 .selected-word {
     font-size: 2rem!important;
     margin: 3rem 0rem 1rem 0!important;
-    color: #0065a5!important;
+    color: #00446a!important;
 }
 
 .text-area.modified {
@@ -1654,11 +1649,7 @@ h6.inline {
     display: block;
 }
 
-.beautiful-listing li:hover {
-    list-style-image: none;
-    /*font-size: 16px;*/
-    /*// background: #f6f6f6;*/
-}
+
 
 .beautiful-listing .list-title,
 .beautiful-listing h1,
@@ -1686,14 +1677,6 @@ h6.inline {
     position: absolute;
     background: #fbfbfb;
     border: 1px solid #ddd;
-    top: 33px;
-    border-bottom: 0;
-    border-top-left-radius: 6px;
-
-    transform: rotate(270deg);
-    border-top-right-radius: 6px;
-left: -84px;
-    font-size: 1.7rem;
 }
 
 .edit-page .expand-button {
@@ -1780,20 +1763,25 @@ a.btn {
         z-index: 99;
         bottom: 0;
         width:240px;
-        transform:translateX(94%);
+    transform: translateX(100%);
     }
 
     .edit-page .side-bar {
-            margin-right: -15px;
+            margin-right: 0!important;
+            margin-left: 0!important;
     }
 
     .gemet-menu.expand{
         width: 240px;
     }
     .expand-button {
-        top: 54%;
-        display: block;
-            border-top-right-radius: 6px!important;
+
+     top: 54%;
+    display: block;
+    font-size: 2.2rem;
+    right: 100%;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
     }
     #translations {
         overflow-y: auto;
@@ -1808,7 +1796,7 @@ a.btn {
         z-index: 100;
         text-align: left;
         width: 0;
-        border-left: 3px solid #0065A5;
+        border-left: 3px solid #00446a;
         transition: all 300ms;
     }
     .gemet-menu a {
@@ -1828,9 +1816,8 @@ a.btn {
         right: 0;
     }
     .menu-button {
-    top: 25%;
-    left: -64px;
-    background: #0065A5;
+    top: 39%;
+    background: #00446a;
     color: white;
     white-space: nowrap;
     border: none;
@@ -1839,7 +1826,7 @@ a.btn {
     }
 
     .menu-button:focus {
-       background: #0065A5;
+       background: #00446a;
     }
     .sidebar-open .backdrop-site {
         display: block;
@@ -1880,7 +1867,7 @@ a.btn {
     }
 
     .gemet-menu a.active {
-        background: #0065A5;
+        background: #00446a;
         color: white;
     }
 }
@@ -1892,7 +1879,7 @@ a.search-button {
 }
 
 .active.search-button {
-    background:  #0065A5;
+    background:  #00446a;
     color: white;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
