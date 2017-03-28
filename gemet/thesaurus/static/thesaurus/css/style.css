@@ -1916,3 +1916,19 @@ a.search-button {
 .history.status-3:before{
     content: " - "
 }
+
+
+
+.text-area-wrapper {
+    width: 77%;
+}
+
+.text-area {
+    float: left;
+    width: 77%;
+}
+
+.edit-page .text-area {
+    float: none;
+    width: auto;
+}
