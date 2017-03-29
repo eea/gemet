@@ -41,7 +41,7 @@ class ForeignRelationForm(forms.ModelForm):
         'required': 'Label is required.'
     }
     uri_error_messages = {
-        'required': 'Label is required.'
+        'required': 'Url is required.'
     }
     uri = forms.CharField(max_length=512, error_messages=uri_error_messages)
     label = forms.CharField(max_length=100, error_messages=label_error_messages)
