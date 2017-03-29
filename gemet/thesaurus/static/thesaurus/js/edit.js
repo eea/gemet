@@ -237,8 +237,10 @@ $(document).ready(function () {
     var selector = selectId + " option:selected";
     var propertyTypeId = $(selector).val();
     var propertyTypeName = $(selector).text();
-    var propertyLabel = $($(this).data('value-input-id')).val();
-    var parentUrl = $($(this).data('url-input-id')).val();
+    var propertyLabelElement = $(this).data('value-input-id');
+    var parentUrlElement = $(this).data('url-input-id');
+    var propertyLabel = $(propertyLabelElement).val();
+    var parentUrl = $(parentUrlElement).val();
     var addUrl = $(this).data('href');
     var $fieldList  = $($(this).data('field-id')).find("[data-value='" +
     propertyTypeName + "']").find('.foreign-elements').first();
@@ -275,7 +277,10 @@ $(document).ready(function () {
            $(fieldId).append($newTypeContainer);
          }
        }
-    })
+    }).done(function(){
+        $(parentUrlElement).val('');
+        $(propertyLabelElement).val('');
+    });
   }
 
   /* remove concept, alternative or other relation */
