@@ -329,6 +329,9 @@ $(document).ready(function () {
          }
          // else it is just marked as deleted pending
          $(deleteFieldId).attr('class', DELETED_PENDING_CLASS); // Change status
+         if(deleteFieldId.parent().hasClass('foreign-elements')){
+           $(deleteFieldId).addClass('other-item');
+         }
          $(deleteButton).remove();
          var $restoreButton = createRestoreButton(data['restore_url'], relationType);
          deleteFieldId.append($restoreButton);
@@ -358,6 +361,9 @@ $(document).ready(function () {
        },
        success: function(data){
          $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status
+         if(relationDiv.parent().hasClass('foreign-elements')){
+           $(relationDiv).addClass('other-item');
+         }
          $(restoreButton).remove();
          var $deleteButton = createDeleteButton(data['delete_url'], relationType);
          relationDiv.append($deleteButton);
