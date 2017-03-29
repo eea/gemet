@@ -77,6 +77,14 @@ class JsonResponseMixin(object):
         return response
 
 
+class FormatFormErrorsMixin(object):
+
+    def _get_form_errors(self, errors):
+
+        return reduce(lambda x, y: x + ' ' + y,
+                      [error[1][0] for error in errors.items()])
+
+
 class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
 
     def _set_reverse_urls(self, concepts, langcode, relation):
@@ -138,8 +146,8 @@ class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
-                       View):
+class EditPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
+                       JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -151,7 +159,7 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": form.errors}
+            data = {"message": self._get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         field = models.Property.objects.filter(language=langcode,
@@ -288,8 +296,8 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
-                      View):
+class AddPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
+                      JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -301,7 +309,7 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": form.errors}
+            data = {"message": self._get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         prop = (
@@ -355,8 +363,8 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response({}, 'success', 200)
 
 
-class AddForeignRelationView(LoginRequiredMixin, JsonResponseMixin,
-                             VersionMixin, View):
+class AddForeignRelationView(LoginRequiredMixin, FormatFormErrorsMixin,
+                             JsonResponseMixin, VersionMixin, View):
 
     def post(self, request, id):
         try:
@@ -379,7 +387,7 @@ class AddForeignRelationView(LoginRequiredMixin, JsonResponseMixin,
             }
             return self._get_response(data, 'success', 200)
 
-        data = {"message": form.errors}
+        data = {"message": self._get_form_errors(form.errors)}
         return self._get_response(data, 'error', 400)
 
 
