@@ -39,20 +39,20 @@
     </div>
 
     <!-- Other relations -->
-    <div class="text-area">
+    <div class="text-area modified">
       <h5 class="h5">Other relations</h5>
-      <ul class="dl-inline no-list">
-        {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
+      <div class="listing">
+        {% regroup inspire_theme.visible_foreign_relations by property_type__label as foreign_relations %}
         {% for foreign_relation in foreign_relations %}
-        <li>
-          <div class="dt">{{ foreign_relation.grouper }}</div>
+        <ul>
+          <h6 class="inline">{{ foreign_relation.grouper }}</h6>
           {% for relation in foreign_relation.list %}
-              <div class="dd">
-              <a href="{{ relation.uri }}">{{ relation.label }}</a></div>
+              <li class="inline">
+              <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
           {% endfor %}
-        </li>
+        </ul>
         {% endfor %}
-      </ul>
+      </div>
     </div>
 
     <!-- Scope note -->
