@@ -244,6 +244,14 @@ $(document).ready(function () {
     var propertyTypeName = $(selector).text();
     var propertyLabelElement = $(this).data('value-input-id');
     var parentUrlElement = $(this).data('url-input-id');
+
+    if (propertyTypeId == ''){
+        $(parentUrlElement).val('');
+        $(propertyLabelElement).val('');
+        errorMessage('Choose an option!')
+        return;
+    }
+
     var propertyLabel = $(propertyLabelElement).val();
     var parentUrl = $(parentUrlElement).val();
     var addUrl = $(this).data('href');
