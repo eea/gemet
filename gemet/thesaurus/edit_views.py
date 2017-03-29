@@ -525,6 +525,13 @@ class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
 
         for concept in old_concepts:
             concept.set_attributes(self.langcode, ['prefLabel'])
+            concept.url = reverse(
+                EDIT_URL_NAMES[concept.namespace.heading],
+                kwargs={
+                    'langcode': self.langcode,
+                    'code': concept.code,
+                }
+            )
 
         context.update({
             'new_concepts': concepts,

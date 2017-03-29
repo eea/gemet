@@ -35,7 +35,7 @@
         {% for concept in concepts.list %}
           <div class="well">
             <h4>{{ concepts.grouper }}</h4>
-            <h5>{{ concept.prefLabel }}</h5>
+            <a href="{{ concept.url }}">{{ concept.prefLabel }}</a>
             <div class="history-details text-area" hidden>
             </div>
             <button class="btn history-details input-area"
