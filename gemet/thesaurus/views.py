@@ -260,7 +260,7 @@ class ConceptView(HeaderMixin, VersionMixin, DetailView):
             .values('language__name', 'value')
         )
         concept.set_attributes(self.langcode, self.attributes)
-        concept.url = settings.GEMET_URL + concept.get_about_url()
+        concept.url = self.model.objects.get_ns().url + code
 
         return concept
 
