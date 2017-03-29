@@ -2,8 +2,8 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 
-from gemet.thesaurus.models import ForeignRelation, Language, Namespace
-from gemet.thesaurus.models import Property
+from gemet.thesaurus.models import ForeignRelation, InspireTheme, Language
+from gemet.thesaurus.models import Namespace, Property
 from gemet.thesaurus.utils import get_version_choices
 
 
@@ -46,8 +46,9 @@ class ForeignRelationForm(forms.ModelForm):
 class ConceptForm(forms.Form):
 
     name = forms.CharField(max_length=16000)
-    namespace = forms.ModelChoiceField(queryset=Namespace.objects.all(),
-                                       empty_label=None)
+    namespace = forms.ModelChoiceField(
+        queryset=Namespace.objects.exclude(heading=InspireTheme.NAMESPACE),
+        empty_label=None)
 
 
 class LDAPAuthenticationForm(AuthenticationForm):
