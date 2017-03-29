@@ -319,6 +319,12 @@ $(document).ready(function () {
        success: function(data){
 
          if ($(deleteFieldId).hasClass(PENDING_CLASS)){ // if pending hard delete
+
+            if(deleteFieldId.parent().hasClass('foreign-elements')){
+                if(deleteFieldId.siblings().length == 0){
+                    deleteFieldId.parent().parent().remove();
+                }
+            } // remove parent for foreign relations if the element is the last one of its type
             $(deleteFieldId).remove();
          }
          // else it is just marked as deleted pending
