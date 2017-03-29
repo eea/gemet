@@ -257,7 +257,7 @@ $(document).ready(function () {
          errorMessage(e.responseJSON.message)
        },
        success: function(data) {
-         var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
+         var $relationField = $("<div class='" + PENDING_CLASS + " other-item' id='other" +
          data['id'] + "'><a href=" + parentUrl + ">" + propertyLabel + "</a></div>")
          var $deleteButton = createDeleteButton(data['delete_url'], 'other');
          $relationField.append($deleteButton);
@@ -265,12 +265,14 @@ $(document).ready(function () {
            $fieldList.append($relationField);
          }
          else {
-           var $newType = $("<div class='foreign-relation' data-value='" +
-           propertyTypeName + "'><span>" + propertyTypeName + "</span>");
+           var $newTypeContainer = $("<div class='foreign-relation' data-value='" +
+           propertyTypeName + "'></div>");
+           var $newType = $("<li><span>" + propertyTypeName + "</span></li>");
            var $newList = $("<div class='foreign-elements'></div>");
+           $newTypeContainer.append($newType);
            $newType.append($newList);
            $newList.append($relationField);
-           $(fieldId).append($newType);
+           $(fieldId).append($newTypeContainer);
          }
        }
     })
