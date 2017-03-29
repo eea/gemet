@@ -96,6 +96,11 @@ $(document).ready(function () {
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
   });
 
+  $('.btng.cancel').on('click', function(){
+    $(this).parent().siblings('.input-area').find('input').val('');
+  });
+
+
   $('.btng.save, .btng.cancel').on('click', function(){
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
     $(this).parent().siblings('.input-area').removeClass('visible'); // hide input area
