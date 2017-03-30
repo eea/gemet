@@ -18,6 +18,7 @@ from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
+from gemet.thesaurus.utils import get_form_errors
 
 
 class LoginRequiredMixin(mixins.LoginRequiredMixin):
@@ -151,7 +152,7 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": form.errors}
+            data = {"message": get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         field = models.Property.objects.filter(language=langcode,
@@ -301,7 +302,7 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": form.errors}
+            data = {"message": get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         prop = (
@@ -379,7 +380,7 @@ class AddForeignRelationView(LoginRequiredMixin, JsonResponseMixin,
             }
             return self._get_response(data, 'success', 200)
 
-        data = {"message": form.errors}
+        data = {"message": get_form_errors(form.errors)}
         return self._get_response(data, 'error', 400)
 
 
@@ -509,7 +510,8 @@ class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
             concept_with_name.update({'url': url})
             concepts.append(concept_with_name)
 
-        published_concepts = models.Concept.objects.filter(status=PUBLISHED)
+        published_concepts = models.Concept.objects.filter(
+            status=PUBLISHED).select_related('namespace')
         old_concepts = (
             set(published_concepts
                 .filter(properties__status__in=[PENDING, DELETED_PENDING]))
@@ -525,6 +527,13 @@ class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
 
         for concept in old_concepts:
             concept.set_attributes(self.langcode, ['prefLabel'])
+            concept.url = reverse(
+                EDIT_URL_NAMES[concept.namespace.heading],
+                kwargs={
+                    'langcode': self.langcode,
+                    'code': concept.code,
+                }
+            )
 
         context.update({
             'new_concepts': concepts,

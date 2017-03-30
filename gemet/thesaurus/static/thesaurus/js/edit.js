@@ -96,6 +96,11 @@ $(document).ready(function () {
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
   });
 
+  $('.btng.cancel').on('click', function(){
+    $(this).parent().siblings('.input-area').find('input').val('');
+  });
+
+
   $('.btng.save, .btng.cancel').on('click', function(){
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
     $(this).parent().siblings('.input-area').removeClass('visible'); // hide input area
@@ -237,8 +242,18 @@ $(document).ready(function () {
     var selector = selectId + " option:selected";
     var propertyTypeId = $(selector).val();
     var propertyTypeName = $(selector).text();
-    var propertyLabel = $($(this).data('value-input-id')).val();
-    var parentUrl = $($(this).data('url-input-id')).val();
+    var propertyLabelElement = $(this).data('value-input-id');
+    var parentUrlElement = $(this).data('url-input-id');
+
+    if (propertyTypeId == ''){
+        $(parentUrlElement).val('');
+        $(propertyLabelElement).val('');
+        errorMessage('Choose an option!')
+        return;
+    }
+
+    var propertyLabel = $(propertyLabelElement).val();
+    var parentUrl = $(parentUrlElement).val();
     var addUrl = $(this).data('href');
     var $fieldList  = $($(this).data('field-id')).find("[data-value='" +
     propertyTypeName + "']").find('.foreign-elements').first();
@@ -257,7 +272,7 @@ $(document).ready(function () {
          errorMessage(e.responseJSON.message)
        },
        success: function(data) {
-         var $relationField = $("<div class='" + PENDING_CLASS + "other-item' id='other" +
+         var $relationField = $("<div class='" + PENDING_CLASS + " other-item' id='other" +
          data['id'] + "'><a href=" + parentUrl + ">" + propertyLabel + "</a></div>")
          var $deleteButton = createDeleteButton(data['delete_url'], 'other');
          $relationField.append($deleteButton);
@@ -265,15 +280,20 @@ $(document).ready(function () {
            $fieldList.append($relationField);
          }
          else {
-           var $newType = $("<div class='foreign-relation' data-value='" +
-           propertyTypeName + "'><span>" + propertyTypeName + "</span>");
+           var $newTypeContainer = $("<div class='foreign-relation' data-value='" +
+           propertyTypeName + "'></div>");
+           var $newType = $("<li><span>" + propertyTypeName + "</span></li>");
            var $newList = $("<div class='foreign-elements'></div>");
+           $newTypeContainer.append($newType);
            $newType.append($newList);
            $newList.append($relationField);
-           $(fieldId).append($newType);
+           $(fieldId).append($newTypeContainer);
          }
        }
-    })
+    }).complete(function(){
+        $(parentUrlElement).val('');
+        $(propertyLabelElement).val('');
+    });
   }
 
   /* remove concept, alternative or other relation */
@@ -299,10 +319,19 @@ $(document).ready(function () {
        success: function(data){
 
          if ($(deleteFieldId).hasClass(PENDING_CLASS)){ // if pending hard delete
+
+            if(deleteFieldId.parent().hasClass('foreign-elements')){
+                if(deleteFieldId.siblings().length == 0){
+                    deleteFieldId.parent().parent().remove();
+                }
+            } // remove parent for foreign relations if the element is the last one of its type
             $(deleteFieldId).remove();
          }
          // else it is just marked as deleted pending
          $(deleteFieldId).attr('class', DELETED_PENDING_CLASS); // Change status
+         if(deleteFieldId.parent().hasClass('foreign-elements')){
+           $(deleteFieldId).addClass('other-item');
+         }
          $(deleteButton).remove();
          var $restoreButton = createRestoreButton(data['restore_url'], relationType);
          deleteFieldId.append($restoreButton);
@@ -332,6 +361,9 @@ $(document).ready(function () {
        },
        success: function(data){
          $(relationDiv).attr('class', PUBLISHED_CLASS); // Change status
+         if(relationDiv.parent().hasClass('foreign-elements')){
+           $(relationDiv).addClass('other-item');
+         }
          $(restoreButton).remove();
          var $deleteButton = createDeleteButton(data['delete_url'], relationType);
          relationDiv.append($deleteButton);
