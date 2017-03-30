@@ -2026,3 +2026,8 @@ position: fixed;
     display: inline-block;
     margin-right: .5rem;
 }
+
+
+.selected-word .pull-left {
+    margin-right: 1rem; 
+}
