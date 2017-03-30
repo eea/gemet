@@ -558,7 +558,7 @@ class ConceptChangesView(LoginRequiredMixin, View):
                 concept__id=relation['target__id'],
                 name='prefLabel',
                 language=language,
-                status__in=[PUBLISHED, DELETED_PENDING]).first()
+                status__in=[PENDING, PUBLISHED, DELETED_PENDING]).first()
             if target_name:
                 target_name = target_name.value
             else:
