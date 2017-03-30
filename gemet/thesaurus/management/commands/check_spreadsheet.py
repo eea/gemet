@@ -1,11 +1,11 @@
-from django.core.management import CommandError
-from django.core.management.base import BaseCommand
-from gemet.thesaurus.models import Property
-
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
-import re
+from django.core.management import CommandError
+from django.core.management.base import BaseCommand
+
+from gemet.thesaurus.models import Property
+from gemet.thesaurus.utils import split_text_into_terms
 
 
 LABELS = {
@@ -16,14 +16,6 @@ LABELS = {
     'NT (GEMET)': True,
     'NT (new)': False,
 }
-
-
-def split_text_into_terms(raw_text):
-    pattern = re.compile("[^a-zA-Z\d \-\\)\\(:]")
-    term_list = pattern.split(raw_text)
-    term_list = [term.strip(' :').lower() for term in term_list if
-                 term.strip(' :').lower() != '']
-    return term_list
 
 
 class Command(BaseCommand):

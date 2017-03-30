@@ -16,6 +16,7 @@ from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
+from gemet.thesaurus.utils import get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 from gemet.thesaurus.utils import get_form_errors
@@ -435,14 +436,7 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         new_concept = models.Concept(version_added=self.pending_version,
                                      namespace=namespace,
                                      status=PENDING)
-        codes = (
-            models.Concept.objects
-            .filter(namespace=namespace)
-            .exclude(code='')
-            .values_list('code', flat=True)
-        )
-        new_code = max(map(int, codes)) + 1
-        new_concept.code = unicode(new_code)
+        new_concept.code = get_new_code(namespace)
         new_concept.save()
 
         # create prefLabel property for the new concept
@@ -454,7 +448,7 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
                                        value=form.cleaned_data['name'])
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
-                                        'code': new_code})
+                                        'code': new_concept.code})
         return redirect(url)
 
 

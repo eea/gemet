@@ -1,7 +1,9 @@
+import re
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
 from gemet.thesaurus.models import Property, PropertyType, Relation, Version
+from gemet.thesaurus.models import Concept
 from gemet.thesaurus import RELATION_PAIRS
 
 SEPARATOR = '\t'
@@ -141,7 +143,7 @@ def create_reverse_relation(relation):
     reverse_relation = PropertyType.objects.get(
         name=RELATION_PAIRS[relation.property_type.name])
 
-    Relation.objects.create(
+    return Relation.objects.create(
         source=relation.target,
         target=relation.source,
         property_type=reverse_relation,
@@ -154,3 +156,22 @@ def get_form_errors(errors):
     # errors is a dictionary with a list as value for each key;
     # the function returns the a string with all the values flattened
     return ' '.join([''.join(error) for error in errors.values()])
+
+
+def get_new_code(namespace):
+    codes = (
+        Concept.objects
+        .filter(namespace=namespace)
+        .exclude(code='')
+        .values_list('code', flat=True)
+    )
+    new_code = max(map(int, codes)) + 1
+    return unicode(new_code)
+
+
+def split_text_into_terms(raw_text):
+    pattern = re.compile("[^a-zA-Z\d \-\\)\\(:]")
+    term_list = pattern.split(raw_text)
+    term_list = [term.strip(' :').lower() for term in term_list if
+                 term.strip(' :').lower() != '']
+    return term_list
