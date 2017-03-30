@@ -2,7 +2,7 @@
   <!-- prefLabel -->
   <div>
     {% if prefLabel %}
-      <h2>Name</h2>
+      <h5>Name</h5>
       {% for property in prefLabel %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
@@ -11,7 +11,7 @@
   <!-- altLabel -->
   <div>
     {% if altLabel %}
-      <h2>Alternatives</h2>
+      <h5>Alternatives</h5>
       {% for property in altLabel %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
@@ -20,7 +20,7 @@
   <!-- definition -->
   <div>
     {% if definition %}
-      <h2>Definition</h2>
+      <h5>Definition</h5>
       {% for property in definition %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
@@ -28,7 +28,7 @@
   </div>
   <!--source -->
     {% if source %}
-      <h2>Source</h2>
+      <h5>Source</h5>
       {% for property in source %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
@@ -37,7 +37,7 @@
   <!--scopeNote -->
   <div>
     {% if scopeNote %}
-      <h2>Scope Note</h2>
+      <h5>Scope Note</h5>
       {% for property in scopeNote %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
@@ -46,7 +46,7 @@
   <!--theme -->
   <div>
     {% if theme %}
-      <h2>Themes</h2>
+      <h5>Themes</h5>
       {% for relation in theme %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
@@ -55,7 +55,7 @@
   <!--group -->
   <div>
     {% if group %}
-      <h2>Groups</h2>
+      <h5>Groups</h5>
       {% for relation in group %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
@@ -64,7 +64,7 @@
   <!--related terms -->
   <div>
     {% if related %}
-      <h2>Related terms</h2>
+      <h5>Related terms</h5>
       {% for relation in related %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
@@ -74,9 +74,9 @@
   <div>
     {% if narrower %}
        {% if namespace == 'Super groups' %}
-         <h2>Groups</h2>
+         <h5>Groups</h5>
        {% else %}
-         <h2>Narrower terms</h2>
+         <h5>Narrower terms</h5>
        {% endif %}
       {% for relation in narrower %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
@@ -86,9 +86,9 @@
    <div>
     {% if broader %}
        {% if namespace == 'Groups' %}
-         <h2>Super groups</h2>
+         <h5>Super groups</h5>
        {% else %}
-         <h2>Broader terms</h2>
+         <h5>Broader terms</h5>
        {% endif %}
 
       {% for relation in broader %}
@@ -99,7 +99,7 @@
   <!--theme concepts -->
   <div>
     {% if themeMember %}
-      <h2>Concepts</h2>
+      <h5>Concepts</h5>
       {% for relation in themeMember %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
@@ -108,7 +108,7 @@
   <!--supergroups -->
   <div>
     {% if groupMember %}
-      <h2>Concepts</h2>
+      <h5>Concepts</h5>
       {% for relation in groupMember %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
@@ -117,7 +117,7 @@
    <!--foreign relations -->
    {% if foreign_relations %}
    <div>
-    <h2>Other relations</h2>
+    <h5>Other relations</h5>
     {% regroup foreign_relations by property_type as grouped_foreign_relations %}
     {% for foreign_relation in grouped_foreign_relations %}
     <ul>

@@ -25,7 +25,7 @@
 
   <!-- Concept -->
   <div class="selected-word">
-    <span id="prefLabel">{{ concept.name }}</span>
+    <div class="pull-left" id="prefLabel">{{ concept.name }}</div>
     {% if user.is_authenticated %}
       <span>
         <a class="btn"
@@ -120,7 +120,7 @@
         <ul class="listing">
           {% for theme in concept.themes %}
           <li>
-            {{ theme.name }}
+            <a href="{% url 'theme' language.code theme.concept__code %}">{{ theme.name }}</a>
           </li>
           {% endfor %}
         </ul>
@@ -130,11 +130,11 @@
   <!-- Groups -->
     {% if concept.groups %}
       <div class="text-area">
-          <h5 class="h5">Groups:</h5>
+          <h5 class="h5">Group:</h5>
             <ul class="listing">
             {% for group in concept.groups %}
               <li>
-                {{ group.name }}
+                <a href="{% url 'group' language.code group.concept__code %}">{{ group.name }}</a>
               </li>
             {% endfor %}
           </ul>

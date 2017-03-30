@@ -13,7 +13,7 @@
   {% else %}
     <a href="{% url 'concept' language.code concept.concept__code %}">{% default_name concept.id %}</a>[english]
   {% endif %}
-  <ul class="listing no-list">
+  <ul class="listing">
     {% if expand.status %}
       {% get_children concept.id language.code as concept_children %}
       {% for concept in concept_children %}

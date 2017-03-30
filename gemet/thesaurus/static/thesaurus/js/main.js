@@ -46,6 +46,7 @@ $(document).ready(function() {
                 url: url,
                 success: function(data) {
                     $textArea.html(data);
+                     $textArea.css('display','block');
                 }
             })
         }
@@ -69,6 +70,10 @@ $(document).ready(function() {
         })
 
     }
+
+    $('.toggle-concept-list').on('click',function(){
+      $('.modified-list').toggleClass('expand');
+    })
 
 
 
