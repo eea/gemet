@@ -290,7 +290,7 @@ $(document).ready(function () {
            $(fieldId).append($newTypeContainer);
          }
        }
-    }).done(function(){
+    }).complete(function(){
         $(parentUrlElement).val('');
         $(propertyLabelElement).val('');
     });
