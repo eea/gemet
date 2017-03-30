@@ -146,21 +146,21 @@ class Command(BaseCommand):
                         )
                         self.stdout.write('Inexistent concept: {}'.format(term))
 
-                relation = models.Relation.objects.filter(
-                    source=source,
-                    target=target,
-                    property_type=property_type,
-                ).first()
-
-                if not relation:
-                    relation = models.Relation.objects.create(
+                    relation = models.Relation.objects.filter(
                         source=source,
                         target=target,
                         property_type=property_type,
-                        version_added=self.version,
-                        status=PENDING,
-                    )
-                    self.stdout.write('Relation created: {}'.format(relation))
+                    ).first()
+
+                    if not relation:
+                        relation = models.Relation.objects.create(
+                            source=source,
+                            target=target,
+                            property_type=property_type,
+                            version_added=self.version,
+                            status=PENDING,
+                        )
+                        self.stdout.write('Relation created: {}'.format(relation))
 
                 if not has_reverse_relation(relation):
                     reverse_relation = create_reverse_relation(relation)
