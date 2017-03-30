@@ -1182,7 +1182,7 @@ padding-bottom: 1rem;
 }
 
 .text-area li:after {
-    content: ",";
+    content: " | ";
     color: inherit;
     /*color: #00446a;*/
 }
@@ -1523,7 +1523,7 @@ padding-bottom: 1rem;
 #definition ul li,
 #definition h5,
 #definition h6 {
-    margin-right: .5rem;
+    // margin-right: .5rem;
     margin-top: .5rem;
     margin-bottom: .5rem;
 }

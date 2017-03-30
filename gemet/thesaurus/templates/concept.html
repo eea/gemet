@@ -120,12 +120,19 @@
         <ul class="listing">
           {% for theme in concept.themes %}
           <li>
-            {{ theme.name }}
+            <a href="{% url 'theme' language.code theme.concept__code %}">{{ theme.name }}</a>
           </li>
           {% endfor %}
         </ul>
       </div>
     {% endif %}
+
+
+  {% for theme in themes %}
+    <li>
+     
+    {% endfor %}
+
 
   <!-- Groups -->
     {% if concept.groups %}
@@ -134,7 +141,7 @@
             <ul class="listing">
             {% for group in concept.groups %}
               <li>
-                {{ group.name }}
+                <a href="{% url 'group' language.code group.concept__code %}">{{ group.name }}</a>
               </li>
             {% endfor %}
           </ul>
