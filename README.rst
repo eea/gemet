@@ -286,7 +286,7 @@ Configure local settings with your project's dsn.
 
 .. _`Sentry`: https://sentry.io
 
-========
+
 Contacts
 ========
 
