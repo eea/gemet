@@ -6,11 +6,10 @@ Search thesaurus
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='search' %}
-
+  {% include 'header.html' with view='search' page=1 query=query %}
   {% if query %}
     <div>
-      <span class="results-nr">{{ concepts|length }} results found.</span>
+      <span class="results-nr">{{ paginator.count }} results found.</span>
       <span>Searched for '<b>{{ query }}</b>'</span>
     </div>
     {% if concepts|length %}
@@ -50,6 +49,21 @@ Search thesaurus
     {% endif %}
   {% endif %}
 
+<div class="pagination">
+    <span class="step-links">
+        {% if concepts.has_previous %}
+            <a href="{% url 'search' language.code concepts.previous_page_number %}?query={{ query }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ concepts.number }} of {{ concepts.paginator.num_pages }}
+        </span>
+
+        {% if concepts.has_next %}
+            <a href="{% url 'search' language.code concepts.next_page_number %}?query={{ query }}">next</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}
 
 {% block version %}

@@ -7,6 +7,7 @@ from xmlrpclib import Fault
 
 from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views import View
@@ -236,17 +237,46 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
             "namespace": Term.NAMESPACE,
             "status_values": self.status_values,
         })
+        if 'paginator' in kwargs:
+            context.update({
+                "paginator": kwargs['paginator']
+            })
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form, **kwargs):
         self.query = form.cleaned_data['query']
         self.concepts = search_queryset(
             self.query,
             self.language,
             status_values=self.status_values,
         )
+        page = kwargs.get('page', 1)
+        paginator = Paginator(self.concepts, 25)
+        self.concepts = paginator.page(page)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                paginator=paginator
+            )
+        )
 
-        return self.render_to_response(self.get_context_data(form=form))
+    def get_form_kwargs(self):
+        kwargs = super(SearchView, self).get_form_kwargs()
+        if self.request.method in ('GET', ):
+            kwargs.update({
+                'data': self.request.GET
+            })
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        if 'query' in request.GET:
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form, **kwargs)
+            else:
+                return self.form_invalid(form)
+        else:
+            return super(SearchView, self).get(request, **kwargs)
 
 
 class RelationsView(HeaderMixin, StatusMixin, VersionMixin, TemplateView):

@@ -66,7 +66,7 @@ urlpatterns = [
         url(r'^exports/rdf$', views.DownloadView.as_view(), name='download'),
 
         # Search
-        url(r'^search/$', views.SearchView.as_view(), name='search'),
+        url(r'^search/page/(?P<page>\d+)/$', views.SearchView.as_view(), name='search'),
 
         # List pages
         url(r'^groups/$', views.GroupsView.as_view(), name='groups'),
