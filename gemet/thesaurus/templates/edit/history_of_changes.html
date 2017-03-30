@@ -14,12 +14,12 @@
     {% if version.publication_date %}({{ version.publication_date }}){% endif %}
   </h1>
 
-  <h3>New concepts</h3>
+  <h2>New concepts</h2>
   {% regroup new_concepts by concept__namespace__heading as concepts_list %}
   <div class="modified-container">
     {% for concepts in concepts_list %}
       <div class="well">
-        <h5>{{ concepts.grouper }}</h5>
+        <h3>{{ concepts.grouper }}</h3>
 
         {% for concept in concepts.list %}
           <p><a href="{{ concept.url }}">{{ concept.value }}</a></p>
@@ -28,14 +28,14 @@
     {% endfor %}
   </div>
 
-  <h3>Modified concepts</h3>
+  <h2>Modified concepts</h2>
   {% regroup old_concepts by namespace as concepts_list %}
   <div class="modified-container">
     {% for concepts in concepts_list %}
         {% for concept in concepts.list %}
           <div class="well">
-            <h4>{{ concepts.grouper }}</h4>
-            <h5>{{ concept.prefLabel }}</h5>
+            <!-- <h4>{{ concepts.grouper }}</h4> -->
+            <h3>{{ concept.prefLabel }}</h3>
             <div class="history-details text-area" hidden>
             </div>
             <button class="btn history-details input-area"

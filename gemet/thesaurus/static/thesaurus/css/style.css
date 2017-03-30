@@ -1925,8 +1925,14 @@ a.search-button {
     margin: 1rem;
     padding: 1rem;
     padding-top: 0;
+    background: white;
+    box-shadow: none;
+    border-color: #eee;
+
 
 }
+
+
 
 .edit-page.history .modified-container {
     display: flex;
@@ -1937,6 +1943,9 @@ a.search-button {
     margin-left: 0;
 }
 
+.modified-container button {
+
+}
 
 .edit-page.history .well * {
     transition: all 300ms;
@@ -1965,4 +1974,14 @@ a.search-button {
         width: 100%;
     max-width: 500px;
 }
+}
+
+
+#pagehead a {
+    top: auto;
+}
+
+.text-area h6,
+.text-area h5 {
+    font-weight: bold!important;
 }
