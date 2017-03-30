@@ -151,7 +151,7 @@ class Command(BaseCommand):
 
             self.stdout.write('Inserting {0} new rows ...'.format(len(rows)))
             new_rows = [model_cls(**row) for row in rows]
-            model_cls.objects.bulk_create(new_rows, batch_size=100000)
+            model_cls.objects.bulk_create(new_rows, batch_size=10000)
         else:
             self.stderr.write('0 rows found in the import table. Aborting ...')
 

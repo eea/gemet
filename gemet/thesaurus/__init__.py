@@ -51,3 +51,13 @@ SOURCE_RELATION_TO_TARGET = {
     ('Super groups', 'narrower'): 'Groups',
     ('Themes', 'themeMember'): 'Concepts',
 }
+
+RELATION_PAIRS = {
+    'group': 'groupMember',
+    'theme': 'themeMember',
+    'groupMember': 'group',
+    'themeMember': 'theme',
+    'broader': 'narrower',
+    'narrower': 'broader',
+    'related': 'related',
+}
