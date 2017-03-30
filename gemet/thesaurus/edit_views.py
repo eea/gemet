@@ -18,6 +18,7 @@ from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
+from gemet.thesaurus.utils import get_form_errors
 
 
 class LoginRequiredMixin(mixins.LoginRequiredMixin):
@@ -75,14 +76,6 @@ class JsonResponseMixin(object):
         response.status = status
         response.status_code = status_code
         return response
-
-
-class FormatFormErrorsMixin(object):
-
-    def _get_form_errors(self, errors):
-
-        return reduce(lambda x, y: x + ' ' + y,
-                      [error[1][0] for error in errors.items()])
 
 
 class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
@@ -146,8 +139,8 @@ class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class EditPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
-                       JsonResponseMixin, VersionMixin, View):
+class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
+                       View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -159,7 +152,7 @@ class EditPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": self._get_form_errors(form.errors)}
+            data = {"message": get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         field = models.Property.objects.filter(language=langcode,
@@ -296,8 +289,8 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response(data, 'success', 200)
 
 
-class AddPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
-                      JsonResponseMixin, VersionMixin, View):
+class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
+                      View):
 
     def post(self, request, langcode, id, name):
         try:
@@ -309,7 +302,7 @@ class AddPropertyView(LoginRequiredMixin, FormatFormErrorsMixin,
 
         form = PropertyForm(request.POST)
         if not form.is_valid():
-            data = {"message": self._get_form_errors(form.errors)}
+            data = {"message": get_form_errors(form.errors)}
             return self._get_response(data, 'error', 400)
 
         prop = (
@@ -363,8 +356,8 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         return self._get_response({}, 'success', 200)
 
 
-class AddForeignRelationView(LoginRequiredMixin, FormatFormErrorsMixin,
-                             JsonResponseMixin, VersionMixin, View):
+class AddForeignRelationView(LoginRequiredMixin, JsonResponseMixin,
+                             VersionMixin, View):
 
     def post(self, request, id):
         try:
@@ -387,7 +380,7 @@ class AddForeignRelationView(LoginRequiredMixin, FormatFormErrorsMixin,
             }
             return self._get_response(data, 'success', 200)
 
-        data = {"message": self._get_form_errors(form.errors)}
+        data = {"message": get_form_errors(form.errors)}
         return self._get_response(data, 'error', 400)
 
 

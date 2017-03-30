@@ -148,3 +148,9 @@ def create_reverse_relation(relation):
         status=relation.status,
         version_added=relation.version_added,
     )
+
+
+def get_form_errors(errors):
+    # errors is a dictionary with a list as value for each key;
+    # the function returns the a string with all the values flattened
+    return ' '.join([''.join(error) for error in errors.values()])
