@@ -1,5 +1,5 @@
 -r requirements.txt
 gunicorn==18.0
 meld3==1.0.0
-raven==2.0.12.2
+raven==6.0.0
 supervisor==3.0

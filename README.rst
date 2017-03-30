@@ -270,6 +270,23 @@ local_settings.example and run::
 
     ./manage.py test
 
+
+Sentry settings
+===============
+
+Sentry is used to track errors in real-time.
+
+Create an account and a project on `Sentry`_ .
+
+Install the proper version of raven used by sentry::
+
+    pip install -r requirements-dep.txt
+
+Configure local settings with your project's dsn.
+
+.. _`Sentry`: https://sentry.io
+
+========
 Contacts
 ========
 
