@@ -510,7 +510,8 @@ class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
             concept_with_name.update({'url': url})
             concepts.append(concept_with_name)
 
-        published_concepts = models.Concept.objects.filter(status=PUBLISHED)
+        published_concepts = models.Concept.objects.filter(
+            status=PUBLISHED).select_related('namespace')
         old_concepts = (
             set(published_concepts
                 .filter(properties__status__in=[PENDING, DELETED_PENDING]))
