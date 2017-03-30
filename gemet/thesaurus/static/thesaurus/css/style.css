@@ -628,7 +628,8 @@ hr {
 .toggle-collapse {
     display: block;
     float: left;
-    margin-top: 0.25em;
+
+    margin-top: 0.2em;
     margin-right: 0.5em;
     height: 0.8em;
     width: 0.8em;
