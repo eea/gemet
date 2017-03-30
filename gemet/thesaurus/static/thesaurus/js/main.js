@@ -71,6 +71,10 @@ $(document).ready(function() {
 
     }
 
+    $('.toggle-concept-list').on('click',function(){
+      $('.modified-list').toggleClass('expand');
+    })
+
 
 
     if (window.matchMedia("(min-width: 800px)").matches) {

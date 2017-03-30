@@ -28,8 +28,19 @@
     {% endfor %}
   </div>
 
-  <h2>Modified concepts</h2>
+  <h2 class="modified-title">Modified concepts</h2> <span><a class="btn toggle-concept-list">Toggle list</a></span>
   {% regroup old_concepts by namespace as concepts_list %}
+    <ul class="modified-list">
+      <h2>Modified concepts</h2>
+   {% for concepts in concepts_list %}
+        {% for concept in concepts.list %}
+        <li>
+            <h3>{{ concept.prefLabel }}</h3>
+        </li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
   <div class="modified-container">
     {% for concepts in concepts_list %}
         {% for concept in concepts.list %}
