@@ -7,7 +7,7 @@ LOCAL_INSTALLED_APPS = (
 # Use django_nose in development to run tests with coverage option
 #    'django_nose',
 # The raven app is needed in production in order for sentry to work
-#    'raven.contrib.django',
+#    'raven.contrib.django.raven_compat',
 )
 
 LOCAL_MIDDLEWARE_CLASSES = (
@@ -20,6 +20,12 @@ LOCAL_MIDDLEWARE_CLASSES = (
 
 # Fill in your DSN value:
 # SENTRY_DSN = ''
+
+# This setting is required for sentry
+# RAVEN_CONFIG = {
+#     'dsn': 'https://[secret_key]@sentry.io/[project_id]',
+#     # The dsn for a certain project can be obtain from the sentry account
+# }
 
 # Remove the line below in development
 ALLOWED_HOSTS = ['*']
