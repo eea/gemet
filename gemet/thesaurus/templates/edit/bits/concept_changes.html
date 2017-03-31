@@ -4,7 +4,7 @@
     <div>
       <h5>Name</h5>
       {% for property in prefLabel %}
-        <div class="status-{{ property.status }}">{{ property.value }}</div>
+        <div class="status-{{ property.status }} prefLabel">{{ property.value }}</div>
       {% endfor %}
     </div>
   {% endif %}
@@ -24,7 +24,7 @@
     <div>
       <h5>Definition</h5>
       {% for property in definition %}
-        <div class="status-{{ property.status }}">{{ property.value }}</div>
+        <div class="status-{{ property.status }} definition">{{ property.value }}</div>
       {% endfor %}
     </div>
   {% endif %}
