@@ -2,7 +2,7 @@
 {% load gemet_tags %}
 
 {% block title %}
-Relations for {{ group.name }}
+  Relations for {{ group.name }}
 {% endblock %}
 
 {% block content %}
@@ -13,9 +13,9 @@ Relations for {{ group.name }}
     <h3 class="h5 {% if language.rtl %}direction-rtl{% endif %}">{{ group.name }}</h3>
 
     <ul class="listing first-level{% if language.rtl %}direction-rtl{% endif %}">
-      {% get_children group.id language.code as group_children %}
+      {% get_children group.id language.code group.status_list as group_children %}
       {% for concept in group_children %}
-        {% include 'concept_snippet.html' with concept=concept group_code=group.code langcode=language.code %}
+        {% include 'concept_snippet.html' with concept=concept group_code=group.code langcode=language.code status_values=group.status_list %}
       {% endfor %}
     </ul>
   </div>

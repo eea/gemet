@@ -24,6 +24,7 @@ from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
 from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
 from gemet.thesaurus import NS_ID_VIEW_MAPPING
+from gemet.thesaurus import PUBLISHED, PENDING, DELETED_PENDING
 
 
 class HeaderMixin(object):
@@ -62,6 +63,17 @@ class VersionMixin(object):
         return context
 
 
+class StatusMixin(object):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            status = [PUBLISHED, PENDING]
+        else:
+            status = [PUBLISHED, DELETED_PENDING]
+        self.status_values = status
+        return super(StatusMixin, self).dispatch(request, *args, **kwargs)
+
+
 class AboutView(HeaderMixin, TemplateView):
     template_name = "about.html"
 
@@ -74,7 +86,7 @@ class WebServicesView(HeaderMixin, TemplateView):
     template_name = 'webservices.html'
 
 
-class ThemesView(HeaderMixin, VersionMixin, TemplateView):
+class ThemesView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
     page_title = 'Themes'
@@ -84,11 +96,13 @@ class ThemesView(HeaderMixin, VersionMixin, TemplateView):
 
     def _get_themes_by_langcode(self, langcode):
         return (
-            Property.published.filter(
+            Property.objects.filter(
                 name='prefLabel',
                 language__code=langcode,
-                concept_id__in=self.model_cls.published.values_list(
-                    'id', flat=True)
+                status__in=self.status_values,
+                concept_id__in=self.model_cls.objects
+                    .filter(status__in=self.status_values)
+                    .values_list('id', flat=True)
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'},
@@ -138,17 +152,20 @@ class InspireThemesView(ThemesView):
         return context
 
 
-class GroupsView(HeaderMixin, VersionMixin, TemplateView):
+class GroupsView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
     template_name = "groups.html"
 
     def get_context_data(self, **kwargs):
         context = super(GroupsView, self).get_context_data(**kwargs)
 
         supergroups = (
-            Property.published.filter(
+            Property.objects.filter(
                 name='prefLabel',
                 language__code=self.langcode,
-                concept_id__in=SuperGroup.published.values_list('id', flat=True)
+                status__in=self.status_values,
+                concept_id__in=SuperGroup.objects
+                .filter(status__in=self.status_values)
+                .values_list('id', flat=True)
             )
             .extra(select={'name': 'value',
                            'id': 'concept_id'},
@@ -159,6 +176,7 @@ class GroupsView(HeaderMixin, VersionMixin, TemplateView):
         context.update({
             "supergroups": supergroups,
             "namespace": Group.NAMESPACE,
+            "status_values": self.status_values,
         })
         return context
 
@@ -186,7 +204,7 @@ class AlphabetsView(HeaderMixin, TemplateView):
         return context
 
 
-class SearchView(HeaderMixin, VersionMixin, FormView):
+class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
@@ -200,6 +218,7 @@ class SearchView(HeaderMixin, VersionMixin, FormView):
             "query": self.query,
             "concepts": self.concepts,
             "namespace": Term.NAMESPACE,
+            "status_values": self.status_values,
         })
         return context
 
@@ -207,18 +226,20 @@ class SearchView(HeaderMixin, VersionMixin, FormView):
         self.query = form.cleaned_data['query']
         self.concepts = search_queryset(
             self.query,
-            self.language
+            self.language,
+            self.status_values,
         )
 
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RelationsView(HeaderMixin, VersionMixin, TemplateView):
+class RelationsView(HeaderMixin, StatusMixin, VersionMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
         code = self.kwargs.get('group_code')
         group = get_object_or_404(Group, code=code)
+        group.status_list = self.status_values
         group.set_attributes(self.langcode, ['prefLabel'])
 
         expand_text = self.request.GET.get('exp')
@@ -240,13 +261,14 @@ class RelationsView(HeaderMixin, VersionMixin, TemplateView):
         return context
 
 
-class ConceptView(HeaderMixin, VersionMixin, DetailView):
+class ConceptView(HeaderMixin, VersionMixin, StatusMixin, DetailView):
     attributes = ['prefLabel', 'definition', 'scopeNote']
     override_languages = True
 
     def get_object(self):
         code = self.kwargs.get('code')
         concept = get_object_or_404(self.model, code=code)
+        concept.status_list = self.status_values
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
@@ -254,7 +276,7 @@ class ConceptView(HeaderMixin, VersionMixin, DetailView):
             .filter(
                 name='prefLabel',
                 concept=concept,
-                status__in=self.model.status_list,
+                status__in=self.status_values,
             )
             .order_by('language__name')
             .values('language__name', 'value')
@@ -334,7 +356,7 @@ class SuperGroupView(ConceptView):
     context_object_name = 'supergroup'
 
 
-class PaginatorView(HeaderMixin, VersionMixin, ListView):
+class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
     context_object_name = 'concepts'
     paginate_by = NR_CONCEPTS_ON_PAGE
 
@@ -351,10 +373,11 @@ class PaginatorView(HeaderMixin, VersionMixin, ListView):
 
     def _get_letters_presence(self, all_letters, theme=None):
         letters = (
-            Property.published
+            Property.objects
             .filter(
                 name='prefLabel',
                 language_id=self.langcode,
+                status__in=self.status_values,
             )
             .extra(
                 select={'first_letter': 'SUBSTR(value, 1, 1)'}
@@ -364,7 +387,10 @@ class PaginatorView(HeaderMixin, VersionMixin, ListView):
             letters = letters.filter(
                 concept_id__in=(
                     theme.source_relations
-                    .filter(property_type__name='themeMember')
+                    .filter(
+                        status__in=self.status_values,
+                        property_type__name='themeMember',
+                    )
                     .values_list('target_id', flat=True)
                 )
             )
@@ -425,6 +451,7 @@ class ThemeConceptsView(PaginatorView):
     def get_queryset(self):
         code = self.kwargs.get('theme_code')
         self.theme = get_object_or_404(self.model, code=code)
+        self.theme.status_list = self.status_values
         self.theme.set_attributes(self.langcode, ['prefLabel'])
         self.concepts = self.theme.get_children(self.langcode)
         return super(ThemeConceptsView, self).get_queryset(self.theme)
@@ -447,10 +474,11 @@ class AlphabeticView(PaginatorView):
 
     def get_queryset(self):
         self.concepts = (
-            Property.published.filter(
+            Property.objects.filter(
                 name='prefLabel',
                 language__code=self.langcode,
-                concept__namespace__heading='Concepts'
+                status__in=self.status_values,
+                concept__namespace__heading='Concepts',
             )
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
@@ -464,11 +492,12 @@ class AlphabeticView(PaginatorView):
         return context
 
 
-class ConceptSourcesView(View):
+class ConceptSourcesView(StatusMixin, View):
     template_name = 'edit/bits/concept_definition_sources.html'
 
     def get(self, request, langcode, id):
         concept = Concept.objects.get(id=id)
+        concept.status_list = self.status_values
         concept.set_attributes(langcode, ['source'])
         definition_sources = []
         if hasattr(concept, 'source'):
@@ -808,10 +837,11 @@ class GroupsByLanguage(HeaderMixin, XMLTemplateView):
         for heading in ['Super groups', 'Groups', 'Themes']:
             context.update({
                 heading.replace(' ', '_'): (
-                    Property.published
+                    Property.objects
                     .filter(
                         concept__namespace__heading=heading,
                         language=self.language,
+                        status__in=self.status_values,
                         name='prefLabel',
                     )
                     .values(

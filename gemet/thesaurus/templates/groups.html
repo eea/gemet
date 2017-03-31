@@ -17,7 +17,7 @@ Groups list
       <h3 class="h5">{{ supergroup.name }}</h3>
 
         <ul class="groups">
-          {% get_children supergroup.id language.code as supergroup_children %}
+          {% get_children supergroup.id language.code status_values as supergroup_children %}
           {% for group in supergroup_children %}
             <li>
             <a href="{% url 'relations' language.code group.concept__code %}">{{ group.name }}</a>

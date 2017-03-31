@@ -26,7 +26,7 @@ Search thesaurus
                 <span class="py-other-names">{{ names.other_names }}</span>&ensp;
               {% endif %}
 
-              {% get_broader_context concept.id language.code as broader_context %}
+              {% get_broader_context concept.id language.code status_values as broader_context %}
               {% if broader_context %}
                 <span class="muted">broader context:</span>
                 <span class="py-broader">{{ broader_context }}</span>

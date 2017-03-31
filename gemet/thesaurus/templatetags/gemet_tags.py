@@ -28,14 +28,17 @@ def get_expand(concept_id, expand_list):
 
 
 @register.assignment_tag
-def get_children(concept_id, langcode):
-    return Concept.published.get(pk=concept_id).get_children(langcode)
+def get_children(concept_id, langcode, status_values):
+    concept = Concept.objects.get(pk=concept_id)
+    concept.status_list = status_values
+    return concept.get_children(langcode)
 
 
 @register.assignment_tag
-def get_broader_context(concept_id, langcode):
-    broader_concepts = Concept.published.get(pk=concept_id).get_siblings(
-        langcode, 'broader')
+def get_broader_context(concept_id, langcode, status_values):
+    concept = Concept.published.get(pk=concept_id)
+    concept.status_list = status_values
+    broader_concepts = concept.get_siblings(langcode, 'broader')
     return '; '.join([cp['name'] for cp in broader_concepts])
 
 
@@ -49,13 +52,14 @@ def get_concept_names(search_text):
 
 
 @register.simple_tag
-def default_name(concept_id):
+def default_name(concept_id, status_values):
     return (
-        Concept.published.get(pk=concept_id)
-        .properties.get(
+        Concept.objects.get(pk=concept_id)
+        .properties.filter(
             language__code=DEFAULT_LANGCODE,
             name='prefLabel',
-        )
+            status__in=status_values,
+        ).first()
         .value
     )
 

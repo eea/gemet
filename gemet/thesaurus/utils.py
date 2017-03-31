@@ -36,25 +36,27 @@ def regex_search(query, language, heading):
     )
 
 
-def search_queryset(query, language, search_mode=1, heading='Concepts',
-                    api_call=False):
+def search_queryset(query, language, status_values=[], search_mode=1,
+                    heading='Concepts', api_call=False):
+    status_values = status_values or Property.PUBLISHED_STATUS_OPTIONS
     if api_call:
         if search_mode == 4:
             values = (
-                api_search(query, language, 0, heading) or
-                api_search(query, language, 1, heading) or
-                api_search(query, language, 2, heading) or
-                api_search(query, language, 3, heading)
+                api_search(query, language, status_values, 0, heading) or
+                api_search(query, language, status_values, 1, heading) or
+                api_search(query, language, status_values, 2, heading) or
+                api_search(query, language, status_values, 3, heading)
             )
         else:
-            values = api_search(query, language, search_mode, heading)
+            values = api_search(query, language, status_values, search_mode,
+                                heading)
     else:
-        values = insite_search(query, language, heading)
+        values = insite_search(query, language, status_values, heading)
 
     return values
 
 
-def api_search(query, language, search_mode, headings):
+def api_search(query, language, status_values, search_mode, headings):
     search_types = {
         0: [query],
         1: [query + '%%'],
@@ -64,10 +66,11 @@ def api_search(query, language, search_mode, headings):
     query_search = search_types.get(search_mode)
 
     return (
-        Property.published
+        Property.objects
         .filter(
             name='prefLabel',
             language__code=language.code,
+            status__in=status_values,
             concept__namespace__heading__in=headings,
         )
         .extra(
@@ -86,13 +89,14 @@ def api_search(query, language, search_mode, headings):
     )
 
 
-def insite_search(query, language, heading):
+def insite_search(query, language, status_values, heading):
 
     return (
-        Property.published
+        Property.objects
         .filter(
             name='searchText',
             language__code=language.code,
+            status__in=status_values,
             concept__namespace__heading=heading,
         )
         .extra(

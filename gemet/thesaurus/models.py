@@ -59,6 +59,7 @@ class Concept(VersionableModel):
     code = models.CharField(max_length=10)
     date_entered = models.DateTimeField(blank=True, null=True)
     date_changed = models.DateTimeField(blank=True, null=True)
+
     EDITABLE = False
     parents_relations = []
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
@@ -171,7 +172,10 @@ class Concept(VersionableModel):
             children = children.filter(
                 concept_id__in=(
                     self.source_relations
-                    .filter(property_type__name='groupMember')
+                    .filter(
+                        property_type__name='groupMember',
+                        status__in=self.status_list,
+                    )
                     .exclude(
                         target__id__in=Relation.objects.filter(
                             property_type__name='broader',
