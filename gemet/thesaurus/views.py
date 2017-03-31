@@ -227,7 +227,7 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
         self.concepts = search_queryset(
             self.query,
             self.language,
-            self.status_values,
+            status_values=self.status_values,
         )
 
         return self.render_to_response(self.get_context_data(form=form))
@@ -841,7 +841,6 @@ class GroupsByLanguage(HeaderMixin, XMLTemplateView):
                     .filter(
                         concept__namespace__heading=heading,
                         language=self.language,
-                        status__in=self.status_values,
                         name='prefLabel',
                     )
                     .values(

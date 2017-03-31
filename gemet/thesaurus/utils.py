@@ -36,8 +36,8 @@ def regex_search(query, language, heading):
     )
 
 
-def search_queryset(query, language, status_values=[], search_mode=1,
-                    heading='Concepts', api_call=False):
+def search_queryset(query, language, search_mode=1, heading='Concepts',
+                    api_call=False, status_values=[]):
     status_values = status_values or Property.PUBLISHED_STATUS_OPTIONS
     if api_call:
         if search_mode == 4:
