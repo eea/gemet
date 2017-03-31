@@ -2016,3 +2016,9 @@ a.search-button {
 .selected-word .pull-left {
     margin-right: 1rem;
 }
+
+
+.edit-page input,
+.edit-page textarea {
+        min-width: 630px;
+}
