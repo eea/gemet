@@ -71,8 +71,11 @@ $(document).ready(function() {
 
     }
 
-    $('.toggle-concept-list').on('click',function(){
-      $('.modified-list').toggleClass('expand');
+    $('.toggle-list').on('click',function(){
+        if($(this).hasClass('concept')) {
+            $('.modified-list.concept').toggleClass('expand');
+        }
+
     })
 
 
