@@ -36,7 +36,7 @@ def get_children(concept_id, langcode, status_values):
 
 @register.assignment_tag
 def get_broader_context(concept_id, langcode, status_values):
-    concept = Concept.published.get(pk=concept_id)
+    concept = Concept.objects.get(pk=concept_id)
     concept.status_list = status_values
     broader_concepts = concept.get_siblings(langcode, 'broader')
     return '; '.join([cp['name'] for cp in broader_concepts])
