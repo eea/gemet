@@ -31,6 +31,7 @@ class GroupEditView(LoginRequiredMixin, GroupView):
     template_name = "edit/group_edit.html"
     model = models.EditableGroup
     override_languages = False
+    edit_view = True
 
 
 class SuperGroupEditView(LoginRequiredMixin, SuperGroupView):
@@ -38,12 +39,14 @@ class SuperGroupEditView(LoginRequiredMixin, SuperGroupView):
     template_name = "edit/supergroup_edit.html"
     model = models.EditableSuperGroup
     override_languages = False
+    edit_view = True
 
 
 class TermEditView(LoginRequiredMixin, TermView):
     template_name = "edit/concept_edit.html"
     model = models.EditableTerm
     override_languages = False
+    edit_view = True
 
     def get_object(self):
         term = super(TermEditView, self).get_object()
@@ -67,6 +70,7 @@ class ThemeEditView(LoginRequiredMixin, ThemeView):
     model = models.EditableTheme
     context_object_name = 'concept'
     override_languages = False
+    edit_view = True
 
 
 class JsonResponseMixin(object):

@@ -67,7 +67,10 @@ class StatusMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
-            status = [PUBLISHED, PENDING]
+            if getattr(self, 'edit_view', False):
+                status = [PUBLISHED, PENDING, DELETED_PENDING]
+            else:
+                status = [PUBLISHED, PENDING]
         else:
             status = [PUBLISHED, DELETED_PENDING]
         self.status_values = status
