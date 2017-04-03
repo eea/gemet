@@ -1,133 +1,158 @@
 <div class="text-area">
   <!-- prefLabel -->
-  <div>
-    {% if prefLabel %}
+  {% if prefLabel %}
+    <div>
       <h5>Name</h5>
       {% for property in prefLabel %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
+
   <!-- altLabel -->
-  <div>
-    {% if altLabel %}
+  {% if altLabel %}
+    <div>
       <h5>Alternatives</h5>
       {% for property in altLabel %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
+
   <!-- definition -->
-  <div>
-    {% if definition %}
+  {% if definition %}
+    <div>
       <h5>Definition</h5>
       {% for property in definition %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--source -->
-    {% if source %}
+    </div>
+  {% endif %}
+
+  <!-- source -->
+  {% if source %}
+    <div>
       <h5>Source</h5>
       {% for property in source %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
-    {% endif %}
+    </div>
+  {% endif %}
 
-  <!--scopeNote -->
-  <div>
-    {% if scopeNote %}
+  <!-- scopeNote -->
+  {% if scopeNote %}
+    <div>
       <h5>Scope Note</h5>
       {% for property in scopeNote %}
         <div class="status-{{ property.status }}">{{ property.value }}</div>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--theme -->
-  <div>
-    {% if theme %}
+    </div>
+  {% endif %}
+
+  <!-- other Languages -->
+  {% if other_languages %}
+    <div>
+      <h5>Other languages</h5>
+        There are also modified properties in the following languages:
+        {{ other_languages | join:"," }}
+    </div>
+  {% endif %}
+
+  <!-- themes -->
+  {% if theme %}
+    <div>
       <h5>Themes</h5>
       {% for relation in theme %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--group -->
-  <div>
-    {% if group %}
+    </div>
+  {% endif %}
+
+  <!-- groups -->
+  {% if group %}
+    <div>
       <h5>Groups</h5>
       {% for relation in group %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--related terms -->
-  <div>
-    {% if related %}
+    </div>
+  {% endif %}
+
+  <!-- related terms -->
+  {% if related %}
+    <div>
       <h5>Related terms</h5>
       {% for relation in related %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--narrower terms -->
-  <div>
-    {% if narrower %}
-       {% if namespace == 'Super groups' %}
-         <h5>Groups</h5>
-       {% else %}
-         <h5>Narrower terms</h5>
-       {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- narrower terms -->
+  {% if narrower %}
+    <div>
+      {% if namespace == 'Super groups' %}
+        <h5>Groups</h5>
+      {% else %}
+        <h5>Narrower terms</h5>
+      {% endif %}
+
       {% for relation in narrower %}
           <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-   <div>
-    {% if broader %}
-       {% if namespace == 'Groups' %}
-         <h5>Super groups</h5>
-       {% else %}
-         <h5>Broader terms</h5>
-       {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- broader terms -->
+  {% if broader %}
+    <div>
+      {% if namespace == 'Groups' %}
+        <h5>Super groups</h5>
+      {% else %}
+        <h5>Broader terms</h5>
+      {% endif %}
 
       {% for relation in broader %}
-          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--theme concepts -->
-  <div>
-    {% if themeMember %}
+    </div>
+  {% endif %}
+
+  <!-- theme concepts -->
+  {% if themeMember %}
+    <div>
       <h5>Concepts</h5>
       {% for relation in themeMember %}
-          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-  <!--supergroups -->
-  <div>
-    {% if groupMember %}
+    </div>
+  {% endif %}
+
+  <!-- supergroups -->
+  {% if groupMember %}
+    <div>
       <h5>Concepts</h5>
       {% for relation in groupMember %}
-          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
       {% endfor %}
-    {% endif %}
-  </div>
-   <!--foreign relations -->
-   {% if foreign_relations %}
-   <div>
-    <h5>Other relations</h5>
-    {% regroup foreign_relations by property_type as grouped_foreign_relations %}
-    {% for foreign_relation in grouped_foreign_relations %}
-    <ul>
-      <h6 class="inline">{{ foreign_relation.grouper }}: </h6>
-      {% for relation in foreign_relation.list %}
+    </div>
+  {% endif %}
+
+  <!-- foreign relations -->
+  {% if foreign_relations %}
+    <div>
+      <h5>Other relations</h5>
+      {% regroup foreign_relations by property_type as grouped_foreign_relations %}
+      {% for foreign_relation in grouped_foreign_relations %}
+      <ul>
+        <h6 class="inline">{{ foreign_relation.grouper }}: </h6>
+        {% for relation in foreign_relation.list %}
           <li class="inline status-{{ relation.status }}">
           <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
+        {% endfor %}
+      </ul>
       {% endfor %}
-    </ul>
-    {% endfor %}
-  </div>
+    </div>
   {% endif %}
+
 </div>

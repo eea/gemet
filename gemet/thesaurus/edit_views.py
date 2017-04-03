@@ -553,7 +553,8 @@ class ConceptChangesView(LoginRequiredMixin, View):
     def get(self, request, langcode, id):
         concept = models.Concept.objects.get(id=id)
         language = models.Language.objects.get(code=langcode)
-        concept_details = {'concept_id': concept.id}
+
+        concept_details = {}
         properties = (
             concept.properties
             .filter(status__in=[PENDING, DELETED_PENDING],
@@ -566,33 +567,48 @@ class ConceptChangesView(LoginRequiredMixin, View):
             else:
                 concept_details[concept_property.name] = [concept_property]
 
-        relations = concept.source_relations.filter(
-            status__in=[PENDING, DELETED_PENDING])
-        relations = relations.values('status',
-                                     'target__id',
-                                     'property_type__name')
+        other_language_properties = (
+            concept.properties
+            .filter(status__in=[PENDING, DELETED_PENDING])
+            .exclude(language=language)
+            .values_list('language__name', flat=True)
+        )
+        if other_language_properties.count():
+            concept_details['other_languages'] = other_language_properties
+
+        relations = (
+            concept.source_relations
+            .filter(status__in=[PENDING, DELETED_PENDING])
+            .values('status', 'target__id', 'property_type__name')
+        )
         for relation in relations:
             target_name = models.Property.objects.filter(
                 concept__id=relation['target__id'],
                 name='prefLabel',
                 language=language,
-                status__in=[PENDING, PUBLISHED, DELETED_PENDING]).first()
+                status__in=[PENDING, PUBLISHED]).first()
+
             if target_name:
                 target_name = target_name.value
             else:
-                target_name = 'Name not available'
+                target_name = 'Name not available in the current language'
+
             target_relation = {
                 'target': target_name,
-                'property_type': relation['property_type__name'],
                 'status': relation['status']
             }
             relation_type = relation['property_type__name']
+
             if relation_type in concept_details.keys():
                 concept_details[relation_type].append(target_relation)
             else:
                 concept_details[relation_type] = [target_relation]
-        foreign_relations = concept.foreign_relations.filter(
-            status__in=[PENDING, DELETED_PENDING]).order_by('property_type')
+
+        foreign_relations = (
+            concept.foreign_relations
+            .filter(status__in=[PENDING, DELETED_PENDING])
+            .order_by('property_type')
+        )
         concept_details['foreign_relations'] = foreign_relations
         concept_details['namespace'] = concept.namespace.heading
         return render(request, 'edit/bits/concept_changes.html',
