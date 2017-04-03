@@ -65,11 +65,6 @@ class Concept(VersionableModel):
     status_list = VersionableModel.PUBLISHED_STATUS_OPTIONS
     extra_values = []
 
-    def get_absolute_url(self, langcode):
-        return reverse(EDIT_URL_NAMES[self.namespace.heading],
-                       kwargs={'langcode': langcode,
-                               'code': self.code})
-
     @cached_property
     def visible_foreign_relations(self):
         values = ['id', 'label', 'uri', 'property_type__label']

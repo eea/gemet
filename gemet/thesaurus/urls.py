@@ -91,10 +91,10 @@ urlpatterns = [
             views.ConceptSourcesView.as_view(), name='concept_sources'),
 
         # Publish pages
-        url(r'^version/release$', edit_views.ReleaseVersionView.as_view(),
+        url(r'^version/release/$', edit_views.ReleaseVersionView.as_view(),
             name='release_version'),
-        url(r'^history_of_changes', edit_views.HistoryChangesView.as_view(),
-            name='history_changes'),
+        url(r'^change/log/$', edit_views.ChangeLogView.as_view(),
+            name='change_log'),
         url(r'^concept/(?P<id>\d+)/changes/$',
             edit_views.ConceptChangesView.as_view(),
             name='concept_changes'),

@@ -16,10 +16,9 @@ from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
-from gemet.thesaurus.utils import get_new_code
+from gemet.thesaurus.utils import get_form_errors, get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
-from gemet.thesaurus.utils import get_form_errors
 
 
 class LoginRequiredMixin(mixins.LoginRequiredMixin):
@@ -484,33 +483,35 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
         model_cls.objects.filter(status=old_status).update(status=new_status)
 
 
-class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
-                         TemplateView):
-    template_name = 'edit/history_of_changes.html'
+class ChangeLogView(LoginRequiredMixin, HeaderMixin, VersionMixin,
+                    TemplateView):
+    template_name = 'edit/change_log.html'
 
     def get_context_data(self, **kwargs):
-        context = super(HistoryChangesView, self).get_context_data(**kwargs)
+        context = super(ChangeLogView, self).get_context_data(**kwargs)
 
-        new_concepts = models.Concept.objects.filter(status=PENDING)\
-            .order_by('namespace')
-        concepts = []
-        for concept in new_concepts:
-            concept_with_name = models.Property.objects\
-                .filter(concept__id=concept.id,
-                        name='prefLabel',
-                        status=PENDING)\
-                .values('concept__id',
-                        'value',
-                        'concept__namespace__heading').first()
-            if not concept_with_name:
-                continue
-            url = concept.get_absolute_url(self.langcode)
-            concept_with_name.update({'url': url})
-            concepts.append(concept_with_name)
+        new_concepts = (
+            models.Property.objects
+            .filter(
+                language__code=self.langcode,
+                name='prefLabel',
+                status=PENDING,
+                concept__status=PENDING,
+            )
+            .values(
+                'concept__code',
+                'value',
+                'concept__namespace__heading',
+            )
+            .order_by('concept__namespace', 'value')
+        )
 
-        published_concepts = models.Concept.objects.filter(
-            status=PUBLISHED).select_related('namespace')
-        old_concepts = (
+        published_concepts = (
+            models.Concept.objects
+            .filter(status=PUBLISHED)
+            .values_list('id', flat=True)
+        )
+        published_concepts = (
             set(published_concepts
                 .filter(properties__status__in=[PENDING, DELETED_PENDING]))
             |
@@ -523,18 +524,25 @@ class HistoryChangesView(LoginRequiredMixin, HeaderMixin, VersionMixin,
                     foreign_relations__status__in=[PENDING, DELETED_PENDING]))
         )
 
-        for concept in old_concepts:
-            concept.set_attributes(self.langcode, ['prefLabel'])
-            concept.url = reverse(
-                EDIT_URL_NAMES[concept.namespace.heading],
-                kwargs={
-                    'langcode': self.langcode,
-                    'code': concept.code,
-                }
+        old_concepts = (
+            models.Property.objects
+            .filter(
+                language__code=self.langcode,
+                name='prefLabel',
+                status__in=[PUBLISHED, PENDING],
+                concept_id__in=published_concepts,
             )
+            .values(
+                'concept__code',
+                'concept__id',
+                'value',
+                'concept__namespace__heading',
+            )
+            .order_by('concept__namespace', 'value')
+        )
 
         context.update({
-            'new_concepts': concepts,
+            'new_concepts': new_concepts,
             'old_concepts': old_concepts,
         })
         return context
@@ -546,15 +554,18 @@ class ConceptChangesView(LoginRequiredMixin, View):
         concept = models.Concept.objects.get(id=id)
         language = models.Language.objects.get(code=langcode)
         concept_details = {'concept_id': concept.id}
-        properties = concept.properties\
+        properties = (
+            concept.properties
             .filter(status__in=[PENDING, DELETED_PENDING],
-                    language=language)\
+                    language=language)
             .order_by('name', 'status')
+        )
         for concept_property in properties:
             if concept_property.name in concept_details.keys():
                 concept_details[concept_property.name].append(concept_property)
             else:
                 concept_details[concept_property.name] = [concept_property]
+
         relations = concept.source_relations.filter(
             status__in=[PENDING, DELETED_PENDING])
         relations = relations.values('status',

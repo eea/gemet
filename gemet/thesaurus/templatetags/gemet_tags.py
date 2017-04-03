@@ -3,7 +3,7 @@ from django import template
 from django.core.urlresolvers import reverse
 
 from gemet.thesaurus.models import Concept
-from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR
+from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR, EDIT_URL_NAMES
 from gemet.thesaurus.utils import exp_encrypt
 
 
@@ -62,6 +62,12 @@ def default_name(concept_id, status_values):
         ).first()
         .value
     )
+
+
+@register.simple_tag
+def get_url(concept_code, langcode, namespace):
+    return reverse(EDIT_URL_NAMES[namespace],
+                   kwargs={'langcode': langcode, 'code': concept_code})
 
 
 @register.filter
