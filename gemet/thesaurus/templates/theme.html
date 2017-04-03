@@ -42,7 +42,7 @@
     {% if not theme.definition %}
       <p class="alert">Definition is not available.</p>
     {% else %}
-      <p>{{ theme.definition }}</p>
+      <p id="definition-text">{{ theme.definition }}</p>
     {% endif %}
   </div>
 
@@ -52,7 +52,7 @@
     {% if not theme.scopeNote %}
       <p class="alert">Scope note is not available.</p>
     {% else %}
-      <p>{{ theme.scopeNote }}</p>
+      <p id="scope-note">{{ theme.scopeNote }}</p>
     {% endif %}
   </div>
 
