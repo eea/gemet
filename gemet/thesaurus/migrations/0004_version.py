@@ -25,7 +25,7 @@ def forwards_func(apps, schema_editor):
         publication_date = timezone.now()
 
     Version.objects.create(
-        identifier="4.0.0",
+        identifier="3.1.0",
         publication_date=publication_date,
         is_current=True,
     )
