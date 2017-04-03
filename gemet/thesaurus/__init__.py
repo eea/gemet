@@ -6,6 +6,8 @@ PUBLISHED = 1
 DELETED = 2
 DELETED_PENDING = 3
 
+SEARCH_SEPARATOR = '\t'
+
 NS_VIEW_MAPPING = {
     'Concepts': 'concept',
     'Themes': 'theme',

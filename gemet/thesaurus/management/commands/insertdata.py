@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import Property, Concept, Language, Version
-from gemet.thesaurus.utils import SEPARATOR
+from gemet.thesaurus.management.utils import get_search_text
 
 SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']
 
@@ -27,34 +27,10 @@ class Command(BaseCommand):
             concepts_without_searchtext = concept_ids - search_concept_ids
 
             for concept_id in concepts_without_searchtext:
-                search_properties = (
-                    Property.objects
-                    .filter(
-                        concept_id=concept_id,
-                        name__in=SEARCH_FIELDS,
-                        language_id=language_code,
-                    )
-                    .values_list('name', 'value')
-                )
-
-                if not search_properties:
-                    continue
-
-                search_dict = dict(search_properties)
-                search_text = SEPARATOR.join(
-                    [search_dict.get(field, '') for field in SEARCH_FIELDS])
-
-                search_text = SEPARATOR + search_text + SEPARATOR
-                search_property = Property(
-                    concept_id=concept_id,
-                    language_id=language_code,
-                    name='searchText',
-                    value=search_text,
-                    is_resource=0,
-                    status=PUBLISHED,
-                    version_added_id=version.id
-                )
-                new_properties.append(search_property)
+                search_property = get_search_text(concept_id, language_code,
+                                                  PUBLISHED, version)
+                if search_property:
+                    new_properties.append(search_property)
 
         if new_properties:
             self.stdout.write(
@@ -64,4 +40,4 @@ class Command(BaseCommand):
         else:
             self.stdout.write('No rows to insert.')
 
-        Property.objects.bulk_create(new_properties, batch_size=100000)
+        Property.objects.bulk_create(new_properties, batch_size=10000)

@@ -3,8 +3,8 @@ from django import template
 from django.core.urlresolvers import reverse
 
 from gemet.thesaurus.models import Concept
-from gemet.thesaurus import DEFAULT_LANGCODE
-from gemet.thesaurus.utils import exp_encrypt, SEPARATOR
+from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR
+from gemet.thesaurus.utils import exp_encrypt
 
 
 register = template.Library()
@@ -44,7 +44,7 @@ def get_broader_context(concept_id, langcode, status_values):
 
 @register.assignment_tag
 def get_concept_names(search_text):
-    names = search_text.split(SEPARATOR)
+    names = search_text.split(SEARCH_SEPARATOR)
     return {
         'concept_name': names[1],
         'other_names': '; '.join([n for n in names[2:] if n])

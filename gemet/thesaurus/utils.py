@@ -6,8 +6,6 @@ from gemet.thesaurus.models import Property, PropertyType, Relation, Version
 from gemet.thesaurus.models import Concept
 from gemet.thesaurus import RELATION_PAIRS
 
-SEPARATOR = '\t'
-
 
 def is_rdf(request):
     accepts = request.META.get('HTTP_ACCEPT', '*/*')
