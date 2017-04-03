@@ -4,13 +4,9 @@ from django.core.urlresolvers import reverse
 from django.db import connection
 
 from . import GemetTest
-from .factories import (
-    TermFactory,
-    PropertyFactory,
-    PropertyTypeFactory,
-    RelationFactory,
-)
-from gemet.thesaurus.utils import SEARCH_SEPARATOR
+from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory
+from .factories import TermFactory
+from gemet.thesaurus import SEARCH_SEPARATOR
 
 
 class TestSearchView(GemetTest):
