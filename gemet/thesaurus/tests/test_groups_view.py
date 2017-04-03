@@ -1,13 +1,16 @@
 from django.core.urlresolvers import reverse
 
 from .factories import (
+    GroupFactory,
+    LanguageFactory,
     PropertyFactory,
     RelationFactory,
     PropertyTypeFactory,
-    GroupFactory,
     SuperGroupFactory,
+    UserFactory
 )
 from . import GemetTest
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 
 
 class TestGroupsView(GemetTest):
@@ -15,7 +18,8 @@ class TestGroupsView(GemetTest):
 
     def setUp(self):
         self.superGroup = SuperGroupFactory()
-        PropertyFactory(concept=self.superGroup, value="Super Group")
+        self.superGroup_name = PropertyFactory(concept=self.superGroup,
+                                               value="Super Group")
 
     def test_one_supergroup_no_group(self):
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -109,3 +113,116 @@ class TestGroupsView(GemetTest):
                                          'group_code': group.code})
         )
         self.assertEqual(resp.pyquery('.content .groups li:eq(1)').text(), '')
+
+
+class TestGroupsViewWithUser(GemetTest):
+    def setUp(self):
+        self.superGroup = SuperGroupFactory()
+        self.superGroup_name = PropertyFactory(concept=self.superGroup,
+                                               value="Super Group",
+                                               status=PUBLISHED)
+        user = UserFactory()
+        LanguageFactory()
+        self.user = user.username
+
+    def test_supergroup_name_pending(self):
+        self.superGroup_name.status = DELETED_PENDING
+        self.superGroup_name.save()
+        PropertyFactory(concept=self.superGroup,
+                        value="Super Group New",
+                        status=PENDING)
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 1)
+        self.assertEqual(resp.pyquery('.content h3').text(), 'Super Group New')
+
+    def test_supergroup_group_relation_pending(self):
+        superGroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=superGroup,
+                        value="Super Group 2",
+                        status=PUBLISHED)
+        group = GroupFactory()
+        PropertyFactory(concept=group,
+                        value="Group",
+                        status=PUBLISHED)
+
+        pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+                        status=PENDING)
+        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+                        status=PENDING)
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
+                         2)
+        self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(0) h3').text(),
+            'Super Group'
+        )
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(1) h3').text(),
+            'Super Group 2'
+        )
+        self.assertEqual(resp.pyquery('.content .groups li:eq(0)').text(),
+                         'Group')
+        self.assertEqual(
+            resp.pyquery('.content .groups li:eq(0) a').attr('href'),
+            reverse('relations', kwargs={'langcode': 'en',
+                                         'group_code': group.code})
+        )
+
+    def test_new_supergroup(self):
+        superGroup = SuperGroupFactory(status=PENDING)
+        PropertyFactory(concept=superGroup,
+                        value="New Super Group",
+                        status=PENDING)
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(
+            resp.pyquery('.content .listing.no-list li:eq(0) h3').text(),
+            'New Super Group'
+        )
+
+    def test_group_name_pending(self):
+        superGroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=superGroup,
+                        value="Super Group 2",
+                        status=PUBLISHED)
+        group = GroupFactory()
+        PropertyFactory(concept=group,
+                        value="Group",
+                        status=PENDING)
+
+        pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+                        status=PENDING)
+        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+                        status=PENDING)
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content .groups li:eq(0)').text(),
+                         'Group')
+
+    def test_new_group_pending(self):
+        superGroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=superGroup,
+                        value="Super Group 2",
+                        status=PUBLISHED)
+        group = GroupFactory(status=PENDING)
+        PropertyFactory(concept=group,
+                        value="Group",
+                        status=PENDING)
+
+        pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+                        status=PENDING)
+        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+                        status=PENDING)
+        url = reverse('groups', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content .groups li:eq(0)').text(),
+                         'Group')
