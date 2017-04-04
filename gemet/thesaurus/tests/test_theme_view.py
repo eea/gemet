@@ -135,7 +135,7 @@ class TestThemeViewWithUser(GemetTest):
                         value="scopeNote new", status=PENDING)
 
         url = reverse('theme', kwargs={'code': self.theme.code,
-                                            'langcode': 'en'})
+                                       'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
 
         self.assertEqual(200, resp.status_int)
@@ -147,14 +147,14 @@ class TestThemeViewWithUser(GemetTest):
                          "scopeNote new")
 
     def test_relations_pending(self):
-        self.concept = TermFactory()
-        PropertyFactory(concept=self.concept, value="Concept",
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="Concept",
                         status=PUBLISHED)
         pt1 = PropertyTypeFactory(name="themeMember", label="ThemeMember")
         pt2 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt1, source=self.theme,
-                        target=self.concept, status=PENDING)
-        RelationFactory(property_type=pt2, source=self.concept,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=pt2, source=concept,
                         target=self.theme, status=PENDING)
 
         url = reverse('theme', kwargs={'code': self.theme.code,
@@ -165,16 +165,16 @@ class TestThemeViewWithUser(GemetTest):
         self.assertEqual(relations_displayed[0], "Concept")
 
     def test_name_pending_for_concept(self):
-        self.concept = TermFactory()
-        PropertyFactory(concept=self.concept, value="ConceptOld",
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="ConceptOld",
                         status=PENDING)
-        PropertyFactory(concept=self.concept, value="ConceptNew",
+        PropertyFactory(concept=concept, value="ConceptNew",
                         status=PUBLISHED)
         pt1 = PropertyTypeFactory(name="themeMember", label="ThemeMember")
         pt2 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt1, source=self.theme,
-                        target=self.concept, status=PENDING)
-        RelationFactory(property_type=pt2, source=self.concept,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=pt2, source=concept,
                         target=self.theme, status=PENDING)
 
         url = reverse('theme', kwargs={'code': self.theme.code,
@@ -183,4 +183,3 @@ class TestThemeViewWithUser(GemetTest):
         relations_displayed = resp.pyquery('.content ul.listing').text().split()
         self.assertEqual(len(relations_displayed), 1)
         self.assertEqual(relations_displayed[0], "Concept New")
-    #
