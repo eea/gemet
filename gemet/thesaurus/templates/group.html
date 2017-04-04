@@ -51,7 +51,11 @@
     <h5 class="h5">Super groups</h5>
     <ul class="listing">
       {% for sg in group.broader_concepts %}
-      <li>{{ sg.name }}</li>
+      <li>
+        <a href="{% url 'supergroup' language.code sg.concept__code %}">
+          {{ sg.name }}
+        </a>
+      </li>
       {% endfor %}
     </ul>
   </div>
@@ -63,7 +67,11 @@
     <h5 class="h5">Concepts</h5>
     <ul class="listing">
       {% for cp in group.groupMember_concepts %}
-      <li>{{ cp.name }}</li>
+      <li>
+        <a href="{% url 'concept' language.code cp.concept__code %}">
+          {{ cp.name }}
+        </a>
+      </li>
       {% endfor %}
     </ul>
   </div>
