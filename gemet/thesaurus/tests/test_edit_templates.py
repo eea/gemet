@@ -177,9 +177,12 @@ class TestEditConceptView(GemetTest):
         resp = self.app.get(url, user=self.user)
         foreign_displayed = resp.pyquery('.other-item a').text().split()
         self.assertEqual(len(foreign_displayed), 3)
-        self.assertEqual(foreign_displayed[0], 'Oldexternal')
-        self.assertEqual(foreign_displayed[1], 'Newexternal')
-        self.assertEqual(foreign_displayed[2], 'Deletedexternal')
+        self.assertEqual(resp.pyquery('.status-1.other-item a').text(),
+                         'Oldexternal')
+        self.assertEqual(resp.pyquery('.status-0.other-item a').text(),
+                         'Newexternal')
+        self.assertEqual(resp.pyquery('.status-3.other-item a').text(),
+                         'Deletedexternal')
 
 
 class TestEditGroupView(GemetTest):

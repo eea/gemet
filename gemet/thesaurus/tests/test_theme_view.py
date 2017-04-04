@@ -167,9 +167,9 @@ class TestThemeViewWithUser(GemetTest):
     def test_name_pending_for_concept(self):
         concept = TermFactory()
         PropertyFactory(concept=concept, value="ConceptOld",
-                        status=PENDING)
+                        status=DELETED_PENDING)
         PropertyFactory(concept=concept, value="ConceptNew",
-                        status=PUBLISHED)
+                        status=PENDING)
         pt1 = PropertyTypeFactory(name="themeMember", label="ThemeMember")
         pt2 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt1, source=self.theme,
@@ -182,4 +182,4 @@ class TestThemeViewWithUser(GemetTest):
         resp = self.app.get(url, user=self.user)
         relations_displayed = resp.pyquery('.content ul.listing').text().split()
         self.assertEqual(len(relations_displayed), 1)
-        self.assertEqual(relations_displayed[0], "Concept New")
+        self.assertEqual(relations_displayed[0], "ConceptNew")
