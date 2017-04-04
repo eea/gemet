@@ -204,7 +204,13 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-
+        current_relations = models.Relation.objects.filter(
+            source=source,
+            property_type__name=relation_type).exclude(
+            status__in=[DELETED_PENDING, DELETED])
+        if relation_type == 'group' and current_relations:
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = (
             models.Relation.objects
             .filter(source=source, target=target,
@@ -270,7 +276,13 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-
+        current_relations = models.Relation.objects.filter(
+            source=source,
+            property_type__name=relation_type).exclude(
+            status__in=[DELETED_PENDING, DELETED])
+        if relation_type == 'group' and current_relations:
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = models.Relation.objects.filter(
             source=source,
             target=target,

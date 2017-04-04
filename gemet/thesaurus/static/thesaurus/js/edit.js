@@ -24,6 +24,16 @@ function createButton(href, type, bindFunc, cls, icon, text) {
   return $button;
 }
 
+function checkConceptHasOneGroupOrLess(){
+  var groupNo = $('#grouplist').children('li.status-0, li.status-1').length
+  if (groupNo == 0){
+    $('#groupAdd').show();
+  }
+  else{
+    $('#groupAdd').hide();
+  }
+}
+
 function createDeleteButton(href, type){
   return createButton(href, type, deleteRelation, 'deleteRelation', 'times', 'Delete');
 }
@@ -79,7 +89,7 @@ $(document).ready(function () {
       templateSelection: formatConceptSelection
     });
   });
-
+  checkConceptHasOneGroupOrLess();
   $('[data-edit-type="property"]').click(editProperty); // binds every edit button for edit property
   $('[data-save-type="property"]').click(saveProperty); // binds every save button for save property
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
@@ -95,7 +105,6 @@ $(document).ready(function () {
     $(this).parent().siblings('.input-area').addClass('visible'); // show input area
     $(this).parent().siblings('.text-field').addClass('hidden'); // hide text-area (if necessary)
   });
-
   $('.btng.cancel').on('click', function(){
     $(this).parent().siblings('.input-area').find('input').val('');
   });
@@ -202,6 +211,7 @@ $(document).ready(function () {
        success: function(data){
          addElement(fieldId, parentId, parentText, deleteUrl, fieldName,
                     conceptUrl, link_tag);
+         checkConceptHasOneGroupOrLess();
        }
     });
   }
@@ -335,6 +345,7 @@ $(document).ready(function () {
          $(deleteButton).remove();
          var $restoreButton = createRestoreButton(data['restore_url'], relationType);
          deleteFieldId.append($restoreButton);
+         checkConceptHasOneGroupOrLess()
        }
     });
   };
@@ -367,6 +378,7 @@ $(document).ready(function () {
          $(restoreButton).remove();
          var $deleteButton = createDeleteButton(data['delete_url'], relationType);
          relationDiv.append($deleteButton);
+         checkConceptHasOneGroupOrLess()
        }
     });
   };
