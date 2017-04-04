@@ -137,10 +137,6 @@ class TestGroupsViewWithUser(GemetTest):
         self.assertEqual(resp.pyquery('.content h3').text(), 'Super Group New')
 
     def test_supergroup_group_relation_pending(self):
-        supergroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=supergroup,
-                        value="Super Group 2",
-                        status=PUBLISHED)
         group = GroupFactory()
         PropertyFactory(concept=group,
                         value="Group",
@@ -155,15 +151,11 @@ class TestGroupsViewWithUser(GemetTest):
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         self.assertEqual(resp.pyquery('.content .listing.no-list > li').size(),
-                         2)
+                         1)
         self.assertEqual(resp.pyquery('.content .groups li').size(), 1)
         self.assertEqual(
             resp.pyquery('.content .listing.no-list li:eq(0) h3').text(),
             'Super Group'
-        )
-        self.assertEqual(
-            resp.pyquery('.content .listing.no-list li:eq(1) h3').text(),
-            'Super Group 2'
         )
         self.assertEqual(resp.pyquery('.content .groups li:eq(0)').text(),
                          'Group')
@@ -186,10 +178,6 @@ class TestGroupsViewWithUser(GemetTest):
         )
 
     def test_group_name_pending(self):
-        supergroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=supergroup,
-                        value="Super Group 2",
-                        status=PUBLISHED)
         group = GroupFactory()
         PropertyFactory(concept=group,
                         value="Group",
@@ -207,15 +195,10 @@ class TestGroupsViewWithUser(GemetTest):
                          'Group')
 
     def test_new_group_pending(self):
-        supergroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=supergroup,
-                        value="Super Group 2",
-                        status=PUBLISHED)
         group = GroupFactory(status=PENDING)
         PropertyFactory(concept=group,
                         value="Group",
                         status=PENDING)
-
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
         RelationFactory(property_type=pt1, source=self.supergroup, target=group,

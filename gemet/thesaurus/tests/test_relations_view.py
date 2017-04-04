@@ -177,14 +177,14 @@ class TestRelationsViewWithUser(GemetTest):
                         status=PENDING)
         resp = self.app.get(self.url, user=self.user)
         self.assertEqual(resp.pyquery('.content ul:eq(0) > li').size(), 1)
+        url = reverse('relations', kwargs={
+            'langcode': 'en',
+            'group_code': self.group.code,
+        })
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) > li a:eq(0)').attr('href'),
             u'{url}?exp={exp}'.
-                format(url=reverse('relations',
-                                   kwargs={
-                                       'langcode': 'en',
-                                       'group_code': self.group.code,
-                                   }),
+                format(url=url,
                        exp=exp_encrypt(str(concept.id)))
         )
         self.assertEqual(resp.pyquery('.content ul:eq(0) > '
