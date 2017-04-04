@@ -2,8 +2,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.functional import cached_property
 
-from gemet.thesaurus import EDIT_URL_NAMES, NS_VIEW_MAPPING
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
+from gemet.thesaurus import NS_VIEW_MAPPING
 
 
 class Version(models.Model):
@@ -109,11 +109,13 @@ class Concept(VersionableModel):
     def get_siblings(self, langcode, relation_type):
         values = ['id', 'concept__code', 'name']
         values.extend(self.extra_values)
+        property_status = getattr(self, 'property_status', self.status_list)
         return (
             Property.objects
             .filter(
                 name='prefLabel',
                 language__code=langcode,
+                status__in=property_status,
                 concept_id__in=(
                     self.source_relations
                     .filter(
@@ -393,6 +395,7 @@ class EditMixin(object):
     status_list = [PUBLISHED, PENDING, DELETED_PENDING]
     EDITABLE = True
     extra_values = ['status']
+    property_status = [PUBLISHED, PENDING]
 
     def name(self):
         pref_label = getattr(self, 'prefLabel', [])
