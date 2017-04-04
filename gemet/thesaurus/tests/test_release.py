@@ -93,7 +93,7 @@ class TestReleaseNewVersionOtherConcepts(GemetTest):
         ).count())
 
 
-class TestHistoryOfChanges(GemetTest):
+class TestChangesLog(GemetTest):
 
     csrf_checks = False
 
@@ -120,12 +120,14 @@ class TestHistoryOfChanges(GemetTest):
         user = factories.UserFactory()
         self.user = user.username
 
-    def test_history_of_changes(self):
+    def testChangesLog(self):
         url = reverse('change_log', kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertTrue(200, response.status_code)
-        self.assertEqual(3, response.pyquery('.new-concept').size())
-        self.assertEqual(2, response.pyquery('.old-concept').size())
+        self.assertEqual(3,
+                         response.pyquery('.modified-container p').size())
+        self.assertEqual(2,
+                         response.pyquery('.modified-list.concept li').size())
 
 
 class TestConceptChanges(GemetTest):
