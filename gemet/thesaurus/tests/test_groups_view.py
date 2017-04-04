@@ -17,8 +17,8 @@ class TestGroupsView(GemetTest):
     # Actually, this tests the HierarchicalListings link
 
     def setUp(self):
-        self.superGroup = SuperGroupFactory()
-        self.superGroup_name = PropertyFactory(concept=self.superGroup,
+        self.supergroup = SuperGroupFactory()
+        self.supergroup_name = PropertyFactory(concept=self.supergroup,
                                                value="Super Group")
 
     def test_one_supergroup_no_group(self):
@@ -37,8 +37,8 @@ class TestGroupsView(GemetTest):
 
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup, target=group)
-        RelationFactory(property_type=pt2, source=group, target=self.superGroup)
+        RelationFactory(property_type=pt1, source=self.supergroup, target=group)
+        RelationFactory(property_type=pt2, source=group, target=self.supergroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -57,8 +57,8 @@ class TestGroupsView(GemetTest):
         self.assertEqual(resp.pyquery('.content .groups li a').text(), 'Group')
 
     def test_more_supergroups_no_group(self):
-        superGroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=superGroup, value="Super Group 2")
+        supergroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=supergroup, value="Super Group 2")
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -78,16 +78,16 @@ class TestGroupsView(GemetTest):
         )
 
     def test_more_supergroups_one_group(self):
-        superGroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=superGroup, value="Super Group 2")
+        supergroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=supergroup, value="Super Group 2")
 
         group = GroupFactory()
         PropertyFactory(concept=group, value="Group")
 
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup, target=group)
-        RelationFactory(property_type=pt2, source=group, target=self.superGroup)
+        RelationFactory(property_type=pt1, source=self.supergroup, target=group)
+        RelationFactory(property_type=pt2, source=group, target=self.supergroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -117,8 +117,8 @@ class TestGroupsView(GemetTest):
 
 class TestGroupsViewWithUser(GemetTest):
     def setUp(self):
-        self.superGroup = SuperGroupFactory()
-        self.superGroup_name = PropertyFactory(concept=self.superGroup,
+        self.supergroup = SuperGroupFactory()
+        self.supergroup_name = PropertyFactory(concept=self.supergroup,
                                                value="Super Group",
                                                status=PUBLISHED)
         user = UserFactory()
@@ -126,9 +126,9 @@ class TestGroupsViewWithUser(GemetTest):
         self.user = user.username
 
     def test_supergroup_name_pending(self):
-        self.superGroup_name.status = DELETED_PENDING
-        self.superGroup_name.save()
-        PropertyFactory(concept=self.superGroup,
+        self.supergroup_name.status = DELETED_PENDING
+        self.supergroup_name.save()
+        PropertyFactory(concept=self.supergroup,
                         value="Super Group New",
                         status=PENDING)
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -137,8 +137,8 @@ class TestGroupsViewWithUser(GemetTest):
         self.assertEqual(resp.pyquery('.content h3').text(), 'Super Group New')
 
     def test_supergroup_group_relation_pending(self):
-        superGroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=superGroup,
+        supergroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=supergroup,
                         value="Super Group 2",
                         status=PUBLISHED)
         group = GroupFactory()
@@ -148,9 +148,9 @@ class TestGroupsViewWithUser(GemetTest):
 
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+        RelationFactory(property_type=pt1, source=self.supergroup, target=group,
                         status=PENDING)
-        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+        RelationFactory(property_type=pt2, source=group, target=self.supergroup,
                         status=PENDING)
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
@@ -174,8 +174,8 @@ class TestGroupsViewWithUser(GemetTest):
         )
 
     def test_new_supergroup(self):
-        superGroup = SuperGroupFactory(status=PENDING)
-        PropertyFactory(concept=superGroup,
+        supergroup = SuperGroupFactory(status=PENDING)
+        PropertyFactory(concept=supergroup,
                         value="New Super Group",
                         status=PENDING)
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -186,8 +186,8 @@ class TestGroupsViewWithUser(GemetTest):
         )
 
     def test_group_name_pending(self):
-        superGroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=superGroup,
+        supergroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=supergroup,
                         value="Super Group 2",
                         status=PUBLISHED)
         group = GroupFactory()
@@ -197,9 +197,9 @@ class TestGroupsViewWithUser(GemetTest):
 
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+        RelationFactory(property_type=pt1, source=self.supergroup, target=group,
                         status=PENDING)
-        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+        RelationFactory(property_type=pt2, source=group, target=self.supergroup,
                         status=PENDING)
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
@@ -207,8 +207,8 @@ class TestGroupsViewWithUser(GemetTest):
                          'Group')
 
     def test_new_group_pending(self):
-        superGroup = SuperGroupFactory(code="5")
-        PropertyFactory(concept=superGroup,
+        supergroup = SuperGroupFactory(code="5")
+        PropertyFactory(concept=supergroup,
                         value="Super Group 2",
                         status=PUBLISHED)
         group = GroupFactory(status=PENDING)
@@ -218,9 +218,9 @@ class TestGroupsViewWithUser(GemetTest):
 
         pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
         pt2 = PropertyTypeFactory(name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup, target=group,
+        RelationFactory(property_type=pt1, source=self.supergroup, target=group,
                         status=PENDING)
-        RelationFactory(property_type=pt2, source=group, target=self.superGroup,
+        RelationFactory(property_type=pt2, source=group, target=self.supergroup,
                         status=PENDING)
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
