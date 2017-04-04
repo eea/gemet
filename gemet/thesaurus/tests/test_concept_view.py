@@ -282,6 +282,8 @@ class TestConceptViewWithUser(GemetTest):
         pt1 = PropertyTypeFactory(name="broader", label="Broader")
         RelationFactory(property_type=pt1, source=self.concept,
                         target=self.other_concept, status=PENDING)
+        RelationFactory(property_type=pt1, source=self.other_concept,
+                        target=self.concept, status=PENDING)
         url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
@@ -295,6 +297,8 @@ class TestConceptViewWithUser(GemetTest):
         PropertyFactory(concept=self.other_concept, value="OtherConcept",
                         status=PENDING)
         pt1 = PropertyTypeFactory(name="broader", label="Broader")
+        RelationFactory(property_type=pt1, source=self.other_concept,
+                        target=self.concept, status=PENDING)
         RelationFactory(property_type=pt1, source=self.concept,
                         target=self.other_concept, status=PENDING)
         url = reverse('concept', kwargs={'code': self.concept.code,
