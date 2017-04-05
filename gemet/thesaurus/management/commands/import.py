@@ -23,6 +23,43 @@ def dictfetchall(cursor, query_str):
     return [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
 
+def fix_concepts_without_theme_group_relation(version_id):
+    property_types = PropertyType.objects.filter(
+        name__in=['theme', 'group']
+    )
+    reversed_property_types = PropertyType.objects.filter(
+        name__in=['themeMember', 'groupMember']
+    )
+    types = zip(property_types, reversed_property_types)
+    property_type_broader = PropertyType.objects.get(name='broader')
+    concepts = Concept.objects.filter(namespace__heading='Concepts')
+    for concept in concepts:
+        for property_type, reversed_property_type in types:
+            relation = concept.source_relations.filter(
+                property_type=property_type).first()
+            if relation:
+                continue
+            broader_relation = concept.source_relations.filter(
+                property_type=property_type_broader).first()
+            if not broader_relation:
+                continue
+            broader_relations = broader_relation.target.source_relations \
+                .filter(property_type=property_type)
+            for relation in broader_relations:
+                Relation.objects.create(
+                    source=concept,
+                    target=relation.target,
+                    property_type=property_type,
+                    version_added_id=version_id,
+                    status=PUBLISHED)
+                Relation.objects.create(
+                    source=relation.target,
+                    target=concept,
+                    property_type=reversed_property_type,
+                    version_added_id=version_id,
+                    status=PUBLISHED)
+
+
 class Command(BaseCommand):
     help = 'Import a set of terms into the database'
 
@@ -136,6 +173,7 @@ class Command(BaseCommand):
         rows = dictfetchall(cursor, query_str)
 
         self.import_rows(rows, DefinitionSource)
+        fix_concepts_without_theme_group_relation(version_id)
         self.stdout.write('\n')
 
     def import_rows(self, rows, model_cls):
