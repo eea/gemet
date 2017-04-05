@@ -107,6 +107,39 @@ class Command(BaseCommand):
                 if search_text:
                     self.properties.append(search_text)
 
+    def _create_theme_group_relations(self, source):
+        property_types = models.PropertyType.objects.filter(
+            name__in=['theme', 'group']
+        )
+        property_type_broader = models.PropertyType.objects.get(name='broader')
+        for property_type in property_types:
+            relation = source.source_relations.filter(
+                property_type=property_type).first()
+            if relation:
+                self.stdout.write(
+                    'Skipping {0} relation creation for concept {1}'
+                        .format(property_type, source))
+                continue
+            broader_relation = source.source_relations.filter(
+                property_type=property_type_broader,
+                target__status=PUBLISHED).first()
+            if not broader_relation:
+                self.stdout.write(
+                    'Skipping {0} relation creation for concept {1}.No broader.'
+                        .format(property_type, source))
+                continue
+            broader_relations = broader_relation.target.source_relations \
+                .filter(property_type=property_type)
+            for relation in broader_relations:
+                new_relation = models.Relation.objects.create(
+                    source=source,
+                    target=relation.target,
+                    property_type=property_type,
+                    version_added=self.version,
+                    status=PENDING)
+                self.stdout.write('For concept {0} was created relation : {1}'
+                                  .format(source, new_relation))
+
     def _create_relations(self, sheet):
         def get_terms(row, idx1, idx2):
             text = (row[idx1].value or '') + ';' + (row[idx2].value or '')
@@ -171,6 +204,7 @@ class Command(BaseCommand):
                     reverse_relation = create_reverse_relation(relation)
                     self.stdout.write('Reverse relation created: {}'
                                       .format(reverse_relation))
+            self._create_theme_group_relations(source)
 
     def _get_concept(self, label):
         concept = self.concepts.get(label.lower())
