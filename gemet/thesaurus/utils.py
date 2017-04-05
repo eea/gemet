@@ -4,7 +4,7 @@ from zlib import compress, decompress
 
 from gemet.thesaurus.models import Property, PropertyType, Relation, Version
 from gemet.thesaurus.models import Concept
-from gemet.thesaurus import RELATION_PAIRS
+from gemet.thesaurus import RELATION_PAIRS, DELETED_PENDING, DELETED
 
 
 def is_rdf(request):
@@ -177,3 +177,19 @@ def split_text_into_terms(raw_text):
     term_list = [term.strip(' :').lower() for term in term_list if
                  term.strip(' :').lower() != '']
     return term_list
+
+
+def concept_has_unique_relation(concept, relation_type):
+    # returns true if the concept already has a relation with the given
+    #   relation_type ( only for group and broader for Groups)
+    current_relations = Relation.objects.filter(
+        source=concept,
+        property_type__name=relation_type).exclude(
+        status__in=[DELETED_PENDING, DELETED])
+    broader_relation = \
+        relation_type == 'broader' and concept.namespace.heading == 'Groups'
+    group_relation = relation_type == 'group'
+    if (group_relation or broader_relation) and current_relations:
+        return True
+    else:
+        return False

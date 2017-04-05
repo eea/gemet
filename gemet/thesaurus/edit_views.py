@@ -17,6 +17,7 @@ from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.utils import get_form_errors, get_new_code
+from gemet.thesaurus.utils import concept_has_unique_relation
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -204,11 +205,7 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        current_relations = models.Relation.objects.filter(
-            source=source,
-            property_type__name=relation_type).exclude(
-            status__in=[DELETED_PENDING, DELETED])
-        if relation_type == 'group' and current_relations:
+        if concept_has_unique_relation(source, relation_type):
             data = {"message": 'This object already has a relation.'}
             return self._get_response(data, 'error', 400)
         relation = (
@@ -276,11 +273,8 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-        current_relations = models.Relation.objects.filter(
-            source=source,
-            property_type__name=relation_type).exclude(
-            status__in=[DELETED_PENDING, DELETED])
-        if relation_type == 'group' and current_relations:
+
+        if concept_has_unique_relation(source, relation_type):
             data = {"message": 'This object already has a relation.'}
             return self._get_response(data, 'error', 400)
         relation = models.Relation.objects.filter(

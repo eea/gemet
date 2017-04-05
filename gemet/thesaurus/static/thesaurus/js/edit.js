@@ -24,14 +24,17 @@ function createButton(href, type, bindFunc, cls, icon, text) {
   return $button;
 }
 
-function checkConceptHasOneGroupOrLess(){
-  var groupNo = $('#grouplist').children('li.status-0, li.status-1').length
-  if (groupNo == 0){
-    $('#groupAdd').show();
-  }
-  else{
-    $('#groupAdd').hide();
-  }
+function checkConceptHasOneRelationOrLess(){
+  $('.select-one').each(function(){
+    var listSelector = $(this).data('field-id');
+    var relationNo = $(listSelector).children('li.status-0, li.status-1').length;
+    if (relationNo == 0){
+      $(this).show();
+    }
+    else{
+      $(this).hide();
+    }
+  });
 }
 
 function createDeleteButton(href, type){
@@ -89,7 +92,7 @@ $(document).ready(function () {
       templateSelection: formatConceptSelection
     });
   });
-  checkConceptHasOneGroupOrLess();
+  checkConceptHasOneRelationOrLess();
   $('[data-edit-type="property"]').click(editProperty); // binds every edit button for edit property
   $('[data-save-type="property"]').click(saveProperty); // binds every save button for save property
   $('[data-save-type="concept"]').click(saveConceptRelation); // binds every save button for save relation
@@ -211,7 +214,7 @@ $(document).ready(function () {
        success: function(data){
          addElement(fieldId, parentId, parentText, deleteUrl, fieldName,
                     conceptUrl, link_tag);
-         checkConceptHasOneGroupOrLess();
+         checkConceptHasOneRelationOrLess();
        }
     });
   }
@@ -345,7 +348,7 @@ $(document).ready(function () {
          $(deleteButton).remove();
          var $restoreButton = createRestoreButton(data['restore_url'], relationType);
          deleteFieldId.append($restoreButton);
-         checkConceptHasOneGroupOrLess()
+         checkConceptHasOneRelationOrLess()
        }
     });
   };
@@ -378,7 +381,7 @@ $(document).ready(function () {
          $(restoreButton).remove();
          var $deleteButton = createDeleteButton(data['delete_url'], relationType);
          relationDiv.append($deleteButton);
-         checkConceptHasOneGroupOrLess()
+         checkConceptHasOneRelationOrLess()
        }
     });
   };
