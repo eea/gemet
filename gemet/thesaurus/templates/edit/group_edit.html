@@ -30,6 +30,13 @@
        href="{% url 'group' language.code concept.code %}"
        >Back</a>
   </span>
+  {% if concept.status == 0 %}
+  <span>
+    <a class="btn"
+       href="{% url 'concept_delete' language.code concept.id %}"
+       >Delete group</a>
+  </span>
+  {% endif %}
   <!-- Group -->
   <div class="h3 element">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}

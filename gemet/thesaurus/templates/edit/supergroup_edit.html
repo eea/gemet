@@ -31,6 +31,13 @@
        >Back</a>
   </span>
 
+  {% if concept.status == 0 %}
+  <span>
+    <a class="btn"
+       href="{% url 'concept_delete' language.code concept.id %}"
+       >Delete supergroup</a>
+  </span>
+  {% endif %}
   <!-- Supergroup -->
   <div class="h3">
     {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
