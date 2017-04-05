@@ -1,9 +1,10 @@
+import re
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
-from models import Property
-
-SEPARATOR = '\t'
+from gemet.thesaurus.models import Property, PropertyType, Relation, Version
+from gemet.thesaurus.models import Concept
+from gemet.thesaurus import RELATION_PAIRS
 
 
 def is_rdf(request):
@@ -14,7 +15,7 @@ def is_rdf(request):
 
 def regex_search(query, language, heading):
     return (
-        Property.objects
+        Property.published
         .filter(
             name='prefLabel',
             language__code=language.code,
@@ -34,24 +35,26 @@ def regex_search(query, language, heading):
 
 
 def search_queryset(query, language, search_mode=1, heading='Concepts',
-                    api_call=False):
+                    api_call=False, status_values=[]):
+    status_values = status_values or Property.PUBLISHED_STATUS_OPTIONS
     if api_call:
         if search_mode == 4:
             values = (
-                api_search(query, language, 0, heading) or
-                api_search(query, language, 1, heading) or
-                api_search(query, language, 2, heading) or
-                api_search(query, language, 3, heading)
+                api_search(query, language, status_values, 0, heading) or
+                api_search(query, language, status_values, 1, heading) or
+                api_search(query, language, status_values, 2, heading) or
+                api_search(query, language, status_values, 3, heading)
             )
         else:
-            values = api_search(query, language, search_mode, heading)
+            values = api_search(query, language, status_values, search_mode,
+                                heading)
     else:
-        values = insite_search(query, language, heading)
+        values = insite_search(query, language, status_values, heading)
 
     return values
 
 
-def api_search(query, language, search_mode, headings):
+def api_search(query, language, status_values, search_mode, headings):
     search_types = {
         0: [query],
         1: [query + '%%'],
@@ -65,6 +68,7 @@ def api_search(query, language, search_mode, headings):
         .filter(
             name='prefLabel',
             language__code=language.code,
+            status__in=status_values,
             concept__namespace__heading__in=headings,
         )
         .extra(
@@ -83,18 +87,19 @@ def api_search(query, language, search_mode, headings):
     )
 
 
-def insite_search(query, language, heading):
+def insite_search(query, language, status_values, heading):
 
     return (
         Property.objects
         .filter(
             name='searchText',
             language__code=language.code,
+            status__in=status_values,
             concept__namespace__heading=heading,
         )
         .extra(
             where=['value like convert(_utf8%s using utf8)'],
-            params=['%%' + SEPARATOR + query + '%%'],
+            params=['%%' + query + '%%'],
         )
         .extra(
             select={
@@ -107,9 +112,68 @@ def insite_search(query, language, heading):
     )
 
 
+def get_version_choices():
+    current_identifier = Version.objects.get(is_current=True).identifier
+    major, middle, minor = map(int, current_identifier.split("."))
+    choices = (
+        ".".join(map(str, version_parts)) for version_parts in (
+            (major, middle, minor+1),
+            (major, middle+1, 0),
+            (major+1, 0, 0),
+        )
+    )
+    return ((choice, choice) for choice in choices)
+
+
 def exp_encrypt(exp):
     return encodestring(compress(exp))
 
 
 def exp_decrypt(exp):
     return decompress(decodestring(exp))
+
+
+def has_reverse_relation(relation):
+    return (
+        Relation.objects
+        .filter(source=relation.target, target=relation.source)
+        .exists()
+    )
+
+
+def create_reverse_relation(relation):
+    reverse_relation = PropertyType.objects.get(
+        name=RELATION_PAIRS[relation.property_type.name])
+
+    return Relation.objects.create(
+        source=relation.target,
+        target=relation.source,
+        property_type=reverse_relation,
+        status=relation.status,
+        version_added=relation.version_added,
+    )
+
+
+def get_form_errors(errors):
+    # errors is a dictionary with a list as value for each key;
+    # the function returns the a string with all the values flattened
+    return ' '.join([''.join(error) for error in errors.values()])
+
+
+def get_new_code(namespace):
+    codes = (
+        Concept.objects
+        .filter(namespace=namespace)
+        .exclude(code='')
+        .values_list('code', flat=True)
+    )
+    new_code = max(map(int, codes)) + 1
+    return unicode(new_code)
+
+
+def split_text_into_terms(raw_text):
+    pattern = re.compile("[^a-zA-Z\d \-\\)\\(:]")
+    term_list = pattern.split(raw_text)
+    term_list = [term.strip(' :').lower() for term in term_list if
+                 term.strip(' :').lower() != '']
+    return term_list

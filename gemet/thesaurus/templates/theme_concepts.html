@@ -2,16 +2,16 @@
 {% load gemet_tags %}
 
 {% block title %}
-Concepts list
+List of concepts for {{ theme.name }}
 {% endblock %}
 
 {% block language_selector %}
-  {% include 'header.html' with view='theme_concepts' id=theme.id %}
+  {% include 'header.html' with view='theme_concepts' code=theme.code %}
 {% endblock %}
 
 {% block header %}
   <h1>
-    Concepts list for <i>{{ theme.name }}</i>
+    List of concepts for <i>{{ theme.name }}</i>
   </h1>
   {% if language_warning %}
     <p>* Note: Theme name is not available for the current language</p>
@@ -40,8 +40,9 @@ Concepts list
   {% else %}
     <a href="{% url 'theme_concepts' language.code theme.code %}?letter=99">other</a>
   {% endif %}
-</div>  
+</div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' %}
 {% endblock %}

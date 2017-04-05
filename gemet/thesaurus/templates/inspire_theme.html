@@ -6,57 +6,75 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='inspire_theme' id=inspire_theme.code %}
+  {% include 'header.html' with view='inspire_theme' code=inspire_theme.code %}
 
-  <!-- Theme -->
-  <h3 class="h3">{{ inspire_theme.name }}</h3>
-  <!-- Side bar -->
+ <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
+    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in inspire_theme.translations %}
       <li class="clearfix">
-        <div class="dt">{{ translation.language.name }}</div>
+        <div class="dt">{{ translation.language__name }}</div>
         <div class="dd">{{ translation.value }}</div>
       </li>
       {% endfor %}
     </ul>
   </div>
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definiton</h5>
-  {% if not inspire_theme.definition %}
-    <p class="alert">Definition is not available.</p>
-  {% else %}
-    {{ inspire_theme.definition }}
-  {% endif %}
-  <!-- Other relations -->
-  <h5 class="h5">Other relations</h5>
-  <ul class="dl-inline no-list">
-    {% for type, relations in inspire_theme.visible_foreign_relations.items %}
-    <li>
-      <div class="dt">{{ type }}</div>
-      {% for relation in relations %}
-        <div class="dd">
-            <a href="{{ relation.uri }}">{{ relation.label }}</a>
-        </div>
-      {% endfor %}
-    </li>
-    {% endfor %}
-  </ul>
-  <!-- Scope note -->
-  <h5 class="h5">Scope note:</h5>
-  {% if not inspire_theme.scopeNote %}
-    <p class="alert">Scope note is not available.</p>
-  {% else %}
-    <p>{{ inspire_theme.scopeNote }}</p>
-  {% endif %}
-  <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-    {{ inspire_theme.url }}
-  </h5>
+  <!-- Theme -->
+  <h3 class="h3">{{ inspire_theme.name }}</h3>
+ 
+<div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area" id="definition">
 
+    <div class="text-area">
+      <h5 class="h5 hidden-desktop">Definiton</h5>
+      {% if not inspire_theme.definition %}
+        <p class="alert">Definition is not available.</p>
+      {% else %}
+        <p>{{ inspire_theme.definition }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Other relations -->
+    <div class="text-area modified">
+      <h5 class="h5">Other relations</h5>
+      <div class="listing">
+        {% regroup inspire_theme.visible_foreign_relations by property_type__label as foreign_relations %}
+        {% for foreign_relation in foreign_relations %}
+        <ul>
+          <h6 class="inline">{{ foreign_relation.grouper }}</h6>
+          {% for relation in foreign_relation.list %}
+              <li class="inline">
+              <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Scope note -->
+    <div class="text-area">
+      <h5 class="h5">Scope note:</h5>
+      {% if not inspire_theme.scopeNote %}
+        <p class="alert">Scope note is not available.</p>
+      {% else %}
+        <p>{{ inspire_theme.scopeNote }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Concept URL -->
+    <div class="text-area">
+      <h5 class="h5 h5-url">Concept URL:
+        {{ inspire_theme.url }}
+      </h5>
+    </div>
+  </div>
+</div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' with version=ns_version %}
 {% endblock %}

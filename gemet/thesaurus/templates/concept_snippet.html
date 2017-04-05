@@ -1,26 +1,27 @@
 {% load gemet_tags %}
+
 <li>
   {% get_expand concept.id expand_list as expand %}
+
   <a class="toggle-collapse" href="{% url 'relations' language.code group_code %}?exp={{ expand.param }}">
     {% if expand.status %}
-    -
+     <i class="fa fa-minus" aria-hidden="true"></i>
     {% else %}
-    +
+      <i class="fa fa-plus" aria-hidden="true"></i>
     {% endif %}
   </a>
-  {% if concept.name %}
-    <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
-  {% else %}
-    <a href="{% url 'concept' language.code concept.concept__code %}">{% default_name concept.id %}</a>[english]
-  {% endif %}
-  <ul class="listing no-list">
+  <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
+
+  <ul class="listing">
     {% if expand.status %}
-      {% get_children concept.id language.code as concept_children %}
+      {% get_children concept.id language.code status_values as concept_children %}
+
       {% for concept in concept_children %}
         {% with concept=concept group_code=group_code template_name='concept_snippet.html'%}
           {% include template_name %}
         {% endwith %}
       {% endfor %}
+
     {% endif %}
   </ul>
 </li>

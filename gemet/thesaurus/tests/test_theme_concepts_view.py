@@ -16,9 +16,9 @@ class TestThemeConceptsView(GemetTest):
         self.theme = ThemeFactory()
 
         PropertyFactory(concept=self.theme, name="propertyName")
-        self.pt1 = PropertyTypeFactory(id=1, name="themeMember",
+        self.pt1 = PropertyTypeFactory(name="themeMember",
                                        label="Theme member")
-        self.pt2 = PropertyTypeFactory(id=2, name="theme", label="Theme")
+        self.pt2 = PropertyTypeFactory(name="theme", label="Theme")
 
     def test_one_theme_one_concept(self):
         concept = TermFactory()
@@ -45,14 +45,14 @@ class TestThemeConceptsView(GemetTest):
 
     def test_one_theme_two_concepts(self):
         PropertyFactory(concept=self.theme, name="prefLabel")
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value="Concept 1")
         RelationFactory(property_type=self.pt1, source=self.theme,
                         target=concept1)
         RelationFactory(property_type=self.pt2, source=concept1,
                         target=self.theme)
 
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value="Concept 2")
         RelationFactory(property_type=self.pt1, source=self.theme,
                         target=concept2)
@@ -81,14 +81,14 @@ class TestThemeConceptsView(GemetTest):
                          'Concept 2')
 
     def test_letter_selected_filter_one_language(self):
-        concept1 = TermFactory(id=1, code="1")
+        concept1 = TermFactory(code="1")
         PropertyFactory(concept=concept1, value="A_CONCEPT")
         RelationFactory(property_type=self.pt1, source=self.theme,
                         target=concept1)
         RelationFactory(property_type=self.pt2, source=concept1,
                         target=self.theme)
 
-        concept2 = TermFactory(id=2, code="2")
+        concept2 = TermFactory(code="2")
         PropertyFactory(concept=concept2, value="B_CONCEPT")
         RelationFactory(property_type=self.pt1, source=self.theme,
                         target=concept2)
@@ -113,7 +113,7 @@ class TestThemeConceptsView(GemetTest):
         )
 
     def test_letter_selected_filter_two_concepts_two_languages(self):
-        english_concept = TermFactory(id=1, code="1")
+        english_concept = TermFactory(code="1")
         PropertyFactory(concept=english_concept, value="A_EN_CONCEPT")
         RelationFactory(property_type=self.pt1, source=self.theme,
                         target=english_concept)
@@ -121,9 +121,9 @@ class TestThemeConceptsView(GemetTest):
                         target=self.theme)
 
         spanish = LanguageFactory(code='es', name='Spanish')
-        spanish_theme = ThemeFactory(id=5, code="5")
+        spanish_theme = ThemeFactory(code="5")
         PropertyFactory(concept=spanish_theme)
-        spanish_concept = TermFactory(id=2, code="2")
+        spanish_concept = TermFactory(code="2")
         PropertyFactory(concept=spanish_concept, language=spanish,
                         name="prefLabel", value="A_ES_CONCEPT")
         RelationFactory(property_type=self.pt1, source=spanish_theme,

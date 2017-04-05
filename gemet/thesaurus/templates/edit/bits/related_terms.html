@@ -1,0 +1,37 @@
+{% load gemet_tags %}
+<div>
+  <ul  class="listing">
+    <ul id="{{ type }}" class="dd-list">
+      <div class="elements-list" id="{{ type }}list">
+        {% for cp in concept_list %}
+
+        <li id="{{ type }}{{ cp.id }}" class="status-{{ cp.status }}">
+          <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>
+
+          {% if cp.status == DELETED_PENDING %}
+          <button class='btng waves-effect waves-light btn restoreRelation'
+                  type="button"
+                  data-field-id="#{{ type }}{{ cp.id }}"
+                  data-href="{% url 'restore_relation' concept.id cp.id type %}"
+                  data-type="{{ type }}">
+              <i class="fa fa-undo" aria-hidden="true"></i>
+            Restore
+          </button>
+
+          {% else %}
+          <button class='btng waves-effect waves-light btn deleteRelation'
+                  type="button"
+                  data-field-id="#{{ type }}{{ cp.id }}"
+                  data-href="{% url 'delete_relation' concept.id cp.id type %}"
+                  data-type="{{ type }}" value="x">
+              <i class="fa fa-times" aria-hidden="true"></i>
+           Delete
+          </button>
+          {% endif %}
+
+        </li>
+        {% endfor %}
+      </div>
+    </ul>
+  </ul>
+</div>

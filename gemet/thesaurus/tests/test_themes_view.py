@@ -1,16 +1,14 @@
 from django.core.urlresolvers import reverse
 
-from .factories import (
-    ThemeFactory,
-    PropertyFactory,
-    LanguageFactory,
-)
+from .factories import ThemeFactory, PropertyFactory, LanguageFactory
+from .factories import VersionFactory
 from . import GemetTest
 
 
 class TestThemesView(GemetTest):
     def setUp(self):
         LanguageFactory()
+        VersionFactory()
 
     def test_no_theme(self):
         url = reverse('themes', kwargs={'langcode': 'en'})
@@ -41,9 +39,9 @@ class TestThemesView(GemetTest):
                          u'administration')
 
     def test_contains_more_themes(self):
-        theme1 = ThemeFactory(id=1, code="1")
+        theme1 = ThemeFactory(code="1")
         PropertyFactory(concept=theme1, value="Theme 1")
-        theme2 = ThemeFactory(id=2, code="2")
+        theme2 = ThemeFactory(code="2")
         PropertyFactory(concept=theme2, value="Theme 2")
 
         url = reverse('themes', kwargs={'langcode': 'en'})

@@ -1,0 +1,158 @@
+<div class="text-area">
+  <!-- prefLabel -->
+  {% if prefLabel %}
+    <div>
+      <h5>Name</h5>
+      {% for property in prefLabel %}
+        <div class="status-{{ property.status }}">{{ property.value }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- altLabel -->
+  {% if altLabel %}
+    <div>
+      <h5>Alternatives</h5>
+      {% for property in altLabel %}
+        <div class="status-{{ property.status }}">{{ property.value }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- definition -->
+  {% if definition %}
+    <div>
+      <h5>Definition</h5>
+      {% for property in definition %}
+        <div class="status-{{ property.status }}">{{ property.value }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- source -->
+  {% if source %}
+    <div>
+      <h5>Source</h5>
+      {% for property in source %}
+        <div class="status-{{ property.status }}">{{ property.value }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- scopeNote -->
+  {% if scopeNote %}
+    <div>
+      <h5>Scope Note</h5>
+      {% for property in scopeNote %}
+        <div class="status-{{ property.status }}">{{ property.value }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- other Languages -->
+  {% if other_languages %}
+    <div>
+      <h5>Other languages</h5>
+        There are also modified properties in the following languages:
+        {{ other_languages | join:"," }}
+    </div>
+  {% endif %}
+
+  <!-- themes -->
+  {% if theme %}
+    <div>
+      <h5>Themes</h5>
+      {% for relation in theme %}
+          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- groups -->
+  {% if group %}
+    <div>
+      <h5>Groups</h5>
+      {% for relation in group %}
+          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- related terms -->
+  {% if related %}
+    <div>
+      <h5>Related terms</h5>
+      {% for relation in related %}
+          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- narrower terms -->
+  {% if narrower %}
+    <div>
+      {% if namespace == 'Super groups' %}
+        <h5>Groups</h5>
+      {% else %}
+        <h5>Narrower terms</h5>
+      {% endif %}
+
+      {% for relation in narrower %}
+          <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- broader terms -->
+  {% if broader %}
+    <div>
+      {% if namespace == 'Groups' %}
+        <h5>Super groups</h5>
+      {% else %}
+        <h5>Broader terms</h5>
+      {% endif %}
+
+      {% for relation in broader %}
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- theme concepts -->
+  {% if themeMember %}
+    <div>
+      <h5>Concepts</h5>
+      {% for relation in themeMember %}
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- supergroups -->
+  {% if groupMember %}
+    <div>
+      <h5>Concepts</h5>
+      {% for relation in groupMember %}
+        <p class="status-{{ relation.status }}">{{ relation.target }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- foreign relations -->
+  {% if foreign_relations %}
+    <div>
+      <h5>Other relations</h5>
+      {% regroup foreign_relations by property_type as grouped_foreign_relations %}
+      {% for foreign_relation in grouped_foreign_relations %}
+      <ul>
+        <h6 class="inline">{{ foreign_relation.grouper }}: </h6>
+        {% for relation in foreign_relation.list %}
+          <li class="inline status-{{ relation.status }}">
+          <a href="{{ relation.uri }}">{{ relation.label }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>

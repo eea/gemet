@@ -8,8 +8,8 @@
 
 {% block content %}
   {% include 'header.html' with view=view_name %}
-
-  <h1>{{ page_title }}</h1>
+<div class="beautiful-listing">
+  <h1 class="list-title">{{ page_title }}</h1>
   {% if language_warning %}
     <p class="alert">There are no themes available for the current language so these are listed in English.</p>
   {% endif %}
@@ -21,7 +21,9 @@
     </li>
     {% endfor %}
   </ul>
+</div>
 {% endblock %}
+
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+  {% include 'version.html' %}
 {% endblock %}

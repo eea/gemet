@@ -1,13 +1,8 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
-from .factories import (
-    PropertyFactory,
-    RelationFactory,
-    PropertyTypeFactory,
-    TermFactory,
-    ThemeFactory,
-    GroupFactory,
-)
+from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
+from .factories import RelationFactory, TermFactory, ThemeFactory
 from . import GemetTest, ERROR_404
 
 
@@ -27,17 +22,15 @@ class TestConceptView(GemetTest):
         PropertyFactory(concept=self.group, value="Group Parent")
         PropertyFactory(concept=self.theme, value="Theme Parent")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt2, source=self.concept,
                         target=self.group)
         RelationFactory(property_type=pt1, source=self.group,
                         target=self.concept)
 
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
-                                  label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        pt3 = PropertyTypeFactory(name="themeMember", label="Theme member")
+        pt4 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt4, source=self.concept,
                         target=self.theme)
         RelationFactory(property_type=pt3, source=self.theme,
@@ -45,24 +38,23 @@ class TestConceptView(GemetTest):
 
     def set_concept_two_theme(self):
         self.group = GroupFactory()
-        self.theme1 = ThemeFactory(id=4, code="4")
-        self.theme2 = ThemeFactory(id=5, code="5")
+        self.theme1 = ThemeFactory(code="4")
+        self.theme2 = ThemeFactory(code="5")
 
         PropertyFactory(concept=self.group, value="Group Parent")
         PropertyFactory(concept=self.theme1, value="ThemeP1")
         PropertyFactory(concept=self.theme2, value="ThemeP2")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt2, source=self.concept,
                         target=self.group)
         RelationFactory(property_type=pt1, source=self.group,
                         target=self.concept)
 
-        pt3 = PropertyTypeFactory(id=3, name="themeMember",
+        pt3 = PropertyTypeFactory(name="themeMember",
                                   label="Theme member")
-        pt4 = PropertyTypeFactory(id=4, name="theme", label="Theme")
+        pt4 = PropertyTypeFactory(name="theme", label="Theme")
         RelationFactory(property_type=pt4, source=self.concept,
                         target=self.theme1)
         RelationFactory(property_type=pt3, source=self.theme1,
@@ -80,14 +72,15 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p#definition').text(),
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #definition p').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.content p#scope-note').text(),
+        self.assertEqual(resp.pyquery('.content #scopeNote').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.content ul.listing:eq(1) li').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(1) li').text(),
                          "Group Parent")
-        self.assertEqual(resp.pyquery('.content ul.listing:eq(0) li').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(0) li').text(),
                          "Theme Parent")
 
     def test_concept_one_theme_rdf(self):
@@ -100,9 +93,9 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
-        self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme.id)), 1)
+        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
+        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme.code), 1)
 
     def test_concept_two_themes(self):
         self.set_concept_two_theme()
@@ -112,14 +105,15 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('.content h3').text(), "some prefLabel")
-        self.assertEqual(resp.pyquery('.content p#definition').text(),
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "some prefLabel")
+        self.assertEqual(resp.pyquery('.content #definition p').text(),
                          "some definition")
-        self.assertEqual(resp.pyquery('.content p#scope-note').text(),
+        self.assertEqual(resp.pyquery('.content #scopeNote').text(),
                          "some scope note")
-        self.assertEqual(resp.pyquery('.content ul:eq(1)').text(),
+        self.assertEqual(resp.pyquery('ul.listing:eq(1)').text(),
                          "Group Parent")
-        themes = resp.pyquery('.content ul.listing:eq(0) li').text().split()
+        themes = resp.pyquery('ul.listing:eq(0) li').text().split()
         self.assertEqual(len(themes), 2)
         self.assertEqual(themes[0], "ThemeP1")
         self.assertEqual(themes[1], "ThemeP2")
@@ -134,18 +128,18 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + str(self.concept.id)), 1)
-        self.assertEqual(resp.body.count('group/' + str(self.group.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme1.id)), 1)
-        self.assertEqual(resp.body.count('theme/' + str(self.theme2.id)), 1)
+        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
+        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme1.code), 1)
+        self.assertEqual(resp.body.count('theme/' + self.theme2.code), 1)
 
     def test_redirect(self):
         url = reverse('concept', kwargs={'code': self.concept.code,
                                          'langcode': 'en'})
         resp = self.app.get(url)
         url = resp.pyquery('.content h5.h5-url').text().split()[-1]
-        # TODO: check why the url does not have an id
-        self.assertEqual(302, self.app.get(url).status_int)
+        self.assertTrue(settings.GEMET_URL in url)
+        self.assertTrue(url.endswith(self.concept.code))
 
     def test_redirect_rdf(self):
         url = reverse(

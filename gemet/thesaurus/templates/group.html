@@ -5,59 +5,82 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='group' id=group.code %}
-
-  <!-- Group -->
-  <h3 class="h3">{{ group.name }}</h3>
+  {% include 'header.html' with view='group' code=group.code %}
 
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
+    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in group.translations %}
       <li class="clearfix">
-        <div class="dt">{{ translation.language.name }}</div>
+        <div class="dt">{{ translation.language__name }}</div>
         <div class="dd">{{ translation.value }}</div>
       </li>
       {% endfor %}
     </ul>
   </div>
-  <!-- Definition -->
-  <h5 class="h5 hidden-desktop">Definiton</h5>
+  <!-- Group -->
+  <div class="selected-word">
+    <span id="prefLabel">{{ group.name }}</span>
+    {% if user.is_authenticated %}
+      <span>
+        <a class="btn btn-primary"
+           href="{% url 'group_edit' language.code group.code %}"
+           >Edit</a>
+      </span>
+    {% endif %}
+  </div>
+
+<div class="text-area-wrapper">
+ <!-- Definition -->
+  <div class="text-area" id="definition">
+  <div class="text-area">
+      <h5 class="h5">Definiton</h5>
   {% if not group.definition %}
     <p class="alert">Definition is not available.</p>
   {% else %}
     <p>{{ group.definition }}</p>
   {% endif %}
+  </div>
 
   <!-- Broader -->
   {% if group.broader_concepts %}
-  <h5 class="h5">Super groups</h5>
-  <ul class="listing">
-    {% for sg in group.broader_concepts %}
-    <li>{{ sg.name }}</li>
-    {% endfor %}
-  </ul>
+  <div class="text-area">
+    <h5 class="h5">Super groups</h5>
+    <ul class="listing">
+      {% for sg in group.broader_concepts %}
+      <li>{{ sg.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
   <!-- Concepts -->
   {% if group.groupMember_concepts %}
-  <h5 class="h5">Concepts</h5>
-  <ul class="listing">
-    {% for cp in group.groupMember_concepts %}
-    <li>{{ cp.name }}</li>
-    {% endfor %}
-  </ul>
+  <div class="text-area">
+    <h5 class="h5">Concepts</h5>
+    <ul class="listing">
+      {% for cp in group.groupMember_concepts %}
+      <li>{{ cp.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
 
   <!-- Concept URL -->
-  <h5 class="h5 h5-url">Concept URL:
-  {{ group.url }}
-  </h5>
+  <div class="text-area">
+    <h5 class="h5 h5-url">Concept URL:
+    {{ group.url }}
+    </h5>
+  </div>
+
+  </div>
+  </div>
 
 {% endblock %}
 {% block version %}
-    {% include 'version.html' with version=ns_version %}
+    {% include 'version.html' %}
 {% endblock %}

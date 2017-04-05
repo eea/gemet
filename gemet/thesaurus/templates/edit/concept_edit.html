@@ -1,0 +1,296 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+  Edit {{ concept.name }}
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' with view='concept' code=concept.code %}
+<div class="edit-page">
+
+  <!-- Side bar -->
+  <div class="side-bar box">
+    <!-- Translations -->
+    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
+    <h6 class="no-margin-top">Translations</h6>
+    <ul id="translations" class="dl-inline no-list">
+      {% for translation in concept.translations %}
+        <li class="clearfix">
+          <div class="dt">{{ translation.language__name }}</div>
+          <div class="dd">{{ translation.value }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <!-- Back to concept -->
+  <span>
+    <a class="btn"
+       href="{% url 'concept' language.code concept.code %}"
+       >Back</a>
+  </span>
+
+  <!-- Concept -->
+  <h2 class="page-title element">
+      {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
+  </h2>
+
+  <!-- Alternatives -->
+  <div class="alternative-wrapper text-area">
+    <div class="alternative-header">
+      <span id="alternative">
+        Alternatives:
+      </span>
+      <div class="input-area input-field" hidden>
+          <label for="alternativeInput">Alternatives</label>
+               <input id="alternativeInput" type="text" class="validate">
+      </div>
+      <div class="button-elements">
+        <button class='btng edit waves-effect waves-light btn' type="button"
+                id="alternativeAdd" value="Add Alternative" title="Add"
+                data-toggle="tooltip"
+                data-type="alternative"
+                data-html-tag="input">
+     
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          add
+        </button>
+
+        <button class='btng cancel waves-effect waves-light btn' type="button"
+                id="alternativeCancel" value="Cancel" title="Cancel"
+                data-toggle="tooltip"
+                data-type="alternative" hidden>
+            <i class="fa fa-stop-circle" aria-hidden="true"></i>
+      Cancel
+        </button>
+
+        <button class='btng save waves-effect waves-light btn' type="button"
+                id="alternativeSave" value="Save" title="Save"
+                data-toggle="tooltip"
+                data-langcode="{{ language.code }}"
+                data-concept="{{ concept.id }}"
+                data-input-id="#alternativeInput"
+                data-parent-id="#alternativeList"
+                data-href="{% url 'add_property' language.code concept.id 'altLabel' %}"
+                data-type="alternative" hidden>
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    save
+        </button>
+      </div>
+    </div>
+
+    <ul id="alternativeList">
+      {% for alternative in concept.altLabel %}
+        <li class="alternative-item clearfix">
+          <span id="alternative{{ alternative.id }}"
+             class="status-{{ alternative.status }}">
+            {{ alternative.value }};
+
+            {% if alternative.status != DELETED_PENDING %}
+            <button class='btng waves-effect waves-light btn deleteRelation' type="submit" value="X"
+                    data-field-id="#alternative{{ alternative.id }}"
+                    data-type="alternative"
+                    data-href="{% url 'delete_property' alternative.id %}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+             Delete
+            </button>
+            {% endif %}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+
+
+  <!-- Definition -->
+  <div class="definition text-area element">
+    <h5 class="h5">Definition</h5>
+      {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+  </div>
+
+  <!--Source-->
+  <div class="source text-area element">
+    <span>Source:</span>
+      {% include 'edit/bits/property.html' with property_name='source' html_tag='input' %}
+  </div>
+
+  <!-- Themes -->
+  <div class="themes text-area">
+    <h5 class="h5">Themes</h5>
+    <div class="element">
+      {% include 'edit/bits/relation_buttons.html' with type='theme' button_label='Add Theme' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='theme' concept_list=concept.themes %}
+    </div>
+  </div>
+
+  <!-- Groups -->
+  <div class="groups text-area">
+    <h5 class="h5">Group</h5>
+    <div class="element">
+      {% include 'edit/bits/relation_buttons.html' with type='group' button_label='Add Group' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='group' concept_list=concept.groups %}
+    </div>
+  </div>
+
+  <!-- Related terms -->
+  <div class="related-terms text-area">
+    <h5 class="h5">Related terms</h5>
+
+    <!-- Broader -->
+    <div class="dl-inline">
+      <div class="element">
+        <div class="dl-header clearfix">
+          <h6>Broader</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='broader' button_label='Add Broader Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='broader' concept_list=concept.broader_concepts %}
+      </div>
+    </div>
+    <!-- Related -->
+    <div class="dl-inline">
+      <div class="element">
+        <div class="dl-header clearfix">
+          <h6>Related</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='related' button_label='Add Related Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='related' concept_list=concept.related_concepts %}
+      </div>
+    </div>
+    <!-- Narrower -->
+    <div class="dl-inline">
+      <div class="element">
+        <div class="dl-header clearfix">
+          <h6 class="">Narrower</h6>
+          {% include 'edit/bits/relation_buttons.html' with type='narrower' button_label='Add Narrower Term' link='true' %}
+        </div>
+        {% include 'edit/bits/related_terms.html' with type='narrower' concept_list=concept.narrower_concepts %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Other relations -->
+  <div class="other-relations text-area">
+    <h5 class="h5">Other relations</h5>
+    <div class="element">
+
+      <div class="input-area" hidden>
+      <div class="input-field">
+         <label class="otherInput" for="otherLabel" >Label:</label>
+        <input class="otherInput" type="text" id='otherLabel' value="" data-type="other" />
+       </div>
+       
+       <div class="input-field">
+        <label class="otherInput" for="otherUrl" >Url:</label>
+        <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
+        </div>
+
+<div class="input-field">
+ <select id="otherSelect">
+      <option value="" disabled selected>Choose your option</option>
+      {% for type in foreign_relation_types %}
+  <option value="{{ type.id }}" data-label="{{ type.name }}">{{ type.label }}</option>
+     {% endfor %}
+    </select>
+    </div>
+
+
+      </div>
+
+      <div class="button-elements">
+        <button class='btng add waves-effect waves-light btn' type="button"
+                id="otherAdd" value="Add Other Term" title="Add"
+                data-toggle="tooltip"
+                data-type="other"
+                data-input-id="#otherSelect">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+       Add
+        </button>
+
+        <button class='btng cancel waves-effect waves-light btn' type="button"
+                id="otherCancel" value="Cancel" title="Cancel"
+                data-toggle="tooltip"
+                data-type="other" hidden>
+            <i class="fa fa-stop-circle" aria-hidden="true"></i>
+         Cancel
+
+        </button>
+
+        <button class='btng save waves-effect waves-light btn' type="button"
+                id="otherSave" value="Save" title="Save"
+                data-toggle="tooltip"
+                data-langcode="{{ language.code }}"
+                data-concept="{{ concept.id }}"
+                data-type="other"
+                data-url-input-id="#otherUrl"
+                data-field-id="#otherList"
+                data-value-input-id="#otherLabel"
+                data-select-id="#otherSelect"
+                data-href="{% url 'add_other' concept.id %}" hidden>
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    
+      save
+        </button>
+      </div>
+    </div>
+    <ul class="dl-inline no-list" id="otherList">
+      {% regroup concept.visible_foreign_relations by property_type__label as foreign_relations %}
+      {% for foreign_relation in foreign_relations %}
+      <div class="foreign-relation" data-value="{{ foreign_relation.grouper }}">
+        <li>
+          <span class="">{{ foreign_relation.grouper }}</span>
+          <div class="foreign-elements">
+          {% for relation in foreign_relation.list %}
+            <div class="status-{{ relation.status }} other-item" id="other{{ relation.id }}">
+              <a href="{{ relation.uri }}">{{ relation.label }}</a>
+
+              {% if relation.status == DELETED_PENDING %}
+              <button class='btng waves-effect waves-light btn restoreRelation'
+                      type="button"
+                      data-type="other"
+                      data-field-id="#other{{ relation.id }}"
+                      data-href="{% url 'restore_other' relation.id %}">
+
+                  <i class="fa fa-undo" aria-hidden="true"></i>
+              Restore
+              </button>
+
+              {% else %}
+              <button class='btng waves-effect waves-light btn deleteRelation'
+                      type="button"
+                      data-type="other"
+                      data-field-id="#other{{ relation.id }}"
+                      data-href="{% url 'delete_other' relation.id %}">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                  Delete
+              </button>
+              {% endif %}
+            </div>
+          {% endfor %}
+          </div>
+        </li>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Scope -->
+  <div class="scope text-area element">
+    <h5 class="h5">Scope note</h5>
+      {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+  </div>
+
+  <!-- Concept URL -->
+  <h5 class="h5 h5-url">
+    Concept URL: {{ concept.url }}
+  </h5>
+</div>
+{% endblock %}
+
+{% block version %}
+  {% include 'version.html' %}
+{% endblock %}
+
+{% block js %}
+  {% include 'edit/bits/js_scripts.html' %}
+{% endblock %}

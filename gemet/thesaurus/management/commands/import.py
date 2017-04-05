@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db import connections
+from gemet.thesaurus import PUBLISHED
 
 from gemet.thesaurus.models import (
     Concept,
@@ -10,6 +11,7 @@ from gemet.thesaurus.models import (
     Relation,
     ForeignRelation,
     DefinitionSource,
+    Version,
 )
 
 
@@ -33,6 +35,7 @@ class Command(BaseCommand):
         langcodes_str = ', '.join(["'{0}'".format(code) for code in langcodes])
 
         cursor = connections['import'].cursor()
+        version_id = Version.objects.get(is_current=True).id
 
         query_str = (
             "SELECT ns AS namespace_id, "
@@ -43,7 +46,9 @@ class Command(BaseCommand):
             "WHERE ns IN ({0})".format(ns_str)
         )
         rows = dictfetchall(cursor, query_str)
-
+        for row in rows:
+            row['version_added_id'] = version_id
+            row['status'] = PUBLISHED
         self.import_rows(rows, Concept)
         self.warn_ignored_rows(cursor, 'concept', len(rows))
         self.stdout.write('\n')
@@ -65,6 +70,8 @@ class Command(BaseCommand):
                        for c in Concept.objects.all()}
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
+            row['version_added_id'] = version_id
+            row['status'] = PUBLISHED
             row['is_resource'] = row['is_resource'] or 0
             if row['language_id'] == 'zh':
                 row['language_id'] = 'zh-CN'
@@ -91,6 +98,8 @@ class Command(BaseCommand):
                 row['source_id'] = concept_ids[row['source_id']]
                 row['target_id'] = concept_ids[row['target_id']]
                 row['property_type_id'] = property_ids[row['property_type_id']]
+                row['version_added_id'] = version_id
+                row['status'] = PUBLISHED
             except KeyError:
                 return False
             return True
@@ -116,6 +125,8 @@ class Command(BaseCommand):
         for row in rows:
             row['concept_id'] = concept_ids[row['concept_id']]
             row['property_type_id'] = property_ids[row['property_type_id']]
+            row['version_added_id'] = version_id
+            row['status'] = PUBLISHED
 
         self.import_rows(rows, ForeignRelation)
         self.warn_ignored_rows(cursor, 'foreign_relation', len(rows))
@@ -140,7 +151,7 @@ class Command(BaseCommand):
 
             self.stdout.write('Inserting {0} new rows ...'.format(len(rows)))
             new_rows = [model_cls(**row) for row in rows]
-            model_cls.objects.bulk_create(new_rows, batch_size=100000)
+            model_cls.objects.bulk_create(new_rows, batch_size=10000)
         else:
             self.stderr.write('0 rows found in the import table. Aborting ...')
 

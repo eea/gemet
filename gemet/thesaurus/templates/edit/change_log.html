@@ -1,0 +1,67 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+  History of changes
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' with view='change_log' %}
+<div class="edit-page history">
+
+  <h1>
+    History of changes since version {{ version.identifier }}
+    {% if version.publication_date %}({{ version.publication_date }}){% endif %}
+  </h1>
+
+  <h2>New items</h2>
+  {% regroup new_concepts by concept__namespace__heading as concepts_list %}
+  <div class="modified-container">
+    {% for concepts in concepts_list %}
+      <div class="well">
+        <h3>{{ concepts.grouper }}</h3>
+
+        {% for concept in concepts.list %}
+          <p><a href="{% get_url concept.concept__code language.code concepts.grouper %}">
+              {{ concept.value }}</a></p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="modified-title">Modified items</h2>
+  <span><a class="btn toggle-list concept">Toggle list</a></span>
+  {% regroup old_concepts by concept__namespace__heading as concepts_list %}
+  <ul class="modified-list concept">
+    <h2>Modified items</h2>
+    {% for concepts in concepts_list %}
+      {% for concept in concepts.list %}
+        <li><h3>{{ concept.value }}</h3></li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+
+  {% for concepts in concepts_list %}
+    <h4>{{ concepts.grouper }}</h4>
+    <div class="modified-container">
+
+      {% for concept in concepts.list %}
+        <div class="well">
+          <a href="{% get_url concept.concept__code language.code concepts.grouper %}">
+            {{ concept.value }}
+          </a>
+          <div class="history-details text-area" hidden></div>
+          <button class="btn history-details input-area"
+                  data-href="{% url 'concept_changes' language.code concept.concept__id %}"
+          >See details</button>
+        </div>
+      {% endfor %}
+
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block version %}
+    {% include 'version.html' %}
+{% endblock %}

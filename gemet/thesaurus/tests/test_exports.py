@@ -17,17 +17,16 @@ from . import GemetTest
 class TestExports(GemetTest):
 
     def test_themes_groups_relations_html(self):
-        term1 = TermFactory(id='11', code='11')
-        term2 = TermFactory(id='12', code='12')
-        term3 = TermFactory(id='13', code='13')
-        theme = ThemeFactory(id='21', code='21')
-        group = GroupFactory(id='31', code='31')
+        term1 = TermFactory(code='11')
+        term2 = TermFactory(code='12')
+        term3 = TermFactory(code='13')
+        theme = ThemeFactory(code='21')
+        group = GroupFactory(code='31')
 
         p11 = PropertyTypeFactory()
-        p12 = PropertyTypeFactory(id='2', name='theme', label='Theme')
-        p21 = PropertyTypeFactory(id='3', name='groupMember',
-                                  label='Group member')
-        p22 = PropertyTypeFactory(id='4', name='group', label='Group')
+        p12 = PropertyTypeFactory(name='theme', label='Theme')
+        p21 = PropertyTypeFactory(name='groupMember', label='Group member')
+        p22 = PropertyTypeFactory(name='group', label='Group')
 
         RelationFactory(property_type=p11, source=theme, target=term1)
         RelationFactory(property_type=p12, source=term1, target=theme)
@@ -55,11 +54,10 @@ class TestExports(GemetTest):
         supergroup = SuperGroupFactory()
 
         p11 = PropertyTypeFactory()
-        p12 = PropertyTypeFactory(id='2', name='theme', label='Theme')
-        p21 = PropertyTypeFactory(id='3', name='groupMember',
-                                  label='Group member')
-        p22 = PropertyTypeFactory(id='4', name='group', label='Group')
-        p13 = PropertyTypeFactory(id='5', name='broader', label='Broader')
+        p12 = PropertyTypeFactory(name='theme', label='Theme')
+        p21 = PropertyTypeFactory(name='groupMember', label='Group member')
+        p22 = PropertyTypeFactory(name='group', label='Group')
+        p13 = PropertyTypeFactory(name='broader', label='Broader')
 
         RelationFactory(property_type=p11, source=theme, target=term)
         RelationFactory(property_type=p12, source=term, target=theme)
@@ -77,11 +75,11 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('concept/1'), 3)
 
     def test_label_and_definitions_html(self):
-        term1 = TermFactory(id='1', code='1')
-        term2 = TermFactory(id='2', code='2')
-        term3 = TermFactory(id='3', code='3')
-        term4 = TermFactory(id='4', code='4')
-        spanish_term = TermFactory(id='5', code='5')
+        term1 = TermFactory(code='1')
+        term2 = TermFactory(code='2')
+        term3 = TermFactory(code='3')
+        term4 = TermFactory(code='4')
+        spanish_term = TermFactory(code='5')
         spanish = LanguageFactory(code='es', name='Spanish')
 
         PropertyFactory(concept=term1, name='prefLabel', value='A')
@@ -139,8 +137,8 @@ class TestExports(GemetTest):
         PropertyFactory(concept=group, name='prefLabel', value='B')
         PropertyFactory(concept=theme, name='prefLabel', value='C')
 
-        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
-        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
+        p1 = PropertyTypeFactory(name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(name='broader', label='broader term')
         RelationFactory(property_type=p1, source=supergroup, target=group)
         RelationFactory(property_type=p2, source=group, target=supergroup)
 
@@ -173,15 +171,15 @@ class TestExports(GemetTest):
                          'C')
 
     def test_gemet_relations_html(self):
-        term1 = TermFactory(id='1', code='11')
-        term2 = TermFactory(id='2', code='12')
-        term3 = TermFactory(id='3', code='13')
+        term1 = TermFactory(code='11')
+        term2 = TermFactory(code='12')
+        term3 = TermFactory(code='13')
 
-        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
-        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
-        p3 = PropertyTypeFactory(id=3, name='related', label='related')
-        p4 = PropertyTypeFactory(id=4, name='exactMatch', label='exact match')
-        p5 = PropertyTypeFactory(id=5, name='closeMatch', label='close match')
+        p1 = PropertyTypeFactory(name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(name='broader', label='broader term')
+        p3 = PropertyTypeFactory(name='related', label='related')
+        p4 = PropertyTypeFactory(name='exactMatch', label='exact match')
+        p5 = PropertyTypeFactory(name='closeMatch', label='close match')
         RelationFactory(property_type=p1, source=term1, target=term2)
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
@@ -207,15 +205,15 @@ class TestExports(GemetTest):
             )
 
     def test_skoscore(self):
-        term1 = TermFactory(id='1', code='11')
-        term2 = TermFactory(id='2', code='12')
-        term3 = TermFactory(id='3', code='13')
+        term1 = TermFactory(code='11')
+        term2 = TermFactory(code='12')
+        term3 = TermFactory(code='13')
 
-        p1 = PropertyTypeFactory(id=1, name='narrower', label='narrower term')
-        p2 = PropertyTypeFactory(id=2, name='broader', label='broader term')
-        p3 = PropertyTypeFactory(id=3, name='related', label='related')
-        p4 = PropertyTypeFactory(id=4, name='exactMatch', label='exact match')
-        p5 = PropertyTypeFactory(id=5, name='closeMatch', label='close match')
+        p1 = PropertyTypeFactory(name='narrower', label='narrower term')
+        p2 = PropertyTypeFactory(name='broader', label='broader term')
+        p3 = PropertyTypeFactory(name='related', label='related')
+        p4 = PropertyTypeFactory(name='exactMatch', label='exact match')
+        p5 = PropertyTypeFactory(name='closeMatch', label='close match')
         RelationFactory(property_type=p1, source=term1, target=term2)
         RelationFactory(property_type=p2, source=term2, target=term1)
         RelationFactory(property_type=p3, source=term2, target=term3)
@@ -244,8 +242,8 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('concept_uri3'), 1)
 
     def test_label_and_definitions_rdf(self):
-        term1 = TermFactory(id='1', code='11')
-        term2 = TermFactory(id='2', code='12')
+        term1 = TermFactory(code='11')
+        term2 = TermFactory(code='12')
 
         PropertyFactory(concept=term1, name='prefLabel', value='A_label')
         PropertyFactory(concept=term2, name='prefLabel', value='B_label')
@@ -253,7 +251,7 @@ class TestExports(GemetTest):
                         value='B_definition')
 
         spanish = LanguageFactory(code='es', name='Spanish')
-        term3 = TermFactory(id='3', code='13')
+        term3 = TermFactory(code='13')
         PropertyFactory(concept=term3, language=spanish, name='prefLabel',
                         value='C_label')
         PropertyFactory(concept=term3, language=spanish, name='definition',
@@ -282,9 +280,9 @@ class TestExports(GemetTest):
         PropertyFactory(concept=theme, name='prefLabel', value='C_label')
 
         spanish = LanguageFactory(code='es', name='Spanish')
-        es_supergroup = SuperGroupFactory(id=5, code='20')
-        es_group = GroupFactory(id=6, code='21')
-        es_theme = ThemeFactory(id=7, code='22')
+        es_supergroup = SuperGroupFactory(code='20')
+        es_group = GroupFactory(code='21')
+        es_theme = ThemeFactory(code='22')
         PropertyFactory(concept=es_supergroup, language=spanish,
                         name='prefLabel', value='A_label_spanish')
         PropertyFactory(concept=es_group, language=spanish, name='prefLabel',

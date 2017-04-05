@@ -1,0 +1,73 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+  Edit {{ concept.name }}
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' with view='theme' code=concept.code %}
+  <div class="edit-page">
+
+  <!-- Side bar -->
+  <div class="side-bar box">
+    <!-- Translations -->
+    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
+    <h6 class="no-margin-top">Translations</h6>
+    <ul id="translations" class="dl-inline no-list">
+      {% for translation in concept.translations %}
+      <li class="clearfix">
+        <div class="dt">{{ translation.language__name }}</div>
+        <div class="dd">{{ translation.value }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Back to theme -->
+  <span>
+    <a class="btn btn-primary"
+       href="{% url 'theme' language.code concept.code %}"
+       >Back</a>
+  </span>
+
+  <!-- Theme -->
+  <div class="h3 element">
+    {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
+  </div>
+
+  <!-- Definition -->
+  <div class="definition text-area element">
+    <h5 class="h5">Definition</h5>
+      {% include 'edit/bits/property.html' with property_name='definition' html_tag='textarea' %}
+  </div>
+
+  <!-- Scope -->
+  <div class="scope text-area element">
+    <h5 class="h5">Scope note</h5>
+      {% include 'edit/bits/property.html' with property_name='scopeNote' html_tag='input' %}
+  </div>
+
+  <!-- Concepts -->
+  <div class="themeMember text-area">
+    <h5 class="h5">Concepts</h5>
+    <div class="element">
+      {% include 'edit/bits/relation_buttons.html' with type='themeMember' button_label='Add Concepts' link='false' %}
+      {% include 'edit/bits/theme_group.html' with type='themeMember' concept_list=concept.themeMember_concepts %}
+    </div>
+  </div>
+
+  <!-- Concept URL -->
+  <h5 class="h5 h5-url">Concept URL:
+    {{ concept.url }}
+  </h5>
+</div>
+{% endblock %}
+
+{% block version %}
+    {% include 'version.html' %}
+{% endblock %}
+
+{% block js %}
+  {% include 'edit/bits/js_scripts.html' %}
+{% endblock %}

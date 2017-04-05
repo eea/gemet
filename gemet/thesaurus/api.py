@@ -9,18 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.shortcuts import redirect
 
-from gemet.thesaurus.models import (
-    Namespace,
-    Language,
-    Concept,
-    Term,
-    Theme,
-    Group,
-    SuperGroup,
-    InspireTheme,
-    Property,
-    Relation,
-)
+from gemet.thesaurus.models import Concept, Group, Language, InspireTheme
+from gemet.thesaurus.models import Namespace, Property, Relation, SuperGroup
+from gemet.thesaurus.models import Term, Theme
 from gemet.thesaurus import DEFAULT_LANGCODE, NS_VIEW_MAPPING
 from gemet.thesaurus.utils import search_queryset, regex_search
 
@@ -116,7 +107,7 @@ def has_thesaurus_uri(thesaurus_uri):
 
 
 def has_language(langcode):
-    if not langcode in Language.objects.values_list('code', flat=True):
+    if langcode not in Language.objects.values_list('code', flat=True):
         raise Fault(-1, 'Language not found: %s' % langcode)
     return True
 
@@ -156,7 +147,7 @@ def get_concept_id(concept_uri):
 
     model = get_model(thesaurus_uri)
     try:
-        concept = model.objects.get(code=concept_code)
+        concept = model.published.get(code=concept_code)
     except model.DoesNotExist:
         raise Fault(-1, 'Concept code not found: %s' % concept_code)
 
@@ -168,7 +159,7 @@ def get_concept(thesaurus_uri, concept_id, langcode):
         'prefLabel': 'preferredLabel',
         'definition': 'definition',
     }
-    concept = Concept.objects.get(pk=concept_id)
+    concept = Concept.published.get(pk=concept_id)
     concept_properties = concept.properties.filter(
         language__code=langcode,
         name__in=['prefLabel', 'definition'],
@@ -193,7 +184,7 @@ def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
     has_language(language)
     ns = get_namespace(thesaurus_uri)
     all_concepts = (
-        Property.objects.filter(
+        Property.published.filter(
             language__code=language,
             concept__namespace=ns,
         ).values_list(
@@ -202,7 +193,7 @@ def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
     )
 
     excluded_concepts = (
-        Relation.objects
+        Relation.published
         .filter(property_type__name='narrower', target__namespace_id=ns.id)
         .exclude(source__namespace__heading='Super groups')
         .values_list('target_id', flat=True)
@@ -213,7 +204,7 @@ def getTopmostConcepts(thesaurus_uri, language=DEFAULT_LANGCODE):
     for concept_id in concepts_id:
         concept = get_concept(thesaurus_uri, concept_id, language)
         concepts.append(concept)
-    if not all(['preferredLabel' in concept for concept in concepts]):
+    if not all(['preferredLabel' in con for con in concepts]):
         return concepts
     return sorted(concepts,
                   key=lambda x: x['preferredLabel']['string'].lower())
@@ -223,7 +214,7 @@ def getAllConceptRelatives(concept_uri, target_thesaurus_uri=None,
                            relation_uri=None):
     concept_id = get_concept_id(concept_uri)
 
-    relations = Relation.objects.filter(source_id=concept_id,)
+    relations = Relation.published.filter(source_id=concept_id,)
     if relation_uri:
         relations = relations.filter(property_type__uri=relation_uri,)
     if target_thesaurus_uri:
@@ -250,7 +241,7 @@ def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
     has_language(language)
     concept_id = get_concept_id(concept_uri)
 
-    related_concepts = Relation.objects.filter(
+    related_concepts = Relation.published.filter(
         source_id=concept_id,
         property_type__uri=relation_uri,
     ).values_list('target_id', flat=True)
@@ -258,7 +249,7 @@ def getRelatedConcepts(concept_uri, relation_uri, language=DEFAULT_LANGCODE):
     related_concepts = [
         r for r in related_concepts
         if (
-            Concept.objects.get(pk=r)
+            Concept.published.get(pk=r)
             .properties.filter(language__code=language)
             .count()
         ) > 0
@@ -294,7 +285,7 @@ def hasRelation(concept_uri, relation_uri, object_uri):
     except Fault:
         return False
 
-    property_type_uri = Relation.objects.filter(
+    property_type_uri = Relation.published.filter(
         source_id=source_id,
         target_id=target_id,
     ).values_list('property_type__uri', flat=True).first()
@@ -307,7 +298,7 @@ def getAllTranslationsForConcept(concept_uri, property_uri):
 
     name = property_uri.rsplit('#', 1)[-1]
 
-    translations_qs = Property.objects.filter(
+    translations_qs = Property.published.filter(
         concept_id=concept_id,
         name=name,
     ).values_list('language', 'value')
@@ -322,7 +313,7 @@ def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri='',
                                language=DEFAULT_LANGCODE):
     try:
         search_mode = int(search_mode)
-        if not search_mode in range(5):
+        if search_mode not in range(5):
             raise ValueError
     except ValueError:
         raise Fault(-1, 'Invalid search mode. Possible values are 0 .. 4.')
@@ -346,7 +337,7 @@ def getConceptsMatchingKeyword(keyword, search_mode, thesaurus_uri='',
     else:
         for concept in concepts:
             results.append(get_concept(
-                Concept.objects.get(pk=concept['id']).namespace.url,
+                Concept.published.get(pk=concept['id']).namespace.url,
                 concept['id'],
                 language.code
             ))
@@ -371,7 +362,7 @@ def getAvailableLanguages(concept_uri):
     thesaurus_uri, _ = split_concept_uri(concept_uri)
     ns = get_namespace(thesaurus_uri)
     concept_id = get_concept_id(concept_uri)
-    languages = Property.objects.filter(
+    languages = Property.published.filter(
         concept_id=concept_id,
         concept__namespace=ns,
     ).values_list('language', flat=True).distinct()
@@ -381,7 +372,7 @@ def getAvailableLanguages(concept_uri):
 
 def getSupportedLanguages(thesaurus_uri):
     ns = get_namespace(thesaurus_uri)
-    languages = Property.objects.filter(
+    languages = Property.published.filter(
         concept__namespace=ns,
     ).values_list('language', flat=True).distinct()
 

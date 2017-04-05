@@ -1,12 +1,14 @@
 from django.core.urlresolvers import reverse
 
 from .factories import LanguageFactory, InspireThemeFactory, PropertyFactory
+from .factories import VersionFactory
 from . import GemetTest
 
 
 class TestInspireThemesView(GemetTest):
     def setUp(self):
         LanguageFactory()
+        VersionFactory()
 
     def test_no_theme(self):
         url = reverse('inspire_themes', kwargs={'langcode': 'en'})

@@ -4,37 +4,35 @@ from django.core.urlresolvers import reverse
 from django.db import connection
 
 from . import GemetTest
-from .factories import (
-    TermFactory,
-    PropertyFactory,
-    PropertyTypeFactory,
-    RelationFactory,
-)
-from gemet.thesaurus.utils import SEPARATOR
+from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory
+from .factories import TermFactory
+from gemet.thesaurus import SEARCH_SEPARATOR
 
 
 class TestSearchView(GemetTest):
     def setUp(self):
         cp1 = TermFactory()
-        cp2 = TermFactory(id=2, code='2')
-        cp3 = TermFactory(id=3, code='3')
-        cp11 = TermFactory(id=11, code='11')
-        cp12 = TermFactory(id=12, code='12')
-        cp13 = TermFactory(id=13, code='13')
+        cp2 = TermFactory(code='2')
+        cp3 = TermFactory(code='3')
+        cp11 = TermFactory(code='11')
+        cp12 = TermFactory(code='12')
+        cp13 = TermFactory(code='13')
 
         PropertyFactory(
             concept=cp1,
-            value='{0}something{0}{0}not{0}hiddenLabel{0}'.format(SEPARATOR),
+            value='{0}something{0}{0}not{0}hiddenLabel{0}'
+            .format(SEARCH_SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp2,
-            value='{0}something else{0}altLabel{0}{0}{0}'.format(SEPARATOR),
+            value='{0}something else{0}altLabel{0}{0}{0}'
+            .format(SEARCH_SEPARATOR),
             name='searchText',
         )
         PropertyFactory(
             concept=cp3,
-            value='{0}another somefling{0}{0}{0}{0}'.format(SEPARATOR),
+            value='{0}another somefling{0}{0}{0}{0}'.format(SEARCH_SEPARATOR),
             name='searchText',
         )
         PropertyFactory(concept=cp11, value='broader 1')
@@ -42,7 +40,7 @@ class TestSearchView(GemetTest):
         PropertyFactory(concept=cp13, value='broader 2.2')
 
         narrower = PropertyTypeFactory(name='narrower')
-        broader = PropertyTypeFactory(id=2, name='broader')
+        broader = PropertyTypeFactory(name='broader')
 
         RelationFactory(source=cp1, target=cp11, property_type=broader)
         RelationFactory(source=cp11, target=cp1, property_type=narrower)

@@ -32,9 +32,8 @@ class TestRelationsView(GemetTest):
         concept = TermFactory()
         PropertyFactory(concept=concept, value="Concept")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 
@@ -54,8 +53,10 @@ class TestRelationsView(GemetTest):
                                }),
                    exp=exp_encrypt(str(concept.id)))
         )
-        self.assertEqual(resp.pyquery('.content ul:eq(0) > li a:eq(0)').text(),
-                         '+')
+        self.assertEqual(resp.pyquery('.content ul:eq(0) > '
+                                      'li a:eq(0) i').attr('class'),
+                         'fa fa-plus')
+
         self.assertEqual(
             resp.pyquery('.content ul:eq(0) > li a:eq(1)').attr('href'),
             reverse('concept', kwargs={'langcode': 'en',
@@ -69,9 +70,8 @@ class TestRelationsView(GemetTest):
 
         PropertyFactory(concept=concept, value="Concept")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
 
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
@@ -88,15 +88,14 @@ class TestRelationsView(GemetTest):
         self.assertEqual(expand_list, [str(concept.id)])
 
     def test_expand_list(self):
-        group1 = GroupFactory(id=10, code='10')
+        group1 = GroupFactory(code='10')
         concept = TermFactory()
 
         PropertyFactory(concept=group1, value="Group1")
         PropertyFactory(concept=concept, value="Concept")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
 
         RelationFactory(property_type=pt1, source=self.group, target=group1)
         RelationFactory(property_type=pt2, source=group1, target=self.group)
@@ -130,9 +129,8 @@ class TestRelationsView(GemetTest):
         concept = TermFactory()
         PropertyFactory(concept=concept, value="Concept")
 
-        pt1 = PropertyTypeFactory(id=1, name="groupMember",
-                                  label="Group member")
-        pt2 = PropertyTypeFactory(id=2, name="group", label="Group")
+        pt1 = PropertyTypeFactory(name="groupMember", label="Group member")
+        pt2 = PropertyTypeFactory(name="group", label="Group")
         RelationFactory(property_type=pt1, source=self.group, target=concept)
         RelationFactory(property_type=pt2, source=concept, target=self.group)
 

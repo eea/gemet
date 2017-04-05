@@ -232,6 +232,52 @@ configuration file with the name of the database used for import
     ./manage.py import
 
 
+Other commands
+--------------
+
+1. Some romanian terms, definitions etc. are written with the wrong diacritical marks (cedillas instead of commas).
+The following custom management command fixes those characters and prints the number of objects changed::
+
+    ./manage.py fix_romanian
+
+
+2. Check the consistency of an excel file (.xlsx extension) containing new terms.
+
+The custom command assures:
+
+* Old terms used in the file are defined in the database.
+* New terms used in broader, narrow relations etc. of other terms are also defined in the file.
+* An error containing the cell of the term is printed if it does not respect those rules.
+
+Run the command providing a valid excel file::
+
+     ./manage.py check_spreadsheet file_name.xlsx
+
+
+Documentation
+-------------
+
+The documentation has been created using `Sphinx`_. The source directories for the three sections of documentation can be found in the `docs`_ directory.
+
+.. _`Sphinx`: http://www.sphinx-doc.org/en/stable/
+.. _`docs`: https://github.com/eaudeweb/gemet/tree/master/docs
+
+In order to get the HTML output, you should run the following command inside one of the documentation directories (``api``, ``new_api`` or ``overview``)::
+
+    make html
+    
+These static HTML files can be served via a web server (Apache, Nginx, etc).
+
+Docs contents
+~~~~~~~~~~~~~
+
+* ``api`` - old version of the API user guide, kept for reference;
+* ``new_api`` - current documentation for the GEMET API; duplicated in `this file`_ and published on ``Web services`` page;
+* ``overview`` - quick overview of the technical solution;
+
+.. _`this file`: https://github.com/eaudeweb/gemet/blob/master/gemet/thesaurus/templates/api.html
+
+
 Development hints
 =================
 
@@ -283,6 +329,23 @@ Add to your local_settings.py TEST_RUNNER and NOSE_ARGS from
 local_settings.example and run::
 
     ./manage.py test
+
+
+Sentry settings
+===============
+
+Sentry is used to track errors in real-time.
+
+Create an account and a project on `Sentry`_ .
+
+Install the proper version of raven used by sentry::
+
+    pip install -r requirements-dep.txt
+
+Configure local settings with your project's dsn.
+
+.. _`Sentry`: https://sentry.io
+
 
 Contacts
 ========

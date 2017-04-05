@@ -11,7 +11,7 @@ from . import GemetTest
 
 
 class TestGroupsView(GemetTest):
-    ### Actually, this tests the HierarchicalListings link
+    # Actually, this tests the HierarchicalListings link
 
     def setUp(self):
         self.superGroup = SuperGroupFactory()
@@ -31,12 +31,10 @@ class TestGroupsView(GemetTest):
         group = GroupFactory()
         PropertyFactory(concept=group, value="Group")
 
-        pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
-        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup,
-                        target=group)
-        RelationFactory(property_type=pt2, source=group,
-                        target=self.superGroup)
+        pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup, target=group)
+        RelationFactory(property_type=pt2, source=group, target=self.superGroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -55,7 +53,7 @@ class TestGroupsView(GemetTest):
         self.assertEqual(resp.pyquery('.content .groups li a').text(), 'Group')
 
     def test_more_supergroups_no_group(self):
-        superGroup = SuperGroupFactory(id=5, code="5")
+        superGroup = SuperGroupFactory(code="5")
         PropertyFactory(concept=superGroup, value="Super Group 2")
 
         url = reverse('groups', kwargs={'langcode': 'en'})
@@ -76,18 +74,16 @@ class TestGroupsView(GemetTest):
         )
 
     def test_more_supergroups_one_group(self):
-        superGroup = SuperGroupFactory(id=5, code="5")
+        superGroup = SuperGroupFactory(code="5")
         PropertyFactory(concept=superGroup, value="Super Group 2")
 
         group = GroupFactory()
         PropertyFactory(concept=group, value="Group")
 
-        pt1 = PropertyTypeFactory(id=1, name="narrower", label="narrower term")
-        pt2 = PropertyTypeFactory(id=2, name="broader", label="broader term")
-        RelationFactory(property_type=pt1, source=self.superGroup,
-                        target=group)
-        RelationFactory(property_type=pt2, source=group,
-                        target=self.superGroup)
+        pt1 = PropertyTypeFactory(name="narrower", label="narrower term")
+        pt2 = PropertyTypeFactory(name="broader", label="broader term")
+        RelationFactory(property_type=pt1, source=self.superGroup, target=group)
+        RelationFactory(property_type=pt2, source=group, target=self.superGroup)
 
         url = reverse('groups', kwargs={'langcode': 'en'})
         resp = self.app.get(url)

@@ -1,0 +1,27 @@
+{% extends layout_template %}
+{% load gemet_tags %}
+
+{% block title %}
+ Release this version
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' with view='release_version' %}
+  <h1>Release this version</h1>
+
+  <div class="text-area release-page">
+    <a href="{% url 'change_log' language.code %}">See changes to be released</a>
+  <form method="post" action='{% url "release_version" language.code %}' >
+    {% csrf_token %}
+    <div class="release-form">
+      {{ form.as_p }}
+    </div>
+    <button class="btn" type="submit">Release</button>
+  </form>
+  </div>
+
+{% endblock %}
+
+{% block version %}
+    {% include 'version.html' %}
+{% endblock %}

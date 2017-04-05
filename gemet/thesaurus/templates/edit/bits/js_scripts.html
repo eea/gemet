@@ -1,0 +1,12 @@
+{% load staticfiles %}
+
+<script type="text/javascript">
+  var PUBLISHED_CLASS = 'status-' + {{ PUBLISHED }};
+  var PENDING_CLASS = 'status-' + {{ PENDING }};
+  var DELETED_CLASS = 'status-' + {{ DELETED }};
+  var DELETED_PENDING_CLASS = 'status-' + {{ DELETED_PENDING }};
+</script>
+<script type="text/javascript" src="{% static 'thesaurus/js/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'thesaurus/js/js.cookie.js' '%}"></script>
+<script type="text/javascript" src="{% static 'thesaurus/js/edit.js' %}"></script>
+<script type="text/javascript" src="{% static 'thesaurus/js/jquery.noty.packaged.min.js' %}"></script>

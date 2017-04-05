@@ -1,1 +1,4 @@
-<div>{{ version }}</div>
+<div>
+  GEMET - {% if namespace %}{{ namespace }},{% endif %} version {{ version.identifier }},
+  {{ version.publication_date|date:"j M Y" }}
+</div>
