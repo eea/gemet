@@ -102,6 +102,9 @@ urlpatterns = [
         # Edit concept pages
         url(r'^concept/add$', edit_views.AddConceptView.as_view(),
             name='concept_add'),
+        url(r'^concept/(?P<pk>\d+)/delete$',
+            edit_views.DeletePendingConceptView.as_view(),
+            name='concept_delete'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),

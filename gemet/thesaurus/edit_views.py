@@ -3,7 +3,8 @@ import json
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.db.models import Q
+from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views import View
@@ -458,6 +459,28 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_concept.code})
+        return redirect(url)
+
+
+class DeletePendingConceptView(LoginRequiredMixin, View):
+
+    def get(self, request, langcode, pk):
+        try:
+            concept = models.Concept.objects.get(pk=pk, status=PENDING)
+        except ObjectDoesNotExist:
+            raise Http404
+        properties = models.Property.objects.filter(concept=concept)
+        properties.delete()
+        relations = models.Relation.objects.filter(
+            Q(source=concept) |
+            Q(target=concept)
+        )
+        relations.delete()
+        foreign_relations = \
+            models.ForeignRelation.objects.filter(concept=concept)
+        foreign_relations.delete()
+        concept.delete()
+        url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
 
 
