@@ -8,6 +8,7 @@ RUN runDeps="gcc libmysqlclient-dev libldap2-dev libsasl2-dev libxml2-dev libxsl
  && rm -vrf /var/lib/apt/lists/*
 
 COPY gemet_nginx.conf /etc/nginx/sites-enabled/default
+COPY gemet/local_settings.py.example gemet/local_settings.py
 
 RUN mkdir -p $PROJ_DIR
 COPY . $PROJ_DIR
