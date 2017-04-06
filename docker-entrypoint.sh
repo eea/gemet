@@ -14,6 +14,7 @@ done
 
 python manage.py migrate &&
 python manage.py collectstatic --noinput &&
+python manage.py fetchtemplates &&
 exec gunicorn gemet.wsgi:application \
 	--name gemet \
 	--bind 0.0.0.0:8888 \
