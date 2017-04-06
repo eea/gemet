@@ -152,6 +152,8 @@ class InspireThemesView(ThemesView):
         context.update({
             'languages': languages,
         })
+        context['version'] = Namespace.objects.get(
+            heading=context['namespace']).version
         return context
 
 
@@ -336,6 +338,12 @@ class InspireThemeView(ConceptView):
     model = InspireTheme
     concept_type = 'inspire_theme'
     context_object_name = 'inspire_theme'
+
+    def get_context_data(self, **kwargs):
+        context = super(InspireThemeView, self).get_context_data(**kwargs)
+        context['version'] = Namespace.objects.get(
+            heading=context['namespace']).version
+        return context
 
 
 class ThemeView(ConceptView):
