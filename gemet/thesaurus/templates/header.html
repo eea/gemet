@@ -21,8 +21,8 @@
   <a class="alphabet {% active request 'alphabetic' langcode=language.code %}"
      href="{% url 'alphabetic' language.code %}">Alphabetic Listings</a>
   <!-- &nbsp;|&nbsp; -->
-  <!-- <a href="{% url 'search' language.code 1 %}">Search Thesaurus</a> -->
-  <a class="search-button {% active request 'search' langcode=language.code page=1 %}">
+  <!-- <a href="{% url 'search' language.code %}">Search Thesaurus</a> -->
+  <a class="search-button {% active request 'search' langcode=language.code %}">
     Search Thesaurus
   </a>
 </div>
@@ -32,7 +32,7 @@
     <select name="select-language" id="js-change-language">
       {% for lang in languages %}
         <option value="{{ lang.code }}"
-        href="{% if code %}{% url view lang.code code %}{% elif page %}{% url view lang.code page %}?query={{ query }}{% else %}{% url view lang.code  %}{% endif %}{% if get_params %}?{{ get_params }}{% endif %}"
+        href="{% if code %}{% url view lang.code code %}{% else %}{% url view lang.code  %}{% endif %}{% if get_params %}?{{ get_params }}{% endif %}"
         {% if language.code == lang.code%}selected="selected"{% endif %}
           >{{ lang.name }}</option>
       {% endfor %}
@@ -40,7 +40,7 @@
   </div>
 
   <form method="get"
-        action='{% url "search" language.code 1 %}'
+        action='{% url "search" language.code %}'
         id='search-form'
         name="search-query"
         placeholder="Concepts, Groups, Themes...">

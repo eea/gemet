@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.views import View
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, FormMixin
 from django.conf import settings
 
 from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
@@ -250,15 +250,22 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
             self.language,
             status_values=self.status_values,
         )
-        page = kwargs.get('page', 1)
+        page = self.request.GET.get('page', 1)
         paginator = Paginator(self.concepts, 25)
         self.concepts = paginator.page(page)
-        return self.render_to_response(
-            self.get_context_data(
-                form=form,
-                paginator=paginator
+
+        context = self.get_context_data(form=form, paginator=paginator)
+        page_number = self.concepts.number
+        total_pages = len(self.concepts.paginator.page_range)
+        distance_number = 25
+
+        context.update({
+            'visible_pages': range(
+                max(1, page_number - distance_number),
+                min(page_number + distance_number + 1, total_pages + 1)
             )
-        )
+        })
+        return self.render_to_response(context)
 
     def get_form_kwargs(self):
         kwargs = super(SearchView, self).get_form_kwargs()

@@ -6,7 +6,7 @@ Search thesaurus
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='search' page=1 query=query %}
+  {% include 'header.html' with view='search' query=query %}
   {% if query %}
     <div>
       <span class="results-nr">{{ paginator.count }} results found.</span>
@@ -49,21 +49,30 @@ Search thesaurus
     {% endif %}
   {% endif %}
 
-<div class="pagination">
-    <span class="step-links">
+  <div class="pagination clearfix">
+      <div class="float-right">
+        <!-- prev -->
         {% if concepts.has_previous %}
-            <a href="{% url 'search' language.code concepts.previous_page_number %}?query={{ query }}">previous</a>
+          <a class="no-visit" href="?page={{ concepts.previous_page_number }}&query={{ query }}">Previous</a>
         {% endif %}
-
-        <span class="current">
-            Page {{ concepts.number }} of {{ concepts.paginator.num_pages }}
-        </span>
-
+        &ensp;
+        <!-- next -->
         {% if concepts.has_next %}
-            <a href="{% url 'search' language.code concepts.next_page_number %}?query={{ query }}">next</a>
+          <a class="no-visit" href="?page={{ concepts.next_page_number }}&query={{ query }}">Next</a>
         {% endif %}
-    </span>
-</div>
+      </div>
+
+      <!-- pages -->
+      Pages:
+      {% for page_number in visible_pages %}
+        {% if page_number == page_obj.number %}
+          {{ page_number }}
+        {% else %}
+          <a href="?page={{ page_number }}&query={{ query }}">{{ page_number }}</a>
+        {% endif %}
+      {% endfor %}
+  </div>
+
 {% endblock %}
 
 {% block version %}
