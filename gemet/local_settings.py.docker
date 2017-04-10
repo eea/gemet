@@ -50,7 +50,7 @@ DATABASES = {
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
 if 'FORCE_SCRIPT_NAME' in os.environ:
-    FORCE_SCRIPT_NAME = os.environ.get('FORCE_SCRIPT_NAME' , '/gemet')
+    FORCE_SCRIPT_NAME = os.environ['FORCE_SCRIPT_NAME']
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -62,7 +62,7 @@ if 'FORCE_SCRIPT_NAME' in os.environ:
 #
 # Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
 if 'GEMET_RDFGZ_PATH' in os.environ:
-    GEMET_RDFGZ_PATH = os.environ.get('GEMET_RDFGZ_PATH', '/path/to/gemet.rdf.gz')
+    GEMET_RDFGZ_PATH = os.environ['GEMET_RDFGZ_PATH']
 
 ZOPE_URL = os.environ.get('ZOPE_URL', 'http://www.eionet.europa.eu')
 GEMET_URL = ZOPE_URL + os.environ.get('GEMET_URL', '/gemet')
