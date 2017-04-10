@@ -49,7 +49,8 @@ DATABASES = {
 # sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
-# FORCE_SCRIPT_NAME = '/gemet'
+if 'FORCE_SCRIPT_NAME' in os.environ:
+    FORCE_SCRIPT_NAME = os.environ.get('FORCE_SCRIPT_NAME' , '/gemet')
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -60,10 +61,11 @@ DATABASES = {
 # ]
 #
 # Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
-# GEMET_RDFGZ_PATH = '/path/to/gemet.rdf.gz'
+if 'GEMET_RDFGZ_PATH' in os.environ:
+    GEMET_RDFGZ_PATH = os.environ.get('GEMET_RDFGZ_PATH', '/path/to/gemet.rdf.gz')
 
-ZOPE_URL = 'http://www.eionet.europa.eu'
-GEMET_URL = ZOPE_URL + '/gemet'
+ZOPE_URL = os.environ.get('ZOPE_URL', 'http://www.eionet.europa.eu')
+GEMET_URL = ZOPE_URL + os.environ.get('GEMET_URL', '/gemet')
 
 # Fill in the following settings to enable LDAP authentication
 AUTH_LDAP_SERVER_URI = "ldap://ldap3.eionet.europa.eu"
