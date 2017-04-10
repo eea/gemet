@@ -16,6 +16,11 @@ class Version(models.Model):
     def under_work():
         return Version.objects.get(identifier="")
 
+    def __unicode__(self):
+        if self.identifier == "":
+            return 'Upcoming version'
+        return self.identifier
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
