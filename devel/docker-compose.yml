@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+  nginx:
+    image: nginx:1.11.13
+    labels:
+      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
+      io.rancher.container.hostname_override: container_name
+    environment:
+      TZ: Europe/Copenhagen
+      NGINX_CONF: |-
+        server {
+          listen 80;
+          access_log /var/log/nginx/access.log main;
+          location /static {
+            sendfile on;
+            tcp_nopush on;
+            gzip on;
+            gzip_types text/plain application/x-javascript text/css;
+            expires 1d;
+            root /var/local/gemet;
+          }
+          location / {
+              proxy_pass http://gemet:8888;
+          }
+        }
+    depends_on:
+    - gemet
+    volumes:
+    - static:/var/local/gemet/static:ro
+    command: /bin/bash -c 'echo "$$NGINX_CONF" > /etc/nginx/conf.d/default.conf && exec nginx -g "daemon off;"'
+
+  gemet:
+    image: eeacms/gemet
+    labels:
+      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
+      io.rancher.container.hostname_override: container_name
+    environment:
+      TZ: Europe/Copenhagen
+    env_file:
+    - mysql.env
+    depends_on:
+    - mysql
+    volumes:
+    - static:/var/local/static
+
+  mysql:
+    image: mysql:latest
+    labels:
+      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
+      io.rancher.scheduler.affinity:host_label: db=yes,eionet=yes
+      io.rancher.container.hostname_override: container_name
+    environment:
+      TZ: Europe/Copenhagen
+    env_file:
+    - mysql.env
+    volumes:
+    - data:/var/lib/mysql
+    command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+
+volumes:
+  static:
+    driver: local
+  data:
+    driver: local

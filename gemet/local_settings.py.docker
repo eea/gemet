@@ -1,0 +1,77 @@
+import os
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+LOCAL_INSTALLED_APPS = (
+# Use debug_toolbar in development for detailed debug info.
+#    'debug_toolbar',
+# Use django_nose in development to run tests with coverage option
+#    'django_nose',
+# The raven app is needed in production in order for sentry to work
+#    'raven.contrib.django.raven_compat',
+)
+
+LOCAL_MIDDLEWARE_CLASSES = (
+# The following middleware class is needed for debug_toolbar to work
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
+# This setting is needed for debug_toolbar
+# INTERNAL_IPS = ['127.0.0.1']
+
+# Fill in your DSN value:
+# SENTRY_DSN = ''
+
+# This setting is required for sentry
+# RAVEN_CONFIG = {
+#     'dsn': 'https://[secret_key]@sentry.io/[project_id]',
+#     # The dsn for a certain project can be obtain from the sentry account
+# }
+
+# Remove the line below in development
+ALLOWED_HOSTS = ['*']
+
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': os.environ.get('MYSQL_HOST', 'mysql'),
+        'NAME': os.environ.get('MYSQL_DATABASE', 'gemet'),
+        'USER': os.environ.get('MYSQL_USER', 'gemet'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'gemet'),
+    }
+}
+
+# sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
+
+# Use the line below in order to run django in a subpath (http://example.com/gemet)
+# FORCE_SCRIPT_NAME = '/gemet'
+
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# NOSE_ARGS = [
+#     '--with-coverage',
+#     '--cover-erase',
+#     '--cover-package=gemet',
+# ]
+#
+# Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
+# GEMET_RDFGZ_PATH = '/path/to/gemet.rdf.gz'
+
+ZOPE_URL = 'http://www.eionet.europa.eu'
+GEMET_URL = ZOPE_URL + '/gemet'
+
+# Fill in the following settings to enable LDAP authentication
+AUTH_LDAP_SERVER_URI = "ldap://ldap3.eionet.europa.eu"
+AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=Users,o=EIONET,l=Europe"
+AUTH_LDAP_START_TLS = True
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail"
+}
+AUTHORIZED_USERS = ['chiriiul', 'melisand', 'ansorchr', 'iglesjos', 'tinsomaj']

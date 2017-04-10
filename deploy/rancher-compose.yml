@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  ngix:
+    scale: 1
+
+  gemet:
+    scale: 1
+
+  mysql:
+    scale: 1

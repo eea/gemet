@@ -10,61 +10,57 @@ http://www.eionet.europa.eu/gemet
 
 Installation (using docker)
 -------------------------------
+[Base docker image](https://hub.docker.com/r/eeacms/gemet/)
 
-1.Clone the source repository::
+##1. Staging and Production
 
-    git clone https://github.com/eaudeweb/gemet
-2.Change directory to project directory::
+The staging and production deployment will be done through Rancher. Depending on the
+Rancher environment's version, one of the following will be used:
 
-    cd gemet/
+1. [Rancher Compose](https://docs.rancher.com/rancher/v1.4/en/cattle/rancher-compose/)
 
-3.Run docker database container::
+2. [Rancher CLI](https://docs.rancher.com/rancher/v1.2/en/cli/)
 
-    docker-compose up -d db
 
-4.Place database dump in mysql-data directory::
+During the first time deployement, create and edit the following files:
+    
+    $ cd deploy
 
-    cp path_to_file/gemet.sql mysql-data
+    # edit environment variables values
+    $ cp mysql.env.example mysql.env
+    $ vim mysql.env
 
-5.Enter database container bash::
+### 1.1 Start stack
 
-    docker exec -it  db bash
+    $ cd deploy
+    $ docker-compose up -d
 
-6.Find password for root user::
+### 1.2 Mysql
 
-   more /var/lib/mysql/.root_password
+    TODO
 
-7.Acces mysql with root user::
+##2. Development
 
-   mysql -u root -p
+1. Install [Docker](https://www.docker.com/).
 
-8.Create database::
+2. Install [Docker Compose](https://docs.docker.com/compose/).
 
-   CREATE DATABASE gemet DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+Create and edit the following files:
 
-9.Grant acces to database to a new user::
+    $ cd devel
 
-   GRANT ALL ON gemet.* TO 'gemet'@'%' IDENTIFIED BY 'password_example';
+    # edit environment variables values
+    $ cp mysql.env.example mysql.env
+    $ vim mysql.env
 
-10.Exit mysql::
+### 1.1 Start stack
 
-   exit
+    $ cd devel
+    $ docker-compose up -d
 
-11.Dump tables and data to the new database::
+### 1.2 Mysql
 
-   mysql -u root -p gemet < /var/lib/mysql/gemet.sql
-
-13.Create local_settings for Django project::
-
-  cd gemet/
-  cp local_settings.py.example local-settings.py
-
-You must set the name, username and password used to create the database.
-If you are not using an old dump, you must remove the import database from DATABASES in local_settings file.
-
-14.Start application container::
-
-  docker-compose up
+    TODO
 
 Installation (without using docker)
 -------------------------------
