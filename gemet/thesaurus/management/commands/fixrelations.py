@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
 from gemet.thesaurus.models import Concept
-from gemet.thesaurus.utils import has_reverse_relation, create_reverse_relation
 
 
 class Command(BaseCommand):
@@ -15,7 +14,7 @@ class Command(BaseCommand):
                 relations.extend(list(cp.target_relations.all()))
 
         for relation in relations:
-            if not has_reverse_relation(relation):
+            if not relation.has_reverse():
                 self.stdout.write('Creating reverse relation for {}'
                                   .format(relation))
-                create_reverse_relation(relation)
+                relation.create_reverse()

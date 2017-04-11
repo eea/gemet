@@ -4,7 +4,6 @@ from zlib import compress, decompress
 
 from gemet.thesaurus.models import Property, PropertyType, Relation, Version
 from gemet.thesaurus.models import Concept
-from gemet.thesaurus import RELATION_PAIRS
 
 
 def is_rdf(request):
@@ -131,27 +130,6 @@ def exp_encrypt(exp):
 
 def exp_decrypt(exp):
     return decompress(decodestring(exp))
-
-
-def has_reverse_relation(relation):
-    return (
-        Relation.objects
-        .filter(source=relation.target, target=relation.source)
-        .exists()
-    )
-
-
-def create_reverse_relation(relation):
-    reverse_relation = PropertyType.objects.get(
-        name=RELATION_PAIRS[relation.property_type.name])
-
-    return Relation.objects.create(
-        source=relation.target,
-        target=relation.source,
-        property_type=reverse_relation,
-        status=relation.status,
-        version_added=relation.version_added,
-    )
 
 
 def get_form_errors(errors):

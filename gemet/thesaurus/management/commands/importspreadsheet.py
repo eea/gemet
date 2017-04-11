@@ -8,7 +8,6 @@ from gemet.thesaurus import PENDING, PUBLISHED
 from gemet.thesaurus import models
 from gemet.thesaurus.management.utils import get_search_text
 from gemet.thesaurus.utils import get_new_code, split_text_into_terms
-from gemet.thesaurus.utils import has_reverse_relation, create_reverse_relation
 
 NAMESPACE = 'Concepts'
 LANGCODE = 'en'
@@ -167,8 +166,8 @@ class Command(BaseCommand):
                         )
                         self.stdout.write('Relation created: {}'.format(relation))
 
-                if not has_reverse_relation(relation):
-                    reverse_relation = create_reverse_relation(relation)
+                if not relation.has_reverse():
+                    reverse_relation = relation.create_reverse()
                     self.stdout.write('Reverse relation created: {}'
                                       .format(reverse_relation))
 
