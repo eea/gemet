@@ -132,6 +132,8 @@ class TestDeleteRelationView(GemetTest):
 
     def setUp(self):
         self.relation = RelationFactory(status=DELETED_PENDING)
+        PropertyTypeFactory(label='Theme', name='theme')
+        self.relation.create_reverse()
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -166,15 +168,19 @@ class TestDeleteRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
         self.assertEqual(self.relation.status, DELETED_PENDING)
+        self.assertEqual(self.relation.reverse.status, DELETED_PENDING)
 
     def test_delete_relation_correct_request_pending_relation(self):
         self.relation.status = PENDING
         self.relation.save()
+        reverse_relation_id = self.relation.reverse.id
         url = reverse('delete_relation', kwargs=self.request_kwargs)
         response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
         self.assertFalse(models.Relation.objects.filter(
             id=self.relation.id).exists())
+        self.assertFalse(models.Relation.objects.filter(
+            id=reverse_relation_id).exists())
 
 
 class TestRestoreRelationView(GemetTest):
@@ -182,6 +188,8 @@ class TestRestoreRelationView(GemetTest):
 
     def setUp(self):
         self.relation = RelationFactory(status=DELETED_PENDING)
+        PropertyTypeFactory(label='Theme', name='theme')
+        self.relation.create_reverse()
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -223,6 +231,7 @@ class TestRestoreRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
         self.assertEqual(self.relation.status, PUBLISHED)
+        self.assertEqual(self.relation.reverse.status, PUBLISHED)
 
 
 class TestAddRelationView(GemetTest):
@@ -237,7 +246,8 @@ class TestAddRelationView(GemetTest):
                                         name='prefLabel',
                                         value='Theme 1',
                                         status=PUBLISHED)
-        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
+        PropertyTypeFactory(label='Theme', name='theme')
+        PropertyTypeFactory(label='Theme member', name='themeMember')
         user = UserFactory()
         self.user = user.username
 
@@ -256,6 +266,7 @@ class TestAddRelationView(GemetTest):
 
         response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
+        self.assertEqual(models.Relation.objects.count(), 2)
 
 
 class TestDeletePropertyView(GemetTest):
