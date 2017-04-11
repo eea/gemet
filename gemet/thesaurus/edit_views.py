@@ -17,6 +17,7 @@ from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.utils import get_form_errors, get_new_code
+from gemet.thesaurus.utils import refresh_search_text
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -190,6 +191,7 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                 name=name,
                 **form.cleaned_data
             )
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
@@ -337,6 +339,7 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         )
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {
             "value": field.value,
             "id": field.id,
@@ -362,6 +365,7 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         elif field.status == PENDING:
             field.delete()
 
+        refresh_search_text(field.name, field.concept_id, field.language_id)
         return self._get_response({}, 'success', 200)
 
 

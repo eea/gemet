@@ -6,8 +6,8 @@ from django.core.management.base import BaseCommand
 
 from gemet.thesaurus import PENDING, PUBLISHED
 from gemet.thesaurus import models
-from gemet.thesaurus.management.utils import get_search_text
-from gemet.thesaurus.utils import get_new_code, split_text_into_terms
+from gemet.thesaurus.utils import get_new_code, get_search_text
+from gemet.thesaurus.utils import split_text_into_terms
 
 NAMESPACE = 'Concepts'
 LANGCODE = 'en'
@@ -117,7 +117,7 @@ class Command(BaseCommand):
             if relation:
                 self.stdout.write(
                     'Skipping {0} relation creation for concept {1}'
-                        .format(property_type, source))
+                    .format(property_type, source))
                 continue
             broader_relations = models.Relation.objects.filter(
                 property_type=property_type,
@@ -126,8 +126,8 @@ class Command(BaseCommand):
             )
             if not broader_relations:
                 self.stdout.write(
-                    'Skipping {0} relation creation for concept {1}.No broader.'
-                        .format(property_type, source))
+                    'Skipping {0} relation creation for concept {1}. '
+                    'No broader.'.format(property_type, source))
                 continue
             for relation in broader_relations:
                 new_relation = models.Relation.objects.create(
@@ -197,7 +197,8 @@ class Command(BaseCommand):
                             version_added=self.version,
                             status=PENDING,
                         )
-                        self.stdout.write('Relation created: {}'.format(relation))
+                        self.stdout.write('Relation created: {}'
+                                          .format(relation))
 
                 if not relation.reverse:
                     reverse_relation = relation.create_reverse()

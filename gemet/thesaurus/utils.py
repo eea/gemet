@@ -2,8 +2,9 @@ import re
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
-from gemet.thesaurus.models import Property, PropertyType, Relation, Version
-from gemet.thesaurus.models import Concept
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
+from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
+from gemet.thesaurus.models import Concept, Property, Version
 
 
 def is_rdf(request):
@@ -155,3 +156,62 @@ def split_text_into_terms(raw_text):
     term_list = [term.strip(' :').lower() for term in term_list if
                  term.strip(' :').lower() != '']
     return term_list
+
+
+def get_search_text(concept_id, language_code, status, version):
+    search_properties = (
+        Property.objects
+        .filter(
+            concept_id=concept_id,
+            language_id=language_code,
+            name__in=SEARCH_FIELDS,
+            status__in=[PUBLISHED, PENDING],
+        )
+        .values_list('value', flat=True)
+    )
+
+    if not search_properties:
+        return
+
+    search_text = SEARCH_SEPARATOR.join(search_properties)
+    search_text = SEARCH_SEPARATOR + search_text + SEARCH_SEPARATOR
+
+    return Property(
+        concept_id=concept_id,
+        language_id=language_code,
+        name='searchText',
+        value=search_text,
+        is_resource=0,
+        status=status,
+        version_added_id=version.id
+    )
+
+
+def refresh_search_text(proptype, concept_id, language_code, version=None):
+    if proptype not in SEARCH_FIELDS:
+        return
+
+    version = version or Version.under_work()
+    new_search = get_search_text(concept_id, language_code, PENDING, version)
+    if not new_search:
+        return
+
+    search_property = (
+        Property.objects
+        .filter(
+            concept_id=concept_id,
+            language_id=language_code,
+            name='searchText',
+            status__in=[PUBLISHED, PENDING],
+        )
+        .first()
+    )
+    if not search_property:
+        pass
+    elif search_property.status == PENDING:
+        search_property.delete()
+    elif search_property.status == PUBLISHED:
+        search_property.status = DELETED_PENDING
+        search_property.save()
+
+    new_search.save()
