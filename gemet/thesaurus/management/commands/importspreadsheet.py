@@ -114,22 +114,22 @@ class Command(BaseCommand):
         property_type_broader = models.PropertyType.objects.get(name='broader')
         for property_type in property_types:
             relation = source.source_relations.filter(
-                property_type=property_type).first()
+                property_type=property_type).exists()
             if relation:
                 self.stdout.write(
                     'Skipping {0} relation creation for concept {1}'
                         .format(property_type, source))
                 continue
-            broader_relation = source.source_relations.filter(
-                property_type=property_type_broader,
-                target__status=PUBLISHED).first()
-            if not broader_relation:
+            broader_relations = models.Relation.objects.filter(
+                property_type=property_type,
+                source__target_relations__source=source,
+                source__target_relations__property_type=property_type_broader
+            )
+            if not broader_relations:
                 self.stdout.write(
                     'Skipping {0} relation creation for concept {1}.No broader.'
                         .format(property_type, source))
                 continue
-            broader_relations = broader_relation.target.source_relations \
-                .filter(property_type=property_type)
             for relation in broader_relations:
                 new_relation = models.Relation.objects.create(
                     source=source,
