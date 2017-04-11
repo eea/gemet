@@ -100,11 +100,23 @@ be run as an unprivileged user in the product directory::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
-9. Import data, see `Data Import`_ below.
+10. Import data, see `Data Import`_ below.
 
 .. _`Data Import`: https://github.com/eaudeweb/gemet#data-import
 
-10. Insert data that enables search to work properly::
+11. Fix romanian characters::
+
+    ./manage.py fix_romanian
+
+12. Import new terms from the spreadsheet::
+
+    ./manage.py importspreadsheet [spread_sheet_name]
+
+13. Create reversed relations for all concepts::
+
+    ./manage.py fixrelations
+
+14. Insert data that enables search to work properly::
 
     ./manage.py insertdata
 
