@@ -17,8 +17,8 @@ from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
-from gemet.thesaurus.utils import get_form_errors, get_new_code
-from gemet.thesaurus.utils import concept_has_unique_relation
+from gemet.thesaurus.utils import get_form_errors, refresh_search_text
+from gemet.thesaurus.utils import concept_has_unique_relation, get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -192,6 +192,7 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                 name=name,
                 **form.cleaned_data
             )
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
@@ -226,8 +227,8 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                                    version_added=self.pending_version,
                                    property_type=property_type)
         relation.save()
-        data = {}
-        return self._get_response(data, 'success', 200)
+        relation.create_reverse()
+        return self._get_response({}, 'success', 200)
 
 
 class DeleteRelationView(LoginRequiredMixin, JsonResponseMixin, View):
@@ -253,8 +254,11 @@ class DeleteRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         if relation.status == PUBLISHED:
             relation.status = DELETED_PENDING
             relation.save()
+            relation.reverse.status = DELETED_PENDING
+            relation.reverse.save()
         elif relation.status == PENDING:
             relation.delete()
+            relation.reverse.delete()
 
         restore_url = reverse('restore_relation', kwargs={
             'source_id': source_id,
@@ -290,6 +294,8 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
         relation.status = PUBLISHED
         relation.save()
+        relation.reverse.status = PUBLISHED
+        relation.reverse.save()
 
         delete_url = reverse('delete_relation', kwargs={
             'source_id': source_id,
@@ -339,6 +345,7 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         )
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {
             "value": field.value,
             "id": field.id,
@@ -364,6 +371,7 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         elif field.status == PENDING:
             field.delete()
 
+        refresh_search_text(field.name, field.concept_id, field.language_id)
         return self._get_response({}, 'success', 200)
 
 

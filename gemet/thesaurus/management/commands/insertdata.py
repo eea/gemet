@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import Property, Concept, Language, Version
-from gemet.thesaurus.management.utils import get_search_text
+from gemet.thesaurus.utils import get_search_text
 
 SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']
 

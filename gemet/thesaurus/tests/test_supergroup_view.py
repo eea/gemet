@@ -1,9 +1,11 @@
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .factories import GroupFactory, PropertyFactory, PropertyTypeFactory
-from .factories import RelationFactory, SuperGroupFactory
+from .factories import GroupFactory, LanguageFactory, PropertyFactory
+from .factories import PropertyTypeFactory, RelationFactory, SuperGroupFactory
+from .factories import UserFactory
 from . import GemetTest, ERROR_404
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 
 
 class TestSuperGroupView(GemetTest):
@@ -118,3 +120,75 @@ class TestSuperGroupView(GemetTest):
 
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+
+class TestSuperGroupViewWithUser(GemetTest):
+    def setUp(self):
+        self.supergroup = SuperGroupFactory()
+        user = UserFactory()
+        LanguageFactory()
+        self.user = user.username
+
+    def test_properties(self):
+        PropertyFactory(concept=self.supergroup, name="prefLabel",
+                        value="prefLabel", status=DELETED_PENDING)
+        PropertyFactory(concept=self.supergroup, name="prefLabel",
+                        value="prefLabel new", status=PENDING)
+        PropertyFactory(concept=self.supergroup, name="definition",
+                        value="definition", status=DELETED_PENDING)
+        PropertyFactory(concept=self.supergroup, name="definition",
+                        value="definition new", status=PENDING)
+        PropertyFactory(concept=self.supergroup, name="scopeNote",
+                        value="scopenote", status=DELETED_PENDING)
+        PropertyFactory(concept=self.supergroup, name="scopeNote",
+                        value="scopeNote new", status=PENDING)
+
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
+                                            'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "prefLabel new")
+        self.assertEqual(resp.pyquery('.content #definition-text').text(),
+                         "definition new")
+        self.assertEqual(resp.pyquery('.content #scope-note').text(),
+                         "scopeNote new")
+
+    def test_relations_pending(self):
+        self.group = GroupFactory()
+        PropertyFactory(concept=self.group, value="Group",
+                        status=PUBLISHED)
+        pt1 = PropertyTypeFactory(name="narrower", label="Narrower")
+        pt2 = PropertyTypeFactory(name="broader", label="Broader")
+        RelationFactory(property_type=pt1, source=self.supergroup,
+                        target=self.group, status=PENDING)
+        RelationFactory(property_type=pt2, source=self.group,
+                        target=self.supergroup, status=PENDING)
+
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
+                                            'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        relations_displayed = resp.pyquery('.content ul.listing').text().split()
+        self.assertEqual(len(relations_displayed), 1)
+        self.assertEqual(relations_displayed[0], "Group")
+
+    def test_relations_prefLabel_pending(self):
+        self.group = GroupFactory()
+        PropertyFactory(concept=self.group, value="OldGroup",
+                        status=DELETED_PENDING)
+        PropertyFactory(concept=self.group, value="NewGroup",
+                        status=PENDING)
+        pt1 = PropertyTypeFactory(name="narrower", label="Narrower")
+        pt2 = PropertyTypeFactory(name="broader", label="Broader")
+        RelationFactory(property_type=pt1, source=self.supergroup,
+                        target=self.group, status=PENDING)
+        RelationFactory(property_type=pt2, source=self.group,
+                        target=self.supergroup, status=PENDING)
+
+        url = reverse('supergroup', kwargs={'code': self.supergroup.code,
+                                            'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        relations_displayed = resp.pyquery('.content ul.listing').text().split()
+        self.assertEqual(len(relations_displayed), 1)
+        self.assertEqual(relations_displayed[0], "NewGroup")

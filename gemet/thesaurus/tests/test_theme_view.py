@@ -2,8 +2,9 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory
-from .factories import TermFactory, ThemeFactory
+from .factories import TermFactory, ThemeFactory, UserFactory
 from . import GemetTest, ERROR_404
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 
 
 class TestThemeView(GemetTest):
@@ -16,7 +17,6 @@ class TestThemeView(GemetTest):
         url = reverse('theme', kwargs={'code': self.theme.code,
                                        'langcode': 'en'})
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(resp.pyquery('#prefLabel').text(), "some prefLabel")
@@ -112,3 +112,74 @@ class TestThemeView(GemetTest):
 
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+
+class TestThemeViewWithUser(GemetTest):
+    def setUp(self):
+        self.theme = ThemeFactory()
+        user = UserFactory()
+        self.user = user.username
+
+    def test_properties(self):
+        PropertyFactory(concept=self.theme, name="prefLabel",
+                        value="prefLabel", status=DELETED_PENDING)
+        PropertyFactory(concept=self.theme, name="prefLabel",
+                        value="prefLabel new", status=PENDING)
+        PropertyFactory(concept=self.theme, name="definition",
+                        value="definition", status=DELETED_PENDING)
+        PropertyFactory(concept=self.theme, name="definition",
+                        value="definition new", status=PENDING)
+        PropertyFactory(concept=self.theme, name="scopeNote",
+                        value="scopenote", status=DELETED_PENDING)
+        PropertyFactory(concept=self.theme, name="scopeNote",
+                        value="scopeNote new", status=PENDING)
+
+        url = reverse('theme', kwargs={'code': self.theme.code,
+                                       'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+
+        self.assertEqual(200, resp.status_int)
+        self.assertEqual(resp.pyquery('.content #prefLabel').text(),
+                         "prefLabel new")
+        self.assertEqual(resp.pyquery('.content #definition-text').text(),
+                         "definition new")
+        self.assertEqual(resp.pyquery('.content #scope-note').text(),
+                         "scopeNote new")
+
+    def test_relations_pending(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="Concept",
+                        status=PUBLISHED)
+        pt1 = PropertyTypeFactory(name="themeMember", label="ThemeMember")
+        pt2 = PropertyTypeFactory(name="theme", label="Theme")
+        RelationFactory(property_type=pt1, source=self.theme,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=pt2, source=concept,
+                        target=self.theme, status=PENDING)
+
+        url = reverse('theme', kwargs={'code': self.theme.code,
+                                       'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        relations_displayed = resp.pyquery('.content ul.listing').text().split()
+        self.assertEqual(len(relations_displayed), 1)
+        self.assertEqual(relations_displayed[0], "Concept")
+
+    def test_name_pending_for_concept(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="ConceptOld",
+                        status=DELETED_PENDING)
+        PropertyFactory(concept=concept, value="ConceptNew",
+                        status=PENDING)
+        pt1 = PropertyTypeFactory(name="themeMember", label="ThemeMember")
+        pt2 = PropertyTypeFactory(name="theme", label="Theme")
+        RelationFactory(property_type=pt1, source=self.theme,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=pt2, source=concept,
+                        target=self.theme, status=PENDING)
+
+        url = reverse('theme', kwargs={'code': self.theme.code,
+                                       'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        relations_displayed = resp.pyquery('.content ul.listing').text().split()
+        self.assertEqual(len(relations_displayed), 1)
+        self.assertEqual(relations_displayed[0], "ConceptNew")

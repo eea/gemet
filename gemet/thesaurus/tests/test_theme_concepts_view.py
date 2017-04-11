@@ -7,8 +7,10 @@ from .factories import (
     PropertyTypeFactory,
     ThemeFactory,
     TermFactory,
+    UserFactory
 )
 from . import GemetTest, ERROR_404
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 
 
 class TestThemeConceptsView(GemetTest):
@@ -210,3 +212,63 @@ class TestThemeConceptsView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+
+class TestThemeConceptsViewWithUser(GemetTest):
+    def setUp(self):
+        self.theme = ThemeFactory()
+        self.theme_name = PropertyFactory(concept=self.theme,
+                                          value="Theme",
+                                          status=PUBLISHED)
+        user = UserFactory()
+        self.user = user.username
+        self.pt1 = PropertyTypeFactory(name="themeMember",
+                                       label="Theme member")
+        self.pt2 = PropertyTypeFactory(name="theme", label="Theme")
+
+    def test_pending_name_for_theme(self):
+        self.theme_name.status = DELETED_PENDING
+        PropertyFactory(concept=self.theme, value="New Theme",
+                        status=PENDING)
+        url = reverse('theme_concepts', kwargs={'langcode': 'en',
+                                                'theme_code': self.theme.code})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('h1 i').text(), 'New Theme')
+
+    def test_pending_relation_with_concept(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="Concept value",
+                        status=PUBLISHED)
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=self.pt2, source=concept,
+                        target=self.theme, status=PENDING)
+
+        url = reverse('theme_concepts', kwargs={'langcode': 'en',
+                                                'theme_code': self.theme.code})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0)').length, 1)
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'code': concept.code})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'Concept value')
+
+    def test_pending_name_for_concept(self):
+        concept = TermFactory()
+        PropertyFactory(concept=concept, value="Old Concept value",
+                        status=DELETED_PENDING)
+        PropertyFactory(concept=concept, value="New Concept value",
+                        status=PENDING)
+        RelationFactory(property_type=self.pt1, source=self.theme,
+                        target=concept, status=PENDING)
+        RelationFactory(property_type=self.pt2, source=concept,
+                        target=self.theme, status=PENDING)
+
+        url = reverse('theme_concepts', kwargs={'langcode': 'en',
+                                                'theme_code': self.theme.code})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'New Concept value')

@@ -12,7 +12,7 @@ class VersionFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Version
     FACTORY_DJANGO_GET_OR_CREATE = ('identifier',)
 
-    identifier = '1.0'
+    identifier = '1.0.0'
     is_current = True
 
 
