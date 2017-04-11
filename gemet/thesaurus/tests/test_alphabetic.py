@@ -2,8 +2,9 @@ import unittest
 from django.core.urlresolvers import reverse
 
 from .factories import LanguageFactory, PropertyFactory, TermFactory
-from .factories import VersionFactory
+from .factories import VersionFactory, UserFactory
 from . import GemetTest, ERROR_404
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 
 
 class TestAlphabeticView(GemetTest):
@@ -204,3 +205,59 @@ class TestAlphabeticView(GemetTest):
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(404, resp.status_int)
         self.assertEqual(ERROR_404, resp.pyquery('.error404 h1').text())
+
+
+class TestAlphabeticViewWithUser(GemetTest):
+    def setUp(self):
+        LanguageFactory()
+        VersionFactory()
+        self.concept1 = TermFactory(code="1", status=PUBLISHED)
+        PropertyFactory(concept=self.concept1,
+                        value="Concept1",
+                        status=PUBLISHED)
+        user = UserFactory()
+        self.user = user.username
+
+    def test_user_sees_modified_concept_names(self):
+        concept2 = TermFactory(code="2", status=PUBLISHED)
+        PropertyFactory(concept=concept2, value="Concept2Old",
+                        status=DELETED_PENDING)
+        PropertyFactory(concept=concept2, value="Concept2New", status=PENDING)
+        url = reverse('alphabetic', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'Concept1')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'code': self.concept1.code})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
+                         'Concept2New')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'code': concept2.code})
+        )
+
+    def test_user_sees_new_concepts(self):
+        concept3 = TermFactory(code="3", status=PENDING)
+        PropertyFactory(concept=concept3, value="Concept3", status=PENDING)
+        url = reverse('alphabetic', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').size(), 2)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(0)').text(),
+                         'Concept1')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(0) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'code': self.concept1.code})
+        )
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li:eq(1)').text(),
+                         'Concept3')
+        self.assertEqual(
+            resp.pyquery('.content ul:eq(0) li:eq(1) a').attr('href'),
+            reverse('concept', kwargs={'langcode': 'en',
+                                       'code': concept3.code})
+        )
