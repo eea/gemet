@@ -39,6 +39,10 @@ class ThemeAdmin(ConceptAdmin):
 class TermAdmin(ConceptAdmin):
     pass
 
+
+class AuthorizedUserAdmin(admin.ModelAdmin):
+    list_display = ('username', )
+
 admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
 admin.site.register(models.Property, PropertiesAdmin)
@@ -49,3 +53,4 @@ admin.site.register(models.Theme, ThemeAdmin)
 admin.site.register(models.Group, GroupAdmin)
 admin.site.register(models.SuperGroup, SuperGroupAdmin)
 admin.site.register(models.Term, ConceptAdmin)
+admin.site.register(models.AuthorizedUser, AuthorizedUserAdmin)

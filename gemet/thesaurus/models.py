@@ -30,6 +30,14 @@ class PublishedManager(models.Manager):
         )
 
 
+class AuthorizedUser(models.Model):
+    username = models.CharField(max_length=100)
+
+    @staticmethod
+    def get_authorized_users():
+        return AuthorizedUser.objects.values_list('username', flat=True)
+
+
 class VersionableModel(models.Model):
     STATUS_CHOICES = (
         (PENDING, 'pending'),
