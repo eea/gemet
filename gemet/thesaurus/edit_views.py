@@ -469,16 +469,6 @@ class DeletePendingConceptView(LoginRequiredMixin, View):
             concept = models.Concept.objects.get(pk=pk, status=PENDING)
         except ObjectDoesNotExist:
             raise Http404
-        properties = models.Property.objects.filter(concept=concept)
-        properties.delete()
-        relations = models.Relation.objects.filter(
-            Q(source=concept) |
-            Q(target=concept)
-        )
-        relations.delete()
-        foreign_relations = \
-            models.ForeignRelation.objects.filter(concept=concept)
-        foreign_relations.delete()
         concept.delete()
         url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
