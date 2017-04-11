@@ -288,13 +288,11 @@ class Relation(VersionableModel):
 
     @cached_property
     def reverse(self):
-        return Relation.objects.filter(source=self.target, target=self.source)
-
-    def has_reverse(self):
-        return self.reverse.exists()
-
-    def get_reverse(self):
-        return self.reverse.first()
+        return (
+            Relation.objects
+            .filter(source=self.target, target=self.source)
+            .first()
+        )
 
     def create_reverse(self):
         reverse_relation_name = RELATION_PAIRS[self.property_type.name]

@@ -166,7 +166,7 @@ class Command(BaseCommand):
                         )
                         self.stdout.write('Relation created: {}'.format(relation))
 
-                if not relation.has_reverse():
+                if not relation.reverse:
                     reverse_relation = relation.create_reverse()
                     self.stdout.write('Reverse relation created: {}'
                                       .format(reverse_relation))

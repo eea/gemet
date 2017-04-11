@@ -14,7 +14,7 @@ class Command(BaseCommand):
                 relations.extend(list(cp.target_relations.all()))
 
         for relation in relations:
-            if not relation.has_reverse():
+            if not relation.reverse:
                 self.stdout.write('Creating reverse relation for {}'
                                   .format(relation))
                 relation.create_reverse()
