@@ -3,7 +3,8 @@ import json
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.db.models import Q
+from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views import View
@@ -16,8 +17,8 @@ from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
-from gemet.thesaurus.utils import get_form_errors, get_new_code
-from gemet.thesaurus.utils import refresh_search_text
+from gemet.thesaurus.utils import get_form_errors, refresh_search_text
+from gemet.thesaurus.utils import concept_has_unique_relation, get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -206,7 +207,9 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-
+        if concept_has_unique_relation(source, relation_type):
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = (
             models.Relation.objects
             .filter(source=source, target=target,
@@ -276,6 +279,9 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
+        if concept_has_unique_relation(source, relation_type):
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = models.Relation.objects.filter(
             source=source,
             target=target,
@@ -461,6 +467,18 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_concept.code})
+        return redirect(url)
+
+
+class DeletePendingConceptView(LoginRequiredMixin, View):
+
+    def get(self, request, langcode, pk):
+        try:
+            concept = models.Concept.objects.get(pk=pk, status=PENDING)
+        except ObjectDoesNotExist:
+            raise Http404
+        concept.delete()
+        url = reverse('themes', kwargs={'langcode': langcode})
         return redirect(url)
 
 

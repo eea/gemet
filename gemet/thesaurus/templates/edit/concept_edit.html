@@ -30,6 +30,13 @@
        >Back</a>
   </span>
 
+  {% if concept.status == 0 %}
+  <span>
+    <a class="btn"
+       href="{% url 'concept_delete' language.code concept.id %}"
+       >Delete concept</a>
+  </span>
+  {% endif %}
   <!-- Concept -->
   <h2 class="page-title element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}

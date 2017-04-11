@@ -408,3 +408,36 @@ class TestAddNewConcept(GemetTest):
         self.assertEqual('test',
                          models.Property.objects.get(name='prefLabel',
                                                      concept__code='201').value)
+
+
+class TestDeleteNewConcept(GemetTest):
+    def setUp(self):
+        self.language = LanguageFactory()
+        self.namespace = NamespaceFactory()
+        self.concept = ConceptFactory(namespace=self.namespace, code='200',
+                                      status=PENDING)
+        self.property = PropertyFactory(concept=self.concept)
+        self.relation = RelationFactory(source=self.concept)
+        self.relation = RelationFactory(target=self.concept)
+        self.foreignrelation = ForeignRelationFactory(concept=self.concept)
+        user = UserFactory()
+        self.user = user.username
+
+    def test_objects_are_deleted(self):
+        url = reverse('concept_delete', kwargs={'langcode': self.language.code,
+                                                'pk': self.concept.id})
+        self.app.get(url, user=self.user)
+        self.assertEqual(0,
+                         len(models.Concept.objects.filter(id=self.concept.id)))
+        self.assertEqual(0,
+                         len(models.Property.objects.filter(
+                             concept=self.concept
+                         )))
+        self.assertEqual(0,
+                         len(models.Relation.objects.filter(
+                             source=self.concept
+                         )))
+        self.assertEqual(0,
+                         len(models.ForeignRelation.objects.filter(
+                             concept=self.concept
+                         )))

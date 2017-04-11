@@ -16,6 +16,11 @@ class Version(models.Model):
     def under_work():
         return Version.objects.get(identifier="")
 
+    def __unicode__(self):
+        if self.identifier == "":
+            return 'Upcoming version'
+        return self.identifier
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -23,6 +28,14 @@ class PublishedManager(models.Manager):
             super(PublishedManager, self).get_queryset()
             .filter(status__in=VersionableModel.PUBLISHED_STATUS_OPTIONS)
         )
+
+
+class AuthorizedUser(models.Model):
+    username = models.CharField(max_length=100)
+
+    @staticmethod
+    def get_authorized_users():
+        return AuthorizedUser.objects.values_list('username', flat=True)
 
 
 class VersionableModel(models.Model):

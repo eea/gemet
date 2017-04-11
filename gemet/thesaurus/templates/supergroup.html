@@ -61,7 +61,11 @@
     <h5 class="h5">Groups</h5>
     <ul class="listing">
       {% for group in supergroup.narrower_concepts %}
-        <li>{{ group.name }}</li>
+        <li>
+          <a href="{% url 'group' language.code group.concept__code %}">
+          {{ group.name }}
+          </a>
+        </li>
       {% endfor %}
     </ul>
   </div>

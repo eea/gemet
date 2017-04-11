@@ -4,7 +4,7 @@ from zlib import compress, decompress
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
-from gemet.thesaurus.models import Concept, Property, Version
+from gemet.thesaurus.models import Concept, Group, Property, Version
 
 
 def is_rdf(request):
@@ -156,6 +156,27 @@ def split_text_into_terms(raw_text):
     term_list = [term.strip(' :').lower() for term in term_list if
                  term.strip(' :').lower() != '']
     return term_list
+
+
+def concept_has_unique_relation(concept, relation_type):
+    # returns True if the concept already has a relation with the given
+    # relation_type (only for group and broader for Groups)
+    broader_relation = (
+        relation_type == 'broader' and
+        concept.namespace.heading == Group.NAMESPACE
+    )
+    group_relation = relation_type == 'group'
+    if not (group_relation or broader_relation):
+        return False
+
+    return (
+        concept.source_relations
+        .filter(
+            property_type__name=relation_type,
+            status__in=[PUBLISHED, PENDING],
+        )
+        .exists()
+    )
 
 
 def get_search_text(concept_id, language_code, status, version):

@@ -2,8 +2,8 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 
-from gemet.thesaurus.models import ForeignRelation, InspireTheme, Language
-from gemet.thesaurus.models import Namespace, Property
+from gemet.thesaurus.models import AuthorizedUser, ForeignRelation
+from gemet.thesaurus.models import InspireTheme, Language, Namespace, Property
 from gemet.thesaurus.utils import get_version_choices
 
 
@@ -61,7 +61,7 @@ class ConceptForm(forms.Form):
 
 class LDAPAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
-        if user.username not in settings.AUTHORIZED_USERS:
+        if user.username not in AuthorizedUser.get_authorized_users():
             raise forms.ValidationError(
                 'Your account is not authorized to login to GEMET')
 
