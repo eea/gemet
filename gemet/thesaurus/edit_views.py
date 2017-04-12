@@ -3,7 +3,6 @@ import json
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -488,16 +487,24 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
     form_class = VersionForm
 
     def form_valid(self, form):
+        # Current version becomes an old version
         self.current_version.is_current = False
         self.current_version.save()
 
+        # Pending version becomes current
         self.pending_version.is_current = True
         self.pending_version.identifier = form.cleaned_data['version']
         self.pending_version.publication_date = datetime.now()
         self.pending_version.save()
 
+        # New pending version is created
         models.Version.objects.create(is_current=False)
 
+        # Old searchText properties are deleted
+        models.Property.objects.filter(
+            name='searchText', status=DELETED_PENDING).delete()
+
+        # Pending objects become published and deleted_pending become deleted
         versionable_classes = models.VersionableModel.__subclasses__()
         for versionable_class in versionable_classes:
             self._change_status(versionable_class, PENDING, PUBLISHED)
