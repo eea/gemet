@@ -14,6 +14,7 @@ from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
+from gemet.thesaurus.exports import create_export_files
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
 from gemet.thesaurus.utils import get_form_errors, refresh_search_text
@@ -509,6 +510,9 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
         for versionable_class in versionable_classes:
             self._change_status(versionable_class, PENDING, PUBLISHED)
             self._change_status(versionable_class, DELETED_PENDING, DELETED)
+
+        # Create exports
+        create_export_files(self.pending_version)
 
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)
