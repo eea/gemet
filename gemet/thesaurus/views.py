@@ -552,7 +552,7 @@ class GemetVoidView(XMLTemplateView):
         return context
 
 
-class DownloadView(HeaderMixin, FormView):
+class DownloadView(HeaderMixin, VersionMixin, FormView):
     template_name = "downloads/download.html"
     form_class = ExportForm
 

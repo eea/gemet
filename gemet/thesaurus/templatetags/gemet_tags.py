@@ -1,6 +1,10 @@
+import os
 import unicodedata
+
 from django import template
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.utils.six.moves.urllib.parse import urljoin
 
 from gemet.thesaurus.models import Concept
 from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR, EDIT_URL_NAMES
@@ -110,3 +114,9 @@ def active(request, name, **kwargs):
         return ' active '
 
     return ''
+
+
+@register.simple_tag
+def exports(version, filename):
+    exports_relative_path = os.path.join(version.identifier, filename)
+    return urljoin(settings.EXPORTS_URL, exports_relative_path)

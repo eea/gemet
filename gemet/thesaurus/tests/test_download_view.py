@@ -3,12 +3,13 @@ import unittest
 from django.core.urlresolvers import reverse
 
 from . import GemetTest, ERROR_404
-from .factories import LanguageFactory
+from .factories import LanguageFactory, VersionFactory
 
 
 class TestDownloadView(GemetTest):
     def setUp(self):
         LanguageFactory()
+        VersionFactory()
         self.url = reverse('download', kwargs={'langcode': 'en'})
 
     @unittest.skip('Exports are now saved to static files')
@@ -20,7 +21,6 @@ class TestDownloadView(GemetTest):
             tmp = self.app.get(resp.pyquery(link).attr('href'))
             self.assertEqual(200, tmp.status_int)
 
-    @unittest.skip('Exports are now saved to static files')
     def test_page_access(self):
         resp = self.app.get(self.url)
         self.assertEqual(200, resp.status_int)

@@ -81,11 +81,13 @@ USE_ZOPE_LAYOUT = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static/')
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static/')
+# Exports / Downloads
 
 EXPORTS_ROOT = os.path.join(BASE_DIR, 'exports/')
+EXPORTS_URL = '/exports/'
 
 # Authentication
 # Keep ModelBackend around for per-user permissions and maybe a local
