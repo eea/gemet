@@ -1,18 +1,24 @@
+import shutil
 import unittest
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from . import GemetTest, ERROR_404
 from .factories import LanguageFactory, VersionFactory
+from gemet.thesaurus.exports import create_export_files
 
 
 class TestDownloadView(GemetTest):
     def setUp(self):
         LanguageFactory()
-        VersionFactory()
+        version = VersionFactory()
+        create_export_files(version)
         self.url = reverse('download', kwargs={'langcode': 'en'})
 
-    @unittest.skip('Exports are now saved to static files')
+    def tearDown(self):
+        shutil.rmtree(settings.EXPORTS_ROOT)
+
     def test_links(self):
         resp = self.app.get(self.url)
 
