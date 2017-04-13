@@ -1,6 +1,6 @@
+import os
 import re
 import sys
-from collections import OrderedDict
 from itertools import chain
 from urllib import urlencode
 from xmlrpclib import Fault
@@ -15,10 +15,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.conf import settings
 
-from gemet.thesaurus.models import Concept, DefinitionSource, ForeignRelation
-from gemet.thesaurus.models import Group, Language, InspireTheme, Namespace
-from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
-from gemet.thesaurus.models import Version
+from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
+from gemet.thesaurus.models import InspireTheme, Namespace, Property, SuperGroup
+from gemet.thesaurus.models import Term, Theme, Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
@@ -581,6 +580,24 @@ def download_gemet_rdf(request):
 
     response = StreamingHttpResponse(f, content_type='application/x-gzip')
     response['Content-Disposition'] = 'attachment; filename="gemet.rdf.gz"'
+    return response
+
+
+def download_export_file(request, version, filename):
+    filepath = os.path.join(settings.EXPORTS_ROOT, version, filename)
+    try:
+        f = open(filepath)
+    except (IOError, AttributeError):
+        raise Http404
+
+    extention = filename.split('.')[-1]
+    content_types = {
+        'rdf': 'application/rdf+xml',
+        'html': "text/html; charset=utf-8",
+    }
+    content_type = content_types[extention]
+
+    response = StreamingHttpResponse(f, content_type=content_type)
     return response
 
 

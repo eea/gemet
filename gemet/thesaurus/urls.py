@@ -44,6 +44,8 @@ urlpatterns = [
         name='gemet_schema'),
     url(r'^void\.rdf/?$', views.GemetVoidView.as_view()),
     url(r'^gemet\.rdf\.gz/?$', views.download_gemet_rdf),
+    url(r'^exports/(?P<version>[\d\.]*)/(?P<filename>[a-zA-Z-\.]*)$',
+        views.download_export_file, name='export'),
 
     # API
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),

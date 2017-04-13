@@ -87,7 +87,6 @@ STATIC_URL = '/static/'
 # Exports / Downloads
 
 EXPORTS_ROOT = os.path.join(BASE_DIR, 'exports/')
-EXPORTS_URL = '/exports/'
 
 # Authentication
 # Keep ModelBackend around for per-user permissions and maybe a local
