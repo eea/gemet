@@ -1,9 +1,9 @@
-from django.core.urlresolvers import reverse
-from . import GemetTest, ERROR_404
+import unittest
 
-from .factories import (
-    LanguageFactory,
-)
+from django.core.urlresolvers import reverse
+
+from . import GemetTest, ERROR_404
+from .factories import LanguageFactory
 
 
 class TestDownloadView(GemetTest):
@@ -11,6 +11,7 @@ class TestDownloadView(GemetTest):
         LanguageFactory()
         self.url = reverse('download', kwargs={'langcode': 'en'})
 
+    @unittest.skip('Exports are now saved to static files')
     def test_links(self):
         resp = self.app.get(self.url)
 
@@ -19,10 +20,12 @@ class TestDownloadView(GemetTest):
             tmp = self.app.get(resp.pyquery(link).attr('href'))
             self.assertEqual(200, tmp.status_int)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_page_access(self):
         resp = self.app.get(self.url)
         self.assertEqual(200, resp.status_int)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_form_definitions(self):
         resp = self.app.get(self.url)
         resp = resp.forms['definitions-form'].submit('type')
@@ -31,6 +34,7 @@ class TestDownloadView(GemetTest):
         resp = resp.follow()
         self.assertEqual(200, resp.status_int)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_form_groups(self):
         resp = self.app.get(self.url)
         resp = resp.forms['groups-form'].submit('type')
@@ -39,6 +43,7 @@ class TestDownloadView(GemetTest):
         resp = resp.follow()
         self.assertEqual(200, resp.status_int)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_form_unknown(self):
         resp = self.app.get(self.url)
         resp.forms['groups-form'].get('type').force_value('unknown')

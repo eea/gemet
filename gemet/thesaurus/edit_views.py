@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import sys
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
@@ -511,8 +512,9 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
             self._change_status(versionable_class, PENDING, PUBLISHED)
             self._change_status(versionable_class, DELETED_PENDING, DELETED)
 
-        # Create exports
-        create_export_files(self.pending_version)
+        # Create exports. Skip for testing
+        if 'test' not in sys.argv:
+            create_export_files(self.pending_version)
 
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)
