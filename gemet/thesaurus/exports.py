@@ -111,7 +111,7 @@ class GemetGroupsView(ExportView):
     }
 
     @staticmethod
-    def get_context_data():
+    def get_context():
         supergroups = (
             Property.published
             .filter(
@@ -265,7 +265,7 @@ class Skoscore(ExportView):
 
 class GemetThesaurus(ExportView):
     template_name = 'downloads/gemetThesaurus.xml'
-    filename = 'gemetThesaurus.xml'
+    filename = 'gemetThesaurus.rdf'
 
 
 EXPORT_VIEWS = [
