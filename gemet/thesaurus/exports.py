@@ -1,10 +1,9 @@
-from collections import OrderedDict
 import os
 
 from django.conf import settings
 from django.template.loader import render_to_string
 
-from gemet.thesaurus import DEFAULT_LANGCODE
+from gemet.thesaurus import DEFAULT_LANGCODE, PUBLISHED
 from gemet.thesaurus.models import Group, ForeignRelation, Language, Namespace
 from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
 
@@ -275,25 +274,17 @@ class DefinitionsByLanguage(ExportView):
 
     @staticmethod
     def get_context(language):
-        concepts = Term.published.values('id', 'code').order_by('code')
-        definitions = OrderedDict()
-
-        for concept in concepts:
-            properties = sorted(
-                (
-                    Property.published
-                    .filter(
-                        concept_id=concept['id'],
-                        language_id=language,
-                        name__in=['definition', 'prefLabel'],
-                    )
-                    .values('name', 'value')
-                ),
-                key=lambda x: x['name'],
-                reverse=True
+        definitions = (
+            Property.published
+            .filter(
+                concept__status=PUBLISHED,
+                concept__namespace__heading=Term.NAMESPACE,
+                language_id=language,
+                name__in=['definition', 'prefLabel'],
             )
-            if properties:
-                definitions[concept['code']] = properties
+            .values('concept__code', 'name', 'value')
+            .order_by('concept__code', '-name')
+        )
 
         return {'definitions': definitions}
 
