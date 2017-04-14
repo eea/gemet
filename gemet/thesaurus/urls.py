@@ -46,6 +46,9 @@ urlpatterns = [
     url(r'^gemet\.rdf\.gz/?$', views.download_gemet_rdf),
     url(r'^exports/(?P<version>[\d\.]*)/(?P<filename>[a-zA-Z-\.]*)$',
         views.download_export_file, name='export'),
+    url(r'^exports/(?P<version>[\d\.]+)/(?P<langcode>[a-zA-Z-]+)/'
+        '(?P<filename>[a-zA-Z-\.]+)$',
+        views.download_translatable_export_file, name='export_lang'),
 
     # API
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),

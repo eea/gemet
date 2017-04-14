@@ -559,13 +559,17 @@ class DownloadView(HeaderMixin, VersionMixin, FormView):
         return {'language_names': self.language}
 
     def get_success_url(self):
-        return reverse(self.reverse_name, kwargs={'langcode': self.langcode})
+        return reverse('export_lang', kwargs={
+            'version': self.current_version,
+            'langcode': self.langcode,
+            'filename': self.filename,
+        })
 
     def form_valid(self, form):
         if self.request.POST['type'] == 'definitions':
-            self.reverse_name = 'gemet-definitions.rdf'
+            self.filename = 'gemet-definitions.rdf'
         elif self.request.POST['type'] == 'groups':
-            self.reverse_name = 'gemet-groups.rdf'
+            self.filename = 'gemet-groups.rdf'
         else:
             raise Http404
         self.langcode = form.cleaned_data['language_names'].code
@@ -583,8 +587,7 @@ def download_gemet_rdf(request):
     return response
 
 
-def download_export_file(request, version, filename):
-    filepath = os.path.join(settings.EXPORTS_ROOT, version, filename)
+def get_export_resp(filename, filepath):
     try:
         f = open(filepath)
     except (IOError, AttributeError):
@@ -599,6 +602,16 @@ def download_export_file(request, version, filename):
 
     response = StreamingHttpResponse(f, content_type=content_type)
     return response
+
+
+def download_translatable_export_file(request, version, langcode, filename):
+    filepath = os.path.join(settings.EXPORTS_ROOT, version, langcode, filename)
+    return get_export_resp(filename, filepath)
+
+
+def download_export_file(request, version, filename):
+    filepath = os.path.join(settings.EXPORTS_ROOT, version, filename)
+    return get_export_resp(filename, filepath)
 
 
 def redirect_old_urls(request, view_name):
