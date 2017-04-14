@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 
 from gemet.thesaurus.models import AuthorizedUser, ForeignRelation
@@ -21,9 +20,7 @@ class SearchForm(forms.Form):
 
 class ExportForm(forms.Form):
     language_names = forms.ModelChoiceField(
-        queryset=Language.objects.order_by(
-            'name'
-        ),
+        queryset=Language.objects.order_by('name'),
         empty_label=None,
         label="Choose the language",
     )
@@ -52,7 +49,6 @@ class ForeignRelationForm(forms.ModelForm):
 
 
 class ConceptForm(forms.Form):
-
     name = forms.CharField(max_length=16000)
     namespace = forms.ModelChoiceField(
         queryset=Namespace.objects.exclude(heading=InspireTheme.NAMESPACE),
@@ -67,5 +63,4 @@ class LDAPAuthenticationForm(AuthenticationForm):
 
 
 class VersionForm(forms.Form):
-
     version = forms.ChoiceField(choices=get_version_choices)

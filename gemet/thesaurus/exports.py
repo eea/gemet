@@ -1,10 +1,11 @@
+from collections import OrderedDict
 import os
 
 from django.conf import settings
 from django.template.loader import render_to_string
 
 from gemet.thesaurus import DEFAULT_LANGCODE
-from gemet.thesaurus.models import Group, ForeignRelation, Namespace
+from gemet.thesaurus.models import Group, ForeignRelation, Language, Namespace
 from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
 
 
@@ -268,6 +269,60 @@ class GemetThesaurus(ExportView):
     filename = 'gemetThesaurus.rdf'
 
 
+class DefinitionsByLanguage(ExportView):
+    template_name = 'downloads/language_definitions.rdf'
+    filename = 'gemet-definitions.rdf'
+
+    @staticmethod
+    def get_context(language):
+        concepts = Term.published.values('id', 'code').order_by('code')
+        definitions = OrderedDict()
+
+        for concept in concepts:
+            properties = sorted(
+                (
+                    Property.published
+                    .filter(
+                        concept_id=concept['id'],
+                        language_id=language,
+                        name__in=['definition', 'prefLabel'],
+                    )
+                    .values('name', 'value')
+                ),
+                key=lambda x: x['name'],
+                reverse=True
+            )
+            if properties:
+                definitions[concept['code']] = properties
+
+        return {'definitions': definitions}
+
+
+class GroupsByLanguage(ExportView):
+    template_name = 'downloads/language_groups.rdf'
+    filename = 'gemet-groups.rdf'
+
+    @staticmethod
+    def get_context(language):
+        context = {}
+        for heading in ['Super groups', 'Groups', 'Themes']:
+            context.update({
+                heading.replace(' ', '_'): (
+                    Property.objects
+                    .filter(
+                        concept__namespace__heading=heading,
+                        language_id=language,
+                        name='prefLabel',
+                    )
+                    .values(
+                        'concept__code',
+                        'value',
+                    )
+                )
+            })
+        return context
+
+
 EXPORT_VIEWS = [
     BackboneView,
     BackboneRDFView,
@@ -278,12 +333,32 @@ EXPORT_VIEWS = [
     GemetThesaurus,
 ]
 
+TRANSLATABLE_EXPORT_VIEWS = [
+    DefinitionsByLanguage,
+    GroupsByLanguage,
+]
+
 
 def create_export_files(version):
     version_root = os.path.join(settings.EXPORTS_ROOT, version.identifier)
     os.makedirs(version_root)
+
     for view in EXPORT_VIEWS:
         location = os.path.join(version_root, view.filename)
         with open(location, 'w') as f:
             content = render_to_string(view.template_name, view.get_context())
             f.write(content.encode('utf-8'))
+
+    languages = Language.objects.order_by('name').values_list('code', flat=True)
+    for language in languages:
+        language_root = os.path.join(version_root, language)
+        os.makedirs(language_root)
+
+    for view in TRANSLATABLE_EXPORT_VIEWS:
+        for language in languages:
+            location = os.path.join(version_root, language, view.filename)
+
+            with open(location, 'w') as f:
+                content = render_to_string(view.template_name,
+                                           view.get_context(language))
+                f.write(content.encode('utf-8'))
