@@ -11,7 +11,7 @@
   <h1>Download GEMET</h1>
 
   <!-- Download -->
-  <div id="download" class="side-bar box">
+  <div id="download" class="side-bar box visible">
     <h3 class="h6 no-margin-top">Labels and definitions in RDF</h3>
     <form id="definitions-form" method="post">
       {% csrf_token %}
@@ -28,6 +28,7 @@
   </div>
 
   <!-- General structure -->
+  <div style="width: 70%">
   <h3 class="h3">General structure</h3>
   <ul class="listing">
     <li>
@@ -59,5 +60,6 @@
           An object for the Concept Scheme</a>
     </li>
   </ul>
+  </div>
 
 {% endblock %}
