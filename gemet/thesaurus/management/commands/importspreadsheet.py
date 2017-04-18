@@ -32,16 +32,11 @@ class Command(BaseCommand):
         self.version = models.Version.under_work()
         self.namespace = models.Namespace.objects.get(heading=NAMESPACE)
         self.concepts = {}
-        self.properties = []
 
         self.stdout.write('Creating concepts...')
         self._create_concepts(sheet)
         self.stdout.write('Creating relations...')
         self._create_relations(sheet)
-
-        self.stdout.write('Creating {} properties...'
-                          .format(len(self.properties)))
-        models.Property.objects.bulk_create(self.properties, batch_size=10000)
 
     def _create_concepts(self, sheet):
         for row in sheet.iter_rows(max_col=3, min_row=2):
@@ -92,19 +87,19 @@ class Command(BaseCommand):
                     status__in=[PUBLISHED, PENDING],
                 ).exists():
                     is_new_concept = True
-                    self.properties.append(models.Property(
+                    models.Property.objects.create(
                         status=PENDING,
                         version_added=self.version,
                         concept=concept,
                         language=self.language,
                         name=name,
                         value=value,
-                    ))
+                    )
             if is_new_concept:
                 search_text = get_search_text(
                     concept.id, self.language.code, PENDING, self.version)
                 if search_text:
-                    self.properties.append(search_text)
+                    search_text.save()
 
     def _create_theme_group_relations(self, source):
         property_types = models.PropertyType.objects.filter(
@@ -136,7 +131,7 @@ class Command(BaseCommand):
                     property_type=property_type,
                     version_added=self.version,
                     status=PENDING)
-                self.stdout.write('For concept {0} was created relation : {1}'
+                self.stdout.write('For concept {0} relation: {1} was added.'
                                   .format(source, new_relation))
 
     def _create_relations(self, sheet):
@@ -173,14 +168,14 @@ class Command(BaseCommand):
                             version_added=self.version,
                             status=PENDING,
                         )
-                        self.properties.append(models.Property(
+                        models.Property.objects.create(
                             status=PENDING,
                             version_added=self.version,
                             concept=target,
                             language=self.language,
                             name='prefLabel',
                             value=term,
-                        ))
+                        )
                         self.stdout.write('Inexistent concept: {}'.format(term))
 
                     relation = models.Relation.objects.filter(
