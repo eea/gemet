@@ -74,3 +74,10 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "last_name": "sn",
     "email": "mail"
 }
+
+Q_CLUSTER = {
+    'redis': {
+        'host': 'redis',
+        'port': 6379,
+    }
+}
