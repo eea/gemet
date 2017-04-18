@@ -418,7 +418,7 @@ hr {
     margin-left: 0;
     margin-right: -15px;
     margin-bottom: 1em;
-    border-radius: 1rem;
+    border-radius: 1px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     position: relative;
@@ -1271,13 +1271,11 @@ li:hover .btn-remove-down {
     right: 0px;
     bottom: 0px;
     border: none;
-    border-bottom-right-radius: 6px;
     margin: 0;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    border-top-right-radius: 6px;
 }
 
 .search_bar button[type=submit]:after {
@@ -1499,8 +1497,8 @@ li:hover .btn-remove-down {
     width: 100%;
     box-shadow: 0px 0px 2px #aaa;
     padding-left: 1.5rem;
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
 }
 
 #definition ul li,
@@ -1609,13 +1607,12 @@ h6.inline {
 .beautiful-listing {
     margin-bottom: 3rem;
     margin-top: 1rem;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
     /* margin-left: -16px; */
     /* margin-right: -16px; */
     padding: 1rem;
     box-shadow: 0px 0px 3px #aaa;
-    border-radius: 1rem;
 }
 
 .expand-button {
@@ -1834,8 +1831,8 @@ a.search-button {
 .active.search-button {
     background: #00446a;
     color: white;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
 }
 
 .search-button.active {
