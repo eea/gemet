@@ -4,10 +4,9 @@ from gemet.thesaurus import models
 
 
 class ConceptAdmin(admin.ModelAdmin):
-
     search_fields = ('code',)
     list_display = ('code', 'namespace', 'status', 'version_added')
-    list_filter = ('version_added__identifier', 'status')
+    list_filter = ('version_added__identifier', 'status', 'namespace')
 
 
 class ForeignRelationAdmin(admin.ModelAdmin):
@@ -43,6 +42,11 @@ class TermAdmin(ConceptAdmin):
 class AuthorizedUserAdmin(admin.ModelAdmin):
     list_display = ('username', )
 
+
+class VersionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'identifier', 'publication_date', 'is_current')
+
+
 admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
 admin.site.register(models.Property, PropertiesAdmin)
@@ -54,3 +58,4 @@ admin.site.register(models.Group, GroupAdmin)
 admin.site.register(models.SuperGroup, SuperGroupAdmin)
 admin.site.register(models.Term, ConceptAdmin)
 admin.site.register(models.AuthorizedUser, AuthorizedUserAdmin)
+admin.site.register(models.Version, VersionAdmin)
