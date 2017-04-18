@@ -100,7 +100,7 @@ be run as an unprivileged user in the product directory::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
-10. Generate EIONET static templates
+10. Generate EIONET static templates::
 
     ./manage.py fetchtemplates
 
