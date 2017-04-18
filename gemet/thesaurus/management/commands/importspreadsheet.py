@@ -131,6 +131,7 @@ class Command(BaseCommand):
                     property_type=property_type,
                     version_added=self.version,
                     status=PENDING)
+                new_relation.create_reverse()
                 self.stdout.write('For concept {0} relation: {1} was added.'
                                   .format(source, new_relation))
 
@@ -195,10 +196,10 @@ class Command(BaseCommand):
                         self.stdout.write('Relation created: {}'
                                           .format(relation))
 
-                if not relation.reverse:
-                    reverse_relation = relation.create_reverse()
-                    self.stdout.write('Reverse relation created: {}'
-                                      .format(reverse_relation))
+                    if not relation.reverse:
+                        reverse_relation = relation.create_reverse()
+                        self.stdout.write('Reverse relation created: {}'
+                                          .format(reverse_relation))
             self._create_theme_group_relations(source)
 
     def _get_concept(self, label):
