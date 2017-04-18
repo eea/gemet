@@ -60,6 +60,16 @@
  }
 },
 {
+ "pk": "az",
+ "model": "thesaurus.language",
+ "fields": {
+  "direction": "0",
+  "charset": "utf8_general_ci",
+  "name": "Azerbaijani",
+  "code_alt": "AZE"
+ }
+},
+{
  "pk": "bg", 
  "model": "thesaurus.language", 
  "fields": {
@@ -220,6 +230,16 @@
  }
 },
 {
+ "pk": "hy",
+ "model": "thesaurus.language",
+ "fields": {
+  "direction": "0",
+  "charset": "utf8_general_ci",
+  "name": "Armenian",
+  "code_alt": "ARM"
+ }
+},
+{
  "pk": "it", 
  "model": "thesaurus.language", 
  "fields": {
@@ -237,6 +257,16 @@
   "charset": "utf8_general_ci", 
   "name": "Lithuanian", 
   "code_alt": "LIT"
+ }
+},
+{
+ "pk": "ka",
+ "model": "thesaurus.language",
+ "fields": {
+  "direction": "0",
+  "charset": "utf8_general_ci",
+  "name": "Georgian",
+  "code_alt": "GEO"
  }
 },
 {
