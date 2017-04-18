@@ -90,6 +90,7 @@ be run as an unprivileged user in the product directory::
    **The database charset MUST be utf8.**
 
 7. Update local configuration file with database credentials and database name
+
    - ``default`` section in ``DATABASES`` dict.
 
 8. Create initial database structure::
