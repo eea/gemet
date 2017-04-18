@@ -10,7 +10,8 @@ http://www.eionet.europa.eu/gemet
 
 Installation (using docker)
 -------------------------------
-`Base docker image`_ .
+`Base docker image`_
+
 .. _`Base docker image`: https://hub.docker.com/r/eeacms/gemet/
 
 1. Staging and Production
@@ -19,12 +20,13 @@ Installation (using docker)
 The staging and production deployment will be done through Rancher. Depending on the
 Rancher environment's version, one of the following will be used:
 
-1. `Rancher Compose`_ .
-2. `Rancher CLI`_ .
+* `Rancher Compose`_
 
-.. `Rancher Compose`: https://docs.rancher.com/rancher/v1.4/en/cattle/rancher-compose/
+* `Rancher CLI`_
 
-.. `Rancher CLI`: https://docs.rancher.com/rancher/v1.2/en/cli/
+.. _`Rancher Compose`: https://docs.rancher.com/rancher/v1.4/en/cattle/rancher-compose/
+
+.. _`Rancher CLI`: https://docs.rancher.com/rancher/v1.2/en/cli/
 
 
 During the first time deployement, create and edit the following files::
@@ -47,12 +49,12 @@ During the first time deployement, create and edit the following files::
 2. Development
 ~~~~~~~~~~~~~~
 
-1. Install [Docker](https://www.docker.com/).
+Install `Docker`_ .
 
-2. Install [Docker Compose](https://docs.docker.com/compose/).
+Install `Docker Compose`_ .
 
-.. `Docker`: https://www.docker.com/
-.. `Docker Compose`: https://docs.docker.com/compose/
+.. _`Docker`: https://www.docker.com/
+.. _`Docker Compose`: https://docs.docker.com/compose/
 
 Create and edit the following files::
 
