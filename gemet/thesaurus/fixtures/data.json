@@ -651,5 +651,54 @@
   "name": "notation", 
   "label": "Notation"
  }
+},
+{
+ "pk": 1,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "admin"
+ }
+},
+{
+ "pk": 2,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "melisand"
+ }
+},
+{
+ "pk": 3,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "chiriiul"
+ }
+},
+{
+ "pk": 4,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "ansorchr"
+ }
+},
+{
+ "pk": 5,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "iglesjos"
+ }
+},
+{
+ "pk": 6,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "tinsomaj"
+ }
+},
+{
+ "pk": 7,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "dianaboiangiu"
+ }
 }
 ]
