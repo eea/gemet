@@ -56,7 +56,7 @@ be run as an unprivileged user in the product directory::
 
 1. Clone the repository::
 
-    git clone https://github.com/eaudeweb/gemet -o origin gemet
+    git clone https://github.com/eea/gemet -o origin gemet
     cd gemet
 
 2.1. Create & activate a virtual environment::
@@ -100,25 +100,13 @@ be run as an unprivileged user in the product directory::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
-10. Import data, see `Data Import`_ below.
+10. Generate EIONET static templates
 
-.. _`Data Import`: https://github.com/eaudeweb/gemet#data-import
+    ./manage.py fetchtemplates
 
-11. Fix romanian characters::
+11. Import data, see `Data Import`_ below.
 
-    ./manage.py fix_romanian
-
-12. Import new terms from the spreadsheet::
-
-    ./manage.py importspreadsheet [spread_sheet_name]
-
-13. Create reversed relations for all concepts::
-
-    ./manage.py fixrelations
-
-14. Insert data that enables search to work properly::
-
-    ./manage.py insertdata
+.. _`Data Import`: https://github.com/eea/gemet#data-import
 
 
 Build production
@@ -183,6 +171,22 @@ configuration file with the name of the database used for import
 
     ./manage.py import
 
+4. Fix romanian characters::
+
+    ./manage.py fix_romanian
+
+5. Insert data that enables search to work properly::
+
+    ./manage.py insertdata
+
+6. Import new terms from the spreadsheet::
+
+    ./manage.py importspreadsheet [spread_sheet_name]
+
+7. Create reversed relations for all concepts::
+
+    ./manage.py fixrelations
+
 
 Other commands
 --------------
@@ -212,7 +216,7 @@ Documentation
 The documentation has been created using `Sphinx`_. The source directories for the three sections of documentation can be found in the `docs`_ directory.
 
 .. _`Sphinx`: http://www.sphinx-doc.org/en/stable/
-.. _`docs`: https://github.com/eaudeweb/gemet/tree/master/docs
+.. _`docs`: https://github.com/eea/gemet/tree/master/docs
 
 In order to get the HTML output, you should run the following command inside one of the documentation directories (``api``, ``new_api`` or ``overview``)::
 
@@ -227,7 +231,7 @@ Docs contents
 * ``new_api`` - current documentation for the GEMET API; duplicated in `this file`_ and published on ``Web services`` page;
 * ``overview`` - quick overview of the technical solution;
 
-.. _`this file`: https://github.com/eaudeweb/gemet/blob/master/gemet/thesaurus/templates/api.html
+.. _`this file`: https://github.com/eea/gemet/blob/master/gemet/thesaurus/templates/api.html
 
 
 Development hints
@@ -306,10 +310,12 @@ The project owner is Søren Roug (soren.roug at eaa.europa.eu)
 
 Other people involved in this project are:
 
+* Iulia Chiriac (iulia.chiriac at eaudeweb.ro)
+* Andrei Melis (andrei.melis at eaudeweb.ro)
+* Diana Boiangiu (diana.boiangiu at eaudeweb.ro)
 * Cornel Nițu (cornel.nitu at eaudeweb.ro)
 * Alex Eftimie (alex.eftimie at eaudeweb.ro)
 * Mihai Tabără (mihai.tabara at eaudeweb.ro)
-* Iulia Chiriac (iulia.chiriac at eaudeweb.ro)
 * Mihai Zamfir (mihai.zamfir at eaudeweb.ro)
 
 
@@ -342,4 +348,4 @@ the terms of the EUPL v1.1.
 
 More details under `LICENSE.txt`_.
 
-.. _`LICENSE.txt`: https://github.com/eaudeweb/gemet/blob/master/LICENSE.txt
+.. _`LICENSE.txt`: https://github.com/eea/gemet/blob/master/LICENSE.txt
