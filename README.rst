@@ -180,13 +180,13 @@ configuration file with the name of the database used for import
 
     ./manage.py insertdata
 
-6. Import new terms from the spreadsheet::
-
-    ./manage.py importspreadsheet [spread_sheet_name]
-
-7. Create reversed relations for all concepts::
+6. Create reversed relations for all concepts::
 
     ./manage.py fixrelations
+
+7. Import new terms from the spreadsheet::
+
+    ./manage.py importspreadsheet [spread_sheet_name]
 
 
 Other commands
