@@ -3,9 +3,6 @@ version: '2'
 services:
   nginx:
     image: nginx:1.11.13
-    labels:
-      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
-      io.rancher.container.hostname_override: container_name
     environment:
       TZ: Europe/Copenhagen
       NGINX_CONF: |-
@@ -31,10 +28,9 @@ services:
     command: /bin/bash -c 'echo "$$NGINX_CONF" > /etc/nginx/conf.d/default.conf && exec nginx -g "daemon off;"'
 
   gemet:
-    image: eeacms/gemet
-    labels:
-      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
-      io.rancher.container.hostname_override: container_name
+    image: eeacms/gemet:latest
+    ports:
+    - "8888:8888"
     environment:
       TZ: Europe/Copenhagen
     env_file:
@@ -42,14 +38,10 @@ services:
     depends_on:
     - mysql
     volumes:
-    - static:/var/local/static
+    - static:/var/local/gemet/static
 
   mysql:
     image: mysql:latest
-    labels:
-      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
-      io.rancher.scheduler.affinity:host_label: db=yes,eionet=yes
-      io.rancher.container.hostname_override: container_name
     environment:
       TZ: Europe/Copenhagen
     env_file:

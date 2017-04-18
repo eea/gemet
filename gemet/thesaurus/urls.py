@@ -44,6 +44,11 @@ urlpatterns = [
         name='gemet_schema'),
     url(r'^void\.rdf/?$', views.GemetVoidView.as_view()),
     url(r'^gemet\.rdf\.gz/?$', views.download_gemet_rdf),
+    url(r'^exports/(?P<version>[\d\.]*)/(?P<filename>[a-zA-Z-\.]*)$',
+        views.download_export_file, name='export'),
+    url(r'^exports/(?P<version>[\d\.]+)/(?P<langcode>[a-zA-Z-]+)/'
+        '(?P<filename>[a-zA-Z-\.]+)$',
+        views.download_translatable_export_file, name='export_lang'),
 
     # API
     url(r'^(?P<method_name>[a-zA-Z]*)$', ApiView.as_view(), name='api_root'),
@@ -57,7 +62,8 @@ urlpatterns = [
             name='webservices'),
         url(r'^alphabets/$', views.AlphabetsView.as_view(), name='alphabets'),
 
-
+        # Exports
+        url(r'^exports/rdf$', views.DownloadView.as_view(), name='download'),
 
         # Search
         url(r'^search/$', views.SearchView.as_view(), name='search'),
@@ -102,6 +108,9 @@ urlpatterns = [
         # Edit concept pages
         url(r'^concept/add$', edit_views.AddConceptView.as_view(),
             name='concept_add'),
+        url(r'^concept/(?P<pk>\d+)/delete$',
+            edit_views.DeletePendingConceptView.as_view(),
+            name='concept_delete'),
         url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),
@@ -146,31 +155,6 @@ urlpatterns = [
                 name='restore_relation'),
         ])),
 
-    # Exports
-    url(r'^exports/', include([
-        url(r'^gemet-backbone\.html$', views.BackboneView.as_view(),
-            name='gemet-backbone.html'),
-        url(r'^gemet-backbone\.rdf$', views.BackboneRDFView.as_view(),
-            name='gemet-backbone.rdf'),
-        url(r'^gemet-definitions.html$', views.DefinitionsView.as_view(),
-            name='gemet-definitions.html'),
-        url(r'^gemet-groups\.html$', views.GemetGroupsView.as_view(),
-            name='gemet-groups.html'),
-        url(r'^gemet-relations\.html$', views.GemetRelationsView.as_view(),
-            name='gemet-relations.html'),
-        url(r'^gemet-skoscore\.rdf$', views.Skoscore.as_view(),
-            name='gemet-skoscore.rdf'),
-        url(r'^gemetThesaurus/$', views.GemetThesaurus.as_view(),
-            name='gemetThesaurus'),
-        url(r'^(?P<langcode>[a-zA-Z-]+)/', include([
-            url(r'^rdf$', views.DownloadView.as_view(), name='download'),
-            url(r'^gemet-definitions\.rdf$',
-                views.DefinitionsByLanguage.as_view(),
-                name='gemet-definitions.rdf'),
-            url(r'^gemet-groups\.rdf$', views.GroupsByLanguage.as_view(),
-                name='gemet-groups.rdf'),
-            ])),
-        ])),
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$',
         views.concept_redirect,
         name='concept_redirect'),

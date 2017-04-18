@@ -110,3 +110,4 @@ sandbox/
 # Project-specific files
 # These templates will be fetched from eionet, no need to include them in repo
 gemet/thesaurus/templates/zope
+exports

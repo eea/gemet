@@ -1,4 +1,13 @@
 <div>
-  GEMET - {% if namespace %}{{ namespace }},{% endif %} version {{ version.identifier }},
+  {% if namespace %}
+    {% if namespace == 'Inspire Themes' %}
+      {{ version }}
+    {% else %}
+      GEMET - {{ namespace }}, version {{ version.identifier }},
   {{ version.publication_date|date:"j M Y" }}
+    {% endif %}
+  {% else %}
+    GEMET - version {{ version.identifier }},
+  {{ version.publication_date|date:"j M Y" }}
+  {% endif%}
 </div>

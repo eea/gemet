@@ -132,6 +132,8 @@ class TestDeleteRelationView(GemetTest):
 
     def setUp(self):
         self.relation = RelationFactory(status=DELETED_PENDING)
+        PropertyTypeFactory(label='Theme', name='theme')
+        self.relation.create_reverse()
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -166,15 +168,19 @@ class TestDeleteRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
         self.assertEqual(self.relation.status, DELETED_PENDING)
+        self.assertEqual(self.relation.reverse.status, DELETED_PENDING)
 
     def test_delete_relation_correct_request_pending_relation(self):
         self.relation.status = PENDING
         self.relation.save()
+        reverse_relation_id = self.relation.reverse.id
         url = reverse('delete_relation', kwargs=self.request_kwargs)
         response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
         self.assertFalse(models.Relation.objects.filter(
             id=self.relation.id).exists())
+        self.assertFalse(models.Relation.objects.filter(
+            id=reverse_relation_id).exists())
 
 
 class TestRestoreRelationView(GemetTest):
@@ -182,6 +188,8 @@ class TestRestoreRelationView(GemetTest):
 
     def setUp(self):
         self.relation = RelationFactory(status=DELETED_PENDING)
+        PropertyTypeFactory(label='Theme', name='theme')
+        self.relation.create_reverse()
         self.request_kwargs = {
             'source_id': self.relation.source.id,
             'target_id': self.relation.target.id,
@@ -223,6 +231,7 @@ class TestRestoreRelationView(GemetTest):
         self.assertEqual(200, response.status_code)
         self.relation.refresh_from_db()
         self.assertEqual(self.relation.status, PUBLISHED)
+        self.assertEqual(self.relation.reverse.status, PUBLISHED)
 
 
 class TestAddRelationView(GemetTest):
@@ -237,7 +246,8 @@ class TestAddRelationView(GemetTest):
                                         name='prefLabel',
                                         value='Theme 1',
                                         status=PUBLISHED)
-        self.property_type = PropertyTypeFactory(label='Theme', name='theme')
+        PropertyTypeFactory(label='Theme', name='theme')
+        PropertyTypeFactory(label='Theme member', name='themeMember')
         user = UserFactory()
         self.user = user.username
 
@@ -256,6 +266,7 @@ class TestAddRelationView(GemetTest):
 
         response = self.app.post(url, user=self.user)
         self.assertEqual(200, response.status_code)
+        self.assertEqual(models.Relation.objects.count(), 2)
 
 
 class TestDeletePropertyView(GemetTest):
@@ -397,3 +408,36 @@ class TestAddNewConcept(GemetTest):
         self.assertEqual('test',
                          models.Property.objects.get(name='prefLabel',
                                                      concept__code='201').value)
+
+
+class TestDeleteNewConcept(GemetTest):
+    def setUp(self):
+        self.language = LanguageFactory()
+        self.namespace = NamespaceFactory()
+        self.concept = ConceptFactory(namespace=self.namespace, code='200',
+                                      status=PENDING)
+        self.property = PropertyFactory(concept=self.concept)
+        self.relation = RelationFactory(source=self.concept)
+        self.relation = RelationFactory(target=self.concept)
+        self.foreignrelation = ForeignRelationFactory(concept=self.concept)
+        user = UserFactory()
+        self.user = user.username
+
+    def test_objects_are_deleted(self):
+        url = reverse('concept_delete', kwargs={'langcode': self.language.code,
+                                                'pk': self.concept.id})
+        self.app.get(url, user=self.user)
+        self.assertEqual(0,
+                         len(models.Concept.objects.filter(id=self.concept.id)))
+        self.assertEqual(0,
+                         len(models.Property.objects.filter(
+                             concept=self.concept
+                         )))
+        self.assertEqual(0,
+                         len(models.Relation.objects.filter(
+                             source=self.concept
+                         )))
+        self.assertEqual(0,
+                         len(models.ForeignRelation.objects.filter(
+                             concept=self.concept
+                         )))

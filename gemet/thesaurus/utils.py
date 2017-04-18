@@ -2,9 +2,9 @@ import re
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
 
-from gemet.thesaurus.models import Property, PropertyType, Relation, Version
-from gemet.thesaurus.models import Concept
-from gemet.thesaurus import RELATION_PAIRS
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
+from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
+from gemet.thesaurus.models import Concept, Group, Property, Version
 
 
 def is_rdf(request):
@@ -133,27 +133,6 @@ def exp_decrypt(exp):
     return decompress(decodestring(exp))
 
 
-def has_reverse_relation(relation):
-    return (
-        Relation.objects
-        .filter(source=relation.target, target=relation.source)
-        .exists()
-    )
-
-
-def create_reverse_relation(relation):
-    reverse_relation = PropertyType.objects.get(
-        name=RELATION_PAIRS[relation.property_type.name])
-
-    return Relation.objects.create(
-        source=relation.target,
-        target=relation.source,
-        property_type=reverse_relation,
-        status=relation.status,
-        version_added=relation.version_added,
-    )
-
-
 def get_form_errors(errors):
     # errors is a dictionary with a list as value for each key;
     # the function returns the a string with all the values flattened
@@ -177,3 +156,83 @@ def split_text_into_terms(raw_text):
     term_list = [term.strip(' :').lower() for term in term_list if
                  term.strip(' :').lower() != '']
     return term_list
+
+
+def concept_has_unique_relation(concept, relation_type):
+    # returns True if the concept already has a relation with the given
+    # relation_type (only for group and broader for Groups)
+    broader_relation = (
+        relation_type == 'broader' and
+        concept.namespace.heading == Group.NAMESPACE
+    )
+    group_relation = relation_type == 'group'
+    if not (group_relation or broader_relation):
+        return False
+
+    return (
+        concept.source_relations
+        .filter(
+            property_type__name=relation_type,
+            status__in=[PUBLISHED, PENDING],
+        )
+        .exists()
+    )
+
+
+def get_search_text(concept_id, language_code, status, version):
+    search_properties = (
+        Property.objects
+        .filter(
+            concept_id=concept_id,
+            language_id=language_code,
+            name__in=SEARCH_FIELDS,
+            status__in=[PUBLISHED, PENDING],
+        )
+        .values_list('value', flat=True)
+    )
+
+    if not search_properties:
+        return
+
+    search_text = SEARCH_SEPARATOR.join(search_properties)
+    search_text = SEARCH_SEPARATOR + search_text + SEARCH_SEPARATOR
+
+    return Property(
+        concept_id=concept_id,
+        language_id=language_code,
+        name='searchText',
+        value=search_text,
+        is_resource=0,
+        status=status,
+        version_added_id=version.id
+    )
+
+
+def refresh_search_text(proptype, concept_id, language_code, version=None):
+    if proptype not in SEARCH_FIELDS:
+        return
+
+    version = version or Version.under_work()
+    new_search = get_search_text(concept_id, language_code, PENDING, version)
+    if not new_search:
+        return
+
+    search_property = (
+        Property.objects
+        .filter(
+            concept_id=concept_id,
+            language_id=language_code,
+            name='searchText',
+            status__in=[PUBLISHED, PENDING],
+        )
+        .first()
+    )
+    if not search_property:
+        pass
+    elif search_property.status == PENDING:
+        search_property.delete()
+    elif search_property.status == PUBLISHED:
+        search_property.status = DELETED_PENDING
+        search_property.save()
+
+    new_search.save()

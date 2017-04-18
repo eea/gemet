@@ -1,22 +1,26 @@
-from datetime import datetime
+from django.utils import timezone
 import json
+import sys
 
 from django.contrib.auth import mixins
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
+from django_q.tasks import async
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
 from gemet.thesaurus import models
+from gemet.thesaurus.exports import create_export_files
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
-from gemet.thesaurus.utils import get_form_errors, get_new_code
+from gemet.thesaurus.utils import get_form_errors, refresh_search_text
+from gemet.thesaurus.utils import concept_has_unique_relation, get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
 from gemet.thesaurus.views import HeaderMixin, VersionMixin
 
@@ -190,6 +194,7 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                 name=name,
                 **form.cleaned_data
             )
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
@@ -204,7 +209,9 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         except ObjectDoesNotExist:
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
-
+        if concept_has_unique_relation(source, relation_type):
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = (
             models.Relation.objects
             .filter(source=source, target=target,
@@ -222,8 +229,8 @@ class AddRelationView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                                    version_added=self.pending_version,
                                    property_type=property_type)
         relation.save()
-        data = {}
-        return self._get_response(data, 'success', 200)
+        relation.create_reverse()
+        return self._get_response({}, 'success', 200)
 
 
 class DeleteRelationView(LoginRequiredMixin, JsonResponseMixin, View):
@@ -249,8 +256,11 @@ class DeleteRelationView(LoginRequiredMixin, JsonResponseMixin, View):
         if relation.status == PUBLISHED:
             relation.status = DELETED_PENDING
             relation.save()
+            relation.reverse.status = DELETED_PENDING
+            relation.reverse.save()
         elif relation.status == PENDING:
             relation.delete()
+            relation.reverse.delete()
 
         restore_url = reverse('restore_relation', kwargs={
             'source_id': source_id,
@@ -271,6 +281,9 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
             data = {"message": 'Object does not exist.'}
             return self._get_response(data, 'error', 400)
 
+        if concept_has_unique_relation(source, relation_type):
+            data = {"message": 'This object already has a relation.'}
+            return self._get_response(data, 'error', 400)
         relation = models.Relation.objects.filter(
             source=source,
             target=target,
@@ -283,6 +296,8 @@ class RestoreRelationView(LoginRequiredMixin, JsonResponseMixin, View):
 
         relation.status = PUBLISHED
         relation.save()
+        relation.reverse.status = PUBLISHED
+        relation.reverse.save()
 
         delete_url = reverse('delete_relation', kwargs={
             'source_id': source_id,
@@ -332,6 +347,7 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         )
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
+        refresh_search_text(field.name, id, langcode, self.pending_version)
         data = {
             "value": field.value,
             "id": field.id,
@@ -357,6 +373,7 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         elif field.status == PENDING:
             field.delete()
 
+        refresh_search_text(field.name, field.concept_id, field.language_id)
         return self._get_response({}, 'success', 200)
 
 
@@ -455,26 +472,50 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         return redirect(url)
 
 
+class DeletePendingConceptView(LoginRequiredMixin, View):
+
+    def get(self, request, langcode, pk):
+        try:
+            concept = models.Concept.objects.get(pk=pk, status=PENDING)
+        except ObjectDoesNotExist:
+            raise Http404
+        concept.delete()
+        url = reverse('themes', kwargs={'langcode': langcode})
+        return redirect(url)
+
+
 class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
                          FormView):
     template_name = 'edit/release_version.html'
     form_class = VersionForm
 
     def form_valid(self, form):
+        # Current version becomes an old version
         self.current_version.is_current = False
         self.current_version.save()
 
+        # Pending version becomes current
         self.pending_version.is_current = True
         self.pending_version.identifier = form.cleaned_data['version']
-        self.pending_version.publication_date = datetime.now()
+        self.pending_version.publication_date = timezone.now()
         self.pending_version.save()
 
+        # New pending version is created
         models.Version.objects.create(is_current=False)
 
+        # Old searchText properties are deleted
+        models.Property.objects.filter(
+            name='searchText', status=DELETED_PENDING).delete()
+
+        # Pending objects become published and deleted_pending become deleted
         versionable_classes = models.VersionableModel.__subclasses__()
         for versionable_class in versionable_classes:
             self._change_status(versionable_class, PENDING, PUBLISHED)
             self._change_status(versionable_class, DELETED_PENDING, DELETED)
+
+        # Create exports. Skip for testing
+        if 'test' not in sys.argv:
+            async(create_export_files, self.pending_version)
 
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)

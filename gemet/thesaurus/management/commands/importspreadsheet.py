@@ -6,9 +6,8 @@ from django.core.management.base import BaseCommand
 
 from gemet.thesaurus import PENDING, PUBLISHED
 from gemet.thesaurus import models
-from gemet.thesaurus.management.utils import get_search_text
-from gemet.thesaurus.utils import get_new_code, split_text_into_terms
-from gemet.thesaurus.utils import has_reverse_relation, create_reverse_relation
+from gemet.thesaurus.utils import get_new_code, get_search_text
+from gemet.thesaurus.utils import split_text_into_terms
 
 NAMESPACE = 'Concepts'
 LANGCODE = 'en'
@@ -107,6 +106,39 @@ class Command(BaseCommand):
                 if search_text:
                     self.properties.append(search_text)
 
+    def _create_theme_group_relations(self, source):
+        property_types = models.PropertyType.objects.filter(
+            name__in=['theme', 'group']
+        )
+        property_type_broader = models.PropertyType.objects.get(name='broader')
+        for property_type in property_types:
+            relation = source.source_relations.filter(
+                property_type=property_type).exists()
+            if relation:
+                self.stdout.write(
+                    'Skipping {0} relation creation for concept {1}'
+                    .format(property_type, source))
+                continue
+            broader_relations = models.Relation.objects.filter(
+                property_type=property_type,
+                source__target_relations__source=source,
+                source__target_relations__property_type=property_type_broader
+            )
+            if not broader_relations:
+                self.stdout.write(
+                    'Skipping {0} relation creation for concept {1}. '
+                    'No broader.'.format(property_type, source))
+                continue
+            for relation in broader_relations:
+                new_relation = models.Relation.objects.create(
+                    source=source,
+                    target=relation.target,
+                    property_type=property_type,
+                    version_added=self.version,
+                    status=PENDING)
+                self.stdout.write('For concept {0} was created relation : {1}'
+                                  .format(source, new_relation))
+
     def _create_relations(self, sheet):
         def get_terms(row, idx1, idx2):
             text = (row[idx1].value or '') + ';' + (row[idx2].value or '')
@@ -165,12 +197,14 @@ class Command(BaseCommand):
                             version_added=self.version,
                             status=PENDING,
                         )
-                        self.stdout.write('Relation created: {}'.format(relation))
+                        self.stdout.write('Relation created: {}'
+                                          .format(relation))
 
-                if not has_reverse_relation(relation):
-                    reverse_relation = create_reverse_relation(relation)
+                if not relation.reverse:
+                    reverse_relation = relation.create_reverse()
                     self.stdout.write('Reverse relation created: {}'
                                       .format(reverse_relation))
+            self._create_theme_group_relations(source)
 
     def _get_concept(self, label):
         concept = self.concepts.get(label.lower())

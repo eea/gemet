@@ -1,3 +1,8 @@
+/* remove default style for visited links */
+
+a:visited{
+    color: #2a6495;
+}
 /* before */
 
 .direction-rtl {

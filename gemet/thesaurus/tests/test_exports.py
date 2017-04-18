@@ -1,3 +1,5 @@
+import unittest
+
 from django.core.urlresolvers import reverse
 
 from .factories import (
@@ -16,6 +18,7 @@ from . import GemetTest
 
 class TestExports(GemetTest):
 
+    @unittest.skip('Exports are now saved to static files')
     def test_themes_groups_relations_html(self):
         term1 = TermFactory(code='11')
         term2 = TermFactory(code='12')
@@ -47,6 +50,7 @@ class TestExports(GemetTest):
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
             )
 
+    @unittest.skip('Exports are now saved to static files')
     def test_themes_groups_relations_rdf(self):
         term = TermFactory()
         theme = ThemeFactory()
@@ -74,6 +78,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('theme/4'), 3)
         self.assertEqual(resp.content.count('concept/1'), 3)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_label_and_definitions_html(self):
         term1 = TermFactory(code='1')
         term2 = TermFactory(code='2')
@@ -128,6 +133,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(3)').text(), 'C')
         self.assertEqual(resp.pyquery('table tr:eq(3) td:eq(4)').text(), 'D')
 
+    @unittest.skip('Exports are now saved to static files')
     def test_gemet_groups_html(self):
         supergroup = SuperGroupFactory(code='10')
         group = GroupFactory(code='11')
@@ -170,6 +176,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.pyquery('table:eq(2) tbody td:eq(2)').text(),
                          'C')
 
+    @unittest.skip('Exports are now saved to static files')
     def test_gemet_relations_html(self):
         term1 = TermFactory(code='11')
         term2 = TermFactory(code='12')
@@ -204,6 +211,7 @@ class TestExports(GemetTest):
                 resp.pyquery('tbody tr:eq(%s)' % (str(i))).text() in rows
             )
 
+    @unittest.skip('Exports are now saved to static files')
     def test_skoscore(self):
         term1 = TermFactory(code='11')
         term2 = TermFactory(code='12')
@@ -241,6 +249,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('concept_uri2'), 1)
         self.assertEqual(resp.content.count('concept_uri3'), 1)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_label_and_definitions_rdf(self):
         term1 = TermFactory(code='11')
         term2 = TermFactory(code='12')
@@ -271,6 +280,7 @@ class TestExports(GemetTest):
         self.assertEqual(resp.content.count('C_label'), 0)
         self.assertEqual(resp.content.count('C_definition'), 0)
 
+    @unittest.skip('Exports are now saved to static files')
     def test_gemet_groups_rdf(self):
         supergroup = SuperGroupFactory(code='10')
         group = GroupFactory(code='11')

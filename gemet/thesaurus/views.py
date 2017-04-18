@@ -1,6 +1,6 @@
+import os
 import re
 import sys
-from collections import OrderedDict
 from itertools import chain
 from urllib import urlencode
 from xmlrpclib import Fault
@@ -15,10 +15,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.conf import settings
 
-from gemet.thesaurus.models import Concept, DefinitionSource, ForeignRelation
-from gemet.thesaurus.models import Group, Language, InspireTheme, Namespace
-from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
-from gemet.thesaurus.models import Version
+from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
+from gemet.thesaurus.models import InspireTheme, Namespace, Property, SuperGroup
+from gemet.thesaurus.models import Term, Theme, Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
@@ -152,6 +151,8 @@ class InspireThemesView(ThemesView):
         context.update({
             'languages': languages,
         })
+        context['version'] = Namespace.objects.get(
+            heading=context['namespace']).version
         return context
 
 
@@ -337,6 +338,12 @@ class InspireThemeView(ConceptView):
     concept_type = 'inspire_theme'
     context_object_name = 'inspire_theme'
 
+    def get_context_data(self, **kwargs):
+        context = super(InspireThemeView, self).get_context_data(**kwargs)
+        context['version'] = Namespace.objects.get(
+            heading=context['namespace']).version
+        return context
+
 
 class ThemeView(ConceptView):
     template_name = "theme.html"
@@ -521,24 +528,6 @@ class ConceptSourcesView(StatusMixin, View):
         return render(request, self.template_name, context)
 
 
-class BackboneView(TemplateView):
-    template_name = 'downloads/backbone.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(BackboneView, self).get_context_data(**kwargs)
-
-        relations = (
-            Relation.published.filter(
-                property_type__label__in=['Theme', 'Group'],
-            ).values(
-                'source__code', 'property_type__label', 'target__code',
-            )
-        )
-
-        context.update({"relations": relations})
-        return context
-
-
 class XMLTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -562,305 +551,7 @@ class GemetVoidView(XMLTemplateView):
         return context
 
 
-class BackboneRDFView(XMLTemplateView):
-    template_name = 'downloads/backbone.rdf'
-
-    def get_context_data(self, **kwargs):
-        context = super(BackboneRDFView, self).get_context_data(**kwargs)
-
-        supergroup_uri = Namespace.objects.get(heading='Super groups').type_url
-        supergroups = SuperGroup.published.values('code')
-
-        group_uri = Namespace.objects.get(heading='Groups').type_url
-        # TODO: find a way to alias foreign key attributes
-        groups = (Group.published
-                  .filter(source_relations__property_type__name='broader')
-                  .values('source_relations__target__code', 'code'))
-
-        theme_uri = Namespace.objects.get(heading='Themes').type_url
-        themes = Theme.published.values('code')
-
-        relations = {}
-        concepts = Term.published.values('id', 'code')
-
-        for concept in concepts:
-            relations.update({
-                concept['code']: (
-                    Relation.published
-                    .filter(source_id=concept['id'],
-                            property_type__name__in=['theme', 'group'])
-                    .values('target__code',
-                            'property_type__name')
-                )
-            })
-
-        context.update({
-            'supergroup_uri': supergroup_uri,
-            'supergroups': supergroups,
-            'group_uri': group_uri,
-            'groups': groups,
-            'theme_uri': theme_uri,
-            'themes': themes,
-            'concept_relations': relations,
-        })
-        return context
-
-
-class DefinitionsView(TemplateView):
-    template_name = 'downloads/definitions.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(DefinitionsView, self).get_context_data(**kwargs)
-
-        concepts = []
-        for term in Term.published.all():
-            concept_properties = (
-                term.properties
-                .filter(
-                    language__code=DEFAULT_LANGCODE,
-                    name__in=['prefLabel', 'scopeNote', 'definition',
-                              'notation'],
-                )
-                .values('name', 'value')
-            )
-            if concept_properties:
-                concept = {'code': term.code}
-                for c in concept_properties:
-                    concept.update({c['name']: c['value']})
-                concepts.append(concept)
-
-        context.update({"concepts": concepts})
-
-        return context
-
-
-class GemetGroupsView(TemplateView):
-    template_name = 'downloads/gemet-groups.html'
-    translate = {
-        'Super groups': 'SuperGroup',
-        'Groups': 'Group',
-        'Themes': 'Theme',
-    }
-
-    def get_context_data(self, **kwargs):
-        context = super(GemetGroupsView, self).get_context_data(**kwargs)
-
-        supergroups = (
-            Property.published
-            .filter(
-                name='prefLabel',
-                concept__namespace__heading='Super groups',
-                language__code=DEFAULT_LANGCODE,
-            )
-            .values('concept__code', 'value')
-        )
-
-        relations = (
-            Relation.published
-            .filter(
-                target_id__in=SuperGroup.published.values_list('id', flat=True),
-                property_type__label='broader term',
-            )
-            .values('target__code', 'source_id')
-        )
-
-        groups = []
-        for relation in relations:
-            source = (
-                Property.published
-                .filter(
-                    concept_id=relation['source_id'],
-                    name='prefLabel',
-                    language__code=DEFAULT_LANGCODE,
-                )
-                .values('concept__code', 'value')
-                .first()
-            )
-            groups.append({
-                'source_code': source['concept__code'],
-                'source_label': source['value'],
-                'target_code': relation['target__code'],
-            })
-
-        themes = (
-            Property.published
-            .filter(
-                name='prefLabel',
-                language__code=DEFAULT_LANGCODE,
-                concept__namespace__heading='Themes',
-            )
-            .values('concept__code', 'value')
-        )
-
-        context.update({
-            'supergroups': supergroups,
-            'supergroup_type': self.translate.get('Super groups'),
-            'groups': groups,
-            'group_type': self.translate.get('Groups'),
-            'themes': themes,
-            'theme_type': self.translate.get('Themes'),
-        })
-
-        return context
-
-
-class GemetRelationsMixin(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super(GemetRelationsMixin, self).get_context_data(**kwargs)
-
-        self.relations = Relation.published.filter(
-            source__namespace__heading='Concepts',
-            target__namespace__heading='Concepts',
-            property_type__name__in=[
-                'broader', 'narrower', 'related',
-            ]
-        ).values(
-            'source__code',
-            'target__code',
-            'property_type__name',
-        )
-
-        self.foreign_relations = (
-            ForeignRelation.published
-            .filter(
-                concept__in=Term.published.all(),
-                property_type__name__in=[
-                    'broadMatch', 'closeMatch', 'exactMatch', 'narrowMatch',
-                    'relatedMatch',
-                ]
-            )
-        )
-
-        return context
-
-
-class GemetRelationsView(GemetRelationsMixin):
-    template_name = 'downloads/gemet-relations.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(GemetRelationsView, self).get_context_data(**kwargs)
-        self.foreign_relations = (
-            self.foreign_relations
-            .filter(
-                show_in_html=True,
-            ).order_by(
-                'label',
-            ).values(
-                'concept__code', 'property_type__name', 'uri',
-            )
-        )
-        self.relations = list(self.relations)
-        for relation in self.foreign_relations:
-            d = {'source__code': relation['concept__code'],
-                 'property_type__name': relation['property_type__name'],
-                 'target__code': relation['uri']}
-            self.relations.append(d)
-
-        context.update({
-            'relations': sorted(self.relations,
-                                key=lambda x: x['source__code']),
-        })
-
-        return context
-
-
-class Skoscore(GemetRelationsMixin, XMLTemplateView):
-    template_name = 'downloads/skoscore.rdf'
-
-    def get_context_data(self, **kwargs):
-        context = super(Skoscore, self).get_context_data(**kwargs)
-
-        relations = {}
-
-        self.foreign_relations = (
-            self.foreign_relations
-            .order_by('label',)
-            .values('concept__code', 'property_type__name', 'uri',)
-        )
-        for r in self.relations:
-            source_code = r['source__code']
-            name = r['property_type__name']
-            target_code = (
-                ('' if 'Match' in name else 'concept/') +
-                r['target__code']
-            )
-            relations.setdefault(source_code, []).append(
-                {'target__code': target_code, 'property_type__name': name}
-            )
-
-        for r in self.foreign_relations:
-            source_code = r['concept__code']
-            name = r['property_type__name']
-            target_code = r['uri']
-            relations.setdefault(source_code, []).append(
-                {'target__code': target_code, 'property_type__name': name}
-            )
-
-        context.update({'concept_relations': relations})
-
-        return context
-
-
-class DefinitionsByLanguage(HeaderMixin, XMLTemplateView):
-    template_name = 'downloads/language_definitions.rdf'
-
-    def get_context_data(self, **kwargs):
-        context = super(DefinitionsByLanguage, self).get_context_data(**kwargs)
-
-        concepts = Term.published.values('id', 'code').order_by('code')
-        definitions = OrderedDict()
-
-        for concept in concepts:
-            properties = sorted(
-                (
-                    Property.published
-                    .filter(
-                        concept_id=concept['id'],
-                        language=self.language,
-                        name__in=['definition', 'prefLabel'],
-                    )
-                    .values('name', 'value')
-                ),
-                key=lambda x: x['name'],
-                reverse=True
-            )
-            if properties:
-                definitions[concept['code']] = properties
-
-        context.update({'definitions': definitions})
-        return context
-
-
-class GroupsByLanguage(HeaderMixin, XMLTemplateView):
-    template_name = 'downloads/language_groups.rdf'
-
-    def get_context_data(self, **kwargs):
-        context = super(GroupsByLanguage, self).get_context_data(**kwargs)
-
-        for heading in ['Super groups', 'Groups', 'Themes']:
-            context.update({
-                heading.replace(' ', '_'): (
-                    Property.objects
-                    .filter(
-                        concept__namespace__heading=heading,
-                        language=self.language,
-                        name='prefLabel',
-                    )
-                    .values(
-                        'concept__code',
-                        'value',
-                    )
-                )
-            })
-
-        return context
-
-
-class GemetThesaurus(XMLTemplateView):
-    template_name = 'downloads/gemetThesaurus.xml'
-
-
-class DownloadView(HeaderMixin, FormView):
+class DownloadView(HeaderMixin, VersionMixin, FormView):
     template_name = "downloads/download.html"
     form_class = ExportForm
 
@@ -868,13 +559,17 @@ class DownloadView(HeaderMixin, FormView):
         return {'language_names': self.language}
 
     def get_success_url(self):
-        return reverse(self.reverse_name, kwargs={'langcode': self.langcode})
+        return reverse('export_lang', kwargs={
+            'version': self.current_version,
+            'langcode': self.langcode,
+            'filename': self.filename,
+        })
 
     def form_valid(self, form):
         if self.request.POST['type'] == 'definitions':
-            self.reverse_name = 'gemet-definitions.rdf'
+            self.filename = 'gemet-definitions.rdf'
         elif self.request.POST['type'] == 'groups':
-            self.reverse_name = 'gemet-groups.rdf'
+            self.filename = 'gemet-groups.rdf'
         else:
             raise Http404
         self.langcode = form.cleaned_data['language_names'].code
@@ -890,6 +585,33 @@ def download_gemet_rdf(request):
     response = StreamingHttpResponse(f, content_type='application/x-gzip')
     response['Content-Disposition'] = 'attachment; filename="gemet.rdf.gz"'
     return response
+
+
+def get_export_resp(filename, filepath):
+    try:
+        f = open(filepath)
+    except (IOError, AttributeError):
+        raise Http404
+
+    extention = filename.split('.')[-1]
+    content_types = {
+        'rdf': 'application/rdf+xml',
+        'html': "text/html; charset=utf-8",
+    }
+    content_type = content_types[extention]
+
+    response = StreamingHttpResponse(f, content_type=content_type)
+    return response
+
+
+def download_translatable_export_file(request, version, langcode, filename):
+    filepath = os.path.join(settings.EXPORTS_ROOT, version, langcode, filename)
+    return get_export_resp(filename, filepath)
+
+
+def download_export_file(request, version, filename):
+    filepath = os.path.join(settings.EXPORTS_ROOT, version, filename)
+    return get_export_resp(filename, filepath)
 
 
 def redirect_old_urls(request, view_name):

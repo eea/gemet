@@ -9,9 +9,10 @@
         xml:lang="{{ language.code }}"
         xml:base="http://www.eionet.europa.eu/gemet/">
 
-{% for concept_code, definition in definitions.items %}
-    <rdf:Description rdf:about="concept/{{ concept_code }}">
-    {% for d in definition %}
+{% regroup definitions by concept__code as concept_definitions %}
+{% for definition in concept_definitions %}
+    <rdf:Description rdf:about="concept/{{ definition.grouper }}">
+    {% for d in definition.list %}
     <skos:{{ d.name }}>{{ d.value|normalize:"NFC" }}</skos:{{ d.name }}>
     {% endfor %}
     </rdf:Description>

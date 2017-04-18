@@ -7,6 +7,7 @@ DELETED = 2
 DELETED_PENDING = 3
 
 SEARCH_SEPARATOR = '\t'
+SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']
 
 NS_VIEW_MAPPING = {
     'Concepts': 'concept',

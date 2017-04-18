@@ -10,19 +10,24 @@ http://www.eionet.europa.eu/gemet
 
 Installation (using docker)
 -------------------------------
-[Base docker image](https://hub.docker.com/r/eeacms/gemet/)
+`Base docker image`_ .
+.. _`Base docker image`: https://hub.docker.com/r/eeacms/gemet/
 
-##1. Staging and Production
+1. Staging and Production
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The staging and production deployment will be done through Rancher. Depending on the
 Rancher environment's version, one of the following will be used:
 
-1. [Rancher Compose](https://docs.rancher.com/rancher/v1.4/en/cattle/rancher-compose/)
+1. `Rancher Compose`_ .
+2. `Rancher CLI`_ .
 
-2. [Rancher CLI](https://docs.rancher.com/rancher/v1.2/en/cli/)
+.. `Rancher Compose`: https://docs.rancher.com/rancher/v1.4/en/cattle/rancher-compose/
+
+.. `Rancher CLI`: https://docs.rancher.com/rancher/v1.2/en/cli/
 
 
-During the first time deployement, create and edit the following files:
+During the first time deployement, create and edit the following files::
     
     $ cd deploy
 
@@ -30,22 +35,26 @@ During the first time deployement, create and edit the following files:
     $ cp mysql.env.example mysql.env
     $ vim mysql.env
 
-### 1.1 Start stack
+1.1 Start stack::
 
     $ cd deploy
     $ docker-compose up -d
 
-### 1.2 Mysql
+1.2 Mysql::
 
     TODO
 
-##2. Development
+2. Development
+~~~~~~~~~~~~~~
 
 1. Install [Docker](https://www.docker.com/).
 
 2. Install [Docker Compose](https://docs.docker.com/compose/).
 
-Create and edit the following files:
+.. `Docker`: https://www.docker.com/
+.. `Docker Compose`: https://docs.docker.com/compose/
+
+Create and edit the following files::
 
     $ cd devel
 
@@ -53,12 +62,12 @@ Create and edit the following files:
     $ cp mysql.env.example mysql.env
     $ vim mysql.env
 
-### 1.1 Start stack
+2.1 Start stack::
 
     $ cd devel
     $ docker-compose up -d
 
-### 1.2 Mysql
+2.2 Mysql::
 
     TODO
 
@@ -156,11 +165,23 @@ be run as an unprivileged user in the product directory::
 
    ./manage.py loaddata gemet/thesaurus/fixtures/data.json
 
-9. Import data, see `Data Import`_ below.
+10. Import data, see `Data Import`_ below.
 
 .. _`Data Import`: https://github.com/eaudeweb/gemet#data-import
 
-10. Insert data that enables search to work properly::
+11. Fix romanian characters::
+
+    ./manage.py fix_romanian
+
+12. Import new terms from the spreadsheet::
+
+    ./manage.py importspreadsheet [spread_sheet_name]
+
+13. Create reversed relations for all concepts::
+
+    ./manage.py fixrelations
+
+14. Insert data that enables search to work properly::
 
     ./manage.py insertdata
 

@@ -26,6 +26,8 @@ USE_ZOPE_LAYOUT = False
 ZOPE_URL = 'http://www.eionet.europa.eu'
 GEMET_URL = ZOPE_URL + '/gemet'
 
+EXPORTS_ROOT = os.path.join(BASE_DIR, 'exports-test/')
+
 try:
     from local_test_settings import *
 except ImportError:

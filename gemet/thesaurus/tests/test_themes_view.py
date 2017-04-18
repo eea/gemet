@@ -1,8 +1,9 @@
 from django.core.urlresolvers import reverse
 
 from .factories import ThemeFactory, PropertyFactory, LanguageFactory
-from .factories import VersionFactory
+from .factories import VersionFactory, UserFactory
 from . import GemetTest
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 
 
 class TestThemesView(GemetTest):
@@ -13,7 +14,6 @@ class TestThemesView(GemetTest):
     def test_no_theme(self):
         url = reverse('themes', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
-
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
 
@@ -67,3 +67,33 @@ class TestThemesView(GemetTest):
         self.assertEqual(resp.pyquery('.listing.columns li:eq(1) a').text(),
                          u'Theme 2'
                          )
+
+
+class TestThemesViewWithUser(GemetTest):
+    def setUp(self):
+        self.language = LanguageFactory()
+        user = UserFactory()
+        VersionFactory()
+        self.user = user.username
+
+    def test_pending_name_for_theme(self):
+        theme = ThemeFactory(status=PUBLISHED)
+        PropertyFactory(concept=theme, value='Old Theme test',
+                        language=self.language,
+                        status=DELETED_PENDING)
+        PropertyFactory(concept=theme, value='New Theme test',
+                        language=self.language,
+                        status=PENDING)
+        url = reverse('themes', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.listing.columns li a').text(),
+                         'New Theme test')
+
+    def test_new_theme(self):
+        theme = ThemeFactory(status=PENDING)
+        PropertyFactory(concept=theme, value='New',
+                        status=PENDING,
+                        language=self.language)
+        url = reverse('themes', kwargs={'langcode': 'en'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.listing.columns li a').text(), 'New')

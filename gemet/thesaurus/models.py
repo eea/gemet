@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.functional import cached_property
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
-from gemet.thesaurus import NS_VIEW_MAPPING
+from gemet.thesaurus import NS_VIEW_MAPPING, RELATION_PAIRS
 
 
 class Version(models.Model):
@@ -16,6 +16,11 @@ class Version(models.Model):
     def under_work():
         return Version.objects.get(identifier="")
 
+    def __unicode__(self):
+        if self.identifier == "":
+            return 'Upcoming version'
+        return self.identifier
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -23,6 +28,14 @@ class PublishedManager(models.Manager):
             super(PublishedManager, self).get_queryset()
             .filter(status__in=VersionableModel.PUBLISHED_STATUS_OPTIONS)
         )
+
+
+class AuthorizedUser(models.Model):
+    username = models.CharField(max_length=100)
+
+    @staticmethod
+    def get_authorized_users():
+        return AuthorizedUser.objects.values_list('username', flat=True)
 
 
 class VersionableModel(models.Model):
@@ -285,6 +298,25 @@ class Relation(VersionableModel):
     def __unicode__(self):
         return 's: {0}, t: {1}, rel: {2}'.format(
             self.source.code, self.target.code, self.property_type.name)
+
+    @cached_property
+    def reverse(self):
+        return (
+            Relation.objects
+            .filter(source=self.target, target=self.source)
+            .first()
+        )
+
+    def create_reverse(self):
+        reverse_relation_name = RELATION_PAIRS[self.property_type.name]
+        reverse_relation = PropertyType.objects.get(name=reverse_relation_name)
+        return Relation.objects.create(
+            source=self.target,
+            target=self.source,
+            property_type=reverse_relation,
+            status=self.status,
+            version_added=self.version_added,
+        )
 
 
 class ForeignRelation(VersionableModel):

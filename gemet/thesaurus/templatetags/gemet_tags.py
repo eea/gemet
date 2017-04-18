@@ -1,4 +1,5 @@
 import unicodedata
+
 from django import template
 from django.core.urlresolvers import reverse
 
