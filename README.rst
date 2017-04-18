@@ -1,6 +1,12 @@
 GEMET
 =====
 
+.. image:: https://coveralls.io/repos/github/eea/gemet/badge.svg?branch=master
+    :target: https://coveralls.io/github/eea/gemet?branch=master
+
+.. image:: https://travis-ci.org/eea/gemet.svg?branch=master
+    :target: https://travis-ci.org/eea/gemet
+
 .. contents ::
 
 Project Name
