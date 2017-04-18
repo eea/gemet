@@ -36,11 +36,12 @@ class TestReleaseNewVersion(GemetTest):
     def test_release_new_version(self):
         url = reverse('release_version', kwargs=self.request_kwargs)
         response = self.app.post(url, user=self.user,
-                                 params={'version': '1.1.0'})
+                                 params={'version': '1.1.0', 'change_note': 'test'})
         self.assertEqual(302, response.status_code)
         new_published_version = Version.objects.get(identifier='1.1.0')
         old_version = Version.objects.get(identifier='1.0.0')
         self.assertTrue(new_published_version.is_current)
+        self.assertEqual('test', new_published_version.changed_note)
         self.assertFalse(old_version.is_current)
         self.assertEqual(0, Property.objects.filter(status=PENDING).count())
         self.assertEqual(0, Property.objects.filter(
@@ -74,10 +75,11 @@ class TestReleaseNewVersionOtherConcepts(GemetTest):
     def test_release_new_version(self):
         url = reverse('release_version', kwargs=self.request_kwargs)
         response = self.app.post(url, user=self.user,
-                                 params={'version': '1.1.0'})
+                                 params={'version': '1.1.0', 'change_note': 'test'})
         self.assertEqual(302, response.status_code)
         new_published_version = Version.objects.get(identifier='1.1.0')
         old_version = Version.objects.get(identifier='1.0.0')
+        self.assertEqual('test', new_published_version.changed_note)
         self.assertTrue(new_published_version.is_current)
         self.assertFalse(old_version.is_current)
         self.assertEqual(0, Group.objects.filter(status=PENDING).count())
