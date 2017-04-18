@@ -64,3 +64,4 @@ class LDAPAuthenticationForm(AuthenticationForm):
 
 class VersionForm(forms.Form):
     version = forms.ChoiceField(choices=get_version_choices)
+    change_note = forms.CharField(max_length=16000, widget=forms.Textarea(attrs={'rows': 4, 'cols': 80}))

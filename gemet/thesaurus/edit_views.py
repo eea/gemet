@@ -497,6 +497,7 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
         # Pending version becomes current
         self.pending_version.is_current = True
         self.pending_version.identifier = form.cleaned_data['version']
+        self.pending_version.changed_note = form.cleaned_data['change_note']
         self.pending_version.publication_date = timezone.now()
         self.pending_version.save()
 

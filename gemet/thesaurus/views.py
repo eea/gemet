@@ -83,6 +83,13 @@ class AboutView(HeaderMixin, TemplateView):
 class ChangesView(HeaderMixin, TemplateView):
     template_name = "changes.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(ChangesView, self).get_context_data(**kwargs)
+        context.update({
+            'versions': Version.objects.all().exclude(identifier="").order_by('-publication_date'),
+        })
+        return context
+
 
 class WebServicesView(HeaderMixin, TemplateView):
     template_name = 'webservices.html'

@@ -1942,8 +1942,11 @@ a.search-button {
 }
 
 .release-page {
-    width: 30%;
-    max-width: 500px;
+    width: 90%;
+}
+
+.release-page textarea {
+    height:auto;
 }
 
 .release-page .release-form {
