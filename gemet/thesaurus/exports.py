@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from gemet.thesaurus import DEFAULT_LANGCODE, PUBLISHED
 from gemet.thesaurus.models import Group, ForeignRelation, Language, Namespace
 from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
+from gemet.thesaurus.models import Version
 
 
 class ExportView(object):
@@ -330,26 +331,52 @@ TRANSLATABLE_EXPORT_VIEWS = [
 ]
 
 
-def create_export_files(version):
-    version_root = os.path.join(settings.EXPORTS_ROOT, version.identifier)
-    os.makedirs(version_root)
+class ExportFileManager(object):
+    def __init__(self, version=None):
+        self.version = version or Version.objects.get(is_current=True)
+        self.languages = Language.objects.values_list('code', flat=True)
 
-    for view in EXPORT_VIEWS:
-        location = os.path.join(version_root, view.filename)
-        with open(location, 'w') as f:
-            content = render_to_string(view.template_name, view.get_context())
-            f.write(content.encode('utf-8'))
+    def create_files(self):
+        latest_root = os.path.join(settings.EXPORTS_ROOT, 'latest')
+        version_root = os.path.join(settings.EXPORTS_ROOT,
+                                    self.version.identifier)
+        if not os.path.exists(latest_root):
+            self._create_dirs(latest_root)
+        if not os.path.exists(version_root):
+            self._create_dirs(version_root)
+        symlinks = {}
 
-    languages = Language.objects.order_by('name').values_list('code', flat=True)
-    for language in languages:
-        language_root = os.path.join(version_root, language)
-        os.makedirs(language_root)
-
-    for view in TRANSLATABLE_EXPORT_VIEWS:
-        for language in languages:
-            location = os.path.join(version_root, language, view.filename)
+        for view in EXPORT_VIEWS:
+            location = os.path.join(version_root, view.filename)
+            latest_location = os.path.join(latest_root, view.filename)
+            symlinks[location] = latest_location
 
             with open(location, 'w') as f:
                 content = render_to_string(view.template_name,
-                                           view.get_context(language))
+                                           view.get_context())
                 f.write(content.encode('utf-8'))
+
+        for view in TRANSLATABLE_EXPORT_VIEWS:
+            for language in self.languages:
+                location = os.path.join(version_root, language, view.filename)
+                latest_loc = os.path.join(latest_root, language, view.filename)
+                symlinks[location] = latest_loc
+
+                with open(location, 'w') as f:
+                    content = render_to_string(view.template_name,
+                                               view.get_context(language))
+                    f.write(content.encode('utf-8'))
+
+        for source, destination in symlinks.iteritems():
+            os.symlink(source, destination)
+
+    def _create_dirs(self, path_root):
+        os.makedirs(path_root)
+        for language in self.languages:
+            language_root = os.path.join(path_root, language)
+            os.makedirs(language_root)
+
+
+def create_export_files():
+    exporter = ExportFileManager()
+    exporter.create_files()

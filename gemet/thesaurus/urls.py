@@ -44,9 +44,9 @@ urlpatterns = [
         name='gemet_schema'),
     url(r'^void\.rdf/?$', views.GemetVoidView.as_view()),
     url(r'^gemet\.rdf\.gz/?$', views.download_gemet_rdf),
-    url(r'^exports/(?P<version>[\d\.]*)/(?P<filename>[a-zA-Z-\.]*)$',
+    url(r'^exports/(?P<version>[\d\.]+|latest)/(?P<filename>[a-zA-Z-\.]*)$',
         views.download_export_file, name='export'),
-    url(r'^exports/(?P<version>[\d\.]+)/(?P<langcode>[a-zA-Z-]+)/'
+    url(r'^exports/(?P<version>[\d\.]+|latest)/(?P<langcode>[a-zA-Z-]+)/'
         '(?P<filename>[a-zA-Z-\.]+)$',
         views.download_translatable_export_file, name='export_lang'),
 
