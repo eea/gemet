@@ -9,7 +9,7 @@ from gemet.thesaurus import NS_VIEW_MAPPING, RELATION_PAIRS
 class Version(models.Model):
     identifier = models.CharField(max_length=255)
     publication_date = models.DateTimeField(blank=True, null=True)
-    changed_note = models.TextField()
+    change_note = models.TextField()
     is_current = models.BooleanField(default=False)
 
     @staticmethod

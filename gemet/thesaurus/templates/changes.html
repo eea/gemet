@@ -7,13 +7,14 @@ GEMET History of Changes
 {% block content %}
   {% include 'header.html' with view='changes'%}
 
-<h1>History of Changes in GEMET</h1>
+  <h1>History of Changes in GEMET</h1>
 
-<dl>
+  <dl>
     {% for version in versions %}
-      <dt>{{ version.identifier }} ({{ version.publication_date | date:"Y-m-d"}})</dt>
-      <dd style="word-wrap: break-word;"> {{ version.changed_note | linebreaks}}</dd>
+      <dt>{{ version.identifier }} ({{ version.publication_date | date:"Y-m-d" }})</dt>
+      <dd style="word-wrap: break-word;"> {{ version.change_note | linebreaks }}</dd>
     {% endfor %}
+
     <dt>2012-12-11</dt>
     <dd>
     New terms added:
@@ -50,5 +51,5 @@ GEMET History of Changes
     <dt>2009-07-20</dt>
     <dd>Arabic language added</dd>
 
-</dl>
+  </dl>
 {% endblock %}

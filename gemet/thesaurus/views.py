@@ -85,8 +85,13 @@ class ChangesView(HeaderMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChangesView, self).get_context_data(**kwargs)
+        versions = (
+            Version.objects
+            .exclude(identifier="")
+            .order_by('-publication_date')
+        )
         context.update({
-            'versions': Version.objects.all().exclude(identifier="").order_by('-publication_date'),
+            'versions': versions,
         })
         return context
 
