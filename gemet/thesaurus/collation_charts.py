@@ -31,7 +31,9 @@ unicode_character_map = {
         (u'w', u'W'),
         (u'x', u'X'),
         (u'y', u'Y'),
-        (u'z', u'Z')],
+        (u'z', u'Z'),
+    ],
+
     'en-US': [
         (u'a', u'A'),
         (u'b', u'B'),
@@ -58,7 +60,9 @@ unicode_character_map = {
         (u'w', u'W'),
         (u'x', u'X'),
         (u'y', u'Y'),
-        (u'z', u'Z')],
+        (u'z', u'Z'),
+    ],
+
     'el': [
         (u"\u03B1", u"\u0391", u"\u03AC", u"\u0386"),
         (u"\u03B2", u"\u0392"),
@@ -85,7 +89,9 @@ unicode_character_map = {
         (u"\u03C6", u"\u03A6"),
         (u"\u03C7", u"\u03A7"),
         (u"\u03C8", u"\u03A8"),
-        (u"\u03C9", u"\u03A9", u"\u2126", u"\u03CE", u"\u038F")],
+        (u"\u03C9", u"\u03A9", u"\u2126", u"\u03CE", u"\u038F"),
+    ],
+
     'bg': [
         (u"\u0430", u"\u0410"),
         (u"\u0431", u"\u0411"),
@@ -116,7 +122,9 @@ unicode_character_map = {
         (u"\u044A", u"\u042A"),
         (u"\u044C", u"\u042C"),
         (u"\u044E", u"\u042E"),
-        (u"\u044F", u"\u042F")],
+        (u"\u044F", u"\u042F"),
+    ],
+
     'ca': [
         (u"a", u"A", u"à", u"À"),
         (u"b", u"B"),
@@ -143,7 +151,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'da': [
         (u'a', u'A'),
         (u'b', u'B'),
@@ -173,7 +183,9 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u"æ", u"Æ"),
         (u"ø", u"Ø"),
-        (u"å", u"Å")],
+        (u"å", u"Å"),
+    ],
+
     'et': [
         (u"a", u"A"),
         (u"b", u"B"),
@@ -206,7 +218,9 @@ unicode_character_map = {
         (u"ö", u"Ö"),
         (u"ü", u"Ü"),
         (u"x", u"X"),
-        (u"y", u"Y")],
+        (u"y", u"Y"),
+    ],
+
     'fi': [
         (u"a", u"A"),
         (u"b", u"B"),
@@ -235,7 +249,9 @@ unicode_character_map = {
         (u"z", u"Z"),
         (u"å", u"Å"),
         (u"ä", u"Ä"),
-        (u"ö", u"Ö")],
+        (u"ö", u"Ö"),
+    ],
+
     'hu': [
         (u"a", u"A"),
         (u"á", u"Á"),
@@ -277,7 +293,9 @@ unicode_character_map = {
         (u"\u0171", u"\u0170"),
         (u"v", u"V"),
         (u"z", u"Z"),
-        (u"zs", u"Zs", u"\u005AS")],
+        (u"zs", u"Zs", u"\u005AS"),
+    ],
+
     'ru': [
         (u"\u0430", u"\u0410"),
         (u"\u0431", u"\u0411"),
@@ -311,7 +329,9 @@ unicode_character_map = {
         (u"\u044C", u"\u042C"),
         (u"\u044D", u"\u042D"),
         (u"\u044E", u"\u042E"),
-        (u"\u044F", u"\u042F")],
+        (u"\u044F", u"\u042F"),
+    ],
+
     'eu': [
         (u"a", u"A"),
         (u"b", u"B"),
@@ -344,7 +364,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'hr': [
         (u"a", u"A"),
         (u"b", u"B"),
@@ -374,7 +396,9 @@ unicode_character_map = {
         (u"u", u"U"),
         (u"v", u"V"),
         (u"z", u"Z"),
-        (u"\u017E", u"\u017D")],
+        (u"\u017E", u"\u017D"),
+    ],
+
     'cs': [
         (u"a", u"A"),
         (u"á", u"Á"),
@@ -417,7 +441,9 @@ unicode_character_map = {
         (u"y", u"Y"),
         (u"ý", u"Ý"),
         (u"z", u"Z"),
-        (u"\u017E", u"\u017D")],
+        (u"\u017E", u"\u017D"),
+    ],
+
     'fr': [
         (u"a", u"A", u"\u00E0", u"\u00C0", u"\u00E2", u"\u00C2"),
         (u"b", u"B"),
@@ -445,7 +471,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'it': [
         (u"a", u"A", u"\u00E0", u"\u00C0"),
         (u"b", u"B"),
@@ -472,7 +500,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'de': [
         (u"a", u"A", u"ä", u"Ä"),
         (u"b", u"B"),
@@ -499,7 +529,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'pt': [
         (u"a", u"A", u"á", u"Á", u"\u00E0", u"\u00C0", u"\u00E2", u"\u00C2",
          u"\u00E3", u"\u00C3"),
@@ -527,7 +559,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'es': [
         (u"a", u"A", u"á", u"Á"),
         (u"b", u"B"),
@@ -555,7 +589,9 @@ unicode_character_map = {
         (u"w", u"W"),
         (u"x", u"X"),
         (u"y", u"Y"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'nl': [
         (u"a", u"A", u"ä", u"Ä"),
         (u"b", u"B"),
@@ -583,7 +619,9 @@ unicode_character_map = {
         (u"x", u"X"),
         (u"y", u"Y"),
         (u"\u0133", u"\u0132"),
-        (u"z", u"Z")],
+        (u"z", u"Z"),
+    ],
+
     'no': [
         (u'a', u'A'),
         (u'b', u'B'),
@@ -613,7 +651,9 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u"æ", u"Æ"),
         (u"ø", u"Ø"),
-        (u"å", u"Å")],
+        (u"å", u"Å"),
+    ],
+
     'pl': [
         (u"a", u"A"),
         (u"\u0105", u"\u0104"),
@@ -649,7 +689,9 @@ unicode_character_map = {
         (u"y", u"Y"),
         (u"z", u"Z"),
         (u"\u017A", u"\u0179"),
-        (u"\u017C", u"\u017B")],
+        (u"\u017C", u"\u017B"),
+    ],
+
     'sk': [
         (u"a", u"A"),
         (u"á", u"Á"),
@@ -696,7 +738,9 @@ unicode_character_map = {
         (u"y", u"Y"),
         (u"ý", u"Ý"),
         (u"z", u"Z"),
-        (u"\u017E", u"\u017D")],
+        (u"\u017E", u"\u017D"),
+    ],
+
     'sl': [
         (u"a", u"A"),
         (u"b", u"B"),
@@ -726,7 +770,9 @@ unicode_character_map = {
         (u"x", u"X"),
         (u"y", u"Y"),
         (u"z", u"Z"),
-        (u"\u017E", u"\u017D")],
+        (u"\u017E", u"\u017D"),
+    ],
+
     'sv': [
         (u'a', u'A'),
         (u'b', u'B'),
@@ -756,7 +802,9 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u"å", u"Å"),
         (u"ä", u"Ä"),
-        (u"ö", u"Ö")],
+        (u"ö", u"Ö"),
+    ],
+
     'lt': [
         (u'a', u'A', u'ą', u'Ą'),
         (u'b', u'B'),
@@ -784,6 +832,7 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u'ž', u'Ž'),
     ],
+
     'lv': [
         (u'a', u'A', u'ā', u'Ā'),
         (u'b', u'B'),
@@ -815,6 +864,7 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u'ž', u'Ž'),
     ],
+
     # mt:
     # A B Ċ D E F Ġ G GĦ H Ħ I IE J K L M N O P Q R S T U V W X Ż Z
     # A B Ċ D E F Ġ G Għ H Ħ I Ie J K L M N O P Q R S T U V W X Ż Z
@@ -852,9 +902,10 @@ unicode_character_map = {
         (u'z', u'Z'),
         (u'ʼ',),
     ],
+
     # ga:
-    #a á b c d e é f g h i í l m n o ó p r s t u ú
-    #Loan words: j k q v w x y z
+    # a á b c d e é f g h i í l m n o ó p r s t u ú
+    # Loan words: j k q v w x y z
     'ga': [
         (u"a", u"A", u"á", u"Á"),
         (u"b", u"B"),
@@ -866,7 +917,7 @@ unicode_character_map = {
         (u'h', u'H'),
         (u'i', u'I', u'í', u'Í'),
         (u'j', u'J'),
-        #(u'k', u'K'),
+        # (u'k', u'K'),
         (u'l', u'L'),
         (u'm', u'M'),
         (u'n', u'N'),
@@ -883,10 +934,11 @@ unicode_character_map = {
         (u'y', u'Y'),
         (u'z', u'Z'),
     ],
+
     # ro:
-    # A a   Ă ă     Â â     B b     C c     D d     E e     F f     G g     H h
-    # I i     Î î     J j     K k    L l   M m     N n     O o     P p     R r
-    # S s     Ş ş     T t     Ţ ţ     U u     V v     X x     Z z
+    # A a    Ă ă    Â â    B b    C c    D d    E e    F f    G g    H h
+    # I i    Î î    J j    K k    L l    M m    N n    O o    P p    R r
+    # S s    Ş ş    T t    Ţ ţ    U u    V v    X x    Z z
     'ro': [
         (u'a', u'A'),
         (u'ă', u'Ă'),
@@ -953,7 +1005,8 @@ unicode_character_map = {
         (u"\u0647", u"\uFEEB", u"\uFEEC", u"\uFEEA", u"\uFEE9"),
         (u"\u0648", u"\u06E5", u"\uFEEE", u"\uFEED", u"\u0676"),
         (u"\u0649", u"\uFEF0", u"\uFEEF", u"\u064A", u"\u06E6", u"\uFEF3",
-         u"\uFEF4", u"\uFEF2", u"\uFEF1", u"\u0678")],
+         u"\uFEF4", u"\uFEF2", u"\uFEF1", u"\u0678"),
+    ],
 
     'tr': [
         (u'a', u'A', u"\u00E2", u"\u00C2"),
@@ -984,7 +1037,8 @@ unicode_character_map = {
         (u"\u00FC", u"\u00DC"),
         (u'v', u'V'),
         (u'y', u'Y'),
-        (u'z', u'Z')],
+        (u'z', u'Z'),
+    ],
 
     'uk': [
         (u"\u0430", u"\u0410"),
@@ -1023,6 +1077,118 @@ unicode_character_map = {
     ],
 
     'zh-CN': [],
+
+    'hy': [
+        (u"\u0561", u"\u0531"),
+        (u"\u0562", u"\u0532"),
+        (u"\u0563", u"\u0533"),
+        (u"\u0564", u"\u0534"),
+        (u"\u0565", u"\u0535"),
+        (u"\u0566", u"\u0536"),
+        (u"\u0567", u"\u0537"),
+        (u"\u0568", u"\u0538"),
+        (u"\u0569", u"\u0539"),
+        (u"\u056A", u"\u053A"),
+        (u"\u056B", u"\u053B"),
+        (u"\u056C", u"\u053C"),
+        (u"\u056D", u"\u053D"),
+        (u"\u056E", u"\u053E"),
+        (u"\u056F", u"\u053F"),
+        (u"\u0570", u"\u0540"),
+        (u"\u0571", u"\u0541"),
+        (u"\u0572", u"\u0542"),
+        (u"\u0573", u"\u0543"),
+        (u"\u0574", u"\u0544"),
+        (u"\u0575", u"\u0545"),
+        (u"\u0576", u"\u0546"),
+        (u"\u0577", u"\u0547"),
+        (u"\u0578", u"\u0548"),
+        (u"\u0579", u"\u0549"),
+        (u"\u057A", u"\u054A"),
+        (u"\u057B", u"\u054B"),
+        (u"\u057C", u"\u054C"),
+        (u"\u057D", u"\u054D"),
+        (u"\u057E", u"\u054E"),
+        (u"\u057F", u"\u054F"),
+        (u"\u0580", u"\u0550"),
+        (u"\u0581", u"\u0551"),
+        (u"\u0582", u"\u0552"),
+        (u"\u0583", u"\u0553"),
+        (u"\u0584", u"\u0554"),
+        (u"\u0585", u"\u0555"),
+        (u"\u0586", u"\u0556"),
+    ],
+
+    'az': [
+        (u'a', u'A'),
+        (u'b', u'B'),
+        (u'c', u'C'),
+        (u'ç', u'Ç'),
+        (u'd', u'D'),
+        (u'e', u'E'),
+        (u'ə', u'Ə'),
+        (u'f', u'F'),
+        (u'g', u'G'),
+        (u'ğ', u'Ğ'),
+        (u'h', u'H'),
+        (u'x', u'X'),
+        (u'ı', u'I'),
+        (u'i', u'İ'),
+        (u'j', u'J'),
+        (u'k', u'K'),
+        (u'q', u'Q'),
+        (u'l', u'L'),
+        (u'm', u'M'),
+        (u'n', u'N'),
+        (u'o', u'O'),
+        (u'ö', u'Ö'),
+        (u'p', u'P'),
+        (u'r', u'R'),
+        (u's', u'S'),
+        (u'ş', u'Ş'),
+        (u't', u'T'),
+        (u'u', u'U'),
+        (u'ü', u'Ü'),
+        (u'v', u'V'),
+        (u'y', u'Y'),
+        (u'z', u'Z'),
+    ],
+
+    'ka': [
+        (u"\u10D0", ),
+        (u"\u10D1", ),
+        (u"\u10D2", ),
+        (u"\u10D3", ),
+        (u"\u10D4", ),
+        (u"\u10D5", ),
+        (u"\u10D6", ),
+        (u"\u10D7", ),
+        (u"\u10D8", ),
+        (u"\u10D9", ),
+        (u"\u10DA", ),
+        (u"\u10DB", ),
+        (u"\u10DC", ),
+        (u"\u10DD", ),
+        (u"\u10DE", ),
+        (u"\u10DF", ),
+        (u"\u10E0", ),
+        (u"\u10E1", ),
+        (u"\u10E2", ),
+        (u"\u10E3", ),
+        (u"\u10E4", ),
+        (u"\u10E5", ),
+        (u"\u10E6", ),
+        (u"\u10E7", ),
+        (u"\u10E8", ),
+        (u"\u10E9", ),
+        (u"\u10EA", ),
+        (u"\u10EB", ),
+        (u"\u10EC", ),
+        (u"\u10ED", ),
+        (u"\u10EE", ),
+        (u"\u10EF", ),
+        (u"\u10F0", ),
+    ],
 }
 
 if __name__ == '__main__':
