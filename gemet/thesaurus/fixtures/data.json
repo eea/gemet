@@ -700,5 +700,12 @@
  "fields": {
   "username": "dianaboiangiu"
  }
+},
+{
+ "pk": 8,
+ "model": "thesaurus.authorizeduser",
+ "fields": {
+  "username": "roug"
+ }
 }
 ]
