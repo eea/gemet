@@ -12,8 +12,8 @@ from gemet.thesaurus.exports import create_export_files
 class TestDownloadView(GemetTest):
     def setUp(self):
         LanguageFactory()
-        version = VersionFactory()
-        create_export_files(version)
+        VersionFactory()
+        create_export_files()
         self.url = reverse('download', kwargs={'langcode': 'en'})
 
     def tearDown(self):
