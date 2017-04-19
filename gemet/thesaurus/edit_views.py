@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from django_q.tasks import async
+from django_q.tasks import async, fetch
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -516,7 +516,7 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
 
         # Create exports. Skip for testing
         if 'test' not in sys.argv:
-            async(create_export_files, self.pending_version)
+            async(create_export_files)
 
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)

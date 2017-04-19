@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from gemet.thesaurus.models import AuthorizedUser, ForeignRelation
 from gemet.thesaurus.models import InspireTheme, Language, Namespace, Property
-from gemet.thesaurus.utils import get_version_choices
+from gemet.thesaurus.utils import get_version_choices, check_running_workers
 
 
 class SearchForm(forms.Form):
@@ -68,3 +68,11 @@ class VersionForm(forms.Form):
         max_length=16000,
         widget=forms.Textarea(attrs={'rows': 4, 'cols': 80}),
     )
+
+    def clean(self):
+        status, message = check_running_workers()
+        if not status:
+            raise forms.ValidationError(
+                'Cannot release the version at the moment. {} Please contact an'
+                ' administrator.'.format(message))
+        return super(VersionForm, self).clean()

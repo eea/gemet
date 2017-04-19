@@ -1,6 +1,10 @@
 import re
 from base64 import encodestring, decodestring
 from zlib import compress, decompress
+from redis import ConnectionError
+
+from django_q.brokers import get_broker
+from django_q.status import Stat
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
@@ -236,3 +240,15 @@ def refresh_search_text(proptype, concept_id, language_code, version=None):
         search_property.save()
 
     new_search.save()
+
+
+def check_running_workers():
+    broker = get_broker()
+    try:
+        broker.ping()
+    except ConnectionError:
+        return False, 'Can not connect to Redis server.'
+    stat = Stat.get_all(broker=broker)
+    if not len(stat):
+        return False, 'No running workers found.'
+    return True, ''
