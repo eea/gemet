@@ -68,8 +68,8 @@ ZOPE_URL = os.environ.get('ZOPE_URL', 'http://www.eionet.europa.eu')
 GEMET_URL = ZOPE_URL + os.environ.get('GEMET_URL', '/gemet')
 
 # Fill in the following settings to enable LDAP authentication
-AUTH_LDAP_SERVER_URI = "ldap://ldap3.eionet.europa.eu"
-AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=Users,o=EIONET,l=Europe"
+AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', 'ldap://ldap3.eionet.europa.eu')
+AUTH_LDAP_USER_DN_TEMPLATE = os.environ.get('AUTH_LDAP_USER_DN_TEMPLATE', 'uid=%(user)s,ou=Users,o=EIONET,l=Europe')
 AUTH_LDAP_START_TLS = True
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
