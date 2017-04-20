@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.views import View
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, FormMixin
+from django.views.generic.edit import FormView
 from django.conf import settings
 
 from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
@@ -22,8 +22,8 @@ from gemet.thesaurus.models import Term, Theme, Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
-from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
-from gemet.thesaurus import NS_ID_VIEW_MAPPING
+from gemet.thesaurus import DEFAULT_LANGCODE, DISTANCE_NUMBER
+from gemet.thesaurus import NR_CONCEPTS_ON_PAGE, NS_ID_VIEW_MAPPING
 from gemet.thesaurus import PUBLISHED, PENDING, DELETED_PENDING
 
 
@@ -251,13 +251,13 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
             status_values=self.status_values,
         )
         page = self.request.GET.get('page', 1)
-        paginator = Paginator(self.concepts, 25)
+        paginator = Paginator(self.concepts, NR_CONCEPTS_ON_PAGE)
         self.concepts = paginator.page(page)
 
         context = self.get_context_data(form=form, paginator=paginator)
         page_number = self.concepts.number
         total_pages = len(self.concepts.paginator.page_range)
-        distance_number = 25
+        distance_number = DISTANCE_NUMBER
 
         context.update({
             'visible_pages': range(
@@ -488,7 +488,7 @@ class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
         context = super(PaginatorView, self).get_context_data(**kwargs)
         page_number = context['page_obj'].number
         total_pages = len(context['page_obj'].paginator.page_range)
-        distance_number = 9
+        distance_number = DISTANCE_NUMBER
 
         context.update({
             'letters': self.letters,
