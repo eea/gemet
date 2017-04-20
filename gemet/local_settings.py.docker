@@ -48,6 +48,22 @@ DATABASES = {
 
 # sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}
+
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
 if 'FORCE_SCRIPT_NAME' in os.environ:
     FORCE_SCRIPT_NAME = os.environ['FORCE_SCRIPT_NAME']
