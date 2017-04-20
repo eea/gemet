@@ -78,16 +78,21 @@ class Command(BaseCommand):
 
             self.concepts[label.lower()] = concept
             for name, value in properties.iteritems():
-                pending_property = models.Property.objects.filter(
+                current_property = models.Property.objects.filter(
                     concept=concept,
                     language=self.language,
                     name=name,
-                    status=PENDING
+                    status__in=[PENDING, PUBLISHED]
                 ).first()
-                if pending_property:
-                    pending_property.value = value
-                    pending_property.save()
-                else:
+                if current_property:
+                    if current_property.status == PENDING:
+                        current_property.value = value
+                        current_property.save()
+                    else:
+                        current_property.status = DELETED_PENDING
+                        current_property.save()
+                if not (current_property and
+                        current_property.status == PENDING):
                     models.Property.objects.create(
                         status=PENDING,
                         version_added=self.version,
@@ -96,15 +101,6 @@ class Command(BaseCommand):
                         name=name,
                         value=value,
                     )
-                published_property = models.Property.objects.filter(
-                    concept=concept,
-                    language=self.language,
-                    name=name,
-                    status=PUBLISHED
-                ).first()
-                if published_property:
-                    published_property.status = DELETED_PENDING
-                    published_property.save()
             if is_new_concept:
                 search_text = get_search_text(
                     concept.id, self.language.code, PENDING, self.version)
