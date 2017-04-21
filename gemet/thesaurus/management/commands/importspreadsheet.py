@@ -4,7 +4,7 @@ from openpyxl.utils.exceptions import InvalidFileException
 from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 
-from gemet.thesaurus import PENDING, PUBLISHED
+from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 from gemet.thesaurus import models
 from gemet.thesaurus.utils import get_new_code, get_search_text
 from gemet.thesaurus.utils import split_text_into_terms
@@ -44,7 +44,6 @@ class Command(BaseCommand):
 
             if not label:
                 continue
-
             properties = {
                 'prefLabel': label,
                 'definition': defin,
@@ -79,14 +78,21 @@ class Command(BaseCommand):
 
             self.concepts[label.lower()] = concept
             for name, value in properties.iteritems():
-                if not models.Property.objects.filter(
+                current_property = models.Property.objects.filter(
                     concept=concept,
                     language=self.language,
                     name=name,
-                    value=value,
-                    status__in=[PUBLISHED, PENDING],
-                ).exists():
-                    is_new_concept = True
+                    status__in=[PENDING, PUBLISHED]
+                ).first()
+                if current_property:
+                    if current_property.status == PENDING:
+                        current_property.value = value
+                        current_property.save()
+                    else:
+                        current_property.status = DELETED_PENDING
+                        current_property.save()
+                if not (current_property and
+                        current_property.status == PENDING):
                     models.Property.objects.create(
                         status=PENDING,
                         version_added=self.version,
