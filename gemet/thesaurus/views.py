@@ -7,6 +7,7 @@ from xmlrpclib import Fault
 
 from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views import View
@@ -21,8 +22,8 @@ from gemet.thesaurus.models import Term, Theme, Version
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
-from gemet.thesaurus import DEFAULT_LANGCODE, NR_CONCEPTS_ON_PAGE
-from gemet.thesaurus import NS_ID_VIEW_MAPPING
+from gemet.thesaurus import DEFAULT_LANGCODE, DISTANCE_NUMBER
+from gemet.thesaurus import NR_CONCEPTS_ON_PAGE, NS_ID_VIEW_MAPPING
 from gemet.thesaurus import PUBLISHED, PENDING, DELETED_PENDING
 
 
@@ -236,17 +237,53 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
             "namespace": Term.NAMESPACE,
             "status_values": self.status_values,
         })
+        if 'paginator' in kwargs:
+            context.update({
+                "paginator": kwargs['paginator']
+            })
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form, **kwargs):
         self.query = form.cleaned_data['query']
         self.concepts = search_queryset(
             self.query,
             self.language,
             status_values=self.status_values,
         )
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(self.concepts, NR_CONCEPTS_ON_PAGE)
+        self.concepts = paginator.page(page)
 
-        return self.render_to_response(self.get_context_data(form=form))
+        context = self.get_context_data(form=form, paginator=paginator)
+        page_number = self.concepts.number
+        total_pages = len(self.concepts.paginator.page_range)
+        distance_number = DISTANCE_NUMBER
+
+        context.update({
+            'visible_pages': range(
+                max(1, page_number - distance_number),
+                min(page_number + distance_number + 1, total_pages + 1)
+            )
+        })
+        return self.render_to_response(context)
+
+    def get_form_kwargs(self):
+        kwargs = super(SearchView, self).get_form_kwargs()
+        if self.request.method in ('GET', ):
+            kwargs.update({
+                'data': self.request.GET
+            })
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        if 'query' in request.GET:
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form, **kwargs)
+            else:
+                return self.form_invalid(form)
+        else:
+            return super(SearchView, self).get(request, **kwargs)
 
 
 class RelationsView(HeaderMixin, StatusMixin, VersionMixin, TemplateView):
@@ -451,7 +488,7 @@ class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
         context = super(PaginatorView, self).get_context_data(**kwargs)
         page_number = context['page_obj'].number
         total_pages = len(context['page_obj'].paginator.page_range)
-        distance_number = 9
+        distance_number = DISTANCE_NUMBER
 
         context.update({
             'letters': self.letters,

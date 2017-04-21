@@ -35,6 +35,21 @@ class TestSearchView(GemetTest):
             value='{0}another somefling{0}{0}{0}{0}'.format(SEARCH_SEPARATOR),
             name='searchText',
         )
+        PropertyFactory(
+            concept=cp1,
+            value='something',
+            name='prefLabel',
+        )
+        PropertyFactory(
+            concept=cp2,
+            value='something else',
+            name='prefLabel',
+        )
+        PropertyFactory(
+            concept=cp3,
+            value='another somefling',
+            name='prefLabel',
+        )
         PropertyFactory(concept=cp11, value='broader 1')
         PropertyFactory(concept=cp12, value='broader 2.1')
         PropertyFactory(concept=cp13, value='broader 2.2')

@@ -32,19 +32,18 @@
     <select name="select-language" id="js-change-language">
       {% for lang in languages %}
         <option value="{{ lang.code }}"
-        href="{% if code %}{% url view lang.code code %}{% else %}{% url view lang.code %}{% endif %}{% if get_params %}?{{ get_params }}{% endif %}"
+        href="{% if code %}{% url view lang.code code %}{% else %}{% url view lang.code  %}{% endif %}{% if get_params %}?{{ get_params }}{% endif %}"
         {% if language.code == lang.code%}selected="selected"{% endif %}
           >{{ lang.name }}</option>
       {% endfor %}
     </select>
   </div>
 
-  <form method="post"
-        action='{% url 'search' language.code %}'
+  <form method="get"
+        action='{% url "search" language.code %}'
         id='search-form'
         name="search-query"
         placeholder="Concepts, Groups, Themes...">
-    {% csrf_token %}
     {{ search_form }}
     <button type="submit" value="Search">Search</button>
   </form>

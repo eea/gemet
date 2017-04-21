@@ -6,11 +6,10 @@ Search thesaurus
 {% endblock %}
 
 {% block content %}
-  {% include 'header.html' with view='search' %}
-
+  {% include 'header.html' with view='search' query=query %}
   {% if query %}
     <div>
-      <span class="results-nr">{{ concepts|length }} results found.</span>
+      <span class="results-nr">{{ paginator.count }} results found.</span>
       <span>Searched for '<b>{{ query }}</b>'</span>
     </div>
     {% if concepts|length %}
@@ -18,7 +17,7 @@ Search thesaurus
     <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
       {% for concept in concepts %}
         <li>
-            {% get_concept_names concept.search_text as names %}
+            {% get_concept_names concept status_values language.code as names %}
             <a href="{% url 'concept' language.code concept.concept__code %}">{{ names.concept_name }}</a>
             <p class="no-margin-top small">
               {% if names.other_names %}
@@ -49,6 +48,30 @@ Search thesaurus
       </div>
     {% endif %}
   {% endif %}
+
+  <div class="pagination clearfix">
+      <div class="float-right">
+        <!-- prev -->
+        {% if concepts.has_previous %}
+          <a class="no-visit" href="?page={{ concepts.previous_page_number }}&query={{ query }}">Previous</a>
+        {% endif %}
+        &ensp;
+        <!-- next -->
+        {% if concepts.has_next %}
+          <a class="no-visit" href="?page={{ concepts.next_page_number }}&query={{ query }}">Next</a>
+        {% endif %}
+      </div>
+
+      <!-- pages -->
+      Pages:
+      {% for page_number in visible_pages %}
+        {% if page_number == page_obj.number %}
+          {{ page_number }}
+        {% else %}
+          <a href="?page={{ page_number }}&query={{ query }}">{{ page_number }}</a>
+        {% endif %}
+      {% endfor %}
+  </div>
 
 {% endblock %}
 
