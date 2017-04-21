@@ -17,7 +17,7 @@ Search thesaurus
     <ul class="listing columns {% if language.rtl %}direction-rtl{% endif %}">
       {% for concept in concepts %}
         <li>
-            {% get_concept_names concept.search_text as names %}
+            {% get_concept_names concept status_values language.code as names %}
             <a href="{% url 'concept' language.code concept.concept__code %}">{{ names.concept_name }}</a>
             <p class="no-margin-top small">
               {% if names.other_names %}

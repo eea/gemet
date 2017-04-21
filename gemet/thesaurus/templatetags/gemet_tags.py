@@ -3,7 +3,7 @@ import unicodedata
 from django import template
 from django.core.urlresolvers import reverse
 
-from gemet.thesaurus.models import Concept
+from gemet.thesaurus.models import Concept, Property
 from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR, EDIT_URL_NAMES
 from gemet.thesaurus.utils import exp_encrypt
 
@@ -44,11 +44,15 @@ def get_broader_context(concept_id, langcode, status_values):
 
 
 @register.assignment_tag
-def get_concept_names(search_text):
-    names = search_text.split(SEARCH_SEPARATOR)
+def get_concept_names(concept, status_values, langcode):
+    name = Property.objects.get(name='prefLabel',
+                                status__in=status_values,
+                                concept_id=concept['id'],
+                                language=langcode).value
+    names = concept['search_text'].split(SEARCH_SEPARATOR)
     return {
-        'concept_name': names[1],
-        'other_names': '; '.join([n for n in names[2:] if n])
+        'concept_name': name,
+        'other_names': '; '.join([n for n in names if n and n != name])
     }
 
 
