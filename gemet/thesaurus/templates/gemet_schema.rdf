@@ -9,7 +9,7 @@
          xmlns:dc="http://purl.org/dc/elements/1.1/"
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xml:base="{{ request.build_absolute_uri }}">
+         xml:base="{{ GEMET_URL }}{{ request.path }}">
 
   <owl:Ontology rdf:about="">
     <dcterms:title>GEMET schema</dcterms:title>
