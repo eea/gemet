@@ -65,11 +65,13 @@ if 'GEMET_RDFGZ_PATH' in os.environ:
     GEMET_RDFGZ_PATH = os.environ['GEMET_RDFGZ_PATH']
 
 ZOPE_URL = os.environ.get('ZOPE_URL', 'http://www.eionet.europa.eu')
-GEMET_URL = ZOPE_URL + os.environ.get('GEMET_URL', '/gemet')
+GEMET_URL = 'http://www.eionet.europa.eu/gemet'
 
 # Fill in the following settings to enable LDAP authentication
-AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', 'ldap://ldap3.eionet.europa.eu')
-AUTH_LDAP_USER_DN_TEMPLATE = os.environ.get('AUTH_LDAP_USER_DN_TEMPLATE', 'uid=%(user)s,ou=Users,o=EIONET,l=Europe')
+AUTH_LDAP_SERVER_URI = os.environ.get(
+    'AUTH_LDAP_SERVER_URI', 'ldap://ldap3.eionet.europa.eu')
+AUTH_LDAP_USER_DN_TEMPLATE = os.environ.get(
+    'AUTH_LDAP_USER_DN_TEMPLATE', 'uid=%(user)s,ou=Users,o=EIONET,l=Europe')
 AUTH_LDAP_START_TLS = True
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
@@ -79,7 +81,7 @@ AUTH_LDAP_USER_ATTR_MAP = {
 
 Q_CLUSTER = {
     'redis': {
-        'host': 'redis',
-        'port': 6379,
+        'host': os.environ.get('REDIS_HOST', 'redis'),
+        'port': int(os.environ.get('REDIS_PORT', 6379)),
     }
 }
