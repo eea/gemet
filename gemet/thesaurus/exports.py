@@ -206,13 +206,9 @@ class GemetRelationsView(ExportView):
 
         foreign_relations = (
             foreign_relations
-            .filter(
-                show_in_html=True,
-            ).order_by(
-                'label',
-            ).values(
-                'concept__code', 'property_type__name', 'uri',
-            )
+            .filter(show_in_html=True)
+            .order_by('label')
+            .values('concept__code', 'property_type__name', 'uri')
         )
         for relation in foreign_relations:
             d = {'source__code': relation['concept__code'],
@@ -287,7 +283,11 @@ class DefinitionsByLanguage(ExportView):
             .order_by('concept__code', '-name')
         )
 
-        return {'definitions': definitions}
+        return {
+            'definitions': definitions,
+            'language': language,
+            'GEMET_URL': settings.GEMET_URL,
+        }
 
 
 class GroupsByLanguage(ExportView):
@@ -296,7 +296,11 @@ class GroupsByLanguage(ExportView):
 
     @staticmethod
     def get_context(language):
-        context = {}
+        context = {
+            'language': language,
+            'GEMET_URL': settings.GEMET_URL,
+        }
+
         for heading in ['Super groups', 'Groups', 'Themes']:
             context.update({
                 heading.replace(' ', '_'): (

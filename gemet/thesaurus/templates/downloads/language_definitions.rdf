@@ -3,11 +3,11 @@
 {% load gemet_tags %}
 
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-        xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-        xmlns:gemet="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
-        xml:lang="{{ language.code }}"
-        xml:base="http://www.eionet.europa.eu/gemet/">
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns="{{ GEMET_URL }}{% url 'gemet_schema' %}#"
+         xml:lang="{{ language }}"
+         xml:base="{{ GEMET_URL }}">
 
 {% regroup definitions by concept__code as concept_definitions %}
 {% for definition in concept_definitions %}

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<rdf:RDF xml:lang="{{ language.code }}"
+
+<rdf:RDF xml:lang="{{ language }}"
          xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
          xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-         xmlns="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#"
-         xml:base="http://www.eionet.europa.eu/gemet/">
+         xmlns="{{ GEMET_URL }}{% url 'gemet_schema' %}#"
+         xml:base="{{ GEMET_URL }}">
 
 {% for supergroup in Super_groups %}
     <rdf:Description rdf:about="supergroup/{{ supergroup.concept__code }}">
