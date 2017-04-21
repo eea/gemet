@@ -51,6 +51,8 @@ DATABASES = {
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
 if 'FORCE_SCRIPT_NAME' in os.environ:
     FORCE_SCRIPT_NAME = os.environ['FORCE_SCRIPT_NAME']
+    STATIC_URL = FORCE_SCRIPT_NAME + '/static/'
+
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
