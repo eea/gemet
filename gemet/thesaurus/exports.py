@@ -368,6 +368,8 @@ class ExportFileManager(object):
                     f.write(content.encode('utf-8'))
 
         for source, destination in symlinks.iteritems():
+            if os.path.exists(destination):
+                os.remove(destination)
             os.symlink(source, destination)
 
     def _create_dirs(self, path_root):

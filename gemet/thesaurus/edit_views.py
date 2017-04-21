@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from django_q.tasks import async, fetch
+from django_q.tasks import async
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
