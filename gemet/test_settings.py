@@ -9,6 +9,8 @@ DATABASES = {
     }
 }
 
+SECRET_KEY = 'Test secret key'
+
 LOCAL_INSTALLED_APPS = ('django_nose', )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

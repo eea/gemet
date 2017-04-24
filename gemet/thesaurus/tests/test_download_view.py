@@ -14,7 +14,8 @@ class TestDownloadView(GemetTest):
         LanguageFactory()
         VersionFactory()
         create_export_files()
-        self.url = reverse('download', kwargs={'langcode': 'en'})
+        self.url = reverse('download',
+                           kwargs={'langcode': 'en', 'version': 'latest'})
 
     def tearDown(self):
         shutil.rmtree(settings.EXPORTS_ROOT)
