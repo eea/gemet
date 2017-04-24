@@ -123,6 +123,7 @@ class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
                 )
                 .values_list('target_id', flat=True)
             )
+            .exclude(concept_id=self.concept.id)
             .extra(select={'name': 'value', 'id': 'concept_id'},
                    order_by=['name'])
             .values('name', 'id', 'concept__code')
