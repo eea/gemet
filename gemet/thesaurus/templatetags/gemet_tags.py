@@ -58,15 +58,18 @@ def get_concept_names(concept, status_values, langcode):
 
 @register.simple_tag
 def default_name(concept_id, status_values):
-    return (
+    concept = (
         Concept.objects.get(pk=concept_id)
         .properties.filter(
             language__code=DEFAULT_LANGCODE,
             name='prefLabel',
             status__in=status_values,
         ).first()
-        .value
     )
+    if concept:
+        return concept.value
+    else:
+        return ''
 
 
 @register.simple_tag

@@ -10,8 +10,13 @@
       <i class="fa fa-plus" aria-hidden="true"></i>
     {% endif %}
   </a>
-  <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
-
+  <a href="{% url 'concept' language.code concept.concept__code %}">
+    {% if concept.name != '' %}
+      {{ concept.name }}
+    {% else %}
+      {% default_name concept.id status_values %} <span>[english]</span>
+    {% endif %}
+  </a>
   <ul class="listing">
     {% if expand.status %}
       {% get_children concept.id language.code status_values as concept_children %}

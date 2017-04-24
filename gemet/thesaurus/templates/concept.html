@@ -25,7 +25,13 @@
 
   <!-- Concept -->
   <div class="selected-word">
-    <div class="pull-left" id="prefLabel">{{ concept.name }}</div>
+    <div class="pull-left" id="prefLabel">
+      {% if concept.name != '' %}
+        {{ concept.name }}
+      {% else %}
+        {% default_name concept.id status_values %} <span>[english]</span>
+      {% endif %}
+    </div>
     {% if user.is_authenticated %}
       <span>
         <a class="btn"

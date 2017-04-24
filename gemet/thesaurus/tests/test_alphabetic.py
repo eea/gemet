@@ -38,9 +38,6 @@ class TestAlphabeticView(GemetTest):
                                                     'code': concept.code})
                          )
 
-    @unittest.skip('When a property in a certain language is missing, '
-                   'that entry does not exist in the database. The case when '
-                   'it exists with an empty value is unrealistic.')
     def test_two_languages_one_preflabel(self):
         concept = TermFactory()
         spanish = LanguageFactory(code='es', name='Spanish')
