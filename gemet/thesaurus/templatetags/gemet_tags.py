@@ -71,8 +71,7 @@ def get_concept_name(concept_name, concept_id, status_values):
     if concept:
         language = Language.objects.get(code=DEFAULT_LANGCODE).name.lower()
         return mark_safe(concept.value + ' <span>[' + language + ']</span>')
-    else:
-        return ''
+    return ''
 
 
 @register.simple_tag

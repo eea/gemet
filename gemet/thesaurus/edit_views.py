@@ -19,6 +19,7 @@ from gemet.thesaurus import models
 from gemet.thesaurus.exports import create_export_files
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
 from gemet.thesaurus.forms import VersionForm
+from gemet.thesaurus.templatetags.gemet_tags import get_concept_name
 from gemet.thesaurus.utils import get_form_errors, refresh_search_text
 from gemet.thesaurus.utils import concept_has_unique_relation, get_new_code
 from gemet.thesaurus.views import GroupView, SuperGroupView, TermView, ThemeView
@@ -90,6 +91,8 @@ class UnrelatedConcepts(LoginRequiredMixin, JsonResponseMixin, View):
 
     def _set_reverse_urls(self, concepts, langcode, relation):
         for concept in concepts:
+            concept['name'] = get_concept_name(concept['name'], concept['id'],
+                                               (PENDING, PUBLISHED))
             url_kwargs = {
                 'source_id': self.concept.id,
                 'target_id': concept['id'],
