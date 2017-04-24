@@ -2,7 +2,8 @@
 {% load gemet_tags %}
 
 {% block title %}
-List of concepts for {{ theme.name }}
+{% get_concept_name theme.name theme.id status_values as name %}
+List of concepts for {{ name|striptags }}
 {% endblock %}
 
 {% block language_selector %}
@@ -11,7 +12,7 @@ List of concepts for {{ theme.name }}
 
 {% block header %}
   <h1>
-    List of concepts for <i>{{ theme.name }}</i>
+    List of concepts for <i>{% get_concept_name theme.name theme.id status_values %}</i>
   </h1>
   {% if language_warning %}
     <p>* Note: Theme name is not available for the current language</p>

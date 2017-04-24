@@ -1,7 +1,8 @@
 {% extends layout_template %}
-
+{% load gemet_tags %}
 {% block title %}
-{{ group.name }}
+ {% get_concept_name group.name group.id status_values as name %}
+ {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +24,9 @@
   </div>
   <!-- Group -->
   <div class="selected-word">
-    <span id="prefLabel">{{ group.name }}</span>
+    <span id="prefLabel">
+      {% get_concept_name group.name group.id status_values %}
+    </span>
     {% if user.is_authenticated %}
       <span>
         <a class="btn btn-primary"
@@ -53,7 +56,7 @@
       {% for sg in group.broader_concepts %}
       <li>
         <a href="{% url 'supergroup' language.code sg.concept__code %}">
-          {{ sg.name }}
+          {% get_concept_name sg.name sg.id status_values %}
         </a>
       </li>
       {% endfor %}
@@ -69,7 +72,7 @@
       {% for cp in group.groupMember_concepts %}
       <li>
         <a href="{% url 'concept' language.code cp.concept__code %}">
-          {{ cp.name }}
+          {% get_concept_name cp.name cp.id status_values %}
         </a>
       </li>
       {% endfor %}

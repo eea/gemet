@@ -1,7 +1,9 @@
 {% extends layout_template %}
+{% load gemet_tags %}
 
 {% block title %}
-{{ supergroup.name }}
+ {% get_concept_name supergroup.name supergroup.id status_values as name %}
+ {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +25,9 @@
 
   <!-- Concept -->
   <div class="selected-word">
-    <span id="prefLabel">{{ supergroup.name }}</span>
+    <span id="prefLabel">
+      {% get_concept_name supergroup.name supergroup.id status_values %}
+    </span>
     {% if user.is_authenticated %}
       <span>
         <a class="btn btn-primary"
@@ -63,7 +67,7 @@
       {% for group in supergroup.narrower_concepts %}
         <li>
           <a href="{% url 'group' language.code group.concept__code %}">
-          {{ group.name }}
+          {% get_concept_name group.name group.id status_values %}
           </a>
         </li>
       {% endfor %}

@@ -11,11 +11,7 @@
     {% endif %}
   </a>
   <a href="{% url 'concept' language.code concept.concept__code %}">
-    {% if concept.name != '' %}
-      {{ concept.name }}
-    {% else %}
-      {% default_name concept.id status_values %} <span>[english]</span>
-    {% endif %}
+    {% get_concept_name concept.name concept.id status_values %}
   </a>
   <ul class="listing">
     {% if expand.status %}

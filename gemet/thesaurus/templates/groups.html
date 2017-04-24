@@ -14,13 +14,17 @@ Groups list
   <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% for supergroup in supergroups %}
       <li>
-      <h3 class="h5">{{ supergroup.name }}</h3>
+      <h3 class="h5">
+        {% get_concept_name supergroup.name supergroup.id status_values %}
+      </h3>
 
         <ul class="groups">
           {% get_children supergroup.id language.code status_values as supergroup_children %}
           {% for group in supergroup_children %}
             <li>
-            <a href="{% url 'relations' language.code group.concept__code %}">{{ group.name }}</a>
+            <a href="{% url 'relations' language.code group.concept__code %}">
+              {% get_concept_name group.name group.id status_values %}
+            </a>
             </li>
           {% endfor %}
         </ul>
