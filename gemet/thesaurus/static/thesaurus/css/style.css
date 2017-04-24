@@ -2025,5 +2025,10 @@ a.search-button {
 
 .edit-page input,
 .edit-page textarea {
-        min-width: 630px;
+    min-width: 630px;
+}
+
+.version-details p {
+    word-wrap: break-word;
+    margin-bottom: 0;
 }

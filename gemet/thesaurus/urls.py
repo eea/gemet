@@ -63,7 +63,8 @@ urlpatterns = [
         url(r'^alphabets/$', views.AlphabetsView.as_view(), name='alphabets'),
 
         # Exports
-        url(r'^exports/rdf$', views.DownloadView.as_view(), name='download'),
+        url(r'^exports/rdf/(?P<version>[\d\.]+|latest)$',
+            views.DownloadView.as_view(), name='download'),
 
         # Search
         url(r'^search/$', views.SearchView.as_view(), name='search'),

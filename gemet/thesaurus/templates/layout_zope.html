@@ -37,7 +37,7 @@
 <div class="footer-menu">
 
   {% block footer %}
-    <a href="{% url 'download' language.code %}">Download</a>
+    <a href="{% url 'download' language.code 'latest' %}">Download</a>
     &nbsp;|&nbsp;
     <a href="{% url 'alphabets' language.code %}">Alphabets</a>
     &nbsp;|&nbsp;

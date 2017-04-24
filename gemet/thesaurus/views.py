@@ -600,16 +600,27 @@ class GemetVoidView(XMLTemplateView):
         return context
 
 
-class DownloadView(HeaderMixin, VersionMixin, FormView):
+class DownloadView(HeaderMixin, FormView):
     template_name = "downloads/download.html"
     form_class = ExportForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.version = kwargs.pop("version")
+        return super(DownloadView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DownloadView, self).get_context_data(**kwargs)
+        context.update({
+            'version': self.version,
+        })
+        return context
 
     def get_initial(self):
         return {'language_names': self.language}
 
     def get_success_url(self):
         return reverse('export_lang', kwargs={
-            'version': self.current_version,
+            'version': self.version,
             'langcode': self.langcode,
             'filename': self.filename,
         })
