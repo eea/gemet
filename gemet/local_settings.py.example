@@ -1,6 +1,9 @@
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'This is an example. Replace with actual secret key.'
+
 LOCAL_INSTALLED_APPS = (
 # Use debug_toolbar in development for detailed debug info.
 #    'debug_toolbar',

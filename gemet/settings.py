@@ -13,9 +13,6 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*e59o%%4$uxue*-aqn58$adv!fu+%p&7rg3bp=k36blzn9#(4r'
-
 ALLOWED_HOSTS = []
 
 
