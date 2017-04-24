@@ -2,7 +2,8 @@
 {% load gemet_tags %}
 
 {% block title %}
-  Edit {{ concept.name }}
+ {% get_concept_name concept.name concept.id status_values as name %}
+ Edit {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
