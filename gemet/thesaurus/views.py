@@ -7,6 +7,7 @@ from xmlrpclib import Fault
 
 from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -15,10 +16,11 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.conf import settings
+from django_q.tasks import result
 
 from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
 from gemet.thesaurus.models import InspireTheme, Namespace, Property, SuperGroup
-from gemet.thesaurus.models import Term, Theme, Version
+from gemet.thesaurus.models import Term, Theme, Version, AsyncTask
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
@@ -610,8 +612,24 @@ class DownloadView(HeaderMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(DownloadView, self).get_context_data(**kwargs)
+        show_message = False
+
+        if self.version == 'latest':
+            current_version = Version.objects.get(is_current=True)
+            try:
+                async_task = current_version.asynctask
+                if async_task.status == AsyncTask.QUEUED:
+                    if result(async_task.task):
+                        async_task.status = AsyncTask.FINISHED
+                        async_task.save()
+                    else:
+                        show_message = True
+            except ObjectDoesNotExist:
+                pass
+
         context.update({
             'version': self.version,
+            'show_message': show_message,
         })
         return context
 

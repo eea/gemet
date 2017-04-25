@@ -29,6 +29,14 @@
   <!-- General structure -->
   <div style="width: 70%">
   <h3 class="h3">General structure</h3>
+
+  {% if show_message %}
+    <div class="alert alert-warning fade in alert-dismissable">
+      A new version has just been released. Exports are still being generated.
+      Please try again in a few moments in order to fetch the latest data.
+    </div>
+  {% endif %}
+
   <ul class="listing">
     <li>
       <a href="{% url 'export' version 'gemet-backbone.html'%}">

@@ -376,6 +376,7 @@ class ExportFileManager(object):
                 os.remove(destination)
             os.symlink(source, destination)
 
+
     def _create_dirs(self, path_root):
         os.makedirs(path_root)
         for language in self.languages:
@@ -386,3 +387,4 @@ class ExportFileManager(object):
 def create_export_files():
     exporter = ExportFileManager()
     exporter.create_files()
+    return True

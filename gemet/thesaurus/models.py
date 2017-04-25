@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -335,6 +337,30 @@ class DefinitionSource(models.Model):
     publication = models.CharField(max_length=255, null=True)
     place = models.CharField(max_length=255, null=True)
     year = models.CharField(max_length=10, null=True)
+
+
+class AsyncTask(models.Model):
+    QUEUED = u'queued'
+    FINISHED = u'finished'
+    FAILED = u'failed'
+    STARTED = u'started'
+
+    STATUS = (
+        (QUEUED, 'Queued'),
+        (FINISHED, 'Finished'),
+        (FAILED, 'Failed'),
+        (STARTED, 'Started'),
+    )
+
+    task = models.CharField(max_length=32)
+    date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=10, choices=STATUS, default=QUEUED)
+    user = models.ForeignKey(User)
+    version = models.OneToOneField(
+        Version,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
 
 
 class ConceptManager(models.Manager):

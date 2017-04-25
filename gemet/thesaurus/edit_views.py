@@ -516,7 +516,12 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
 
         # Create exports. Skip for testing
         if 'test' not in sys.argv:
-            async(create_export_files)
+            task = async(create_export_files)
+            models.AsyncTask.objects.create(
+                task=task,
+                user=self.request.user,
+                version=self.pending_version,
+            )
 
         url = reverse('themes', kwargs={'langcode': self.langcode})
         return redirect(url)
