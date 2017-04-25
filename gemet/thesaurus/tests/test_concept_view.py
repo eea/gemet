@@ -322,3 +322,17 @@ class TestConceptViewWithUser(GemetTest):
         resp = self.app.get(url, user=self.user)
         foreign_displayed = resp.pyquery('li.inline a').text().split()
         self.assertEqual(len(foreign_displayed), 2)
+
+    def test_user_sees_default_name(self):
+        LanguageFactory(code='ro')
+        concept4 = TermFactory(code="4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value="Concept4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value='',
+                        language__code='ro',
+                        status=PUBLISHED)
+        url = reverse('concept', kwargs={'langcode': 'ro',
+                                         'code': concept4.code})
+        resp = self.app.get(url)
+        self.assertEqual(resp.pyquery('title').text(), 'Concept4 [english]')
+        self.assertEqual(resp.pyquery('#prefLabel').text(),
+                         'Concept4 [english]')

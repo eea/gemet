@@ -252,6 +252,21 @@ class TestEditGroupView(GemetTest):
         self.assertEqual(pending_relation, "SuperGroup")
         self.assertEqual(published_relation, "Concept")
 
+    def test_user_sees_concept_default_name(self):
+        LanguageFactory(code='ro')
+        concept4 = TermFactory(code="4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value="Concept4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value='',
+                        language__code='ro',
+                        status=PUBLISHED)
+        url = reverse('concept_edit', kwargs={'langcode': 'ro',
+                                              'code': 4})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('title').text(),
+                         'Edit Concept4 [english]')
+        self.assertEqual(resp.pyquery('#parent-prefLabel').text(),
+                         '')
+
 
 class TestEditSuperGroupView(GemetTest):
     def setUp(self):
@@ -409,3 +424,31 @@ class TestEditThemeView(GemetTest):
         self.assertEqual(deleted_relation, "Concept3")
         self.assertEqual(pending_relation, "Concept2")
         self.assertEqual(published_relation, "Concept1")
+
+
+class TestDefinitionEmpty(GemetTest):
+    def setUp(self):
+        self.language = LanguageFactory(code='ro')
+        self.concept = TermFactory(code='200', status=PUBLISHED)
+        PropertyFactory(concept=self.concept, id=1234, name='definition',
+                        language__code='en', value='English definition')
+        user = UserFactory()
+        self.user = user.username
+
+    def test_check_default_definition_does_not_appear_on_edit_page(self):
+        url = reverse('concept_edit', kwargs={'langcode': self.language.code,
+                                               'code': self.concept.code
+                                               })
+        response = self.app.get(url, user=self.user)
+        self.assertEqual(response.pyquery(' #parent-definition').text(), '')
+
+    def test_check_definition_for_language_appears_on_edit_page(self):
+        PropertyFactory(concept=self.concept, id=1235, name='definition',
+                        language__code='ro', value='Romanian definition')
+
+        url = reverse('concept_edit', kwargs={'langcode': self.language.code,
+                                              'code': self.concept.code
+                                              })
+        response = self.app.get(url, user=self.user)
+        self.assertEqual(response.pyquery(' #parent-definition').text(),
+                         'Romanian definition')

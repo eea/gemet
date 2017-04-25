@@ -258,3 +258,15 @@ class TestAlphabeticViewWithUser(GemetTest):
             reverse('concept', kwargs={'langcode': 'en',
                                        'code': concept3.code})
         )
+
+    def test_user_sees_default_name(self):
+        LanguageFactory(code='ro')
+        concept4 = TermFactory(code="4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value="Concept4", status=PUBLISHED)
+        PropertyFactory(concept=concept4, value='',
+                        language__code='ro',
+                        status=PUBLISHED)
+        url = reverse('alphabetic', kwargs={'langcode': 'ro'})
+        resp = self.app.get(url, user=self.user)
+        self.assertEqual(resp.pyquery('.content ul:eq(0) li').text(),
+                         'Concept4 [english]')
