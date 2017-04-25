@@ -441,3 +441,38 @@ class TestDeleteNewConcept(GemetTest):
                          len(models.ForeignRelation.objects.filter(
                              concept=self.concept
                          )))
+
+
+class TestUnrelatedConcepts(GemetTest):
+    def setUp(self):
+        self.language = LanguageFactory()
+        self.namespace = NamespaceFactory()
+        self.property_type = PropertyTypeFactory(label='Broader',
+                                                 name='broader')
+        self.concept = ConceptFactory(namespace=self.namespace, code='200',
+                                      status=PUBLISHED)
+        self.concept2 = ConceptFactory(namespace=self.namespace, code='202',
+                                       status=PUBLISHED)
+        self.concept3 = ConceptFactory(namespace=self.namespace, code='204',
+                                       status=PUBLISHED)
+        PropertyFactory(concept=self.concept, id=1234)
+        PropertyFactory(concept=self.concept2, value='related', id=2345)
+        PropertyFactory(concept=self.concept3, value='unrelated', id=4536)
+        self.relation = RelationFactory(
+            source=self.concept,
+            target=self.concept2,
+            property_type=self.property_type
+        )
+        user = UserFactory()
+        self.user = user.username
+
+    def test_objects_are_deleted(self):
+        url = reverse('concepts_json', kwargs={'langcode': self.language.code,
+                                               'id': self.concept.id,
+                                               'relation': 'broader',
+                                               })
+        response = self.app.get(url, user=self.user)
+        data = json.loads(response.body)['items'][0]
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(data['name'], 'unrelated')
