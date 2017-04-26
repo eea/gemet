@@ -15,7 +15,9 @@
   <ul class="listing columns split-20 {% if language.rtl %}direction-rtl{% endif %}">
     {% for concept in concepts %}
     <li>
-      <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
+      <a href="{% url 'concept' language.code concept.concept__code %}">
+          {% get_concept_name concept.name concept.id status_values %}
+      </a>
     </li>
     {% endfor %}
   </ul>

@@ -2,7 +2,8 @@
 {% load gemet_tags %}
 
 {% block title %}
-  Relations for {{ group.name }}
+ {% get_concept_name group.name group.id status_values as name %}
+  Relations for {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
@@ -10,7 +11,9 @@
   <div class="text-area relations">
     <h1>Relations</h1>
 
-    <h3 class="h5 {% if language.rtl %}direction-rtl{% endif %}">{{ group.name }}</h3>
+    <h3 class="h5 {% if language.rtl %}direction-rtl{% endif %}">
+      {% get_concept_name group.name group.id status_values %}
+    </h3>
 
     <ul class="listing first-level{% if language.rtl %}direction-rtl{% endif %}">
       {% get_children group.id language.code group.status_list as group_children %}

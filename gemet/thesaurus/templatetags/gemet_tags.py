@@ -2,8 +2,8 @@ import unicodedata
 
 from django import template
 from django.core.urlresolvers import reverse
-
-from gemet.thesaurus.models import Concept, Property
+from django.utils.safestring import mark_safe
+from gemet.thesaurus.models import Concept, Language, Property
 from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR, EDIT_URL_NAMES
 from gemet.thesaurus.utils import exp_encrypt
 
@@ -57,16 +57,21 @@ def get_concept_names(concept, status_values, langcode):
 
 
 @register.simple_tag
-def default_name(concept_id, status_values):
-    return (
+def get_concept_name(concept_name, concept_id, status_values):
+    if concept_name:
+        return concept_name
+    concept = (
         Concept.objects.get(pk=concept_id)
         .properties.filter(
             language__code=DEFAULT_LANGCODE,
             name='prefLabel',
             status__in=status_values,
         ).first()
-        .value
     )
+    if concept:
+        language = Language.objects.get(code=DEFAULT_LANGCODE).name.lower()
+        return mark_safe(concept.value + ' <span>[' + language + ']</span>')
+    return ''
 
 
 @register.simple_tag

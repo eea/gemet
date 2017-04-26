@@ -2,7 +2,8 @@
 {% load gemet_tags %}
 
 {% block title %}
-  Edit {{ concept.name }}
+ {% get_concept_name concept.name concept.id status_values as name %}
+ Edit {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
@@ -24,23 +25,26 @@
     </ul>
   </div>
   <!-- Back to concept -->
-  <span>
+  <p>
     <a class="btn"
        href="{% url 'concept' language.code concept.code %}"
        >Back</a>
-  </span>
+  </p>
 
   {% if concept.status == 0 %}
-  <span>
+  <p>
     <a class="btn"
        href="{% url 'concept_delete' language.code concept.id %}"
        >Delete concept</a>
-  </span>
+  </p>
   {% endif %}
   <!-- Concept -->
-  <h2 class="page-title element">
+  <div class="text-area element">
+    <h5 class="h5">Name</h5>
+    <div class="h3 element">
       {% include 'edit/bits/property.html' with property_name='prefLabel' html_tag='input' %}
-  </h2>
+    </div>
+  </div>
 
   <!-- Alternatives -->
   <div class="alternative-wrapper text-area">

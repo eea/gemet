@@ -117,7 +117,7 @@ $(document).ready(function () {
     $(this).parent().removeClass('visible'); // hide cancel and save buttons
     $(this).parent().siblings('.input-area').removeClass('visible'); // hide input area
     $(this).parent().siblings('.text-field').removeClass('hidden'); // show text-area (if necessary)
-    $('.btng.edit, .btng.add').removeClass('hidden'); // show edit/delete button
+    $(this).parent().children('.btng.edit, .btng.add').removeClass('hidden'); // show edit/delete button
   });
 
   /* prefLabel, definition, scopeNote, source enable editing */

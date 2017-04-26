@@ -1,8 +1,8 @@
 {% extends layout_template %}
 {% load gemet_tags %}
-
 {% block title %}
-{{ concept.name }}
+ {% get_concept_name concept.name concept.id status_values as name %}
+ {{ name|striptags }}
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,9 @@
 
   <!-- Concept -->
   <div class="selected-word">
-    <div class="pull-left" id="prefLabel">{{ concept.name }}</div>
+    <div class="pull-left" id="prefLabel">
+      {% get_concept_name concept.name concept.id status_values %}
+    </div>
     {% if user.is_authenticated %}
       <span>
         <a class="btn"
@@ -80,7 +82,10 @@
        <ul class="listing">
         {% for cp in concept.broader_concepts %}
         <li>
-          <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+          <a href="{% url 'concept' language.code cp.concept__code %}">
+              {% get_concept_name cp.name cp.id status_values %}
+          </a>
+        </li>
         {% endfor %}
       </ul>
     </div>
@@ -93,7 +98,10 @@
        <ul class="listing">
         {% for cp in concept.related_concepts %}
         <li>
-          <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a>  </li>
+          <a href="{% url 'concept' language.code cp.concept__code %}">
+            {% get_concept_name cp.name cp.id status_values %}
+          </a>
+        </li>
         {% endfor %}
        </ul>
     </div>
@@ -106,7 +114,10 @@
         <ul class="listing">
           {% for cp in concept.narrower_concepts %}
           <li>
-            <a href="{% url 'concept' language.code cp.concept__code %}">{{ cp.name }}</a></li>
+            <a href="{% url 'concept' language.code cp.concept__code %}">
+                {% get_concept_name cp.name cp.id status_values %}
+            </a>
+          </li>
           {% endfor %}
         </ul>
       </div>
@@ -120,7 +131,9 @@
         <ul class="listing">
           {% for theme in concept.themes %}
           <li>
-            <a href="{% url 'theme' language.code theme.concept__code %}">{{ theme.name }}</a>
+            <a href="{% url 'theme' language.code theme.concept__code %}">
+                {% get_concept_name theme.name theme.id status_values %}
+            </a>
           </li>
           {% endfor %}
         </ul>
@@ -134,7 +147,9 @@
             <ul class="listing">
             {% for group in concept.groups %}
               <li>
-                <a href="{% url 'group' language.code group.concept__code %}">{{ group.name }}</a>
+                <a href="{% url 'group' language.code group.concept__code %}">
+                    {% get_concept_name group.name group.id status_values %}
+                </a>
               </li>
             {% endfor %}
           </ul>

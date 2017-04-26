@@ -10,8 +10,9 @@
       <i class="fa fa-plus" aria-hidden="true"></i>
     {% endif %}
   </a>
-  <a href="{% url 'concept' language.code concept.concept__code %}">{{ concept.name }}</a>
-
+  <a href="{% url 'concept' language.code concept.concept__code %}">
+    {% get_concept_name concept.name concept.id status_values %}
+  </a>
   <ul class="listing">
     {% if expand.status %}
       {% get_children concept.id language.code status_values as concept_children %}

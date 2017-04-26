@@ -354,9 +354,9 @@ class ConceptView(HeaderMixin, VersionMixin, StatusMixin, DetailView):
                 .distinct()
             )
             context['languages'] = languages
-
         context.update({
             "namespace": self.model.NAMESPACE,
+            "status_values": self.status_values,
         })
         return context
 
@@ -525,6 +525,7 @@ class ThemeConceptsView(PaginatorView):
         context.update({
             'theme': self.theme,
             'namespace': Term.NAMESPACE,
+            'status_values': self.status_values,
         })
 
         return context
@@ -550,6 +551,7 @@ class AlphabeticView(PaginatorView):
     def get_context_data(self, **kwargs):
         context = super(AlphabeticView, self).get_context_data(**kwargs)
         context.update({"namespace": Term.NAMESPACE})
+        context.update({"status_values": self.status_values})
         return context
 
 

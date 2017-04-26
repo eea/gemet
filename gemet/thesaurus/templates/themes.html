@@ -17,7 +17,9 @@
   <ul class="listing columns {{ css_class }} {% if language.rtl %}direction-rtl{% endif %}">
     {% for theme in themes %}
     <li>
-      <a href="{% url theme_url language.code theme.concept__code %}">{{ theme.name }}</a>
+      <a href="{% url theme_url language.code theme.concept__code %}">
+        {% get_concept_name theme.name theme.id status_values %}
+      </a>
     </li>
     {% endfor %}
   </ul>

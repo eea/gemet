@@ -6,7 +6,7 @@
       <li id="{{ type }}{{ parent.id }}"
           value="{{ parent.id }}"
           class="status-{{ parent.status }}">
-        {{ parent.name }}
+        {% get_concept_name parent.name parent.id status_values %}
 
           {% if parent.status == DELETED_PENDING %}
           <button class='btng waves-effect waves-light btn restoreRelation'
