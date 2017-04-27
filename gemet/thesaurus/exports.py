@@ -1,12 +1,13 @@
+import gzip
 import os
 
 from django.conf import settings
 from django.template.loader import render_to_string
 
-from gemet.thesaurus import DEFAULT_LANGCODE, PUBLISHED
-from gemet.thesaurus.models import Group, ForeignRelation, Language, Namespace
-from gemet.thesaurus.models import Property, Relation, SuperGroup, Term, Theme
-from gemet.thesaurus.models import Version
+from gemet.thesaurus import DEFAULT_LANGCODE, DELETED_PENDING, PUBLISHED
+from gemet.thesaurus.models import DefinitionSource, Group, ForeignRelation
+from gemet.thesaurus.models import Language, Namespace, Property, Relation
+from gemet.thesaurus.models import SuperGroup, Term, Theme, Version
 
 
 class ExportView(object):
@@ -32,6 +33,110 @@ class BackboneView(ExportView):
             )
         )
         return {"relations": relations}
+
+
+class GemetRdfView(ExportView):
+    template_name = 'downloads/gemet.rdf'
+    filename = 'gemet.rdf.gz'
+
+    @staticmethod
+    def get_context():
+        context = {}
+        version = Version.objects.get(is_current=True)
+        term_version = (
+            'GEMET - Concepts, version ' + version.identifier + ', ' +
+            str(version.publication_date)
+        )
+
+        supergroup_version = (
+            'GEMET - Super Groups, version ' + version.identifier + ', ' +
+            str(version.publication_date)
+        )
+        group_version = (
+            'GEMET - Groups, version ' + version.identifier + ', ' +
+            str(version.publication_date)
+        )
+        top_concepts = Term.published.exclude(
+            source_relations__property_type__name='broader'
+        )
+        supergroups = []
+        published_status = [PUBLISHED, DELETED_PENDING]
+        for supergroup in SuperGroup.published.all():
+            supergroups.append({
+                'object': supergroup,
+                'properties': supergroup.properties.filter(
+                    name='prefLabel',
+                    status__in=published_status
+                ),
+                'groups': supergroup.source_relations.filter(
+                    property_type__name='narrower',
+                    status__in=published_status
+                )
+            })
+        context.update({'supergroups': supergroups})
+
+        groups = []
+        for group in Group.published.all():
+            groups.append({
+                'object': group,
+                'properties': group.properties.filter(
+                    name='prefLabel',
+                    status__in=published_status
+                ),
+                'concepts': group.source_relations.filter(
+                    property_type__name='groupMember',
+                    status__in=published_status
+                )
+            })
+        context.update({'groups': groups})
+
+        themes = []
+        for theme in Theme.published.all():
+            themes.append({
+                'object': theme,
+                'properties': theme.properties.filter(
+                    name__in=['prefLabel', 'acronymLabel'],
+                    status__in=published_status
+                ),
+                'concepts': theme.source_relations.filter(
+                    property_type__name='themeMember',
+                    status__in=published_status
+                )
+            })
+        context.update({'themes': themes})
+
+        terms = []
+        for term in Term.published.all():
+            terms.append({
+                'object': term,
+                'properties': term.properties.filter(
+                    name__in=['altLabel', 'definition', 'hiddenLabel',
+                              'notation', 'prefLabel', 'scopeNote',
+                              'editorialNote', 'source'],
+                    status__in=published_status
+                ),
+                'related': term.source_relations.filter(
+                    property_type__name__in=['narrower', 'broader', 'related'],
+                    status__in=published_status
+                ),
+                'foreign': term.foreign_relations.filter(
+                    status__in=published_status
+                )
+
+            })
+        context.update({'terms': terms})
+        sources = DefinitionSource.objects.all()
+        foreign_relations_display = ['hasWikipediaArticle',
+                                     'sameEEAGlossary',
+                                     'seeAlso']
+
+        context.update({'term_version': term_version})
+        context.update({'supergroup_version': supergroup_version})
+        context.update({'top_concepts': top_concepts})
+        context.update({'group_version': group_version})
+        context.update({'sources': sources})
+        context.update({'foreign_relations_display': foreign_relations_display})
+        return context
 
 
 class BackboneRDFView(ExportView):
@@ -329,6 +434,10 @@ EXPORT_VIEWS = [
     GemetThesaurus,
 ]
 
+GZIP_VIEWS = [
+    GemetRdfView,
+]
+
 TRANSLATABLE_EXPORT_VIEWS = [
     DefinitionsByLanguage,
     GroupsByLanguage,
@@ -356,6 +465,16 @@ class ExportFileManager(object):
             symlinks[location] = latest_location
 
             with open(location, 'w') as f:
+                content = render_to_string(view.template_name,
+                                           view.get_context())
+                f.write(content.encode('utf-8'))
+
+        for view in GZIP_VIEWS:
+            location = os.path.join(version_root, view.filename)
+            latest_location = os.path.join(latest_root, view.filename)
+            symlinks[location] = latest_location
+
+            with gzip.open(location, 'wb') as f:
                 content = render_to_string(view.template_name,
                                            view.get_context())
                 f.write(content.encode('utf-8'))

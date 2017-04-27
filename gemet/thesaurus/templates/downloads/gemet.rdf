@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:sioc="http://rdfs.org/sioc/ns#"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:dwc="http://rs.tdwg.org/dwc/terms/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns="http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#" xml:base="http://www.eionet.europa.eu/gemet/">
+
+<skos:ConceptScheme rdf:about="gemetThesaurus/">
+    <rdfs:label>{{ term_version }}</rdfs:label>
+    <dcterms:licence rdf:resource="http://creativecommons.org/licenses/by/2.5/dk/"/>
+</skos:ConceptScheme>
+
+<rdf:Description rdf:about="gemetThesaurus">
+    {% for concept in top_concepts %}
+      <skos:hasTopConcept rdf:resource="concept/{{ concept.code }}"/>
+    {% endfor %}
+</rdf:Description>
+
+<skos:Collection rdf:about="superGroupCollection">
+ <rdfs:label>{{ supergroup_version }}</rdfs:label>
+ <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+</skos:Collection>
+
+<rdf:Description rdf:about="superGroupCollection">
+    {% for supergroup in supergroups %}
+      <skos:member rdf:resource="supergroup/{{ supergroup.object.code }}"/>
+    {% endfor %}
+</rdf:Description>
+
+<skos:Collection rdf:about="groupCollection">
+ <rdfs:label>{{ group_version }}</rdfs:label>
+ <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+</skos:Collection>
+
+<rdf:Description rdf:about="groupCollection">
+    {% for group in groups %}
+      <skos:member rdf:resource="group/{{ group.object.code }}"/>
+    {% endfor %}
+</rdf:Description>
+
+{% for supergroup in supergroups %}
+  <SuperGroup rdf:about="supergroup/{{ supergroup.object.code }}">
+    <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ supergroup.object.date_entered|date:"c" }}</dcterms:created>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ supergroup.object.date_changed|date:"c" }}</dcterms:modified>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Collection"/>
+  </SuperGroup>
+{% endfor %}
+
+{% for supergroup in supergroups %}
+  <rdf:Description rdf:about="supergroup/{{ supergroup.object.code }}">
+  {% for prop in supergroup.properties %}
+    <skos:prefLabel xml:lang="{{ prop.language.code }}">{{ prop.value }}</skos:prefLabel>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for supergroup in supergroups %}
+  <rdf:Description rdf:about="supergroup/{{ supergroup.object.code }}">
+  {% for relation in supergroup.groups %}
+    <skos:member rdf:resource="group/{{ relation.target.code }}"/>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for group in groups %}
+<Group rdf:about="group/{{ group.object.code }}">
+ <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+ <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ group.object.date_entered|date:"c" }}</dcterms:created>
+ <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ group.object.date_changed|date:"c" }}</dcterms:modified>
+ <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Collection"/>
+</Group>
+{% endfor %}
+
+{% for group in groups %}
+  <rdf:Description rdf:about="group/{{ group.object.code }}">
+  {% for prop in group.properties %}
+    <skos:prefLabel xml:lang="{{ prop.language.code }}">{{ prop.value }}</skos:prefLabel>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for group in groups %}
+  <rdf:Description rdf:about="group/{{ group.object.code }}">
+  {% for relation in group.concepts %}
+    <skos:member rdf:resource="concept/{{ relation.target.code }}"/>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for supergroup in supergroups %}
+  {% for relation in supergroup.groups %}
+  <rdf:Description rdf:about="group/{{ relation.target.code }}">
+    <subGroupOf rdf:resource="supergroup/{{ supergroup.object.code }}"/>
+  </rdf:Description>
+  {% endfor %}
+{% endfor %}
+
+{% for theme in themes %}
+<Theme rdf:about="theme/{{ theme.object.code }}">
+ <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+ <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ theme.object.date_entered|date:"c" }}</dcterms:created>
+ <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ theme.object.date_changed|date:"c" }}</dcterms:modified>
+ <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Collection"/>
+</Theme>
+{% endfor %}
+
+{% for theme in themes %}
+  <rdf:Description rdf:about="theme/{{ theme.object.code }}">
+  {% for prop in theme.properties %}
+    {% if prop.name == 'prefLabel' %}
+      <rdfs:label xml:lang="{{ prop.language.code }}">{{ prop.value }}</rdfs:label>
+    {% else %}
+      <acronymLabel xml:lang="{{ prop.language.code }}">{{ prop.value }}</acronymLabel>
+    {% endif %}
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for theme in themes %}
+  <rdf:Description rdf:about="theme/{{ theme.object.code }}">
+  {% for relation in theme.concepts %}
+    <skos:member rdf:resource="concept/{{ relation.target.code }}"/>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for term in terms %}
+<skos:Concept rdf:about="concept/{{ term.object.code }}">
+ <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
+ <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ term.object.date_entered|date:"c" }}</dcterms:created>
+ <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ term.object.date_changed|date:"c" }}</dcterms:modified>
+</skis:Concept>
+{% endfor %}
+
+{% for term in terms %}
+  <rdf:Description rdf:about="concept/{{ term.object.code }}">
+  {% for prop in term.properties %}
+    {% if prop.name == 'source' %}
+      <source xml:lang="{{ prop.language.code }}">{{ prop.value }}</source>
+    {% else %}
+      <skos:{{ prop.name }} xml:lang="{{ prop.language.code }}">{{ prop.value }}</skos:{{ prop.name }}>
+    {% endif %}
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for term in terms %}
+  <rdf:Description rdf:about="concept/{{ term.object.code }}">
+  {% for relation in term.related %}
+    <skos:{{ relation.property_type.name }} rdf:resource="concept/{{ relation.target.code }}"/>
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for term in terms %}
+  <rdf:Description rdf:about="concept/{{ term.object.code }}">
+  {% for relation in term.foreign %}
+    {% if relation.property_type.name in foreign_relations_display %}
+      <{{ relation.property_type.name }} rdf:resource="{{ relation.uri }}"/>
+    {% else %}
+      <skos:{{ relation.property_type.name }} rdf:resource="{{ relation.uri }}"/>
+    {% endif %}
+  {% endfor %}
+  </rdf:Description>
+{% endfor %}
+
+{% for source in sources %}
+ <Source rdf:about="source/{{ source.abbr }}">
+   <skos:notation>{{ source.abbr }}</skos:notation>
+   <rdfs:label>{{ source.abbr }}{% if source.title %} - {{ source.title }} {% endif %}</rdfs:label>
+   {% if source.author %}
+     <dcterms:creator>{{ source.author }}</dcterms:creator>
+   {% endif %}
+   {% if source.title %}
+     <dcterms:title>{{ source.title }}</dcterms:title>
+   {% endif %}
+   {% if source.url %}
+     <foaf:page rdf:resource="{{ source.url }}"/>
+   {% endif %}
+   {% if source.publication %}
+     <dcterms:publisher>{{ source.publication }}</dcterms:publisher>
+   {% endif %}
+   {% if source.year %}
+     <dcterms:issued>{{ source.year }}</dcterms:issued>
+   {% endif %}
+ </Source>
+{% endfor %}
