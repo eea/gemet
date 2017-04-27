@@ -41,21 +41,7 @@ class GemetRdfView(ExportView):
 
     @staticmethod
     def get_context():
-        context = {}
         version = Version.objects.get(is_current=True)
-        term_version = (
-            'GEMET - Concepts, version ' + version.identifier + ', ' +
-            str(version.publication_date)
-        )
-
-        supergroup_version = (
-            'GEMET - Super Groups, version ' + version.identifier + ', ' +
-            str(version.publication_date)
-        )
-        group_version = (
-            'GEMET - Groups, version ' + version.identifier + ', ' +
-            str(version.publication_date)
-        )
         top_concepts = Term.published.exclude(
             source_relations__property_type__name='broader'
         )
@@ -73,7 +59,6 @@ class GemetRdfView(ExportView):
                     status__in=published_status
                 )
             })
-        context.update({'supergroups': supergroups})
 
         groups = []
         for group in Group.published.all():
@@ -88,7 +73,6 @@ class GemetRdfView(ExportView):
                     status__in=published_status
                 )
             })
-        context.update({'groups': groups})
 
         themes = []
         for theme in Theme.published.all():
@@ -103,7 +87,6 @@ class GemetRdfView(ExportView):
                     status__in=published_status
                 )
             })
-        context.update({'themes': themes})
 
         terms = []
         for term in Term.published.all():
@@ -124,19 +107,22 @@ class GemetRdfView(ExportView):
                 )
 
             })
-        context.update({'terms': terms})
+
         sources = DefinitionSource.objects.all()
         foreign_relations_display = ['hasWikipediaArticle',
                                      'sameEEAGlossary',
                                      'seeAlso']
+        return {
+            'version': version,
+            'top_concepts': top_concepts,
+            'supergroups': supergroups,
+            'groups': groups,
+            'themes': themes,
+            'terms': terms,
+            'foreign_relations_display': foreign_relations_display,
+            'sources': sources,
 
-        context.update({'term_version': term_version})
-        context.update({'supergroup_version': supergroup_version})
-        context.update({'top_concepts': top_concepts})
-        context.update({'group_version': group_version})
-        context.update({'sources': sources})
-        context.update({'foreign_relations_display': foreign_relations_display})
-        return context
+        }
 
 
 class BackboneRDFView(ExportView):
@@ -409,7 +395,7 @@ class GroupsByLanguage(ExportView):
         for heading in ['Super groups', 'Groups', 'Themes']:
             context.update({
                 heading.replace(' ', '_'): (
-                    Property.objects
+                    Property.published
                     .filter(
                         concept__namespace__heading=heading,
                         language_id=language,
