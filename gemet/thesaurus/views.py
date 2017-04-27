@@ -658,11 +658,7 @@ class DownloadView(HeaderMixin, FormView):
 
 def download_gemet_rdf(request, version='latest'):
     try:
-        if version != 'latest':
-            identifier = Version.objects.get(identifier=version).identifier
-        else:
-            identifier = Version.objects.get(is_current=True).identifier
-        path = os.path.join(settings.EXPORTS_ROOT, identifier, 'gemet.rdf.gz')
+        path = os.path.join(settings.EXPORTS_ROOT, version, 'gemet.rdf.gz')
         f = open(path)
     except (IOError, AttributeError):
         raise Http404
