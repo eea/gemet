@@ -1412,15 +1412,29 @@ li:hover .btn-remove-down {
 }
 
 .title {
-    font-size: 4rem;
+    font-size: 5.2rem;
     color: #00446a;
+    display: inline-block;
+    font-weight: bold;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    margin-top: 1rem;
-    color: #aaa;
+     font-size: .9rem;
+    color: #696969;
     margin-left: .5rem;
+    display: inline-block;
+    text-align: left;
+    line-height: 1.2;
+    font-family: arial;
+}
+
+@media (max-width: 320px)  {
+    .subtitle br {
+        display: none;
+    }
+    .header-title {
+        margin-top: 2rem;
+    }
 }
 
 .related-terms {
