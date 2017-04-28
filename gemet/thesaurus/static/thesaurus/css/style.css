@@ -1178,14 +1178,15 @@ li:hover .btn-remove-down {
     list-style-type: none;
 }
 
-.text-area li:after {
+.text-area li:before {
     content: " | ";
     color: inherit;
     /*color: #00446a;*/
 }
 
-.text-area li:last-of-type:after {
-    content: '';
+.text-area li:first-of-type:before {
+    // content: '';
+    display: none;
     color: #00446a;
 }
 
