@@ -2032,3 +2032,10 @@ a.search-button {
     word-wrap: break-word;
     margin-bottom: 0;
 }
+
+
+
+
+#definition > .text-area {
+    width: 100%;
+}
