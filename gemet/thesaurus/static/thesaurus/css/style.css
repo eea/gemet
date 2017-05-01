@@ -1412,13 +1412,13 @@ li:hover .btn-remove-down {
 }
 
 .title {
-    font-size: 5.2rem;
+    font-size: 4rem;
     color: #00446a;
     display: inline-block;
 }
 
 .subtitle {
-     font-size: .9rem;
+     font-size: .7rem;
     color: #696969;
     margin-left: .5rem;
     display: inline-block;
