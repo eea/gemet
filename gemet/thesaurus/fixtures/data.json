@@ -250,6 +250,16 @@
  }
 },
 {
+ "pk": "is",
+ "model": "thesaurus.language",
+ "fields": {
+  "direction": "0",
+  "charset": "utf8_general_ci",
+  "name": "Icelandic",
+  "code_alt": "ICE"
+ }
+},
+{
  "pk": "lt", 
  "model": "thesaurus.language", 
  "fields": {
