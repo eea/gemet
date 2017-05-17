@@ -1,15 +1,20 @@
-from django.utils.http import is_safe_url
+from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
+from django.utils.http import is_safe_url
 from django.views.generic import FormView, RedirectView
 
 from gemet.thesaurus.forms import LDAPAuthenticationForm
+
+# For some reason, FORCE_SCRIPT_NAME doesn't get prepended by default
+# TODO Investigate this problem
+ROOT_URL = (settings.FORCE_SCRIPT_NAME or '') + '/'
 
 
 class LoginView(FormView):
     """
     Provides the ability to login as a user with a username and password
     """
-    success_url = '/'
+    success_url = ROOT_URL
     form_class = LDAPAuthenticationForm
     template_name = 'login.html'
 
@@ -28,7 +33,7 @@ class LogoutView(RedirectView):
     """
     Provides users the ability to logout
     """
-    url = '/'
+    url = ROOT_URL
 
     def get(self, request, *args, **kwargs):
         logout(request)
