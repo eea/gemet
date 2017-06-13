@@ -6,7 +6,7 @@
   <div class="header-title">
     <div class="title">GEMET</div>
     <div class="subtitle">General<br>Multilingual<br>Environmental<br>Thesaurus</div>
-    <div>
+    <div class="search_bar search_bar_fix">
       <div class="search_dropdown">
         <select name="select-language" id="js-change-language">
         {% for lang in languages %}
@@ -49,7 +49,8 @@
       {{ field.label_tag }}
       <input id="{{ field.id_for_label }}" type="text" name="{{ field.name }}"
              value="{{ request.GET.query }}" maxlength="{{ field.field.max_length }}"
-             placeholder="Search concepts by name (active language: {{ language }})"/>
+             placeholder="Search concepts by name (active language: {{ language }})"
+             title="Search concepts by name (active language: {{ language }})"/>
     {% endfor %}
     <button type="submit" value="Search">Search</button>
   </form>
