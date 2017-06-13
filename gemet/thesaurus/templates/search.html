@@ -9,8 +9,7 @@ Search thesaurus
   {% include 'header.html' with view='search' query=query %}
   {% if query %}
     <div>
-      <span class="results-nr">{{ paginator.count }} results found.</span>
-      <span>Searched for '<b>{{ query }}</b>'</span>
+      <span>Found {{ paginator.count }} results for '<b>{{ query }}</b>' in {{ language }}:</span>
     </div>
     {% if concepts|length %}
     <hr>

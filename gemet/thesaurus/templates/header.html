@@ -49,7 +49,7 @@
       {{ field.label_tag }}
       <input id="{{ field.id_for_label }}" type="text" name="{{ field.name }}"
              value="{{ request.GET.query }}" maxlength="{{ field.field.max_length }}"
-             placeholder="Search concepts by name (active language: {{ language }})"
+             placeholder="Search concepts by name ({{ language }})"
              title="Search concepts by name (active language: {{ language }})"/>
     {% endfor %}
     <button type="submit" value="Search">Search</button>

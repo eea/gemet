@@ -24,10 +24,6 @@ a:visited{
     margin-right: 1.5em!important;
 }
 
-.results-nr {
-    float: right;
-}
-
 #left-box {
     width: 50%;
     float: left;
@@ -1252,8 +1248,9 @@ li:hover .btn-remove-down {
     position: absolute;
     margin-left:5rem;
     border: none;
-    z-index: 1000;
     right: 0;
+    border-radius: 0;
+    //background-color: #C1CFD0;
     bottom: calc(100% + 1rem + 1px);
 }
 
@@ -1266,7 +1263,7 @@ li:hover .btn-remove-down {
     box-shadow: none;
     font-weight: 600;
     font-size: 14px;
-    padding: .5em;
+    padding: .1em .2em;
     margin: 0;
     overflow: hidden;
 }
@@ -1276,7 +1273,8 @@ li:hover .btn-remove-down {
 }
 
 .search_bar input::placeholder {
-    font-size: 14px;
+    font-size: 21px;
+    font-weight: lighter;
     text-align: center;
 }
 
@@ -1351,7 +1349,8 @@ li:hover .btn-remove-down {
 }
 
 #js-change-language {
-    font-size: 10.5px;
+    font-size: 1rem;
+    color: #00446a;
     padding: 0;
     margin: 0;
 }
@@ -1362,6 +1361,7 @@ li:hover .btn-remove-down {
     font-size: 15px;
     border: none;
     background: none;
+    border-radius: 0;
 }
 
 .search_bar input:focus {
@@ -1462,7 +1462,7 @@ li:hover .btn-remove-down {
 
 @media (max-width: 600px)  {
     .search_bar input::placeholder {
-        font-size: 10px;
+        font-size: 16px;
     }
 }
 
@@ -2074,4 +2074,12 @@ a.search-button {
 
 #definition > .text-area {
     width: 100%;
+}
+
+.breadcrumbtrail  {
+    line-height: 2rem;
+}
+
+.breadcrumbitem {
+    background-position: 105% 0.75rem;
 }
