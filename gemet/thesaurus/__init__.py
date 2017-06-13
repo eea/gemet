@@ -65,3 +65,9 @@ RELATION_PAIRS = {
     'narrower': 'broader',
     'related': 'related',
 }
+
+EXACT_QUERY = 0
+BEGIN_WITH_QUERY = 1
+END_WITH_QUERY = 2
+CONTAIN_QUERY = 3
+ALL_SEARCH_MODES = 4

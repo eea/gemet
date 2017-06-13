@@ -11,6 +11,13 @@ $(document).ready(function() {
     $('#js-change-language').on('change', function() {
         var url = $(this).find(':selected').attr('href'); // get selected value
         if (url) { // require a URL
+            if ($('#id_query').val())  {
+                if (url.indexOf('?') > -1)
+                    url = url + "&query=" + $('#id_query').val();
+                else
+                    url = url + "?query=" + $('#id_query').val();
+
+            }
             window.location = url; // redirect
         }
         return false;

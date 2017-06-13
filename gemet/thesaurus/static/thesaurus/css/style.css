@@ -12,16 +12,16 @@ a:visited{
 
 #workarea {
     font-family: 'Roboto', sans-serif;
+    margin-top: -26px;
+    padding-top: 26px;
+    overflow-x: visible;
+    font-size: 110%
 }
 
 .direction-rtl ul,
 #workarea .direction-rtl ul {
     margin-left: auto!important;
     margin-right: 1.5em!important;
-}
-
-.results-nr {
-    float: right;
 }
 
 #left-box {
@@ -399,6 +399,10 @@ hr {
     .hidden-mobile {
         display: none!important;
     }
+    #workarea {
+        clear: none;
+        border: none;
+    }
 }
 
 @media (min-width: 701px) {
@@ -667,7 +671,6 @@ hr {
 #workarea {
     /*padding-bottom: 60px;*/
     margin-left: 0;
-    overflow-x: hidden;
     font-size: 110%;
 }
 
@@ -714,6 +717,7 @@ hr {
     margin-top: 1rem;
     margin-bottom: 1rem;
     text-align: center;
+    position:relative;
 }
 
 
@@ -1240,6 +1244,16 @@ li:hover .btn-remove-down {
     border: 3px solid #00446a;
 }
 
+.search_bar_fix {
+    position: absolute;
+    margin-left:5rem;
+    border: none;
+    right: 0;
+    border-radius: 0;
+    //background-color: #C1CFD0;
+    bottom: calc(100% + 1rem + 1px);
+}
+
 .edit-page > .element > .element > .input-field.visible {
     display: inline-block!important;
 }
@@ -1249,15 +1263,19 @@ li:hover .btn-remove-down {
     box-shadow: none;
     font-weight: 600;
     font-size: 14px;
-    width: 80%;
-    padding: .5em;
+    padding: .1em .2em;
     margin: 0;
     overflow: hidden;
-    margin-left: 7.8rem;
 }
 
 .search_bar input[type=text]:focus {
     outline: none;
+}
+
+.search_bar input::placeholder {
+    font-size: 21px;
+    font-weight: lighter;
+    text-align: center;
 }
 
 .search_bar button[type=submit] {
@@ -1299,10 +1317,8 @@ li:hover .btn-remove-down {
 .search_bar .search_dropdown {
     font-weight: 600;
     min-width: 17px;
-    border-right: 1px solid #ddd;
     color: #555;
-    border-radius: 2px 0 0 2px;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     bottom: 0;
@@ -1312,6 +1328,7 @@ li:hover .btn-remove-down {
     -ms-user-select: none;
     user-select: none;
     box-sizing: content-box;
+    border:none;
 }
 
 .search_bar .search_dropdown:after {
@@ -1331,13 +1348,20 @@ li:hover .btn-remove-down {
     border-right-color: #ccc;
 }
 
+#js-change-language {
+    font-size: 1rem;
+    color: #00446a;
+    padding: 0;
+    margin: 0;
+}
+
 .search_bar .search_dropdown > select {
     position: relative;
     white-space: nowrap;
     font-size: 15px;
     border: none;
-    margin-top: 7px;
     background: none;
+    border-radius: 0;
 }
 
 .search_bar input:focus {
@@ -1433,6 +1457,12 @@ li:hover .btn-remove-down {
     }
     .header-title {
         margin-top: 2rem;
+    }
+}
+
+@media (max-width: 600px)  {
+    .search_bar input::placeholder {
+        font-size: 16px;
     }
 }
 
@@ -1809,11 +1839,6 @@ a.btn {
         transform: translateX(0);
         /*overflow: auto!important;*/
     }
-    .search_bar input[type=text] {
-        margin-left: 38%;
-        /* margin-right: -7%; */
-        width: 49%;
-    }
     .search_bar.huge {
         max-width: 88%;
     }
@@ -1822,9 +1847,6 @@ a.btn {
     }
     #workarea .content {
         padding: 0 1rem;
-    }
-    #workarea {
-        margin-top: 0;
     }
     .gemet-menu {
         display: block;
@@ -2052,4 +2074,12 @@ a.search-button {
 
 #definition > .text-area {
     width: 100%;
+}
+
+.breadcrumbtrail  {
+    line-height: 2rem;
+}
+
+.breadcrumbitem {
+    background-position: 105% 0.75rem;
 }

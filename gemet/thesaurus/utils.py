@@ -9,6 +9,8 @@ from django_q.status import Stat
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
+from gemet.thesaurus import EXACT_QUERY, END_WITH_QUERY, BEGIN_WITH_QUERY
+from gemet.thesaurus import CONTAIN_QUERY, ALL_SEARCH_MODES
 from gemet.thesaurus.models import Concept, Group, Property, Version
 
 
@@ -39,16 +41,20 @@ def regex_search(query, language, heading):
     )
 
 
-def search_queryset(query, language, search_mode=1, heading='Concepts',
+def search_queryset(query, language, search_mode=EXACT_QUERY, heading='Concepts',
                     api_call=False, status_values=[]):
     status_values = status_values or Property.PUBLISHED_STATUS_OPTIONS
     if api_call:
-        if search_mode == 4:
+        if search_mode == ALL_SEARCH_MODES:
             values = (
-                api_search(query, language, status_values, 0, heading) or
-                api_search(query, language, status_values, 1, heading) or
-                api_search(query, language, status_values, 2, heading) or
-                api_search(query, language, status_values, 3, heading)
+                api_search(query, language, status_values,
+                           EXACT_QUERY, heading) or
+                api_search(query, language, status_values,
+                           BEGIN_WITH_QUERY, heading) or
+                api_search(query, language, status_values,
+                           END_WITH_QUERY, heading) or
+                api_search(query, language, status_values,
+                           CONTAIN_QUERY, heading)
             )
         else:
             values = api_search(query, language, status_values, search_mode,
@@ -61,10 +67,10 @@ def search_queryset(query, language, search_mode=1, heading='Concepts',
 
 def api_search(query, language, status_values, search_mode, headings):
     search_types = {
-        0: [query],
-        1: [query + '%%'],
-        2: ['%%' + query],
-        3: ['%%' + query + '%%']
+        EXACT_QUERY: [query],
+        BEGIN_WITH_QUERY: [query + '%%'],
+        END_WITH_QUERY: ['%%' + query],
+        CONTAIN_QUERY: ['%%' + query + '%%']
     }
     query_search = search_types.get(search_mode)
 
