@@ -1,4 +1,5 @@
 {% extends layout_template %}
+{% load staticfiles %}
 {% load gemet_tags %}
 {% block title %}
  {% get_concept_name concept.name concept.id status_values as name %}
@@ -11,7 +12,9 @@
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
-    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
+    <button class="expand-button">
+      <img src="{% static 'thesaurus/img/language-icon.png' %}"/>
+    </button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}

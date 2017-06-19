@@ -1777,10 +1777,25 @@ a.btn {
     .expand-button {
         top: 54%;
         display: block;
-        font-size: 2.2rem;
-        right: 100%;
+        padding: .5rem;
+        right: 100.5%;
         border-top-left-radius: 6px;
         border-bottom-left-radius: 6px;
+        padding-right: 1rem;
+        background: #00446a;
+        border: none!important;
+    }
+    .expand-button:focus{
+        background: #00446a;
+        border: none;
+    }
+    .expand .expand-button {
+        padding-right: .3rem;
+    }
+    .expand-button img {
+        width: 30px;
+        height: 30px;
+        max-width: initial;
     }
     #translations {
         overflow-y: auto;
@@ -1820,8 +1835,8 @@ a.btn {
         color: white;
         white-space: nowrap;
         border: none;
-        font-size: 19px;
-        padding: 8px;
+        font-size: 24px;
+        padding: 10px;
     }
     .menu-button:focus {
         background: #00446a;

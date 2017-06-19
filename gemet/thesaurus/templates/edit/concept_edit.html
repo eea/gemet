@@ -13,7 +13,7 @@
   <!-- Side bar -->
   <div class="side-bar box">
     <!-- Translations -->
-    <button class="expand-button"><i class="fa fa-language" aria-hidden="true"></i></button>
+    <button class="expand-button"><img src="{% static 'thesaurus/img/language-icon.png' %}"/></button>
     <h6 class="no-margin-top">Translations</h6>
     <ul id="translations" class="dl-inline no-list">
       {% for translation in concept.translations %}
@@ -62,7 +62,7 @@
                 data-toggle="tooltip"
                 data-type="alternative"
                 data-html-tag="input">
-     
+
             <i class="fa fa-plus" aria-hidden="true"></i>
           add
         </button>
@@ -190,7 +190,7 @@
          <label class="otherInput" for="otherLabel" >Label:</label>
         <input class="otherInput" type="text" id='otherLabel' value="" data-type="other" />
        </div>
-       
+
        <div class="input-field">
         <label class="otherInput" for="otherUrl" >Url:</label>
         <input class="otherInput" type="url" id='otherUrl' value="" data-type="other" />
@@ -239,7 +239,7 @@
                 data-select-id="#otherSelect"
                 data-href="{% url 'add_other' concept.id %}" hidden>
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
-    
+
       save
         </button>
       </div>
