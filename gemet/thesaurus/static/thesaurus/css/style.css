@@ -1437,8 +1437,12 @@ li:hover .btn-remove-down {
 
 .title {
     font-size: 4rem;
-    color: #00446a;
+    color: #00446a!important;
     display: inline-block;
+}
+
+.title:hover {
+    text-decoration: none;
 }
 
 .subtitle {
