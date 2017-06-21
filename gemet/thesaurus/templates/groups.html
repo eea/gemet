@@ -10,7 +10,9 @@ Groups list
   {% include 'header.html' with view='groups' %}
 <div class="beautiful-listing">
   <h1>Groups</h1>
-
+  {% if language_warning %}
+    <p class="alert">There are no supergroups/groups available for the current language so these are listed in English.</p>
+  {% endif %}
   <ul class="listing {% if language.rtl %}direction-rtl{% endif %} no-list">
     {% for supergroup in supergroups %}
       <li>
@@ -19,7 +21,7 @@ Groups list
       </h3>
 
         <ul class="groups">
-          {% get_children supergroup.id language.code status_values as supergroup_children %}
+          {% get_children supergroup.id language.code status_values language_warning as supergroup_children %}
           {% for group in supergroup_children %}
             <li>
             <a href="{% url 'relations' language.code group.concept__code %}">

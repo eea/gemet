@@ -174,13 +174,11 @@ class InspireThemesView(ThemesView):
 class GroupsView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
     template_name = "groups.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(GroupsView, self).get_context_data(**kwargs)
-
-        supergroups = (
+    def _get_supergroups_by_langcode(self, langcode):
+        return (
             Property.objects.filter(
                 name='prefLabel',
-                language__code=self.langcode,
+                language__code=langcode,
                 status__in=self.status_values,
                 concept_id__in=SuperGroup.objects
                 .filter(status__in=self.status_values)
@@ -191,6 +189,15 @@ class GroupsView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
                    order_by=['name'])
             .values('id', 'name')
         )
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupsView, self).get_context_data(**kwargs)
+
+        supergroups = self._get_supergroups_by_langcode(self.langcode)
+
+        if not supergroups:
+            supergroups = self._get_supergroups_by_langcode(DEFAULT_LANGCODE)
+            context.update({'language_warning': True})
 
         context.update({
             "supergroups": supergroups,

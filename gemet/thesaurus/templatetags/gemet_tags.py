@@ -29,10 +29,13 @@ def get_expand(concept_id, expand_list):
 
 
 @register.assignment_tag
-def get_children(concept_id, langcode, status_values):
+def get_children(concept_id, langcode, status_values, language_warning=False):
     concept = Concept.objects.get(pk=concept_id)
     concept.status_list = status_values
-    return concept.get_children(langcode)
+    if language_warning:
+        return concept.get_children(DEFAULT_LANGCODE)
+    else:
+        return concept.get_children(langcode)
 
 
 @register.assignment_tag
