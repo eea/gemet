@@ -306,6 +306,11 @@ class RelationsView(HeaderMixin, StatusMixin, VersionMixin, TemplateView):
             expand_list = []
 
         context = super(RelationsView, self).get_context_data(**kwargs)
+
+        if not group.name:
+            group.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
+            context.update({'language_warning': True})
+
         context.update({
             'group_id': group.id,
             'group': group,

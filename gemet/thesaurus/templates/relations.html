@@ -14,6 +14,9 @@
     <h3 class="h5 {% if language.rtl %}direction-rtl{% endif %}">
       {% get_concept_name group.name group.id status_values %}
     </h3>
+    {% if language_warning %}
+          <p class="alert">* Note: Group name is not available for the current language</p>
+    {% endif %}
 
     <ul class="listing first-level{% if language.rtl %}direction-rtl{% endif %}">
       {% get_children group.id language.code group.status_list as group_children %}
