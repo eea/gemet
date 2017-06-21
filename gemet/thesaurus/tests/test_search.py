@@ -75,8 +75,8 @@ class TestSearchView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 0)
-        self.assertEqual(resp.pyquery('.content .results-nr').text(),
-                         '0 results found.')
+        self.assertEqual(resp.pyquery('.content span').text(),
+                         "Found 0 results for ' foo ' in English:")
 
     @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_multiple_results(self):
@@ -125,8 +125,8 @@ class TestSearchView(GemetTest):
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content li')), 2)
-        self.assertEqual(resp.pyquery('.content .results-nr').text(),
-                         '2 results found.')
+        self.assertEqual(resp.pyquery('.content span')[0].text,
+                         "Found 2 results for '")
 
     @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_regex_search(self):

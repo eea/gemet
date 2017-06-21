@@ -1,6 +1,6 @@
 {% extends layout_template %}
 {% load gemet_tags %}
-
+{% load staticfiles %}
 {% block title %}
  {% get_concept_name concept.name concept.id status_values as name %}
  Edit {{ name|striptags }}

@@ -1,5 +1,7 @@
 {% extends layout_template %}
 {% load gemet_tags %}
+{% load staticfiles %}
+
 {% block title %}
  {% get_concept_name group.name group.id status_values as name %}
  {{ name|striptags }}
