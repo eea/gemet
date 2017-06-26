@@ -112,7 +112,7 @@
   <skos:inScheme rdf:resource="http://www.eionet.europa.eu/gemet/gemetThesaurus"/>
   <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ term.object.date_entered|date:"c" }}</dcterms:created>
   <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">{{ term.object.date_changed|date:"c" }}</dcterms:modified>
-</skis:Concept>{% endfor %}
+</skos:Concept>{% endfor %}
 
 {% for term in terms %}
 <rdf:Description rdf:about="concept/{{ term.object.code }}">
@@ -147,3 +147,5 @@
    {% if source.publication %}<dcterms:publisher>{{ source.publication }}</dcterms:publisher>{% endif %}
    {% if source.year %}<dcterms:issued>{{ source.year }}</dcterms:issued>{% endif %}
  </Source>{% endfor %}
+
+</rdf:RDF>
