@@ -46,6 +46,11 @@ class AuthorizedUserAdmin(admin.ModelAdmin):
 class VersionAdmin(admin.ModelAdmin):
     list_display = ('id', 'identifier', 'publication_date', 'is_current')
 
+class SourceAdmin(admin.ModelAdmin):
+    search_fields = ('abbr', 'url',)
+    list_display = ('abbr', 'title', 'url')
+    list_filter = ()
+
 
 admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
@@ -59,3 +64,4 @@ admin.site.register(models.SuperGroup, SuperGroupAdmin)
 admin.site.register(models.Term, ConceptAdmin)
 admin.site.register(models.AuthorizedUser, AuthorizedUserAdmin)
 admin.site.register(models.Version, VersionAdmin)
+admin.site.register(models.DefinitionSource, SourceAdmin)
