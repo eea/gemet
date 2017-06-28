@@ -331,12 +331,12 @@ class ForeignRelation(VersionableModel):
 
 class DefinitionSource(models.Model):
     abbr = models.CharField(max_length=10, primary_key=True)
-    author = models.CharField(max_length=255, null=True)
-    title = models.CharField(max_length=255, null=True)
-    url = models.CharField(max_length=255, null=True)
-    publication = models.CharField(max_length=255, null=True)
-    place = models.CharField(max_length=255, null=True)
-    year = models.CharField(max_length=10, null=True)
+    author = models.CharField(max_length=255, null=True, blank=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    publication = models.CharField(max_length=255, null=True, blank=True)
+    place = models.CharField(max_length=255, null=True, blank=True)
+    year = models.CharField(max_length=10, null=True, blank=True)
 
 
 class AsyncTask(models.Model):
