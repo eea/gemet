@@ -470,6 +470,7 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
                                        language=self.language,
                                        name='prefLabel',
                                        value=form.cleaned_data['name'])
+        refresh_search_text('prefLabel', new_concept.id, self.language.code)
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_concept.code})
