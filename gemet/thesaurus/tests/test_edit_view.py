@@ -409,6 +409,19 @@ class TestAddNewConcept(GemetTest):
                          models.Property.objects.get(name='prefLabel',
                                                      concept__code='201').value)
 
+    def test_search_text_is_created(self):
+        url = reverse('concept_add', kwargs={'langcode': self.language.code})
+        self.app.post(url, user=self.user, params={
+            'name': 'test',
+            'namespace': self.namespace.id
+        })
+        search_prop = models.Property.objects.filter(
+            concept=models.Concept.objects.last(),
+            name='searchText',
+            language=self.language)
+        self.assertEqual(1, len(search_prop))
+        self.assertEqual(0, search_prop.first().status)
+
 
 class TestDeleteNewConcept(GemetTest):
     def setUp(self):
