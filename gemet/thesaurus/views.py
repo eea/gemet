@@ -718,6 +718,9 @@ def redirect_old_urls(request, view_name):
         'gemet-definitions.html': 'export',
         'gemet-groups.html': 'export',
         'gemet-relations.html': 'export',
+        'gemetThesaurus': 'download',
+        'gemetThesaurus.rdf': 'export',
+        'gemet-skoscore.rdf': 'export',
     }
     view = old_new_views.get(view_name, view_name)
     kwargs = {}
@@ -732,7 +735,7 @@ def redirect_old_urls(request, view_name):
     if view in ['themes', 'groups', 'download', 'export_lang',
                 'alphabets', 'about', 'definition_sources',
                 'changes', 'alphabetic', 'search', 'theme_concepts',
-                'webservices']:
+                'inspire_themes', 'webservices']:
         langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
         kwargs.update({'langcode': langcode})
 

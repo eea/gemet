@@ -21,6 +21,7 @@ urlpatterns = [
         'gemet-relations\.html|'
         'gemet-skoscore\.rdf|'
         'gemetThesaurus|'
+        'gemetThesaurus\.rdf|'
         'gemet-definitions\.rdf|'
         'gemet-groups\.rdf|'
         'inspire_themes|'
