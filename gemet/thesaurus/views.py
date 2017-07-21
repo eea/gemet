@@ -712,12 +712,25 @@ def redirect_old_urls(request, view_name):
         'index_html': 'themes',
         'rdf': 'download',
         'relations': 'groups',
+        'gemet-definitions.rdf': 'export_lang',
+        'gemet-groups.rdf': 'export_lang',
+        'gemet-backbone.html': 'export',
+        'gemet-definitions.html': 'export',
+        'gemet-groups.html': 'export',
+        'gemet-relations.html': 'export',
     }
     view = old_new_views.get(view_name, view_name)
-
     kwargs = {}
-    if view in ['themes', 'groups', 'download', 'gemet-definitions.rdf',
-                'gemet-groups.rdf', 'alphabets', 'about', 'definition_sources',
+
+    if view in ['export', 'export_lang']:
+        kwargs.update({'filename': view_name})
+        kwargs.update({'version': 'latest'})
+
+    if view == 'download':
+        kwargs.update({'version': 'latest'})
+
+    if view in ['themes', 'groups', 'download', 'export_lang',
+                'alphabets', 'about', 'definition_sources',
                 'changes', 'alphabetic', 'search', 'theme_concepts',
                 'webservices']:
         langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
@@ -725,7 +738,10 @@ def redirect_old_urls(request, view_name):
 
     if view_name == 'theme_concepts':
         theme_code = request.GET.get('th')
-        kwargs.update({'theme_code': theme_code})
+        if theme_code:
+            kwargs.update({'theme_code': theme_code})
+        else:
+            view = 'themes'
 
     url = reverse(view, kwargs=kwargs)
     letter = request.GET.get('letter')
