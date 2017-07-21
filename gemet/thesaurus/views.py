@@ -715,6 +715,7 @@ def redirect_old_urls(request, view_name):
         'gemet-definitions.rdf': 'export_lang',
         'gemet-groups.rdf': 'export_lang',
         'gemet-backbone.html': 'export',
+        'gemet-backbone.rdf': 'export',
         'gemet-definitions.html': 'export',
         'gemet-groups.html': 'export',
         'gemet-relations.html': 'export',
