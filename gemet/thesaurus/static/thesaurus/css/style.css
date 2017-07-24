@@ -843,6 +843,8 @@ hr {
 .footer-menu a {
     text-decoration: none;
     color: inherit;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .footer-menu a:hover {
