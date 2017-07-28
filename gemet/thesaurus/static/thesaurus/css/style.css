@@ -1156,7 +1156,7 @@ li:hover .btn-remove-down {
     /*margin-right: -17px;*/
 }
 
-.text-area#definition .text-area:first-of-type p:first-of-type {
+.text-area#definition > .text-area:first-of-type > p:first-of-type {
     /* color: #00446a; */
     font-size: 1rem;
     /* font-weight: 500; */
@@ -1536,8 +1536,6 @@ li:hover .btn-remove-down {
 
 .text-area-wrapper {
     display: flex;
-    display: -moz-box;
-    display: -moz-flex;
     flex-wrap: wrap;
     margin-right: -16px;
     margin-left: -16px;
@@ -1921,6 +1919,11 @@ a.search-button {
         float: left;
         width: 75%;
         box-sizing: border-box;
+    }
+    .source.text-area,
+    .source.text-area .text-area {
+        float: initial;
+        width: 100%;
     }
     .edit-page .text-area {
         float: none;
