@@ -578,14 +578,14 @@ class ConceptSourcesView(StatusMixin, View):
         if hasattr(concept, 'source'):
             sources = concept.source.split(' / ')
             for source in sources:
-                source = source.strip()
+                source = source.encode('utf-8').strip()
                 found = DefinitionSource.objects.filter(abbr=source)
                 if found.first():
                     definition_sources.append((source, True))
                 else:
                     source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
                                     source)
-                    definition_sources.append((str(source), False))
+                    definition_sources.append((source, False))
 
         context = {'definition_sources': definition_sources,
                    'language': Language.objects.get(code=langcode)}
