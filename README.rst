@@ -7,6 +7,9 @@ GEMET
 .. image:: https://travis-ci.org/eea/gemet.svg?branch=master
     :target: https://travis-ci.org/eea/gemet
 
+.. image:: https://dockerbuildbadges.quelltext.eu/status.svg?organization=eeacms&repository=gemet
+    :target: https://hub.docker.com/r/eeacms/gemet/builds
+
 .. contents ::
 
 Project Name
