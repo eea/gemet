@@ -32,13 +32,13 @@
 
   {% if is_latest %}
     <div class="alert alert-warning">
-      This is the latest version of GEMET. If you want to see the previous
-      versions, use the following <a href="{% url 'changes' language.code %}">link</a>.
+      The download links below refer to the latest version of GEMET.
+      To download a previous version, use this <a href="{% url 'changes' language.code %}">link</a>.
     </div>
   {% else %}
     <div class="alert alert-warning">
-      This is a previous version of GEMET. If you want to see the latest version,
-      use the following <a href="{% url 'download' language.code 'latest' %}">link</a>.
+      The download links below refer to an older version of GEMET.
+      To download the latest latest version, use this <a href="{% url 'download' language.code 'latest' %}">link</a>.
     </div>
   {% endif %}
 
