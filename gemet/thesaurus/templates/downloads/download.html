@@ -30,6 +30,18 @@
   <div style="width: 70%">
   <h3 class="h3">General structure</h3>
 
+  {% if is_latest %}
+    <div class="alert alert-warning">
+      The download links below refer to the latest version ({{ version_identifier }}) of GEMET.
+      To download a previous version, use this <a href="{% url 'changes' language.code %}">link</a>.
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      The download links below refer to an older version ({{ version_identifier }}) of GEMET.
+      To download the latest version, use this <a href="{% url 'download' language.code 'latest' %}">link</a>.
+    </div>
+  {% endif %}
+
   {% if show_message %}
     <div class="alert alert-warning fade in alert-dismissable">
       A new version has just been released. Exports are still being generated.

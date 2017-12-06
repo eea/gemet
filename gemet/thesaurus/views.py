@@ -641,9 +641,21 @@ class DownloadView(HeaderMixin, FormView):
             except ObjectDoesNotExist:
                 pass
 
+        is_latest = False
+        current_version = Version.objects.get(is_current=True)
+        if self.version == 'latest' or self.version == current_version.identifier:
+            is_latest = True
+
+        if self.version == 'latest':
+            version_identifier = current_version.identifier
+        else:
+            version_identifier = self.version
+
         context.update({
             'version': self.version,
             'show_message': show_message,
+            'is_latest': is_latest,
+            'version_identifier': version_identifier
         })
         return context
 

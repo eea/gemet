@@ -37,6 +37,8 @@
 <div class="footer-menu">
 
   {% block footer %}
+    <a href="{% url 'themes' language.code %}">GEMET</a>
+     |
     <a href="{% url 'download' language.code 'latest' %}">Download</a>
     &nbsp;|&nbsp;
     <a href="{% url 'alphabets' language.code %}">Alphabets</a>
