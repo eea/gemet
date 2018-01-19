@@ -24,22 +24,44 @@ class Command(BaseCommand):
     help = 'Get zope template and prepare it for use'
 
     def handle(self, *args, **options):
+
+        zope_path = os.path.join(
+            settings.BASE_DIR, 'gemet', 'thesaurus', 'templates', 'zope')
+
         resp = requests.get(HEADER_URL)
-        header_text = prepare_html(resp.text)
+        if resp.status_code == 200:
+            header_text = prepare_html(resp.text)
 
-        title_start = header_text.find('<title>')
-        title_end = header_text.find('</title>')
-        head_end = header_text.find('</head>')
-        login_start = header_text.find('<a id="loginlink"')
-        login_end = header_text.find('<a id="printlink"')
+            title_start = header_text.find('<title>')
+            title_end = header_text.find('</title>')
+            head_end = header_text.find('</head>')
+            login_start = header_text.find('<a id="loginlink"')
+            login_end = header_text.find('<a id="printlink"')
 
-        HEADER_BEFORE_TITLE = header_text[:title_start + len('<title>')]
-        HEADER_AFTER_TITLE = header_text[title_end:head_end]
-        HEADER_BEFORE_LOGIN = header_text[head_end:login_start]
-        HEADER_AFTER_LOGIN = header_text[login_end:]
+            HEADER_BEFORE_TITLE = header_text[:title_start + len('<title>')]
+            HEADER_AFTER_TITLE = header_text[title_end:head_end]
+            HEADER_BEFORE_LOGIN = header_text[head_end:login_start]
+            HEADER_AFTER_LOGIN = header_text[login_end:]
+        else:
+            with open(os.path.join(zope_path,
+                                   'header_before_title_cached.html')) as f:
+                HEADER_BEFORE_TITLE = f.read()
+            with open(os.path.join(zope_path,
+                                   'header_after_title_cached.html')) as f:
+                HEADER_AFTER_TITLE = f.read()
+            with open(os.path.join(zope_path,
+                                   'header_before_login_cached.html')) as f:
+                HEADER_BEFORE_LOGIN = f.read()
+            with open(os.path.join(zope_path,
+                                   'header_after_login_cached.html')) as f:
+                HEADER_AFTER_LOGIN = f.read()
 
         resp = requests.get(FOOTER_URL)
-        FOOTER_TEXT = prepare_html(resp.text)
+        if resp.status_code == 200:
+            FOOTER_TEXT = prepare_html(resp.text)
+        else:
+            with open(os.path.join(zope_path, 'footer_cached.html')) as f:
+                FOOTER_TEXT = f.read()
 
         templates = {
             'header_before_title.html': HEADER_BEFORE_TITLE,
@@ -48,11 +70,6 @@ class Command(BaseCommand):
             'header_after_login.html': HEADER_AFTER_LOGIN,
             'footer.html': FOOTER_TEXT,
         }
-
-        zope_path = os.path.join(
-            settings.BASE_DIR, 'gemet', 'thesaurus', 'templates', 'zope')
-        if not os.path.exists(zope_path):
-            os.makedirs(zope_path)
 
         for template_name, content in templates.iteritems():
             template_path = os.path.join(zope_path, template_name)
