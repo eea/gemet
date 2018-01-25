@@ -1,3 +1,4 @@
+import logging
 import os
 import requests
 
@@ -31,7 +32,8 @@ class Command(BaseCommand):
             'header_before_title_cached.html',
             'header_after_title_cached.html',
             'header_before_login_cached.html',
-            'header_after_login_cached.html'
+            'header_after_login_cached.html',
+            'footer_cached.html',
         ]
 
         try:
@@ -73,6 +75,8 @@ class Command(BaseCommand):
             for template, file_name in zip(files, header_files):
                 with open(os.path.join(zope_path, file_name)) as f:
                     templates[template] = f.read()
+            logger = logging.getLogger('django')
+            logger.info('Zope templates were taken from cache.')
 
         for template_name, content in templates.iteritems():
             template_path = os.path.join(zope_path, template_name)
