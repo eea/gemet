@@ -451,6 +451,7 @@ class ExportFileManager(object):
             symlinks[location] = latest_location
 
             with open(location, 'w') as f:
+                print('Writing {}'.format(location))
                 content = render_to_string(view.template_name,
                                            view.get_context())
                 f.write(content.encode('utf-8'))
@@ -461,6 +462,7 @@ class ExportFileManager(object):
             symlinks[location] = latest_location
 
             with gzip.open(location, 'wb') as f:
+                print('Writing {}'.format(location))
                 content = render_to_string(view.template_name,
                                            view.get_context())
                 f.write(content.encode('utf-8'))
@@ -472,13 +474,15 @@ class ExportFileManager(object):
                 symlinks[location] = latest_loc
 
                 with open(location, 'w') as f:
+                    print('Writing {}'.format(location))
                     content = render_to_string(view.template_name,
                                                view.get_context(language))
                     f.write(content.encode('utf-8'))
-
+        print('Creating symlinks.')
         for source, destination in symlinks.iteritems():
             if os.path.exists(destination):
                 os.remove(destination)
+            print('{} -> {}.'.format(source, destination))
             os.symlink(source, destination)
 
 
