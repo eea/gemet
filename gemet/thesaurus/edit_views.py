@@ -623,6 +623,7 @@ class ConceptChangesView(LoginRequiredMixin, View):
             concept.properties
             .filter(status__in=[PENDING, DELETED_PENDING])
             .exclude(language=language)
+            .distinct()
             .values_list('language__name', flat=True)
         )
         if other_language_properties.count():
