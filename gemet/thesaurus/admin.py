@@ -51,6 +51,11 @@ class SourceAdmin(admin.ModelAdmin):
     list_display = ('abbr', 'title', 'url')
     list_filter = ()
 
+class AsyncTaskAdmin(admin.ModelAdmin):
+    search_fields = ()
+    list_display = ('date', 'user', 'version', 'status')
+    list_filter = ()
+
 
 admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
@@ -65,3 +70,5 @@ admin.site.register(models.Term, ConceptAdmin)
 admin.site.register(models.AuthorizedUser, AuthorizedUserAdmin)
 admin.site.register(models.Version, VersionAdmin)
 admin.site.register(models.DefinitionSource, SourceAdmin)
+
+admin.site.register(models.AsyncTask, AsyncTaskAdmin)
