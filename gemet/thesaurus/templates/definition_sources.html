@@ -13,11 +13,9 @@ Definition sources used by gemet
     <ol id="definition-sources">
         {% for definition in definitions %}
         <li id="{{ definition.abbr }}">
-            <strong>{{definition.abbr}}</strong>
             {% if definition.url %}
             <a href="{{definition.url}}">{{definition.url}}</a>
             {% endif %}
-            <small>
             {% if definition.author %}
                 {{definition.author}} -
             {% endif %}
@@ -33,7 +31,6 @@ Definition sources used by gemet
             {% if definition.year %}
                 {{definition.year}}
             {% endif %}
-            </small>
         </li>
         {% endfor %}
     </ol>
