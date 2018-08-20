@@ -30,7 +30,6 @@ class TestDefinitionSourcesView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertTrue('abbr' in resp.pyquery('ol li').text())
         self.assertTrue('author' in resp.pyquery('ol li').text())
         self.assertTrue('title' in resp.pyquery('ol li').text())
         self.assertTrue('url' in resp.pyquery('ol li').text())
@@ -46,4 +45,4 @@ class TestDefinitionSourcesView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.context['language'].code, 'en')
-        self.assertEqual(resp.pyquery('ol li').text(), 'abbr url')
+        self.assertEqual(resp.pyquery('ol li').text(), 'url')
