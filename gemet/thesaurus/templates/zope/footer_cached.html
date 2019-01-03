@@ -3,12 +3,12 @@
     <div id="pagefoot">
 <p>
   Document last modified:
-              2017/08/29
+              2018/12/09
     .
     Content in this portal is modified daily by a community of providers.
 </p>
 <p>
-<a href="http://www.eionet.europa.eu/disclaimer">Disclaimer</a>.
+<a href="http://www.eionet.europa.eu/disclaimer">Disclaimer</a> | <a href="http://www.eionet.europa.eu/gdpr">Privacy statement</a> |
 Copyright: <a rel="license"
    href="http://creativecommons.org/licenses/by/2.5/dk/deed.en_GB"
    title="Creative Commons Attribution License">
@@ -16,19 +16,26 @@ Copyright: <a rel="license"
       src="https://i.creativecommons.org/l/by/2.5/dk/80x15.png" /></a>
 </p>
 </div>
+
+<!-- Matomo -->
 <script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-49448622-1']);
-  _gaq.push (['_gat._anonymizeIp']);
-  _gaq.push(['_trackPageview']);
-
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+  _paq.push(["setCookieDomain", "*.eionet.europa.eu"]);
+  _paq.push(["setDomains", ["*.eionet.europa.eu"]]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
   (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    var u="//matomo.eea.europa.eu/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '38']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
   })();
-
 </script>
+<noscript><p><img src="http://www.eionet.europa.eu//matomo.eea.europa.eu/piwik.php?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Matomo Code -->
+
 </body>
 </html>
