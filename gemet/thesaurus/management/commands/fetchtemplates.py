@@ -18,6 +18,10 @@ def prepare_html(html):
     breadcrumbs_old = '<div class="breadcrumbitemlast">' + \
         'Eionet</div>'
     html = html.replace(breadcrumbs_old, breadcrumbs)
+    # Replace site id for Matomo
+    tracking_old = '_paq.push([\'setSiteId\', \'2\'])'
+    tracking_new = '_paq.push([\'setSiteId\', \'38\'])'
+    html = html.replace(tracking_old, tracking_new)
     return html
 
 
