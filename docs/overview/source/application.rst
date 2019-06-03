@@ -53,7 +53,7 @@ project::
 
 A few words about the files and directories found in **gemet** folder:
 
-* **layout.py** - middleware component used for zope layout integration
+* **layout.py** - middleware component used for plone layout integration
 * **local_settigs.py, settings.py, test_settings.py** - settings files
 * **thesaurus/** - project module
 

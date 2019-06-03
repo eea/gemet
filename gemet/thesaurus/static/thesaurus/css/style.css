@@ -1527,6 +1527,10 @@ i {
     font-family: OpenSans,"Helvetica Neue",Helvetica,Arial,sans-serif !important;
 }
 
+.container.header-container.collapse-header {
+    width: 100%;
+}
+
 #profilelink:before {
     content: none;
 }
