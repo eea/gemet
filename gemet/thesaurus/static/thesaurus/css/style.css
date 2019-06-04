@@ -838,6 +838,9 @@ hr {
     margin-bottom: 1em;
     /*position: absolute;*/
     bottom: 0;
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .footer-menu a {
@@ -1231,6 +1234,10 @@ li:hover .btn-remove-down {
     display: none;
 }
 
+#search-form {
+    margin-bottom: 0px;
+}
+
 #search-form label {
     display: none;
 }
@@ -1253,7 +1260,8 @@ li:hover .btn-remove-down {
     right: 0;
     border-radius: 0;
     //background-color: #C1CFD0;
-    bottom: calc(100% + 1rem + 1px);
+    bottom: calc(100% + 2.4rem + 1px);
+    height: 28px;
 }
 
 .edit-page > .element > .element > .input-field.visible {
@@ -1282,9 +1290,10 @@ li:hover .btn-remove-down {
 
 .search_bar button[type=submit] {
     background: white;
-    color: rgba(255, 255, 255, 0);
+    color: rgba(255, 255, 255, 0) !important;
+    text-shadow: none;
     border: 1px solid #00446a;
-    border-left: none;
+    border:none !important;
     width: 10%;
     min-width: 56px;
     position: absolute;
@@ -1314,6 +1323,8 @@ li:hover .btn-remove-down {
 .search_bar button[type=submit]:hover,
 .search_bar button[type=submit]:focus {
     cursor: pointer;
+    box-shadow: none;
+    outline:none;
 }
 
 .search_bar .search_dropdown {
@@ -1355,6 +1366,7 @@ li:hover .btn-remove-down {
     color: #00446a;
     padding: 0;
     margin: 0;
+    box-shadow: none;
 }
 
 .search_bar .search_dropdown > select {
@@ -1455,6 +1467,81 @@ li:hover .btn-remove-down {
     text-align: left;
     line-height: 1.2;
     font-family: arial;
+}
+
+/* plone headers fixes */
+
+#portal-globalnav-wrapper {
+    background:white;
+    box-shadow: none;
+}
+
+.plone-breadcrumb {
+    height: 30px !important;
+}
+
+.plone-breadcrumb div.container {
+    line-height: 1.42857143  !important;
+    height: 30px  !important;
+}
+
+div.container.header-container.collapse-header {
+    padding: 0px  !important;
+    margin: 0px  !important;
+    max-width: none  !important;
+}
+
+div.header-logo {
+    padding: 0px  !important;
+}
+
+.logo-text>span {
+    color:black  !important;
+}
+
+.right-actions {
+    position:initial !important;
+    align-items: normal !important;
+    margin-top: 17px  !important;
+    margin: 0px;
+}
+
+.right-actions>.login {
+    margin-left: 40px  !important;
+    margin-top: 3px  !important;
+}
+
+.search-box input {
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s !important;
+    border: 1px solid #ccc !important;
+    height:27px !important;
+    font-size: 1rem !important;
+}
+
+#content-header .plone-navbar-nav>li {
+    display: inline-flex;
+}
+
+i {
+    font-family: OpenSans,"Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+
+.container.header-container.collapse-header {
+    width: 100%;
+}
+
+#profilelink:before {
+    content: none;
+}
+
+#content-header .plone-navbar-nav .submenu {
+    margin-left: 14px;
+}
+
+.collapse-header .right-actions button {
+    top: 5px;
+    right: -14px;
 }
 
 @media (max-width: 320px)  {

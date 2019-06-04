@@ -1,11 +1,10 @@
 {% load staticfiles %}
 
-{% include 'zope/header_before_title.html' %}
+{% include 'plone/head.html' %}
 
-{% block title %}
-{% endblock %}
+<!-- {% block title %}
+{% endblock %} -->
 
-{% include 'zope/header_after_title.html' %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/style.css' %}" />
@@ -16,22 +15,23 @@
   <link rel="stylesheet" type="text/css" href="{% static 'thesaurus/css/select2.min.css' %}" />
 {% endblock %}
 
-{% include 'zope/header_before_login.html' %}
+{% include 'plone/before_login.html' %}
 
 {% if user.is_authenticated %}
-  <a id="logoutlink" href="{% url 'logout' %}">Logout</a>
   <a href="http://www.eionet.europa.eu/directory/user?uid={{ user.username }}"
-     id="profilelink">({{ user.username }})</a>
+     id="profilelink">{{ user.username }}</a>
+  <a id="logoutlink" href="{% url 'logout' %}">Logout</a>
 {% else %}
   <a id="loginlink" href="{% url 'login' %}">Login</a>
 {% endif %}
 
-{% include 'zope/header_after_login.html' %}
+{% include 'plone/header_before_container.html' %}
 
 <div class="content">
   {% block content %}
   {% endblock %}
 </div>
+{% include 'plone/header_after_container.html' %}
 
 <!-- footer -->
 <div class="footer-menu">
@@ -66,13 +66,12 @@
 
 </div>
 
-{% include 'zope/footer.html' %}
-
 <div class="backdrop-site"></div>
 <script src="{% static 'thesaurus/js/jquery.min.js' %}"></script>
 <script src="{% static 'thesaurus/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'thesaurus/js/main.js' %}"></script>
 <script src="{% static 'thesaurus/js/materialize.min.js' %}"></script>
 
+{% include 'plone/footer.html' %}
 {% block js %}
 {% endblock %}
