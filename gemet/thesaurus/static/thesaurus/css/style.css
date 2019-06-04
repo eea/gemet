@@ -1536,12 +1536,16 @@ i {
 }
 
 #content-header .plone-navbar-nav .submenu {
-    margin-left: 14px;
+    margin-left: 17px;
 }
 
 .collapse-header .right-actions button {
     top: 5px;
     right: -14px;
+}
+
+:before, :after {
+  font-family: 'Glyphicons Halflings';
 }
 
 @media (max-width: 320px)  {
