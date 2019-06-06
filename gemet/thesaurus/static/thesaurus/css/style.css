@@ -1485,15 +1485,10 @@ li:hover .btn-remove-down {
     height: 30px  !important;
 }
 
-div.container.header-container.collapse-header {
-    padding: 0px  !important;
-    margin: 0px  !important;
-    max-width: none  !important;
+div.container.header-container.collapse-header:before {
+    content: none;
 }
 
-div.header-logo {
-    padding: 0px  !important;
-}
 
 .logo-text>span {
     color:black  !important;
@@ -1525,18 +1520,34 @@ div.header-logo {
 
 i {
     font-family: OpenSans,"Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    height:inherit !important;
+}
+
+.hasDropDown > i:first-of-type {
+    display:none;
 }
 
 .container.header-container.collapse-header {
     width: 100%;
+    max-width: unset !important;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+nav.plone-breadcrumb > div.container {
+    width: 88%;
+    max-width: unset !important;
 }
 
 #profilelink:before {
     content: none;
 }
 
-#content-header .plone-navbar-nav .submenu {
-    margin-left: 17px;
+.footer-text {
+    font-family: OpenSans,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+
 }
 
 .collapse-header .right-actions button {
@@ -1548,6 +1559,22 @@ i {
   font-family: 'Glyphicons Halflings';
 }
 
+.content-header:before{
+    content: none;
+}
+
+.container.header-container.collapse-header:after {
+    content: none;
+}
+
+
+
+@media (min-width: 1600px)  {
+    .container.header-container.collapse-header {
+        width: 1670px;
+    }
+
+}
 @media (max-width: 320px)  {
     .subtitle br {
         display: none;
