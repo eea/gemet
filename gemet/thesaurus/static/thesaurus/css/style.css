@@ -1260,8 +1260,8 @@ li:hover .btn-remove-down {
     right: 0;
     border-radius: 0;
     //background-color: #C1CFD0;
-    bottom: calc(100% + 2.4rem + 1px);
-    height: 28px;
+    bottom: calc(100% + 2.4rem + 7px);
+    height: 26px;
 }
 
 .edit-page > .element > .element > .input-field.visible {
@@ -1498,7 +1498,6 @@ div.container.header-container.collapse-header:before {
     position:initial !important;
     align-items: normal !important;
     margin-top: 17px  !important;
-    margin: 0px;
 }
 
 .right-actions>.login {
@@ -1527,7 +1526,18 @@ i {
     display:none;
 }
 
-.container.header-container.collapse-header {
+.hasDropDown {
+    transition: none;
+    float: none !important;
+    padding: 0;
+    line-height: initial !important;
+}
+
+#portal-globalnav-wrapper {
+    height: initial !important;
+    line-height: initial !important;
+}
+.container.header-container {
     width: 100%;
     max-width: unset !important;
     margin-right: auto;
@@ -1536,7 +1546,7 @@ i {
 }
 
 nav.plone-breadcrumb > div.container {
-    width: 88%;
+    width: 92%;
     max-width: unset !important;
 }
 
@@ -1555,23 +1565,34 @@ nav.plone-breadcrumb > div.container {
     right: -14px;
 }
 
+.right-actions .search-box button {
+    top: 8px;
+}
+
 :before, :after {
   font-family: 'Glyphicons Halflings';
 }
 
 .content-header:before{
-    content: none;
+    content: none !important;
 }
 
-.container.header-container.collapse-header:after {
-    content: none;
+.container.header-container::after {
+    content: none !important;
 }
 
+#content-header > *::after {
+    content: none !important;
+}
 
+.header-logo::before {
+    display:none;
+    content: none !important;
+}
 
 @media (min-width: 1600px)  {
-    .container.header-container.collapse-header {
-        width: 1670px;
+    .container.header-container {
+        width: 1670px !important;
     }
 
 }
