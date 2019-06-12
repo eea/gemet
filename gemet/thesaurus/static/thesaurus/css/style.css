@@ -1469,22 +1469,6 @@ li:hover .btn-remove-down {
     font-family: arial;
 }
 
-/* plone headers fixes */
-
-#portal-globalnav-wrapper {
-    background:white;
-    box-shadow: none;
-}
-
-.plone-breadcrumb {
-    height: 30px !important;
-}
-
-.plone-breadcrumb div.container {
-    line-height: 1.42857143  !important;
-    height: 30px  !important;
-}
-
 div.container.header-container.collapse-header:before {
     content: none;
 }
@@ -1513,10 +1497,6 @@ div.container.header-container.collapse-header:before {
     font-size: 1rem !important;
 }
 
-#content-header .plone-navbar-nav>li {
-    display: inline-flex;
-}
-
 i {
     font-family: OpenSans,"Helvetica Neue",Helvetica,Arial,sans-serif !important;
     height:inherit !important;
@@ -1543,11 +1523,6 @@ i {
     margin-right: auto;
     margin-left: auto;
 
-}
-
-nav.plone-breadcrumb > div.container {
-    width: 92%;
-    max-width: unset !important;
 }
 
 #profilelink:before {
