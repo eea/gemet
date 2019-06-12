@@ -74,8 +74,6 @@ USE_L10N = False
 
 USE_TZ = True
 
-USE_ZOPE_LAYOUT = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
