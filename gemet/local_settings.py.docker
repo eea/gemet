@@ -85,7 +85,6 @@ if 'FORCE_SCRIPT_NAME' in os.environ:
 if 'GEMET_RDFGZ_PATH' in os.environ:
     GEMET_RDFGZ_PATH = os.environ['GEMET_RDFGZ_PATH']
 
-PLONE_URL = os.environ.get('PLONE_URL', '')
 GEMET_URL = 'http://www.eionet.europa.eu/gemet'
 
 # Fill in the following settings to enable LDAP authentication
