@@ -836,7 +836,7 @@ hr {
     border-top: 1px solid #ddd;
     margin-top: 1em;
     margin-bottom: 1em;
-    position: absolute;
+    /* position: absolute; */
     bottom: 0;
     width: 100%;
     margin: 0 auto;
