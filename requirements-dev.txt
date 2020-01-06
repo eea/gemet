@@ -19,6 +19,6 @@ pyquery==1.2.8
 PyYAML==5.1
 six==1.10.0
 sqlparse==0.2.3
-waitress==1.0.1
+waitress==1.4.2
 WebOb==1.7.0
 WebTest==2.0.24
