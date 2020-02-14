@@ -17,7 +17,7 @@ class ForeignRelationAdmin(admin.ModelAdmin):
 
 
 class PropertiesAdmin(admin.ModelAdmin):
-    search_fields = ('code',)
+    search_fields = ('name', 'value',)
     list_display = ('name', 'value', 'concept', 'language', 'status',
                     'version_added')
     list_filter = ('version_added__identifier', 'status', 'language', 'name')
