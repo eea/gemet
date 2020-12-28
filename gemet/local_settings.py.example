@@ -39,11 +39,11 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_name',
-        'USER': 'username',
-        'PASSWORD': 'password',
-        'HOST': 'db_host',
-        'PORT': 'db_port',
+        'NAME': 'gemet',
+        'USER': 'gemet',
+        'PASSWORD': 'gemet',
+        'HOST': 'mysql',
+        'PORT': 3306,
         'OPTIONS': {
             'sql_mode': 'traditional',
         }
@@ -88,4 +88,3 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "last_name": "sn",
     "email": "mail"
 }
-

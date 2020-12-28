@@ -1,0 +1,48 @@
+version: '2'
+services:
+  async:
+    image: eeacms/gemet:latest
+    container_name: gemet.async
+    env_file:
+      - ./docker/db.env
+      - ./docker/app.env
+    volumes:
+    - gemet-uat-eionet-exports:/var/local/gemet/exports
+    command:
+    - qcluster
+  gemet:
+    image: eeacms/gemet:latest
+    container_name: gemet.app
+    ports:
+    - 8888:8888
+    env_file:
+      - ./docker/db.env
+      - ./docker/app.env
+    volumes:
+    - gemet-uat-eionet-static:/var/local/static
+    - gemet-uat-eionet-exports:/var/local/gemet/exports
+    - .:/var/local/gemet
+    entrypoint: ["/usr/bin/tail", "-f", "/dev/null"]
+  mysql:
+    image: mysql:latest
+    container_name: gemet.db
+    ports:
+      - 3306:3306
+    env_file:
+      - ./docker/db.env
+    volumes:
+    - gemet-uat-eionet-data:/var/lib/mysql
+    command:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+    - --default-authentication-plugin=mysql_native_password
+  redis:
+    image: redis
+    container_name: gemet.redis
+volumes:
+  gemet-uat-eionet-exports:
+    driver: local
+  gemet-uat-eionet-static:
+    driver: local
+  gemet-uat-eionet-data:
+    driver: local

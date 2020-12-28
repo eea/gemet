@@ -13,9 +13,32 @@ GEMET
 .. contents ::
 
 Project Name
-------------
+############
 The Project Name is GEMET - GEneral Multilingual Environmental Thesaurus
 http://www.eionet.europa.eu/gemet
+
+Installing with Docker
+#########################
+
+Create settings files from .example files:
+
+    cp gemet/local_settings.py.example gemet/local_settings.py
+    cp gemet/local_test_settings.py.example gemet/local_test_settings.py
+
+Install Docker and docker-compose, then run:
+
+    docker-compose up -d
+
+Now you should be able to attach to the app container:
+
+    docker exec -it gemet.app bash
+
+And run the Django server for development:
+
+    python manage.py runserver 0:8888
+
+Installing without Docker
+#########################
 
 Prerequisites - System packages
 -------------------------------
@@ -120,7 +143,7 @@ be run as an unprivileged user in the product directory::
 
 
 Build production
-----------------
+################
 
 Setup production environment using an unprivileged user::
 
@@ -139,7 +162,7 @@ Configure supervisord and set the WSGI server port::
 
 
 Build staging
--------------
+#############
 
 Setup staging environment using an unprivileged user::
 
@@ -159,13 +182,13 @@ production, for example 8010)::
 
 
 Configuration
--------------
+#############
 
 Details about configurable settings can be found in ``settings.py``.
 
 
 Data Import
------------
+###########
 
 1. Considering you have a dump of the old database (``gemet.sql``), import it in a
 **separate** database::
@@ -199,7 +222,7 @@ configuration file with the name of the database used for import
 
 
 Other commands
---------------
+##############
 
 1. Some romanian terms, definitions etc. are written with the wrong diacritical marks (cedillas instead of commas).
 The following custom management command fixes those characters and prints the number of objects changed::
@@ -221,7 +244,7 @@ Run the command providing a valid excel file::
 
 
 Documentation
--------------
+#############
 
 The documentation has been created using `Sphinx`_. The source directories for the three sections of documentation can be found in the `docs`_ directory.
 
@@ -231,7 +254,7 @@ The documentation has been created using `Sphinx`_. The source directories for t
 In order to get the HTML output, you should run the following command inside one of the documentation directories (``api``, ``new_api`` or ``overview``)::
 
     make html
-    
+
 These static HTML files can be served via a web server (Apache, Nginx, etc).
 
 Docs contents
