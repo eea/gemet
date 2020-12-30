@@ -63,17 +63,14 @@ def get_concept_names(concept, status_values, langcode):
 def get_concept_name(concept_name, concept_id, status_values):
     if concept_name:
         return concept_name
-    concept = (
-        Concept.objects.get(pk=concept_id)
-        .properties.filter(
-            language__code=DEFAULT_LANGCODE,
-            name='prefLabel',
-            status__in=status_values,
-        ).first()
-    )
-    if concept:
+    prop = Concept.objects.get(pk=concept_id).properties.filter(
+        language__code=DEFAULT_LANGCODE,
+        name='prefLabel',
+        status__in=status_values,
+    ).first()
+    if prop:
         language = Language.objects.get(code=DEFAULT_LANGCODE).name.lower()
-        return mark_safe(concept.value + ' <span>[' + language + ']</span>')
+        return mark_safe(prop.value + ' <span>[' + language + ']</span>')
     return ''
 
 

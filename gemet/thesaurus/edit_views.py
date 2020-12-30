@@ -15,6 +15,7 @@ from django_q.tasks import async
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import SOURCE_RELATION_TO_TARGET
+from gemet.thesaurus import SEARCH_FIELDS
 from gemet.thesaurus import models
 from gemet.thesaurus.exports import create_export_files
 from gemet.thesaurus.forms import ConceptForm, PropertyForm, ForeignRelationForm
@@ -198,7 +199,8 @@ class EditPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
                 name=name,
                 **form.cleaned_data
             )
-        refresh_search_text(field.name, id, langcode, self.pending_version)
+        if field.name in SEARCH_FIELDS:
+            refresh_search_text(id, langcode, self.pending_version)
         data = {"value": field.value}
         return self._get_response(data, 'success', 200)
 
@@ -351,7 +353,8 @@ class AddPropertyView(LoginRequiredMixin, JsonResponseMixin, VersionMixin,
         )
         delete_url = reverse('delete_property', kwargs={'pk': field.pk})
 
-        refresh_search_text(field.name, id, langcode, self.pending_version)
+        if field.name in SEARCH_FIELDS:
+            refresh_search_text(id, langcode, self.pending_version)
         data = {
             "value": field.value,
             "id": field.id,
@@ -377,7 +380,8 @@ class DeletePropertyView(LoginRequiredMixin, JsonResponseMixin, View):
         elif field.status == PENDING:
             field.delete()
 
-        refresh_search_text(field.name, field.concept_id, field.language_id)
+        if field.name in SEARCH_FIELDS:
+            refresh_search_text(field.concept_id, field.language_id)
         return self._get_response({}, 'success', 200)
 
 
@@ -464,13 +468,15 @@ class AddConceptView(LoginRequiredMixin, HeaderMixin, VersionMixin, FormView):
         new_concept.save()
 
         # create prefLabel property for the new concept
-        models.Property.objects.create(status=PENDING,
-                                       version_added=self.pending_version,
-                                       concept=new_concept,
-                                       language=self.language,
-                                       name='prefLabel',
-                                       value=form.cleaned_data['name'])
-        refresh_search_text('prefLabel', new_concept.id, self.language.code)
+        models.Property.objects.create(
+            status=PENDING,
+            version_added=self.pending_version,
+            concept=new_concept,
+            language=self.language,
+            name='prefLabel',
+            value=form.cleaned_data['name']
+        )
+        refresh_search_text(new_concept.id, self.language.code)
         url_name = EDIT_URL_NAMES[namespace.heading]
         url = reverse(url_name, kwargs={'langcode': self.langcode,
                                         'code': new_concept.code})

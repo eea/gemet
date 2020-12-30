@@ -6,6 +6,7 @@ from django.utils.functional import cached_property
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import NS_VIEW_MAPPING, RELATION_PAIRS
+from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
 
 
 class Version(models.Model):
@@ -72,6 +73,7 @@ class Namespace(models.Model):
 class Concept(VersionableModel):
     namespace = models.ForeignKey(Namespace)
     code = models.CharField(max_length=10)
+    # TODO: Rename to created_at/updated_at and use auto_now and auto_now_add
     date_entered = models.DateTimeField(blank=True, null=True)
     date_changed = models.DateTimeField(blank=True, null=True)
 
@@ -96,7 +98,107 @@ class Concept(VersionableModel):
 
     @property
     def name(self):
+        """ Relies on data being set properly on set_attributes """
         return getattr(self, 'prefLabel', '')
+
+    @property
+    def label(self):
+        """ Calculates and return prefLabel value of the Concept in English """
+        return self.properties.filter(
+            language='en', name='prefLabel', status__in=[0, 1]
+        ).first().value
+
+    def update_or_create_properties(
+        self, property_values, language_id='en', version=None
+    ):
+        version = version or Version.under_work()
+
+        # Soft delete matching published properties
+        self.properties.filter(
+            name__in=property_values.keys(),
+            language_id=language_id,
+            status=PUBLISHED
+        ).update(status=DELETED_PENDING)
+
+        # For each property
+        for name, value in property_values.iteritems():
+            if name == 'altLabel':
+                # altLabel key maps to multiple values
+                assert isinstance(value, list)
+                # Delete existing
+                self.properties.filter(
+                    name='altLabel',
+                    language_id=language_id,
+                    status=PENDING
+                ).delete()
+                for alt_label in value:
+                    # And create new ones
+                    self.properties.create(
+                        status=PENDING,
+                        version_added=version,
+                        language_id=language_id,
+                        name=name,
+                        value=alt_label,
+                    )
+            elif value:
+                # Update pending if exists
+                matches = self.properties.filter(
+                    language_id=language_id,
+                    name=name,
+                    status=PENDING
+                ).update(value=value)
+                if not matches:
+                    # If it doesn't exist, create it
+                    self.properties.create(
+                        status=PENDING,
+                        version_added=version,
+                        language_id=language_id,
+                        name=name,
+                        value=value,
+                    )
+        self.update_or_create_search_text(language_id, version)
+
+    def update_or_create_search_text(self, language_code, version=None):
+        """
+        Update or create Property of type searchText, an internal type of
+        property consisting of the concatenated values of all searchable
+        properties of a concept.
+        """
+        version = version or Version.under_work()
+
+        # Get values from searchable properties
+        search_prop_values = self.properties.filter(
+            language_id=language_code,
+            name__in=SEARCH_FIELDS,
+            status__in=[PUBLISHED, PENDING],
+        ).values_list('value', flat=True)
+
+        # Concatenate them using internal format
+        if search_prop_values:
+            search_text = SEARCH_SEPARATOR.join(search_prop_values)
+            search_text = SEARCH_SEPARATOR + search_text + SEARCH_SEPARATOR
+        else:
+            search_text = ''
+
+        # Look for existing searchText Property object
+        search_text_property = self.properties.filter(
+            language_id=language_code,
+            name='searchText',
+            status__in=[PUBLISHED, PENDING],
+        ).first()
+
+        if search_text_property:
+            # If it exists, update it with the new calculated value
+            search_text_property.value = search_text
+            search_text_property.save()
+        else:
+            # If not, create it
+            search_text_property = self.properties.create(
+                language_id=language_code,
+                name='searchText',
+                status=PENDING,
+                version_added=version,
+            )
 
     def get_attributes(self, langcode, property_list):
         values = ['id', 'name', 'value']
