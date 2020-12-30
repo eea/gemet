@@ -191,16 +191,12 @@ def concept_has_unique_relation(concept, relation_type):
 
 
 def get_search_text(concept_id, language_code, status, version):
-    search_properties = (
-        Property.objects
-        .filter(
-            concept_id=concept_id,
-            language_id=language_code,
-            name__in=SEARCH_FIELDS,
-            status__in=[PUBLISHED, PENDING],
-        )
-        .values_list('value', flat=True)
-    )
+    search_properties = Property.objects.filter(
+        concept_id=concept_id,
+        language_id=language_code,
+        name__in=SEARCH_FIELDS,
+        status__in=[PUBLISHED, PENDING],
+    ).values_list('value', flat=True)
 
     if not search_properties:
         return
@@ -213,31 +209,23 @@ def get_search_text(concept_id, language_code, status, version):
         language_id=language_code,
         name='searchText',
         value=search_text,
-        is_resource=0,
         status=status,
-        version_added_id=version.id
+        version_added=version,
     )
 
 
-def refresh_search_text(proptype, concept_id, language_code, version=None):
-    if proptype not in SEARCH_FIELDS:
-        return
-
+def refresh_search_text(concept_id, language_code, version=None):
     version = version or Version.under_work()
     new_search = get_search_text(concept_id, language_code, PENDING, version)
     if not new_search:
         return
 
-    search_property = (
-        Property.objects
-        .filter(
-            concept_id=concept_id,
-            language_id=language_code,
-            name='searchText',
-            status__in=[PUBLISHED, PENDING],
-        )
-        .first()
-    )
+    search_property = Property.objects.filter(
+        concept_id=concept_id,
+        language_id=language_code,
+        name='searchText',
+        status__in=[PUBLISHED, PENDING],
+    ).first()
     if not search_property:
         pass
     elif search_property.status == PENDING:

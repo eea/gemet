@@ -5,7 +5,7 @@ from gemet.thesaurus import models
 
 class ConceptAdmin(admin.ModelAdmin):
     search_fields = ('code',)
-    list_display = ('code', 'namespace', 'status', 'version_added')
+    list_display = ('code', 'label', 'namespace', 'status', 'version_added')
     list_filter = ('version_added__identifier', 'status', 'namespace')
 
 
