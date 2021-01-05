@@ -50,6 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
                 'gemet.layout.layout_context_processor',
                 'gemet.thesaurus.context_processors.globals',
             ],
@@ -80,6 +81,10 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static/')
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media/')
+MEDIA_URL = '/media/'
+
+
 # Exports / Downloads
 
 EXPORTS_ROOT = os.path.join(BASE_DIR, 'exports/')
@@ -94,6 +99,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 LOCAL_INSTALLED_APPS = ()
+LOCAL_MIDDLEWARE_CLASSES = ()
 try:
     from local_settings import *
     INSTALLED_APPS += LOCAL_INSTALLED_APPS

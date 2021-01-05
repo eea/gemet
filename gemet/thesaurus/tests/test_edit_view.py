@@ -398,16 +398,21 @@ class TestAddNewConcept(GemetTest):
 
     def test_post_correct_form(self):
         url = reverse('concept_add', kwargs={'langcode': self.language.code})
-        response = self.app.post(url, user=self.user,
-                                 params={'name': 'test',
-                                         'namespace': self.namespace.id})
+        response = self.app.post(
+            url,
+            user=self.user,
+            params={'name': 'test', 'namespace': self.namespace.id}
+        )
 
         self.assertEqual(302, response.status_code)
         self.assertEqual(2, len(models.Concept.objects.all()))
         self.assertEqual('201', models.Concept.objects.last().code)
-        self.assertEqual('test',
-                         models.Property.objects.get(name='prefLabel',
-                                                     concept__code='201').value)
+        self.assertEqual(
+            'test',
+            models.Property.objects.get(
+                name='prefLabel', concept__code='201'
+            ).value
+        )
 
     def test_search_text_is_created(self):
         url = reverse('concept_add', kwargs={'langcode': self.language.code})

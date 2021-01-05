@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import mark_safe
 
 from gemet.thesaurus import models
 
@@ -46,15 +47,53 @@ class AuthorizedUserAdmin(admin.ModelAdmin):
 class VersionAdmin(admin.ModelAdmin):
     list_display = ('id', 'identifier', 'publication_date', 'is_current')
 
+
 class SourceAdmin(admin.ModelAdmin):
     search_fields = ('abbr', 'url',)
     list_display = ('abbr', 'title', 'url')
     list_filter = ()
 
+
 class AsyncTaskAdmin(admin.ModelAdmin):
     search_fields = ()
     list_display = ('date', 'user', 'version', 'status')
     list_filter = ()
+
+
+class ImportAdmin(admin.ModelAdmin):
+    search_fields = ()
+    readonly_fields = (
+        'id', 'created_at', 'updated_at', 'started_at', 'failed_at',
+        'succeeded_at', 'logs'
+    )
+    list_display = (
+        'id', 'spreadsheet', 'admin_status', 'created_at', 'started_at',
+        'failed_at', 'succeeded_at', 'action'
+    )
+    list_filter = ()
+
+    class Media:
+        js = ('thesaurus/js/start_import.js',)
+
+    def action(self, obj):
+        if obj.status == 'In progress':
+            return mark_safe('<span style="color: gray;">N/A</span>')
+        return mark_safe(
+            (
+                '<input id="{}" type="button" class="default start-import" '
+                'value="Run">'
+            ).format(obj.pk)
+        )
+
+    action.short_description = 'Action'
+
+    def admin_status(self, obj):
+        status = obj.status
+        if status == 'In progress':
+            status += ' (refresh to update)'
+        return status
+
+    admin_status.short_description = 'Status'
 
 
 admin.site.register(models.Namespace)
@@ -72,3 +111,4 @@ admin.site.register(models.Version, VersionAdmin)
 admin.site.register(models.DefinitionSource, SourceAdmin)
 
 admin.site.register(models.AsyncTask, AsyncTaskAdmin)
+admin.site.register(models.Import, ImportAdmin)
