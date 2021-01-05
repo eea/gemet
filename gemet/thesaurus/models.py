@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django.utils.html import mark_safe
 
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
 from gemet.thesaurus import NS_VIEW_MAPPING, RELATION_PAIRS
@@ -463,6 +464,62 @@ class AsyncTask(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+
+
+class TimeTrackedModel(models.Model):
+    class Meta:
+        abstract = True
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Import(TimeTrackedModel):
+    """
+    Keeps track of data imports via excel files.
+    """
+    spreadsheet = models.FileField(
+        upload_to='imports/',
+        help_text=mark_safe(
+            'Details about the supported file format can be found <a href="'
+            'https://taskman.eionet.europa.eu/projects/infrastructure/wiki/'
+            'Importing_new_concepts_in_GEMET">here</a>.'
+        )
+    )
+    started_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
+    succeeded_at = models.DateTimeField(null=True)
+    logs = models.TextField(blank=True)
+
+    @property
+    def status(self):
+        if not self.started_at:
+            return u'Unstarted'
+        elif self.succeeded_at:
+            return u'Succeeded'
+        elif self.failed_at:
+            return u'Failed'
+        else:
+            return u'In progress'
+
+    def run(self):
+        self.logs = ''
+        self.failed_at = None
+        self.succeeded_at = None
+        self.started_at = timezone.now()
+        self.save()
+
+        try:
+            from gemet.thesaurus.import_spreadsheet import Importer
+            importer = Importer(self)
+            self.logs = importer.import_file()
+            self.succeeded_at = timezone.now()
+            self.save()
+        except Exception as exc:
+            self.logs = str(exc)
+            self.failed_at = timezone.now()
+            self.save()
+            raise
 
 
 class ConceptManager(models.Manager):

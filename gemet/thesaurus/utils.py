@@ -7,6 +7,9 @@ from redis import ConnectionError
 from django_q.brokers import get_broker
 from django_q.status import Stat
 
+from django.db import models
+from django.db.models.functions import Cast
+
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
 from gemet.thesaurus import EXACT_QUERY, END_WITH_QUERY, BEGIN_WITH_QUERY
@@ -151,14 +154,17 @@ def get_form_errors(errors):
 
 
 def get_new_code(namespace):
-    codes = (
-        Concept.objects
-        .filter(namespace=namespace)
-        .exclude(code='')
-        .values_list('code', flat=True)
+    # We cannot use an autoincrement integer field for `code` because some
+    # existing production values (i.e. for Inspire Themes) are not integers.
+    return unicode(
+        (
+            Concept.objects.filter(namespace=namespace).annotate(
+                int_code=Cast('code', models.IntegerField())
+            ).order_by('-int_code').values_list(
+                'int_code', flat=True
+            ).first() or 0
+        ) + 1
     )
-    new_code = max(map(int, codes)) + 1
-    return unicode(new_code)
 
 
 def split_text_into_terms(raw_text):

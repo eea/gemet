@@ -1,14 +1,18 @@
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
-from django.core.management import CommandError
-from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
 from gemet.thesaurus import PENDING, PUBLISHED
-from gemet.thesaurus import models
+from gemet.thesaurus.models import (
+    Namespace, Version, Concept, Property, PropertyType, Relation, Language
+)
 from gemet.thesaurus.utils import get_new_code, get_search_text
+
+
+class ImportError(Exception):
+    pass
 
 
 def namespace_for(property_type_name):
@@ -16,7 +20,7 @@ def namespace_for(property_type_name):
         'broader': 'Concepts',
         'group': 'Groups',
     }
-    return models.Namespace.objects.get(
+    return Namespace.objects.get(
         heading=heading_for[property_type_name]
     )
 
@@ -39,11 +43,11 @@ def row_dicts(sheet):
 
     for column in mandatory_columns:
         if column not in column_names:
-            raise CommandError(u'Column "{}" is mandatory.'.format(column))
+            raise ImportError(u'Column "{}" is mandatory.'.format(column))
 
     for column in column_names:
         if column not in supported_columns:
-            raise CommandError(u'Column "{}" is not supported.'.format(column))
+            raise ImportError(u'Column "{}" is not supported.'.format(column))
 
     for row in rows:
         values = [(c.value or '').strip() for c in row[1:]]
@@ -53,56 +57,82 @@ def row_dicts(sheet):
         yield dict(zip(column_names, values))
 
 
-class Command(BaseCommand):
-    """
-    TODO: Convert this to a helper function and create admin action to call it
-    """
+class Importer(object):
 
-    help = 'Import new concepts from Excel spreadsheet'
-
-    def add_arguments(self, parser):
-        parser.add_argument('excel_file')
+    def __init__(self, import_obj):
+        self.import_obj = import_obj
 
     @transaction.atomic
-    def handle(self, *args, **options):
+    def import_file(self):
+        self.concept_ns = Namespace.objects.get(heading='Concepts')
+        self.group_ns = Namespace.objects.get(heading='Groups')
+        # Number of regular concepts before
+        num_reg_concepts_bef = Concept.objects.filter(
+            namespace=self.concept_ns
+        ).count()
+        # Number of group concepts before
+        num_groups_bef = Concept.objects.filter(namespace=self.group_ns).count()
+
         try:
-            wb = load_workbook(filename=options['excel_file'])
+            print("Opening file...")
+            wb = load_workbook(filename=self.import_obj.spreadsheet.path)
         except InvalidFileException:
-            raise CommandError('The file provided is not a valid excel file.')
+            raise ImportError('The file provided is not a valid excel file.')
         except IOError:
-            raise CommandError('The file provided does not exist.')
+            raise ImportError('The file provided does not exist.')
 
-        # We assume all concepts being introduced are in the namespace
-        # "Concepts". Adding other types of concepts is not supported.
-        self.namespace_obj = models.Namespace.objects.get(heading='Concepts')
         # Get the version with no name, used for pending concepts
-        self.version = models.Version.under_work()
-
+        self.version = Version.under_work()
+        # Keep a cache with a reference to all created concepts
         self.concepts = {}
-
+        # The first sheet must have the original English concepts
         concepts_sheetname = wb.sheetnames[0]
+        # All other sheets must have translations
         translation_sheetnames = wb.sheetnames[1:]
 
-        self.stdout.write('Creating concepts...')
+        print('Creating concepts...')
         self._create_concepts(wb[concepts_sheetname])
-        self.stdout.write('Creating relations...')
+
+        print('Creating relations...')
         self._create_relations(wb[concepts_sheetname])
 
+        num_reg_concepts_after = Concept.objects.filter(
+            namespace=self.concept_ns
+        ).count()
+        num_groups_after = Concept.objects.filter(
+            namespace=self.group_ns
+        ).count()
+
+        report = "Created {} regular concepts and {} group concepts.".format(
+            num_reg_concepts_after - num_reg_concepts_bef,
+            num_groups_after - num_groups_bef,
+        )
+
         if translation_sheetnames:
-            self.stdout.write('Creating translations...')
+            print('Creating translations...')
             for sheetname in translation_sheetnames:
-                self.stdout.write('    {}...'.format(sheetname))
+                print('    {}...'.format(sheetname))
                 self._add_translations(wb[sheetname])
+
+            report += (
+                "\n\nTranslations for the following {} languages"
+                " were also created: {}."
+            ).format(
+                len(translation_sheetnames),
+                ', '.join(translation_sheetnames)
+            )
+
+        return report
 
     def _create_concepts(self, sheet):
         for i, row in enumerate(row_dicts(sheet)):
             label = row.get("Term")  # aka prefLabel
+            if not label:
+                raise ImportError(u'Row {} has no "Term".'.format(i))
+
             alt_labels = [row[key] for key in row.keys() if 'Alt Label' in key]
             defin = row.get("Definition")
             source = row.get("Definition source")
-
-            if not label:
-                raise CommandError(u'Row {} has no "Term".'.format(i))
 
             property_values = {
                 'prefLabel': label,
@@ -116,10 +146,10 @@ class Command(BaseCommand):
             # A concept must always have at least an English property, so if
             # there is no English property corresponding to that term in the
             # DB, the concept must be new.
-            prop = models.Property.objects.filter(
+            prop = Property.objects.filter(
                 name='prefLabel',
                 value__iexact=label,
-                language='en',
+                language_id='en',
             ).first()
 
             if prop:
@@ -129,19 +159,19 @@ class Command(BaseCommand):
                 if prop.status in [PENDING, PUBLISHED]:
                     del property_values['prefLabel']
                     msg += 'Skipping prefLabel creation.'
-                self.stdout.write(msg)
+                print(msg)
             else:
                 is_new_concept = True
-                code = get_new_code(self.namespace_obj)
+                code = get_new_code(self.concept_ns)
 
-                concept = models.Concept.objects.create(
+                concept = Concept.objects.create(
                     code=code,
-                    namespace=self.namespace_obj,
+                    namespace=self.concept_ns,
                     version_added=self.version,
                     status=PENDING,
                     date_entered=timezone.now(),
                 )
-                self.stdout.write(u'Concept added: {}'.format(label))
+                print(u'Concept added: {}'.format(label))
 
             self.concepts[label.lower()] = concept
 
@@ -158,7 +188,7 @@ class Command(BaseCommand):
 
     def _create_relations(self, sheet):
 
-        property_types = models.PropertyType.objects.filter(
+        property_types = PropertyType.objects.filter(
             name__in=['broader', 'group']
         )
 
@@ -176,7 +206,7 @@ class Command(BaseCommand):
 
                 if not target_label:
                     # If it doesn't exist, there is no relation to be created
-                    self.stdout.write(
+                    print(
                         (
                             'Row {} has neither "broader" nor "group" columns.'
                         ).format(i)
@@ -188,11 +218,11 @@ class Command(BaseCommand):
                 namespace = namespace_for(property_type.name)
 
                 if not target:
-                    self.stdout.write(
+                    print(
                         'Creating inexistent concept: {}'.format(target_label)
                     )
-                    code = get_new_code(self.namespace_obj)
-                    target = models.Concept.objects.create(
+                    code = get_new_code(self.concept_ns)
+                    target = Concept.objects.create(
                         code=code,
                         namespace=namespace,
                         version_added=self.version,
@@ -202,55 +232,55 @@ class Command(BaseCommand):
                     target.properties.create(
                         status=PENDING,
                         version_added=self.version,
-                        language='en',
+                        language_id='en',
                         name='prefLabel',
                         value=target_label,
                     )
 
                 # target is broader of source
-                relation = models.Relation.objects.filter(
+                relation = Relation.objects.filter(
                     source=source,
                     target=target,
                     property_type=property_type,
                 ).first()
 
                 if not relation:
-                    relation = models.Relation.objects.create(
+                    relation = Relation.objects.create(
                         source=source,
                         target=target,
                         property_type=property_type,
                         version_added=self.version,
                         status=PENDING,
                     )
-                    self.stdout.write('Relation created: {}'.format(relation))
+                    print('Relation created: {}'.format(relation))
 
                 if not relation.reverse:
                     reverse_relation = relation.create_reverse()
-                    self.stdout.write(
+                    print(
                         'Reverse relation created: {}'.format(reverse_relation)
                     )
 
     def _add_translations(self, sheet):
         for row in row_dicts(sheet):
 
-            language = models.Language.objects.get(code=sheet.title.lower())
+            language = Language.objects.get(code=sheet.title.lower())
 
             en_label = row.get('Term')
             foreign_label = row.get(sheet.title)
             definition = row.get('Definition')
 
             if not en_label:
-                raise CommandError(u'"Term" column cannot be blank.')
+                raise ImportError(u'"Term" column cannot be blank.')
 
             property_values = {
                 'prefLabel': foreign_label,
                 'definition': definition,
             }
 
-            concept = models.Property.objects.get(
+            concept = Property.objects.get(
                 name='prefLabel',
                 value__iexact=en_label,
-                language=models.Language.objects.get(code='en'),
+                language=Language.objects.get(code='en'),
             ).concept
 
             concept.update_or_create_properties(
@@ -262,13 +292,13 @@ class Command(BaseCommand):
 
         if not concept:
             try:
-                concept = models.Property.objects.get(
+                concept = Property.objects.get(
                     name='prefLabel',
                     value__iexact=label,
-                    language='en',
-                    concept__namespace=self.namespace_obj,
+                    language_id='en',
+                    concept__namespace=self.concept_ns,
                 ).concept
-            except models.Property.DoesNotExist:
+            except Property.DoesNotExist:
                 concept = None
 
         return concept

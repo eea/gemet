@@ -162,8 +162,16 @@ urlpatterns = [
     url(r'^(?P<concept_type>\w+)/(?P<concept_code>\d+)$',
         views.concept_redirect,
         name='concept_redirect'),
+    url(
+        r'^import/(?P<import_id>\d+)/start/$',
+        views.start_import,
+        name='start_import'
+    ),
     url(r'^auth/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^auth/logout/$', auth_views.LogoutView.as_view(), name='logout'),
+
+    # Custom Admin pages
+    # url(r'^admin/import/$', views.AdminImportView.as_view(), name='import'),
 ]
 
 if settings.DEBUG:

@@ -5,7 +5,7 @@ from itertools import chain
 from urllib import urlencode
 from xmlrpclib import Fault
 
-from django.http import Http404, StreamingHttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -18,9 +18,10 @@ from django.views.generic.edit import FormView
 from django.conf import settings
 from django_q.tasks import result
 
-from gemet.thesaurus.models import Concept, DefinitionSource, Group, Language
-from gemet.thesaurus.models import InspireTheme, Namespace, Property, SuperGroup
-from gemet.thesaurus.models import Term, Theme, Version, AsyncTask
+from gemet.thesaurus.models import (
+    Concept, DefinitionSource, Group, Language, InspireTheme, Namespace,
+    Property, SuperGroup, Term, Theme, Version, AsyncTask, Import
+)
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
 from gemet.thesaurus.utils import search_queryset, exp_decrypt, is_rdf
@@ -821,3 +822,12 @@ def error500(request):
         template = '500.html'
         status_code = 500
     return render(request, template, context, status=status_code)
+
+
+def start_import(request, import_id):
+    try:
+        data_import = Import.objects.get(pk=import_id)
+    except Import.DoesNotExist:
+        raise Http404("Import object does not exist")
+    data_import.run()
+    return HttpResponse("")
