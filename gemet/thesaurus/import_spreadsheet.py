@@ -64,6 +64,7 @@ class Importer(object):
 
     @transaction.atomic
     def import_file(self):
+        """ Imports data from file and returns string with results """
         self.concept_ns = Namespace.objects.get(heading='Concepts')
         self.group_ns = Namespace.objects.get(heading='Groups')
         # Number of regular concepts before
@@ -85,28 +86,33 @@ class Importer(object):
         self.version = Version.under_work()
         # Keep a cache with a reference to all created concepts
         self.concepts = {}
-        # The first sheet must have the original English concepts
-        concepts_sheetname = wb.sheetnames[0]
+
+        results = ""
+
+        # The 'EN' sheet must have the original English concepts
+        if 'EN' in wb.sheetnames:
+            print('Creating concepts...')
+            self._create_concepts(wb['EN'])
+
+            print('Creating relations...')
+            self._create_relations(wb['EN'])
+
+            num_reg_concepts_after = Concept.objects.filter(
+                namespace=self.concept_ns
+            ).count()
+            num_groups_after = Concept.objects.filter(
+                namespace=self.group_ns
+            ).count()
+
+            results = (
+                "Created {} regular concepts and {} group concepts."
+            ).format(
+                num_reg_concepts_after - num_reg_concepts_bef,
+                num_groups_after - num_groups_bef,
+            )
+
         # All other sheets must have translations
-        translation_sheetnames = wb.sheetnames[1:]
-
-        print('Creating concepts...')
-        self._create_concepts(wb[concepts_sheetname])
-
-        print('Creating relations...')
-        self._create_relations(wb[concepts_sheetname])
-
-        num_reg_concepts_after = Concept.objects.filter(
-            namespace=self.concept_ns
-        ).count()
-        num_groups_after = Concept.objects.filter(
-            namespace=self.group_ns
-        ).count()
-
-        report = "Created {} regular concepts and {} group concepts.".format(
-            num_reg_concepts_after - num_reg_concepts_bef,
-            num_groups_after - num_groups_bef,
-        )
+        translation_sheetnames = [sn for sn in wb.sheetnames if sn != 'EN']
 
         if translation_sheetnames:
             print('Creating translations...')
@@ -114,15 +120,16 @@ class Importer(object):
                 print('    {}...'.format(sheetname))
                 self._add_translations(wb[sheetname])
 
-            report += (
-                "\n\nTranslations for the following {} languages"
-                " were also created: {}."
+            if results:
+                results += '\n\n'
+            results += (
+                "Created translations for the following {} languages: {}."
             ).format(
                 len(translation_sheetnames),
                 ', '.join(translation_sheetnames)
             )
 
-        return report
+        return results
 
     def _create_concepts(self, sheet):
         for i, row in enumerate(row_dicts(sheet)):
