@@ -4,11 +4,16 @@ from openpyxl.utils.exceptions import InvalidFileException
 from django.db import transaction
 from django.utils import timezone
 
-from gemet.thesaurus import PENDING, PUBLISHED
+from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus.models import (
     Namespace, Version, Concept, Property, PropertyType, Relation, Language
 )
 from gemet.thesaurus.utils import get_new_code, get_search_text
+
+
+CONCEPT_NS = Namespace.objects.get(heading='Concepts')
+GROUP_NS = Namespace.objects.get(heading='Groups')
+THEME_NS = Namespace.objects.get(heading='Themes')
 
 
 class ImportError(Exception):
@@ -17,12 +22,11 @@ class ImportError(Exception):
 
 def namespace_for(property_type_name):
     heading_for = {
-        'broader': 'Concepts',
-        'group': 'Groups',
+        'broader': CONCEPT_NS,
+        'group': GROUP_NS,
+        'theme': THEME_NS,
     }
-    return Namespace.objects.get(
-        heading=heading_for[property_type_name]
-    )
+    return heading_for[property_type_name]
 
 
 def row_dicts(sheet):
@@ -33,7 +37,7 @@ def row_dicts(sheet):
     }
     optional_columns = {
         "Alt Label", "Abbreviation/Alt Label", "Synonym/Alt Label",
-        "Broader concept", "Broader URI", "Group", "Note"
+        "Broader concept", "Broader URI", "Group", "Theme", "Note"
     }
     optional_columns.add(sheet.title)
     supported_columns = mandatory_columns.union(optional_columns)
@@ -198,7 +202,7 @@ class Importer(object):
     def _create_relations(self, sheet):
 
         property_types = PropertyType.objects.filter(
-            name__in=['broader', 'group']
+            name__in=['broader', 'group', 'theme']
         )
 
         for i, row in enumerate(row_dicts(sheet)):
@@ -212,38 +216,34 @@ class Importer(object):
                     target_label = row.get("Broader concept")
                 elif property_type.name == 'group':
                     target_label = row.get("Group")
+                elif property_type.name == 'theme':
+                    target_label = row.get("Theme")
 
                 if not target_label:
                     # If it doesn't exist, there is no relation to be created
                     print(
                         (
-                            'Row {} has neither "broader" nor "group" columns.'
+                            'Row {} has no relationship columns '
+                            '(i.e. "Broader concept", "Group", or "Theme").'
                         ).format(i)
                     )
                     continue
 
                 source = self.concepts[source_label.lower()]
-                target = self._get_concept(target_label)
-                namespace = namespace_for(property_type.name)
+                target = Concept.objects.filter(
+                    properties__name='prefLabel',
+                    properties__value=target_label,
+                    properties__language_id='en',
+                    namespace=namespace_for(property_type.name)
+                ).exclude(
+                    status=DELETED_PENDING, properties__status=DELETED_PENDING
+                ).first()
 
                 if not target:
-                    print(
-                        'Creating inexistent concept: {}'.format(target_label)
-                    )
-                    code = get_new_code(self.concept_ns)
-                    target = Concept.objects.create(
-                        code=code,
-                        namespace=namespace,
-                        version_added=self.version,
-                        status=PENDING,
-                        date_entered=timezone.now(),
-                    )
-                    target.properties.create(
-                        status=PENDING,
-                        version_added=self.version,
-                        language_id='en',
-                        name='prefLabel',
-                        value=target_label,
+                    raise ImportError(
+                        'Row {}: concept "{}" does not exist.'.format(
+                            i, target_label
+                        )
                     )
 
                 # target is broader of source
