@@ -10,7 +10,7 @@ argparse==1.2.1
 django-auth-ldap==1.2.10
 django-q==0.8.0
 docutils==0.11
-openpyxl==2.4.1
+openpyxl==2.6.4
 redis==2.10.5
 requests==2.3.0
 wsgiref==0.1.2
