@@ -33,6 +33,13 @@ class ConceptImportView(TestCase):
             ).count(),
             2
         )
+        # Notes are also imported
+        self.assertEqual(
+            Property.objects.filter(
+                name='scopeNote', value='As opposed to green finance'
+            ).count(),
+            1
+        )
 
     def test_import_concepts_and_translations_separately(self):
         # Import concepts in English first
