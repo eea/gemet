@@ -140,11 +140,13 @@ class Importer(object):
             alt_labels = [row[key] for key in row.keys() if 'Alt Label' in key]
             defin = row.get("Definition")
             source = row.get("Definition source")
+            note = row.get("Note")
 
             property_values = {
                 'prefLabel': label,
                 'definition': defin,
                 'source': source,
+                'scopeNote': note,
             }
 
             if alt_labels:
