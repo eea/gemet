@@ -123,40 +123,41 @@ class Concept(VersionableModel):
 
         # For each property
         for name, value in property_values.iteritems():
-            if name == 'altLabel':
-                # altLabel key maps to multiple values
-                assert isinstance(value, list)
-                # Delete existing
-                self.properties.filter(
-                    name='altLabel',
-                    language_id=language_id,
-                    status=PENDING
-                ).delete()
-                for alt_label in value:
-                    # And create new ones
-                    self.properties.create(
-                        status=PENDING,
-                        version_added=version,
+            if value:
+                if name == 'altLabel':
+                    # altLabel key maps to multiple values
+                    assert isinstance(value, list)
+                    # Delete existing
+                    self.properties.filter(
+                        name='altLabel',
+                        language_id=language_id,
+                        status=PENDING
+                    ).delete()
+                    for alt_label in value:
+                        # And create new ones
+                        self.properties.create(
+                            status=PENDING,
+                            version_added=version,
+                            language_id=language_id,
+                            name=name,
+                            value=alt_label,
+                        )
+                else:
+                    # Update pending if exists
+                    matches = self.properties.filter(
                         language_id=language_id,
                         name=name,
-                        value=alt_label,
-                    )
-            elif value:
-                # Update pending if exists
-                matches = self.properties.filter(
-                    language_id=language_id,
-                    name=name,
-                    status=PENDING
-                ).update(value=value)
-                if not matches:
-                    # If it doesn't exist, create it
-                    self.properties.create(
-                        status=PENDING,
-                        version_added=version,
-                        language_id=language_id,
-                        name=name,
-                        value=value,
-                    )
+                        status=PENDING
+                    ).update(value=value)
+                    if not matches:
+                        # If it doesn't exist, create it
+                        self.properties.create(
+                            status=PENDING,
+                            version_added=version,
+                            language_id=language_id,
+                            name=name,
+                            value=value,
+                        )
         self.update_or_create_search_text(language_id, version)
 
     def update_or_create_search_text(self, language_code, version=None):

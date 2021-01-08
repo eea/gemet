@@ -36,7 +36,6 @@ def row_dicts(sheet):
         "Term", "Definition", "Definition reference"
     }
     optional_columns = {
-        "Alt Label", "Abbreviation/Alt Label", "Synonym/Alt Label",
         "Broader concept", "Broader URI", "Group", "Theme", "Note"
     }
     optional_columns.add(sheet.title)
@@ -50,7 +49,7 @@ def row_dicts(sheet):
             raise ImportError(u'Column "{}" is mandatory.'.format(column))
 
     for column in column_names:
-        if column not in supported_columns:
+        if 'Alt Label' not in column and column not in supported_columns:
             raise ImportError(u'Column "{}" is not supported.'.format(column))
 
     for row in rows:
@@ -141,7 +140,10 @@ class Importer(object):
             if not label:
                 raise ImportError(u'Row {} has no "Term".'.format(i))
 
-            alt_labels = [row[key] for key in row.keys() if 'Alt Label' in key]
+            alt_labels = [
+                row[key] for key in row.keys()
+                if 'Alt Label' in key and row[key]
+            ]
             defin = row.get("Definition")
             source = row.get("Definition source")
             note = row.get("Note")
@@ -154,7 +156,7 @@ class Importer(object):
             }
 
             if alt_labels:
-                property_values['altLabels'] = alt_labels
+                property_values['altLabel'] = alt_labels
 
             # A concept must always have at least an English property, so if
             # there is no English property corresponding to that term in the
