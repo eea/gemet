@@ -1,4 +1,5 @@
 from django.core.files import File
+from django.db.models import Q
 from django.test import TestCase, Client
 
 from .factories import VersionFactory, ConceptFactory
@@ -63,6 +64,13 @@ class ConceptImportView(TestCase):
                 name='scopeNote', value='As opposed to green finance'
             ).count(),
             1
+        )
+        # And multiple altlabels
+        self.assertEqual(
+            Property.objects.filter(name='altLabel').filter(
+                Q(value='altlabel1') | Q(value='altlabel2')
+            ).count(),
+            2
         )
 
     def test_import_concepts_and_translations_separately(self):
