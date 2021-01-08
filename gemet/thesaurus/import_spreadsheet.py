@@ -168,7 +168,6 @@ class Importer(object):
             ).first()
 
             if prop:
-                is_new_concept = False
                 concept = prop.concept
                 msg = u'Concept {} exists. '.format(label)
                 if prop.status in [PENDING, PUBLISHED]:
@@ -176,7 +175,6 @@ class Importer(object):
                     msg += 'Skipping prefLabel creation.'
                 print(msg)
             else:
-                is_new_concept = True
                 code = get_new_code(self.concept_ns)
 
                 concept = Concept.objects.create(
@@ -191,15 +189,6 @@ class Importer(object):
             self.concepts[label.lower()] = concept
 
             concept.update_or_create_properties(property_values)
-
-            if is_new_concept:
-                # Create internal "searchText" property with the concatenated
-                # values from all other concept properties.
-                search_text = get_search_text(
-                    concept.id, 'en', PENDING, self.version
-                )
-                if search_text:
-                    search_text.save()
 
     def _create_relations(self, sheet):
 
