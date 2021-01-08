@@ -36,9 +36,9 @@ def row_dicts(sheet):
         "Term", "Definition", "Definition reference"
     }
     optional_columns = {
-        "Broader concept", "Broader URI", "Group", "Theme", "Note"
+        "Broader concept", "Broader URI", "Group", "Theme", "Note",
+        "Target language"
     }
-    optional_columns.add(sheet.title)
     supported_columns = mandatory_columns.union(optional_columns)
     column_names = [
         c.value.strip() for c in next(rows) if c.value and c.value.strip()
@@ -277,14 +277,14 @@ class Importer(object):
             language = Language.objects.get(code=sheet.title.lower())
 
             en_label = row.get('Term')
-            foreign_label = row.get(sheet.title)
+            translation = row.get('Target language')
             definition = row.get('Definition')
 
             if not en_label:
                 raise ImportError(u'"Term" column cannot be blank.')
 
             property_values = {
-                'prefLabel': foreign_label,
+                'prefLabel': translation,
                 'definition': definition,
             }
 
