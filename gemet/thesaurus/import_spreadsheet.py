@@ -8,7 +8,7 @@ from gemet.thesaurus import PENDING, PUBLISHED, DELETED_PENDING
 from gemet.thesaurus.models import (
     Namespace, Version, Concept, Property, PropertyType, Relation, Language
 )
-from gemet.thesaurus.utils import get_new_code, get_search_text
+from gemet.thesaurus.utils import get_new_code
 
 
 CONCEPT_NS = Namespace.objects.get(heading='Concepts')
@@ -74,8 +74,6 @@ class Importer(object):
         num_reg_concepts_bef = Concept.objects.filter(
             namespace=self.concept_ns
         ).count()
-        # Number of group concepts before
-        num_groups_bef = Concept.objects.filter(namespace=self.group_ns).count()
 
         try:
             print("Opening file...")
@@ -107,11 +105,8 @@ class Importer(object):
                 namespace=self.group_ns
             ).count()
 
-            results = (
-                "Created {} regular concepts and {} group concepts."
-            ).format(
+            results = ("Created {} concepts.").format(
                 num_reg_concepts_after - num_reg_concepts_bef,
-                num_groups_after - num_groups_bef,
             )
 
         # All other sheets must have translations
