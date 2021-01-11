@@ -11,22 +11,8 @@ from gemet.thesaurus.models import (
 from gemet.thesaurus.utils import get_new_code
 
 
-CONCEPT_NS = Namespace.objects.get(heading='Concepts')
-GROUP_NS = Namespace.objects.get(heading='Groups')
-THEME_NS = Namespace.objects.get(heading='Themes')
-
-
 class ImportError(Exception):
     pass
-
-
-def namespace_for(property_type_name):
-    heading_for = {
-        'broader': CONCEPT_NS,
-        'group': GROUP_NS,
-        'theme': THEME_NS,
-    }
-    return heading_for[property_type_name]
 
 
 def row_dicts(sheet):
@@ -49,8 +35,14 @@ def row_dicts(sheet):
             raise ImportError(u'Column "{}" is mandatory.'.format(column))
 
     for column in column_names:
-        if 'Alt Label' not in column and column not in supported_columns:
-            raise ImportError(u'Column "{}" is not supported.'.format(column))
+        if column not in supported_columns:
+            for text in ['Alt Label', 'Broader concept', 'Group', 'Theme']:
+                if text in column:
+                    break
+            else:
+                raise ImportError(
+                    u'Column "{}" is not supported.'.format(column)
+                )
 
     for row in rows:
         values = [(c.value or '').strip() for c in row[1:]]
@@ -100,9 +92,6 @@ class Importer(object):
 
             num_reg_concepts_after = Concept.objects.filter(
                 namespace=self.concept_ns
-            ).count()
-            num_groups_after = Concept.objects.filter(
-                namespace=self.group_ns
             ).count()
 
             results = ("Created {} concepts.").format(
@@ -194,18 +183,29 @@ class Importer(object):
         for i, row in enumerate(row_dicts(sheet)):
 
             source_label = row.get("Term")  # aka prefLabel
+            source = self.concepts[source_label.lower()]
 
             for property_type in property_types:
 
                 # Look for columns specifying relationships
                 if property_type.name == 'broader':
-                    target_label = row.get("Broader concept")
+                    target_labels = [
+                        row[key] for key in row.keys()
+                        if 'Broader concept' in key and row[key]
+                    ]
+                    broader_labels = target_labels
                 elif property_type.name == 'group':
-                    target_label = row.get("Group")
+                    target_labels = [
+                        row[key] for key in row.keys()
+                        if 'Group' in key and row[key]
+                    ]
                 elif property_type.name == 'theme':
-                    target_label = row.get("Theme")
+                    target_labels = [
+                        row[key] for key in row.keys()
+                        if 'Theme' in key and row[key]
+                    ]
 
-                if not target_label:
+                if not target_labels:
                     # If it doesn't exist, there is no relation to be created
                     print(
                         (
@@ -215,45 +215,50 @@ class Importer(object):
                     )
                     continue
 
-                source = self.concepts[source_label.lower()]
-                target = Concept.objects.filter(
-                    properties__name='prefLabel',
-                    properties__value=target_label,
-                    properties__language_id='en',
-                    namespace=namespace_for(property_type.name)
-                ).exclude(
-                    status=DELETED_PENDING, properties__status=DELETED_PENDING
-                ).first()
+                for target_label in target_labels:
+                    target = Concept.objects.filter(
+                        properties__name='prefLabel',
+                        properties__value=target_label,
+                        properties__language_id='en',
+                        namespace=property_type.namespace
+                    ).exclude(
+                        status=DELETED_PENDING,
+                        properties__status=DELETED_PENDING
+                    ).first()
 
-                if not target:
-                    raise ImportError(
-                        'Row {}: concept "{}" does not exist.'.format(
-                            i, target_label
+                    if not target:
+                        raise ImportError(
+                            'Row {}: concept "{}" does not exist.'.format(
+                                i, target_label
+                            )
                         )
-                    )
 
-                # target is broader of source
-                relation = Relation.objects.filter(
-                    source=source,
-                    target=target,
-                    property_type=property_type,
-                ).first()
-
-                if not relation:
-                    relation = Relation.objects.create(
-                        source=source,
-                        target=target,
+                    relation, created = Relation.objects.get_or_create(
+                        source=source,  # child
+                        target=target,  # parent
                         property_type=property_type,
-                        version_added=self.version,
-                        status=PENDING,
+                        defaults={
+                            'version_added': self.version, 'status': PENDING
+                        }
                     )
-                    print('Relation created: {}'.format(relation))
 
-                if not relation.reverse:
-                    reverse_relation = relation.create_reverse()
-                    print(
-                        'Reverse relation created: {}'.format(reverse_relation)
-                    )
+                    if created:
+                        print('Relation created: {}'.format(relation))
+
+                    if not relation.reverse:
+                        reverse_relation = relation.create_reverse()
+                        print(
+                            'Reverse relation created: {}'.format(
+                                reverse_relation
+                            )
+                        )
+
+            created = source.inherit_groups_and_themes_from_broader()
+            print(
+                'Inherited groups and themes from: {}'.format(
+                    ', '.join(broader_labels)
+                )
+            )
 
     def _add_translations(self, sheet):
         for row in row_dicts(sheet):
