@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.files import File
 from django.db.models import Q
 from django.test import TestCase, Client
@@ -62,6 +63,13 @@ class ConceptImportView(TestCase):
         self.assertEqual(
             Property.objects.filter(
                 name='scopeNote', value='As opposed to green finance'
+            ).count(),
+            1
+        )
+        # In all languages
+        self.assertEqual(
+            Property.objects.filter(
+                name='scopeNote', value=u'Par opposition à la finance verte'
             ).count(),
             1
         )

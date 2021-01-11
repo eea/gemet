@@ -261,16 +261,25 @@ class Importer(object):
             language = Language.objects.get(code=sheet.title.lower())
 
             en_label = row.get('Term')
-            translation = row.get('Target language')
-            definition = row.get('Definition')
-
             if not en_label:
                 raise ImportError(u'"Term" column cannot be blank.')
+            translation = row.get('Target language')
+            definition = row.get('Definition')
+            source = row.get("Definition source")
+            note = row.get("Note")
+            alt_labels = [
+                row[key] for key in row.keys()
+                if 'Alt Label' in key and row[key]
+            ]
 
             property_values = {
                 'prefLabel': translation,
                 'definition': definition,
+                'source': source,
+                'scopeNote': note,
             }
+            if alt_labels:
+                property_values['altLabel'] = alt_labels
 
             concept = Property.objects.get(
                 name='prefLabel',
