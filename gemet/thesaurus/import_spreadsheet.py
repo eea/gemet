@@ -33,7 +33,7 @@ def row_dicts(sheet):
     rows = sheet.rows
 
     mandatory_columns = {
-        "Term", "Definition", "Definition reference"
+        "Term", "Definition", "Definition source"
     }
     optional_columns = {
         "Broader concept", "Broader URI", "Group", "Theme", "Note",
