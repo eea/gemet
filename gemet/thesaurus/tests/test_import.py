@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.core.files import File
-from django.db.models import Q
 from django.test import TestCase, Client
 
-from .factories import VersionFactory, ConceptFactory
-from gemet.thesaurus.models import Concept, Import, Property, Namespace
+from .factories import (
+    VersionFactory, TermFactory, GroupFactory, ThemeFactory, ConceptFactory,
+    Relation
+)
+from gemet.thesaurus.models import (
+    Concept, Term, Group, Theme, Import, Property, PropertyType, Namespace
+)
 
 
 class ConceptImportView(TestCase):
@@ -23,7 +27,7 @@ class ConceptImportView(TestCase):
         i = 1
         # Create broader concepts
         for value in ['pollution', 'impact source']:
-            concept = ConceptFactory(namespace=concept_namespace, code=str(i))
+            concept = TermFactory(code=str(i))
             concept.properties.create(
                 name='prefLabel', value=value, language_id='en',
                 version_added=version
@@ -31,22 +35,35 @@ class ConceptImportView(TestCase):
             i += 1
 
         # Create groups
-        for value in ['BIOSPHERE', 'HYDROSPHERE']:
-            concept = ConceptFactory(namespace=group_namespace, code=str(i))
+        for value in ['BIOSPHERE', 'HYDROSPHERE', 'WASTES']:
+            concept = GroupFactory(code=str(i))
             concept.properties.create(
                 name='prefLabel', value=value, language_id='en',
-                version_added=version
+                version_added=version,
             )
             i += 1
-
+        # Make `pollution` a member of `WASTES`
+        pollution_concept = Term.objects.get_by_name('pollution')
+        wastes_group = Group.objects.get_by_name('WASTES')
+        pollution_concept.source_relations.create(
+            target=wastes_group,
+            version_added=version,
+            property_type=PropertyType.objects.get(name='group')
+        )
         # Create themes
-        for value in ['Fake Theme']:
-            concept = ConceptFactory(namespace=theme_namespace, code=str(i))
+        for value in ['pollution', 'theme1', 'theme2']:
+            concept = ThemeFactory(code=str(i))
             concept.properties.create(
                 name='prefLabel', value=value, language_id='en',
                 version_added=version
             )
             i += 1
+        pollution_theme = Theme.objects.get_by_name('pollution')
+        pollution_concept.source_relations.create(
+            target=pollution_theme,
+            version_added=version,
+            property_type=PropertyType.objects.get(name='theme')
+        )
 
     def test_import_concepts_and_translations_together(self):
         num_concepts_before = Concept.objects.count()
@@ -76,9 +93,23 @@ class ConceptImportView(TestCase):
         # And multiple altlabels
         self.assertEqual(
             Property.objects.filter(name='altLabel').filter(
-                Q(value='altlabel1') | Q(value='altlabel2')
+                value__in=[
+                    'Net zero emissions economy',
+                    'net-zero greenhouse gas emissions economy',
+                    'climate neutrality economy'
+                ]
             ).count(),
-            2
+            3
+        )
+        # Multiple broader concepts, groups and themes are supported
+        brown_finance = Term.objects.get_by_name('brown finance')
+        self.assertEqual(
+            Relation.objects.filter(
+                source=brown_finance,
+            ).count(),
+            8
+            # 2 Broader concepts, 2 Groups, 2 Themes
+            # + 1 Group and 1 Theme Inherited from pollution
         )
 
     def test_import_concepts_and_translations_separately(self):

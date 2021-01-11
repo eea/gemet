@@ -109,6 +109,29 @@ class Concept(VersionableModel):
             language='en', name='prefLabel', status__in=[0, 1]
         ).first().value
 
+    def inherit_groups_and_themes_from_broader(self, version=None):
+        """ Inherit groups and themes from broader concepts """
+        version = version or Version.under_work()
+        broader_concepts = Term.objects.filter(
+            source_relations__target__namespace__heading='Concepts'
+        )
+        num_created = 0
+        for broader in broader_concepts:
+            group_theme_relations = broader.source_relations.filter(
+                property_type__name__in=['group', 'theme']
+            )
+
+            for relation in group_theme_relations:
+                relation, created = Relation.objects.get_or_create(
+                    source=self,  # child
+                    target=relation.target,  # parent
+                    property_type=relation.property_type,
+                    defaults={'version_added': version, 'status': PENDING}
+                )
+                if created:
+                    num_created += 1
+        return num_created
+
     def update_or_create_properties(
         self, property_values, language_id='en', version=None
     ):
@@ -392,13 +415,26 @@ class PropertyType(models.Model):
     def get_by_name(cls, name):
         return cls.objects.filter(name=name).first()
 
+    @property
+    def namespace(self):
+        namespaces = {
+            'broader': Namespace.objects.get(heading='Concepts'),
+            'group': Namespace.objects.get(heading='Groups'),
+            'theme': Namespace.objects.get(heading='Themes'),
+        }
+        return namespaces.get(self.name)
+
     def __unicode__(self):
         return self.name
 
 
 class Relation(VersionableModel):
-    source = models.ForeignKey(Concept, related_name='source_relations')
-    target = models.ForeignKey(Concept, related_name='target_relations')
+    source = models.ForeignKey(  # child
+        Concept, related_name='source_relations'
+    )
+    target = models.ForeignKey(  # parent
+        Concept, related_name='target_relations'
+    )
     property_type = models.ForeignKey(PropertyType)
 
     def __unicode__(self):
@@ -543,6 +579,12 @@ class ConceptManager(models.Manager):
         ns = self.get_ns()
         kwargs.setdefault('namespace', ns)
         return super(ConceptManager, self).create(**kwargs)
+
+    def get_by_name(self, name):
+        return self.get_queryset().filter(
+            properties__name='prefLabel', properties__value=name,
+            properties__language_id='en'
+        ).distinct().get()
 
 
 class PublishedConceptManager(ConceptManager):
