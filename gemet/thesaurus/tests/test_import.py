@@ -3,11 +3,10 @@ from django.core.files import File
 from django.test import TestCase, Client
 
 from .factories import (
-    VersionFactory, TermFactory, GroupFactory, ThemeFactory, ConceptFactory,
-    Relation
+    VersionFactory, TermFactory, GroupFactory, ThemeFactory, Relation
 )
 from gemet.thesaurus.models import (
-    Concept, Term, Group, Theme, Import, Property, PropertyType, Namespace
+    Concept, Term, Group, Theme, Import, Property, PropertyType
 )
 
 
@@ -19,10 +18,6 @@ class ConceptImportView(TestCase):
     def setUp(self):
         version = VersionFactory(identifier='')
         self.client = Client()
-
-        concept_namespace = Namespace.objects.get(heading='Concepts')
-        group_namespace = Namespace.objects.get(heading='Groups')
-        theme_namespace = Namespace.objects.get(heading='Themes')
 
         i = 1
         # Create broader concepts
@@ -71,8 +66,9 @@ class ConceptImportView(TestCase):
             spreadsheet=File(open('gemet/thesaurus/tests/files/concepts.xlsx'))
         )
         url = '/import/{}/start/'.format(import_obj.pk)
-        response = self.client.get(url)
+        response = self.client.get(url, {"synchronous": True})
         self.assertEqual(response.status_code, 200)
+
         # 45 new concepts were imported
         num_concepts_after = Concept.objects.count()
         self.assertEqual(num_concepts_after - num_concepts_before, 45)
@@ -119,8 +115,9 @@ class ConceptImportView(TestCase):
             spreadsheet=File(open('gemet/thesaurus/tests/files/only_en.xlsx'))
         )
         url = '/import/{}/start/'.format(import_obj.pk)
-        response = self.client.get(url)
+        response = self.client.get(url, {"synchronous": True})
         self.assertEqual(response.status_code, 200)
+
         # 45 new concepts were imported
         num_concepts_after = Concept.objects.count()
         self.assertEqual(num_concepts_after - num_concepts_before, 45)

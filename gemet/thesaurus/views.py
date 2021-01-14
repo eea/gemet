@@ -835,9 +835,13 @@ def start_import(request, import_id):
         data_import = Import.objects.get(pk=import_id)
     except Import.DoesNotExist:
         raise Http404("Import object does not exist")
-    process = multiprocessing.Process(
-        target=run_import, args=(data_import,), kwargs={}
-    )
-    db.connections.close_all()
-    process.start()
+    synchronous = request.GET.get("synchronous", False)
+    if synchronous:
+        data_import.run()
+    else:
+        process = multiprocessing.Process(
+            target=run_import, args=(data_import,), kwargs={}
+        )
+        db.connections.close_all()
+        process.start()
     return HttpResponse("")
