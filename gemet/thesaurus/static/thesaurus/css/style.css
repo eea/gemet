@@ -637,8 +637,8 @@ hr {
     width: 0.8em;
     line-height: 0.8em;
     text-align: center;
-    // border: 1px solid #ccc;
-    // color: black!important;
+    /* // border: 1px solid #ccc;
+    // color: black!important; */
     text-decoration: none!important;
 }
 
@@ -1194,7 +1194,7 @@ li:hover .btn-remove-down {
 }
 
 .text-area li:first-of-type:before {
-    // content: '';
+    /* // content: ''; */
     display: none;
     color: #00446a;
 }
@@ -1203,9 +1203,9 @@ li:hover .btn-remove-down {
     color: inherit;
 }
 
-.text-area ul {
+/* .text-area ul {
     // margin: 0!important;
-}
+} */
 
 .other-item {
     display: inline-block;
@@ -1259,7 +1259,7 @@ li:hover .btn-remove-down {
     border: none;
     right: 0;
     border-radius: 0;
-    //background-color: #C1CFD0;
+    /* //background-color: #C1CFD0; */
     bottom: calc(100% + 2.4rem + 7px);
     height: 26px;
 }
@@ -1596,10 +1596,10 @@ i {
     margin: 0!important;
 }
 
-.related-terms li {
-    /*position: relative;*/
-    /*margin-left: 1.5rem;*/
-}
+/* .related-terms li {
+    position: relative;
+    margin-left: 1.5rem;
+} */
 
 .related-terms > div {
     margin-right: 2rem;
@@ -2093,8 +2093,8 @@ a.search-button {
     display: inline-block!important;
 }
 
-.edit-page.history a,
-.edit-page.history div {}
+/* .edit-page.history a,
+.edit-page.history div {} */
 
 .edit-page.history a {
     display: block;
@@ -2109,7 +2109,7 @@ a.search-button {
     margin-left: 0;
 }
 
-.modified-container button {}
+/* .modified-container button {} */
 
 .edit-page.history .well * {
     transition: all 300ms;
@@ -2181,7 +2181,7 @@ a.search-button {
 }
 
 .expand {
-    // width: 240px!important;
+    /* // width: 240px!important; */
     z-index: 200;
     transform: translateX(0);
     /*overflow: auto!important;*/
@@ -2225,4 +2225,49 @@ a.search-button {
 nav {
     background-color: #fff!important;
     box-shadow: unset!important;
+}
+
+/* About page */
+
+div.about-page h1 {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+div.about-page h2 {
+    margin-bottom: 20px;
+}
+
+ul.bullet {
+    display: block;
+    list-style-type: disc !important;
+    padding-left: 40px !important;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+ul.bullet li {
+    display: list-item;
+    list-style-type: disc !important;
+    text-align: -webkit-match-parent;
+}
+
+div.side-bar, .box {
+    margin-left: 10px;
+}
+
+div.about-page table {
+    width: 280px;
+    margin-bottom: 20px;
+}
+
+div.about-page table tr {
+    border-bottom: 1px solid #cfcfcf;
+}
+
+div.reference {
+    padding-left: 40px;
 }
