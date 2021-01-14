@@ -87,6 +87,11 @@ class Importer(object):
             print('Creating concepts...')
             self._create_concepts(wb['EN'])
 
+            # Fetch the property types needed to create relations
+            self.property_types = PropertyType.objects.filter(
+                name__in=['broader', 'group', 'theme']
+            )
+
             print('Creating relations...')
             self._create_relations(wb['EN'])
 
@@ -176,89 +181,89 @@ class Importer(object):
 
     def _create_relations(self, sheet):
 
-        property_types = PropertyType.objects.filter(
-            name__in=['broader', 'group', 'theme']
-        )
-
         for i, row in enumerate(row_dicts(sheet)):
+            print("Processing row {}...".format(i))
 
-            source_label = row.get("Term")  # aka prefLabel
-            source = self.concepts[source_label.lower()]
+            self._create_row_relations(i, row)
 
-            for property_type in property_types:
+    def _create_row_relations(self, i, row):
+        source_label = row.get("Term")  # aka prefLabel
+        source = self.concepts[source_label.lower()]
 
-                # Look for columns specifying relationships
-                if property_type.name == 'broader':
-                    target_labels = [
-                        row[key] for key in row.keys()
-                        if 'Broader concept' in key and row[key]
-                    ]
-                    broader_labels = target_labels
-                elif property_type.name == 'group':
-                    target_labels = [
-                        row[key] for key in row.keys()
-                        if 'Group' in key and row[key]
-                    ]
-                elif property_type.name == 'theme':
-                    target_labels = [
-                        row[key] for key in row.keys()
-                        if 'Theme' in key and row[key]
-                    ]
+        for property_type in self.property_types:
 
-                if not target_labels:
-                    # If it doesn't exist, there is no relation to be created
-                    print(
-                        (
-                            'Row {} has no relationship columns '
-                            '(i.e. "Broader concept", "Group", or "Theme").'
-                        ).format(i)
-                    )
-                    continue
+            # Look for columns specifying relationships
+            if property_type.name == 'broader':
+                target_labels = [
+                    row[key] for key in row.keys()
+                    if 'Broader concept' in key and row[key]
+                ]
+                broader_labels = target_labels
+            elif property_type.name == 'group':
+                target_labels = [
+                    row[key] for key in row.keys()
+                    if 'Group' in key and row[key]
+                ]
+            elif property_type.name == 'theme':
+                target_labels = [
+                    row[key] for key in row.keys()
+                    if 'Theme' in key and row[key]
+                ]
 
-                for target_label in target_labels:
-                    target = Concept.objects.filter(
-                        properties__name='prefLabel',
-                        properties__value=target_label,
-                        properties__language_id='en',
-                        namespace=property_type.namespace
-                    ).exclude(
-                        status=DELETED_PENDING,
-                        properties__status=DELETED_PENDING
-                    ).first()
-
-                    if not target:
-                        raise ImportError(
-                            'Row {}: concept "{}" does not exist.'.format(
-                                i, target_label
-                            )
-                        )
-
-                    relation, created = Relation.objects.get_or_create(
-                        source=source,  # child
-                        target=target,  # parent
-                        property_type=property_type,
-                        defaults={
-                            'version_added': self.version, 'status': PENDING
-                        }
-                    )
-
-                    if created:
-                        print('Relation created: {}'.format(relation))
-
-                    if not relation.reverse:
-                        reverse_relation = relation.create_reverse()
-                        print(
-                            'Reverse relation created: {}'.format(
-                                reverse_relation
-                            )
-                        )
-
-            created = source.inherit_groups_and_themes_from_broader()
-            print(
-                'Inherited groups and themes from: {}'.format(
-                    ', '.join(broader_labels)
+            if not target_labels:
+                # If it doesn't exist, there is no relation to be created
+                print(
+                    (
+                        'Row {} has no relationship columns '
+                        '(i.e. "Broader concept", "Group", or "Theme").'
+                    ).format(i)
                 )
+                return
+
+            for target_label in target_labels:
+                target = Concept.objects.filter(
+                    properties__name='prefLabel',
+                    properties__value=target_label,
+                    properties__language_id='en',
+                    namespace=property_type.namespace
+                ).exclude(
+                    status=DELETED_PENDING,
+                    properties__status=DELETED_PENDING
+                ).first()
+
+                if not target:
+                    raise ImportError(
+                        'Row {}: concept "{}" does not exist.'.format(
+                            i, target_label
+                        )
+                    )
+
+                relation, created = Relation.objects.get_or_create(
+                    source=source,  # child
+                    target=target,  # parent
+                    property_type=property_type,
+                    defaults={
+                        'version_added': self.version, 'status': PENDING
+                    }
+                )
+
+                if created:
+                    print('Relation created: {}'.format(relation))
+
+                if not relation.reverse:
+                    reverse_relation = relation.create_reverse()
+                    print(
+                        'Reverse relation created: {}'.format(
+                            reverse_relation
+                        )
+                    )
+
+        created = source.inherit_groups_and_themes_from_broader()
+        print(
+            'Inherited groups and themes from: {}'.format(
+                ', '.join(broader_labels)
             )
+        )
 
     def _add_translations(self, sheet):
         for row in row_dicts(sheet):
