@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import threading
 from itertools import chain
 from urllib import urlencode
 from xmlrpclib import Fault
@@ -824,10 +825,15 @@ def error500(request):
     return render(request, template, context, status=status_code)
 
 
+def run_import(data_import):
+    data_import.run()
+
+
 def start_import(request, import_id):
     try:
         data_import = Import.objects.get(pk=import_id)
     except Import.DoesNotExist:
         raise Http404("Import object does not exist")
-    data_import.run()
+    thread = threading.Thread(target=run_import, args=(data_import,), kwargs={})
+    thread.start()
     return HttpResponse("")
