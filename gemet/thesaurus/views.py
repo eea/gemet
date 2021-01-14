@@ -1,11 +1,12 @@
 import os
 import re
 import sys
-import threading
+import multiprocessing
 from itertools import chain
 from urllib import urlencode
 from xmlrpclib import Fault
 
+from django import db
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
@@ -834,6 +835,9 @@ def start_import(request, import_id):
         data_import = Import.objects.get(pk=import_id)
     except Import.DoesNotExist:
         raise Http404("Import object does not exist")
-    thread = threading.Thread(target=run_import, args=(data_import,), kwargs={})
-    thread.start()
+    process = multiprocessing.Process(
+        target=run_import, args=(data_import,), kwargs={}
+    )
+    db.connections.close_all()
+    process.start()
     return HttpResponse("")
