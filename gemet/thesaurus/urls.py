@@ -169,9 +169,6 @@ urlpatterns = [
     ),
     url(r'^auth/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^auth/logout/$', auth_views.LogoutView.as_view(), name='logout'),
-
-    # Custom Admin pages
-    # url(r'^admin/import/$', views.AdminImportView.as_view(), name='import'),
 ]
 
 if settings.DEBUG:
