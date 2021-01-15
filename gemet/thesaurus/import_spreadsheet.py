@@ -121,6 +121,8 @@ class Importer(object):
                 ', '.join(translation_sheetnames)
             )
 
+        print("Done!")
+        print(results)
         return results
 
     def _create_concepts(self, sheet):

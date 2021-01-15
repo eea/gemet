@@ -130,7 +130,7 @@ class ConceptImportView(TestCase):
             )
         )
         url = '/import/{}/start/'.format(import_obj.pk)
-        response = self.client.get(url)
+        response = self.client.get(url, {"synchronous": True})
         self.assertEqual(response.status_code, 200)
         # The number of concepts is still the same
         self.assertEqual(Concept.objects.count(), num_concepts_after)
