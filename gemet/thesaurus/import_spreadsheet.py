@@ -173,7 +173,6 @@ class Importer(object):
                     namespace=self.concept_ns,
                     version_added=self.version,
                     status=PENDING,
-                    date_entered=timezone.now(),
                 )
                 print(u'Concept added: {}'.format(label))
 

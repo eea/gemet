@@ -10,6 +10,14 @@ from gemet.thesaurus import NS_VIEW_MAPPING, RELATION_PAIRS
 from gemet.thesaurus import SEARCH_FIELDS, SEARCH_SEPARATOR
 
 
+class TimeTrackedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
 class Version(models.Model):
     identifier = models.CharField(max_length=255)
     publication_date = models.DateTimeField(blank=True, null=True)
@@ -71,12 +79,10 @@ class Namespace(models.Model):
         return self.heading
 
 
-class Concept(VersionableModel):
+class Concept(VersionableModel, TimeTrackedModel):
     namespace = models.ForeignKey(Namespace)
     code = models.CharField(max_length=10)
     # TODO: Rename to created_at/updated_at and use auto_now and auto_now_add
-    date_entered = models.DateTimeField(blank=True, null=True)
-    date_changed = models.DateTimeField(blank=True, null=True)
 
     EDITABLE = False
     parents_relations = []
@@ -504,14 +510,6 @@ class AsyncTask(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-
-
-class TimeTrackedModel(models.Model):
-    class Meta:
-        abstract = True
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Import(TimeTrackedModel):
