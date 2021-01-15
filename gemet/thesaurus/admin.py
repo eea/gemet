@@ -1,13 +1,68 @@
 from django.contrib import admin
+from django.urls import reverse
 from django.utils.html import mark_safe
 
 from gemet.thesaurus import models
+
+
+class PropertyInline(admin.TabularInline):
+    model = models.Property
+    extra = 0
+
+    def get_queryset(self, request):
+        qs = super(PropertyInline, self).get_queryset(request)
+        return qs.filter(language_id='en')
+
+
+class SourceRelationInline(admin.TabularInline):
+    model = models.Relation
+    extra = 0
+    fk_name = 'source'
+    raw_id_fields = ('target',)
+
+
+class TargetRelationInline(admin.TabularInline):
+    model = models.Relation
+    extra = 0
+    fk_name = 'target'
+    raw_id_fields = ('source',)
 
 
 class ConceptAdmin(admin.ModelAdmin):
     search_fields = ('code',)
     list_display = ('code', 'label', 'namespace', 'status', 'version_added')
     list_filter = ('version_added__identifier', 'status', 'namespace')
+
+    inlines = [
+        PropertyInline, SourceRelationInline, TargetRelationInline
+    ]
+
+
+class RelationAdmin(admin.ModelAdmin):
+    search_fields = ('source__properties__value', 'target__properties__value')
+    list_display = (
+        'id', 'source_label', 'property_type', 'target_label', 'status',
+        'version_added_identifier'
+    )
+    list_filter = ('version_added__identifier', 'status')
+
+    def source_label(self, obj):
+        return mark_safe('<a href="{}">{}</a>'.format(
+            reverse("admin:thesaurus_concept_change", args=(obj.source.pk,)),
+            obj.source.label
+        ))
+    source_label.short_description = 'Source'
+
+    def target_label(self, obj):
+        return mark_safe('<a href="{}">{}</a>'.format(
+            reverse("admin:thesaurus_concept_change", args=(obj.target.pk,)),
+            obj.target.label
+        ))
+    target_label.short_description = 'Target'
+
+    def version_added_identifier(self, obj):
+        return obj.version_added.identifier
+    version_added_identifier.short_description = 'Version'
 
 
 class ForeignRelationAdmin(admin.ModelAdmin):
@@ -100,7 +155,7 @@ admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
 admin.site.register(models.Property, PropertiesAdmin)
 admin.site.register(models.Language)
-admin.site.register(models.Relation)
+admin.site.register(models.Relation, RelationAdmin)
 admin.site.register(models.ForeignRelation, ForeignRelationAdmin)
 admin.site.register(models.Theme, ThemeAdmin)
 admin.site.register(models.Group, GroupAdmin)
