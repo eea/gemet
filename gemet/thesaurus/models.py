@@ -97,12 +97,12 @@ class Concept(VersionableModel):
             .order_by('property_type__label')
         )
 
-    @property
+    @cached_property
     def name(self):
         """ Relies on data being set properly on set_attributes """
         return getattr(self, 'prefLabel', '')
 
-    @property
+    @cached_property
     def label(self):
         """ Calculates and return prefLabel value of the Concept in English """
         return self.properties.filter(
@@ -357,7 +357,10 @@ class Concept(VersionableModel):
                                'concept_code': self.code})
 
     def __unicode__(self):
-        return self.code
+        try:
+            return u"{} ({})".format(self.label, self.code)
+        except Exception:
+            return self.code
 
 
 class Language(models.Model):

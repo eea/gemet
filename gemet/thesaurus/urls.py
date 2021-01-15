@@ -115,7 +115,7 @@ urlpatterns = [
         url(r'^concept/(?P<pk>\d+)/delete$',
             edit_views.DeletePendingConceptView.as_view(),
             name='concept_delete'),
-        url(r'^concept/(?P<code>\d+)/edit$', edit_views.TermEditView.as_view(),
+        url(r'^concept/(?P<code>\w+)/edit$', edit_views.TermEditView.as_view(),
             name='concept_edit'),
         url(r'^group/(?P<code>\d+)/edit$', edit_views.GroupEditView.as_view(),
             name='group_edit'),
