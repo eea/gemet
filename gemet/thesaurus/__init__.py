@@ -2,10 +2,10 @@ NR_CONCEPTS_ON_PAGE = 40
 DISTANCE_NUMBER = 9
 DEFAULT_LANGCODE = 'en'
 
-PENDING = 0
-PUBLISHED = 1
-DELETED = 2
-DELETED_PENDING = 3
+PENDING = 'pending'
+PUBLISHED = 'published'
+DELETED = 'deleted'
+DELETED_PENDING = 'deleted_pending'
 
 SEARCH_SEPARATOR = '\t'
 SEARCH_FIELDS = ['prefLabel', 'altLabel', 'notation', 'hiddenLabel']

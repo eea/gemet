@@ -88,11 +88,11 @@ class TestEditConceptView(GemetTest):
                                               'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         deleted_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-3').text().split()[0]
+            '.status-deleted_pending').text().split()[0]
         pending_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-0').text().split()[0]
+            '.status-pending').text().split()[0]
         published_relation = resp.pyquery('ul.listing:eq(1) div').children(
-            '.status-1').text().split()[0]
+            '.status-published').text().split()[0]
         self.assertEqual(deleted_relation, "Other_theme")
         self.assertEqual(pending_relation, "Theme")
         self.assertEqual(published_relation, "Group")
@@ -113,7 +113,7 @@ class TestEditConceptView(GemetTest):
                                               'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         themes_displayed = resp.pyquery(
-            'ul.listing:eq(0) div').children('.status-0')
+            'ul.listing:eq(0) div').children('.status-pending')
         self.assertEqual(len(themes_displayed), 1)
         self.assertEqual(themes_displayed.text().split()[0], "ThemeNew")
 
@@ -138,9 +138,9 @@ class TestEditConceptView(GemetTest):
         resp = self.app.get(url, user=self.user)
 
         deleted_relation = resp.pyquery(
-            '.elements-list li.status-3').text().split()[0]
+            '.elements-list li.status-deleted_pending').text().split()[0]
         pending_relation = resp.pyquery(
-            '.elements-list li.status-0').text().split()[0]
+            '.elements-list li.status-pending').text().split()[0]
         self.assertEqual(deleted_relation, "Concept3")
         self.assertEqual(pending_relation, "OtherConcept")
 
@@ -158,7 +158,7 @@ class TestEditConceptView(GemetTest):
         resp = self.app.get(url, user=self.user)
 
         published_relation = resp.pyquery(
-            '.elements-list li.status-1').text().split()[0]
+            '.elements-list li.status-published').text().split()[0]
         self.assertEqual(published_relation, "OtherConcept")
 
     def test_foreign_relations(self):
@@ -177,12 +177,14 @@ class TestEditConceptView(GemetTest):
         resp = self.app.get(url, user=self.user)
         foreign_displayed = resp.pyquery('.other-item a').text().split()
         self.assertEqual(len(foreign_displayed), 3)
-        self.assertEqual(resp.pyquery('.status-1.other-item a').text(),
+        self.assertEqual(resp.pyquery('.status-published.other-item a').text(),
                          'Oldexternal')
-        self.assertEqual(resp.pyquery('.status-0.other-item a').text(),
+        self.assertEqual(resp.pyquery('.status-pending.other-item a').text(),
                          'Newexternal')
-        self.assertEqual(resp.pyquery('.status-3.other-item a').text(),
-                         'Deletedexternal')
+        self.assertEqual(
+            resp.pyquery('.status-deleted_pending.other-item a').text(),
+            'Deletedexternal'
+        )
 
 
 class TestEditGroupView(GemetTest):
@@ -243,11 +245,11 @@ class TestEditGroupView(GemetTest):
                                             'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         deleted_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-3').text().split()[0]
+            '.status-deleted_pending').text().split()[0]
         pending_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-0').text().split()[0]
+            '.status-pending').text().split()[0]
         published_relation = resp.pyquery('ul.listing:eq(1) div').children(
-            '.status-1').text().split()[0]
+            '.status-published').text().split()[0]
         self.assertEqual(deleted_relation, "Other_supergroup")
         self.assertEqual(pending_relation, "SuperGroup")
         self.assertEqual(published_relation, "Concept")
@@ -336,11 +338,11 @@ class TestEditSuperGroupView(GemetTest):
                                                  'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         deleted_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-3').text().split()[0]
+            '.status-deleted_pending').text().split()[0]
         pending_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-0').text().split()[0]
+            '.status-pending').text().split()[0]
         published_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-1').text().split()[0]
+            '.status-published').text().split()[0]
 
         self.assertEqual(deleted_relation, "Group3")
         self.assertEqual(pending_relation, "Group2")
@@ -415,11 +417,11 @@ class TestEditThemeView(GemetTest):
                                             'langcode': 'en'})
         resp = self.app.get(url, user=self.user)
         deleted_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-3').text().split()[0]
+            '.status-deleted_pending').text().split()[0]
         pending_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-0').text().split()[0]
+            '.status-pending').text().split()[0]
         published_relation = resp.pyquery('ul.listing:eq(0) div').children(
-            '.status-1').text().split()[0]
+            '.status-published').text().split()[0]
 
         self.assertEqual(deleted_relation, "Concept3")
         self.assertEqual(pending_relation, "Concept2")
