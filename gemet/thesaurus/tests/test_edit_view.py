@@ -425,7 +425,7 @@ class TestAddNewConcept(GemetTest):
             name='searchText',
             language=self.language)
         self.assertEqual(1, len(search_prop))
-        self.assertEqual(0, search_prop.first().status)
+        self.assertEqual('pending', search_prop.first().status)
 
 
 class TestDeleteNewConcept(GemetTest):

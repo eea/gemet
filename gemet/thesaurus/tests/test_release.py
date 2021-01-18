@@ -175,15 +175,15 @@ class TestConceptChanges(GemetTest):
         url = reverse('concept_changes', kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertEqual(self.concept_old_name.value,
-                         response.pyquery('.prefLabel.status-3').html())
+                         response.pyquery('.prefLabel.status-deleted_pending').html())
         self.assertEqual(self.concept_new_name.value,
-                         response.pyquery('.prefLabel.status-0').html())
+                         response.pyquery('.prefLabel.status-pending').html())
 
     def test_new_relation_no_name(self):
         url = reverse('concept_changes', kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertEqual('Name not available in the current language',
-                         response.pyquery('.status-0')[1].text)
+                         response.pyquery('.status-pending')[1].text)
 
     def test_new_relation_name_available(self):
         group_name = factories.PropertyFactory(status=PENDING,
@@ -192,11 +192,11 @@ class TestConceptChanges(GemetTest):
         url = reverse('concept_changes', kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertEqual(group_name.value,
-                         response.pyquery('.status-0')[1].text)
+                         response.pyquery('.status-pending')[1].text)
 
     def test_group_changes(self):
         self.request_kwargs['id'] = self.group.id
         url = reverse('concept_changes', kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertEqual(self.group_definition.value,
-                         response.pyquery('.definition.status-0').html())
+                         response.pyquery('.definition.status-pending').html())

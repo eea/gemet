@@ -1086,21 +1086,21 @@ li:hover .btn-remove-down {
 
 /* edit pages */
 
-.status-0 {
+.status-pending {
     /*text-shadow: 0px 0px 6px rgba(15, 183, 0, 0.4);*/
     color: #069641;
 }
 
-.status-3 {
+.status-deleted_pending {
     /*text-shadow:0px 0px 6px rgba(177, 0, 0, 0.4);*/
     color: #a70f0f;
 }
 
-.status-3 a {
+.status-deleted_pending a {
     color: #a70f0f;
 }
 
-.status-0 a {
+.status-pending a {
     color: #069641;
 }
 
@@ -2016,11 +2016,11 @@ a.search-button {
     display: block !important;
 }
 
-.history.status-0:before {
+.history.status-pending:before {
     content: " + ";
 }
 
-.history.status-3:before {
+.history.status-deleted_pending:before {
     content: " - "
 }
 

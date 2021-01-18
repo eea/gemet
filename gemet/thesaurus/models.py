@@ -58,8 +58,9 @@ class VersionableModel(models.Model):
         (DELETED_PENDING, 'deleted pending'),
     )
     PUBLISHED_STATUS_OPTIONS = [PUBLISHED, DELETED_PENDING]
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES,
-                                              default=PENDING)
+    status = models.CharField(
+        max_length=64, choices=STATUS_CHOICES, default=PENDING
+    )
     version_added = models.ForeignKey(Version)
 
     objects = models.Manager()
@@ -112,7 +113,7 @@ class Concept(VersionableModel, TimeTrackedModel):
     def label(self):
         """ Calculates and return prefLabel value of the Concept in English """
         return self.properties.filter(
-            language='en', name='prefLabel', status__in=[0, 1]
+            language='en', name='prefLabel', status__in=[PENDING, PUBLISHED]
         ).first().value
 
     def inherit_groups_and_themes_from_broader(self, version=None):
