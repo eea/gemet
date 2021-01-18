@@ -116,10 +116,14 @@ class Concept(VersionableModel, TimeTrackedModel):
         ).first().value
 
     def inherit_groups_and_themes_from_broader(self, version=None):
-        """ Inherit groups and themes from broader concepts """
+        """
+        Inherit groups and themes from broader concepts.
+        Returns the number of relations created.
+        """
         version = version or Version.under_work()
         broader_concepts = Term.objects.filter(
-            source_relations__target__namespace__heading='Concepts'
+            target_relations__source=self,
+            target_relations__property_type__name='broader'
         )
         num_created = 0
         for broader in broader_concepts:

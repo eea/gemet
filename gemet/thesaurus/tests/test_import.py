@@ -107,6 +107,15 @@ class ConceptImportView(TestCase):
             # 2 Broader concepts, 2 Groups, 2 Themes
             # + 1 Group and 1 Theme Inherited from pollution
         )
+        advection = Term.objects.get_by_name('advection')
+        self.assertEqual(
+            Relation.objects.filter(
+                source=advection,
+            ).count(),
+            3
+            # 1 Broader concept (pollution)
+            # + 1 Group and 1 Theme Inherited from pollution
+        )
 
     def test_import_concepts_and_translations_separately(self):
         num_concepts_before = Concept.objects.count()
