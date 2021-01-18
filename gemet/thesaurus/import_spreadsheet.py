@@ -191,6 +191,8 @@ class Importer(object):
         source_label = row.get("Term")  # aka prefLabel
         source = self.concepts[source_label.lower()]
 
+        rel_columns = False
+
         for property_type in self.property_types:
 
             # Look for columns specifying relationships
@@ -211,15 +213,15 @@ class Importer(object):
                     if 'Theme' in key and row[key]
                 ]
 
-            if not target_labels:
-                # If it doesn't exist, there is no relation to be created
+            if target_labels:
+                rel_columns = True
+            else:
                 print(
-                    (
-                        'Row {} has no relationship columns '
-                        '(i.e. "Broader concept", "Group", or "Theme").'
-                    ).format(i)
+                    'Row {} ({}) has no "{}" relation.'.format(
+                        i, source_label, property_type.name
+                    )
                 )
-                return
+                continue
 
             for target_label in target_labels:
                 target = Concept.objects.filter(
@@ -258,13 +260,13 @@ class Importer(object):
                             reverse_relation
                         )
                     )
-
-        created = source.inherit_groups_and_themes_from_broader()
-        print(
-            'Inherited groups and themes from: {}'.format(
-                ', '.join(broader_labels)
+        if rel_columns:
+            created = source.inherit_groups_and_themes_from_broader()
+            print(
+                'Inherited groups and themes from: {}'.format(
+                    ', '.join(broader_labels)
+                )
             )
-        )
 
     def _add_translations(self, sheet):
         for row in row_dicts(sheet):
