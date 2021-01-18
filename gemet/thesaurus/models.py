@@ -139,6 +139,8 @@ class Concept(VersionableModel, TimeTrackedModel):
                     property_type=relation.property_type,
                     defaults={'version_added': version, 'status': PENDING}
                 )
+                if not relation.reverse:
+                    relation.create_reverse()
                 if created:
                     num_created += 1
         return num_created

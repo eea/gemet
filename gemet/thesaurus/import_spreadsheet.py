@@ -191,12 +191,13 @@ class Importer(object):
         source_label = row.get("Term")  # aka prefLabel
         source = self.concepts[source_label.lower()]
 
-        rel_columns = False
+        has_broader = False
 
         for property_type in self.property_types:
 
             # Look for columns specifying relationships
             if property_type.name == 'broader':
+                has_broader = True
                 target_labels = [
                     row[key] for key in row.keys()
                     if 'Broader concept' in key and row[key]
@@ -213,8 +214,6 @@ class Importer(object):
                     if 'Theme' in key and row[key]
                 ]
 
-            if target_labels:
-                rel_columns = True
             else:
                 print(
                     'Row {} ({}) has no "{}" relation.'.format(
@@ -260,7 +259,7 @@ class Importer(object):
                             reverse_relation
                         )
                     )
-        if rel_columns:
+        if has_broader:
             created = source.inherit_groups_and_themes_from_broader()
             print(
                 'Inherited groups and themes from: {}'.format(
