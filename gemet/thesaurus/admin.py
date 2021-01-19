@@ -45,6 +45,7 @@ class RelationAdmin(admin.ModelAdmin):
         'version_added_identifier'
     )
     list_filter = ('version_added__identifier', 'status')
+    raw_id_fields = ('source', 'target')
 
     def source_label(self, obj):
         return mark_safe('<a href="{}">{}</a>'.format(
@@ -70,25 +71,27 @@ class ForeignRelationAdmin(admin.ModelAdmin):
     list_display = ('property_type', 'concept', 'version_added', 'status',
                     'label')
     list_filter = ('version_added__identifier', 'status')
+    raw_id_fields = ('concept',)
 
 
-class PropertiesAdmin(admin.ModelAdmin):
+class PropertyAdmin(admin.ModelAdmin):
     search_fields = ('name', 'value',)
     list_display = ('name', 'value', 'concept', 'language', 'status',
                     'version_added')
     list_filter = ('version_added__identifier', 'status', 'language', 'name')
+    raw_id_fields = ('concept',)
 
 
 class GroupAdmin(ConceptAdmin):
-    pass
+    inlines = [PropertyInline]
 
 
 class SuperGroupAdmin(ConceptAdmin):
-    pass
+    inlines = [PropertyInline]
 
 
 class ThemeAdmin(ConceptAdmin):
-    pass
+    inlines = [PropertyInline]
 
 
 class TermAdmin(ConceptAdmin):
@@ -153,7 +156,7 @@ class ImportAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Namespace)
 admin.site.register(models.Concept, ConceptAdmin)
-admin.site.register(models.Property, PropertiesAdmin)
+admin.site.register(models.Property, PropertyAdmin)
 admin.site.register(models.Language)
 admin.site.register(models.Relation, RelationAdmin)
 admin.site.register(models.ForeignRelation, ForeignRelationAdmin)
