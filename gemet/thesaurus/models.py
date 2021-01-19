@@ -211,12 +211,11 @@ class Concept(VersionableModel, TimeTrackedModel):
             status__in=[PUBLISHED, PENDING],
         ).values_list('value', flat=True)
 
+        assert search_prop_values
+
         # Concatenate them using internal format
-        if search_prop_values:
-            search_text = SEARCH_SEPARATOR.join(search_prop_values)
-            search_text = SEARCH_SEPARATOR + search_text + SEARCH_SEPARATOR
-        else:
-            search_text = ''
+        search_text = SEARCH_SEPARATOR.join(search_prop_values)
+        search_text = search_text.strip()
 
         # Look for existing searchText Property object
         search_text_property = self.properties.filter(
@@ -234,6 +233,7 @@ class Concept(VersionableModel, TimeTrackedModel):
             search_text_property = self.properties.create(
                 language_id=language_code,
                 name='searchText',
+                value=search_text,
                 status=PENDING,
                 version_added=version,
             )
