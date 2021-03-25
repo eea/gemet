@@ -16,7 +16,7 @@ paramiko==2.0.9
 path.py==5.1
 pycrypto==2.6.1
 pyquery==1.2.8
-PyYAML==5.1
+PyYAML==5.4
 six==1.10.0
 sqlparse==0.2.3
 waitress==1.4.3
