@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('uri', models.CharField(max_length=512)),
                 ('label', models.CharField(max_length=100)),
                 ('show_in_html', models.BooleanField(default=True)),
-                ('concept', models.ForeignKey(related_name=b'foreign_relations', to='thesaurus.Concept')),
+                ('concept', models.ForeignKey(on_delete=models.CASCADE, related_name=u'foreign_relations', to='thesaurus.Concept')),
             ],
             options={
             },
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('charset', models.CharField(max_length=100)),
                 ('code_alt', models.CharField(max_length=3)),
-                ('direction', models.CharField(max_length=1, choices=[(b'0', b'ltr'), (b'1', b'rtl')])),
+                ('direction', models.CharField(max_length=1, choices=[(u'0', u'ltr'), (u'1', u'rtl')])),
             ],
             options={
             },
@@ -83,8 +83,8 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 ('value', models.CharField(max_length=16000)),
                 ('is_resource', models.BooleanField(default=False)),
-                ('concept', models.ForeignKey(related_name=b'properties', to='thesaurus.Concept')),
-                ('language', models.ForeignKey(related_name=b'properties', to='thesaurus.Language')),
+                ('concept', models.ForeignKey(on_delete=models.CASCADE, related_name=u'properties', to='thesaurus.Concept')),
+                ('language', models.ForeignKey(on_delete=models.CASCADE, related_name=u'properties', to='thesaurus.Language')),
             ],
             options={
                 'verbose_name_plural': 'properties',
@@ -107,9 +107,9 @@ class Migration(migrations.Migration):
             name='Relation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('property_type', models.ForeignKey(to='thesaurus.PropertyType')),
-                ('source', models.ForeignKey(related_name=b'source_relations', to='thesaurus.Concept')),
-                ('target', models.ForeignKey(related_name=b'target_relations', to='thesaurus.Concept')),
+                ('property_type', models.ForeignKey(on_delete=models.CASCADE, to='thesaurus.PropertyType')),
+                ('source', models.ForeignKey(on_delete=models.CASCADE, related_name=u'source_relations', to='thesaurus.Concept')),
+                ('target', models.ForeignKey(on_delete=models.CASCADE, related_name=u'target_relations', to='thesaurus.Concept')),
             ],
             options={
             },
@@ -118,13 +118,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='foreignrelation',
             name='property_type',
-            field=models.ForeignKey(to='thesaurus.PropertyType'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='thesaurus.PropertyType'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='concept',
             name='namespace',
-            field=models.ForeignKey(to='thesaurus.Namespace'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='thesaurus.Namespace'),
             preserve_default=True,
         ),
         migrations.CreateModel(

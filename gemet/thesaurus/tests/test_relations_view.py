@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .factories import (
     LanguageFactory,
@@ -12,7 +12,7 @@ from .factories import (
 from . import GemetTest, ERROR_404
 from gemet.thesaurus import DELETED_PENDING, PENDING, PUBLISHED
 from gemet.thesaurus.utils import exp_encrypt, exp_decrypt
-from urlparse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 
 
 class TestRelationsView(GemetTest):

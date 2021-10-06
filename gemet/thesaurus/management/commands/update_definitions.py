@@ -56,7 +56,7 @@ class Command(BaseCommand):
             concept = property.concept
             self.stdout.write(u'Updating concept {}.'.format(label))
 
-            for name, value in properties.iteritems():
+            for name, value in properties.items():
                 current_property = models.Property.objects.filter(
                     concept=concept,
                     language=self.language,

@@ -1,6 +1,6 @@
 import unittest
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from . import GemetTest
 from .factories import LanguageFactory

@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 import json
 from urllib import urlencode
-import xmlrpclib
+from xmlrpc.client import Fault, ServerProxy
 import unittest
 import sys
 import requests
@@ -36,7 +36,7 @@ class ApiTester(object):
         return 'ERROR'
 
     def doXmlRpc(self, method, *args):
-        server = xmlrpclib.ServerProxy(self.request_url, allow_none=True)
+        server = ServerProxy(self.request_url, allow_none=True)
         return getattr(server, method)(*args)
 
 
@@ -99,7 +99,7 @@ class TestGetRelatedConcepts(unittest.TestCase):
             ))
         else:
             self.assertRaises(
-                xmlrpclib.Fault, api_tester.request, 'getRelatedConcepts',
+                Fault, api_tester.request, 'getRelatedConcepts',
                 'concept_uri', api_tester.get_full_path('concept/99999999'),
                 'relation_uri', 'http://www.w3.org/2004/02/skos/core#related'
             )
@@ -140,7 +140,7 @@ class TestGetRelatedConcepts(unittest.TestCase):
                              )))
         else:
             self.assertRaises(
-                xmlrpclib.Fault,
+                Fault,
                 api_tester.request,
                 'getRelatedConcepts',
                 'concept_uri', api_tester.get_full_path('concept/42'),
@@ -160,7 +160,7 @@ class TestGetConcept(unittest.TestCase):
                                  'getConcept', *(concept_uri, language)
                              ))
         else:
-            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+            self.assertRaises(Fault, api_tester.request,
                               'getConcept', 'concept_uri', concept_uri,
                               'language', language)
 
@@ -205,7 +205,7 @@ class TestGetConcept(unittest.TestCase):
                                  'getConcept', *(concept_uri, language)
                              ))
         else:
-            self.assertRaises(xmlrpclib.Fault, api_tester.request,
+            self.assertRaises(Fault, api_tester.request,
                               'getConcept', 'concept_uri', concept_uri,
                               'language', language)
 
@@ -321,13 +321,13 @@ class TestGetAllTranslationsForConcept(unittest.TestCase):
         }
 
         translations = {}
-        for prop_uri, prop_values in concept['properties'].iteritems():
+        for prop_uri, prop_values in concept['properties'].items():
             result = api_tester.request('getAllTranslationsForConcept',
                                         'concept_uri', concept['uri'],
                                         'property_uri', prop_uri)
 
             for value in result:
-                translations[value['language']] = unicode(value['string'])
+                translations[value['language']] = str(value['string'])
 
         self.assertEqual(sorted(translations.items()),
                          ALL_TTRANSLATIONS_FOR_CONCEPT)

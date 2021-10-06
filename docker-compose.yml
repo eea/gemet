@@ -11,7 +11,10 @@ services:
     command:
     - qcluster
   gemet:
-    image: eeacms/gemet:latest
+    build:
+      context: .
+    image: gemet:local
+    # image: eeacms/gemet:latest
     container_name: gemet.app
     ports:
     - 8888:8888
@@ -24,7 +27,7 @@ services:
     - .:/var/local/gemet
     entrypoint: ["/usr/bin/tail", "-f", "/dev/null"]
   mysql:
-    image: mysql:latest
+    image: mysql:5.7.35
     container_name: gemet.db
     ports:
       - 3306:3306

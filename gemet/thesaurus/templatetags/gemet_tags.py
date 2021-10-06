@@ -1,7 +1,7 @@
 import unicodedata
 
 from django import template
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from gemet.thesaurus.models import Concept, Language, Property
 from gemet.thesaurus import DEFAULT_LANGCODE, SEARCH_SEPARATOR, EDIT_URL_NAMES
@@ -11,7 +11,7 @@ from gemet.thesaurus.utils import exp_encrypt
 register = template.Library()
 
 
-@register.assignment_tag
+@register.simple_tag
 def get_expand(concept_id, expand_list):
     str_id = str(concept_id)
     expand_copy = expand_list[:]
@@ -28,7 +28,7 @@ def get_expand(concept_id, expand_list):
     }
 
 
-@register.assignment_tag
+@register.simple_tag
 def get_children(concept_id, langcode, status_values, language_warning=False):
     concept = Concept.objects.get(pk=concept_id)
     concept.status_list = status_values
@@ -38,7 +38,7 @@ def get_children(concept_id, langcode, status_values, language_warning=False):
         return concept.get_children(langcode)
 
 
-@register.assignment_tag
+@register.simple_tag
 def get_broader_context(concept_id, langcode, status_values):
     concept = Concept.objects.get(pk=concept_id)
     concept.status_list = status_values
@@ -46,7 +46,7 @@ def get_broader_context(concept_id, langcode, status_values):
     return '; '.join([cp['name'] for cp in broader_concepts])
 
 
-@register.assignment_tag
+@register.simple_tag
 def get_concept_names(concept, status_values, langcode):
     name = Property.objects.get(name='prefLabel',
                                 status__in=status_values,

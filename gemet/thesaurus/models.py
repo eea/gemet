@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -61,7 +61,7 @@ class VersionableModel(models.Model):
     status = models.CharField(
         max_length=64, choices=STATUS_CHOICES, default=PENDING
     )
-    version_added = models.ForeignKey(Version)
+    version_added = models.ForeignKey(Version, on_delete=models.CASCADE)
 
     objects = models.Manager()
     published = PublishedManager()
@@ -81,7 +81,7 @@ class Namespace(models.Model):
 
 
 class Concept(VersionableModel, TimeTrackedModel):
-    namespace = models.ForeignKey(Namespace)
+    namespace = models.ForeignKey(Namespace, on_delete=models.CASCADE)
     code = models.CharField(max_length=10)
     # TODO: Rename to created_at/updated_at and use auto_now and auto_now_add
 
@@ -158,7 +158,7 @@ class Concept(VersionableModel, TimeTrackedModel):
         ).update(status=DELETED_PENDING)
 
         # For each property
-        for name, value in property_values.iteritems():
+        for name, value in property_values.items():
             if value:
                 if name == 'altLabel':
                     # altLabel key maps to multiple values
@@ -393,8 +393,8 @@ class Language(models.Model):
 
 
 class Property(VersionableModel):
-    concept = models.ForeignKey(Concept, related_name='properties')
-    language = models.ForeignKey(Language, related_name='properties')
+    concept = models.ForeignKey(Concept, on_delete=models.CASCADE, related_name='properties')
+    language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='properties')
     name = models.CharField(max_length=50)
     value = models.CharField(max_length=16000)
     is_resource = models.BooleanField(default=False)
@@ -446,12 +446,12 @@ class PropertyType(models.Model):
 
 class Relation(VersionableModel):
     source = models.ForeignKey(  # child
-        Concept, related_name='source_relations'
+        Concept, on_delete=models.CASCADE, related_name='source_relations'
     )
     target = models.ForeignKey(  # parent
-        Concept, related_name='target_relations'
+        Concept, on_delete=models.CASCADE, related_name='target_relations'
     )
-    property_type = models.ForeignKey(PropertyType)
+    property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return 's: {0}, t: {1}, rel: {2}'.format(
@@ -478,9 +478,9 @@ class Relation(VersionableModel):
 
 
 class ForeignRelation(VersionableModel):
-    concept = models.ForeignKey(Concept, related_name='foreign_relations')
+    concept = models.ForeignKey(Concept, on_delete=models.CASCADE, related_name='foreign_relations')
     uri = models.CharField(max_length=512)
-    property_type = models.ForeignKey(PropertyType)
+    property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE)
     label = models.CharField(max_length=100)
     show_in_html = models.BooleanField(default=True)
 
@@ -511,7 +511,7 @@ class AsyncTask(models.Model):
     task = models.CharField(max_length=32)
     date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=10, choices=STATUS, default=QUEUED)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     version = models.OneToOneField(
         Version,
         on_delete=models.CASCADE,

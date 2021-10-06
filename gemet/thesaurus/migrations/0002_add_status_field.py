@@ -37,28 +37,28 @@ class Migration(migrations.Migration):
             model_name='concept',
             name='status',
             field=models.PositiveSmallIntegerField(
-                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
                 default=0),
         ),
         migrations.AddField(
             model_name='foreignrelation',
             name='status',
             field=models.PositiveSmallIntegerField(
-                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
                 default=0),
         ),
         migrations.AddField(
             model_name='property',
             name='status',
             field=models.PositiveSmallIntegerField(
-                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
                 default=0),
         ),
         migrations.AddField(
             model_name='relation',
             name='status',
             field=models.PositiveSmallIntegerField(
-                choices=[(0, b'pending'), (1, b'published'), (2, b'deleted')],
+                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
                 default=0),
         ),
         migrations.RunPython(forwards_func, reverse_func),

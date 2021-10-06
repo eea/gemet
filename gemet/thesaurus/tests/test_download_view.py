@@ -2,7 +2,7 @@ import shutil
 import unittest
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from . import GemetTest, ERROR_404
 from .factories import LanguageFactory, VersionFactory

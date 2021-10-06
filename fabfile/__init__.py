@@ -1,4 +1,4 @@
-import ConfigParser
+from six.moves import configparser
 from fabric.api import env
 from fabric.context_managers import cd, prefix
 from fabric.decorators import task
@@ -12,12 +12,12 @@ LOCATION_WARNING = """deployment. You need to prefix the task with the location
 
 
 def environment(location):
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     config_path = LOCAL_PATH / 'env.ini'
     config.read(config_path)
     try:
         env.update(config.items(section=location))
-    except ConfigParser.NoSectionError:
+    except configparser.NoSectionError:
         exit('Cannot run task on {0}. Please define the corresponding section '
              'in {1}.'.format(location, config_path))
     env.sandbox_activate = 'source {0}'.format(path(env.sandbox) / 'bin' /

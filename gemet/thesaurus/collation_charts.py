@@ -1226,10 +1226,10 @@ unicode_character_map = {
 }
 
 if __name__ == '__main__':
-    print """unicode_character_map = {"""
+    print("""unicode_character_map = {""")
     for lang, alphabet in unicode_character_map.items():
-        print """'%s': [""" % lang
+        print(f"""'{lang}': [""")
         for letter in alphabet:
-            print "    %s," % unicode(str(letter), 'utf-8')
-        print """],"""
-    print "}"
+            print("    %s," % str(letter))
+        print("""],""")
+    print("}")

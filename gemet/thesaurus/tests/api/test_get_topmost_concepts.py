@@ -1,7 +1,7 @@
-from urllib import urlencode
-from xmlrpclib import Fault
+from urllib.parse import urlencode
+from xmlrpc.client import Fault
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from gemet.thesaurus.tests.factories import (
     PropertyFactory,

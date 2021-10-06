@@ -90,22 +90,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='concept',
             name='string_status',
-            field=models.CharField(choices=[(b'pending', b'pending'), (b'published', b'published'), (b'deleted', b'deleted'), (b'deleted_pending', b'deleted pending')], default=b'pending', max_length=64),
+            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
         ),
         migrations.AddField(
             model_name='foreignrelation',
             name='string_status',
-            field=models.CharField(choices=[(b'pending', b'pending'), (b'published', b'published'), (b'deleted', b'deleted'), (b'deleted_pending', b'deleted pending')], default=b'pending', max_length=64),
+            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
         ),
         migrations.AddField(
             model_name='property',
             name='string_status',
-            field=models.CharField(choices=[(b'pending', b'pending'), (b'published', b'published'), (b'deleted', b'deleted'), (b'deleted_pending', b'deleted pending')], default=b'pending', max_length=64),
+            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
         ),
         migrations.AddField(
             model_name='relation',
             name='string_status',
-            field=models.CharField(choices=[(b'pending', b'pending'), (b'published', b'published'), (b'deleted', b'deleted'), (b'deleted_pending', b'deleted pending')], default=b'pending', max_length=64),
+            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
         ),
         migrations.RunPython(int_to_str, str_to_int),
         migrations.RemoveField(

@@ -15,21 +15,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='concept',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            field=models.PositiveSmallIntegerField(choices=[(0, u'pending'), (1, u'published'), (2, u'deleted'), (3, u'deleted pending')], default=0),
         ),
         migrations.AlterField(
             model_name='foreignrelation',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            field=models.PositiveSmallIntegerField(choices=[(0, u'pending'), (1, u'published'), (2, u'deleted'), (3, u'deleted pending')], default=0),
         ),
         migrations.AlterField(
             model_name='property',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            field=models.PositiveSmallIntegerField(choices=[(0, u'pending'), (1, u'published'), (2, u'deleted'), (3, u'deleted pending')], default=0),
         ),
         migrations.AlterField(
             model_name='relation',
             name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            field=models.PositiveSmallIntegerField(choices=[(0, u'pending'), (1, u'published'), (2, u'deleted'), (3, u'deleted pending')], default=0),
         ),
     ]

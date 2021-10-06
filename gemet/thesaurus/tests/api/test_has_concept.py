@@ -1,6 +1,6 @@
-from urllib import urlencode
+from urllib.parse import urlencode
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from gemet.thesaurus.tests.factories import (
     PropertyFactory,
@@ -8,7 +8,7 @@ from gemet.thesaurus.tests.factories import (
     LanguageFactory,
 )
 from gemet.thesaurus.tests import GemetTest
-from xmlrpclib import Fault
+from xmlrpc.client import Fault
 
 
 class TestHasConcept(GemetTest):

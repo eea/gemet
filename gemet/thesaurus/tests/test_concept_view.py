@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from .factories import ForeignRelationFactory, GroupFactory, LanguageFactory
@@ -95,9 +95,9 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
-        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
-        self.assertEqual(resp.body.count('theme/' + self.theme.code), 1)
+        self.assertEqual(resp.body.count(('concept/' + self.concept.code).encode('ascii')), 1)
+        self.assertEqual(resp.body.count(('group/' + self.group.code).encode('ascii')), 1)
+        self.assertEqual(resp.body.count(('theme/' + self.theme.code).encode('ascii')), 1)
 
     def test_concept_two_themes(self):
         self.set_concept_two_theme()
@@ -130,10 +130,10 @@ class TestConceptView(GemetTest):
 
         self.assertEqual(200, resp.status_int)
         self.assertEqual(resp.headers['Content-Type'], 'application/rdf+xml')
-        self.assertEqual(resp.body.count('concept/' + self.concept.code), 1)
-        self.assertEqual(resp.body.count('group/' + self.group.code), 1)
-        self.assertEqual(resp.body.count('theme/' + self.theme1.code), 1)
-        self.assertEqual(resp.body.count('theme/' + self.theme2.code), 1)
+        self.assertEqual(resp.body.count(('concept/' + self.concept.code).encode('ascii')), 1)
+        self.assertEqual(resp.body.count(('group/' + self.group.code).encode('ascii')), 1)
+        self.assertEqual(resp.body.count(('theme/' + self.theme1.code).encode('ascii')), 1)
+        self.assertEqual(resp.body.count(('theme/' + self.theme2.code).encode('ascii')), 1)
 
     def test_redirect(self):
         url = reverse('concept', kwargs={'code': self.concept.code,

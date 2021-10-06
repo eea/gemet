@@ -3,16 +3,16 @@ import re
 import sys
 import multiprocessing
 from itertools import chain
-from urllib import urlencode
-from xmlrpclib import Fault
+from urllib.parse import urlencode
+from xmlrpc.client import Fault
 
 from django import db
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
@@ -71,7 +71,7 @@ class VersionMixin(object):
 class StatusMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             if getattr(self, 'edit_view', False):
                 status = [PUBLISHED, PENDING, DELETED_PENDING]
             else:
@@ -806,7 +806,7 @@ def render_rdf(request, obj):
                   content_type='application/rdf+xml')
 
 
-def error404(request):
+def error404(request, exception):
     language = Language.objects.get(pk=DEFAULT_LANGCODE)
     response = render(request, '404.html', {'language': language})
     response.status_code = 404

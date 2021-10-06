@@ -1,6 +1,6 @@
 import json
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .factories import ForeignRelationFactory, RelationFactory, LanguageFactory
 from .factories import PropertyTypeFactory, PropertyFactory, ConceptFactory

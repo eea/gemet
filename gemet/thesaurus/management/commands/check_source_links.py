@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 links[url].append(p.concept.code)
         self.stdout.write("Found {} unique links".format(len(links)))
 
-        for url, concepts in links.iteritems():
+        for url, concepts in links.items():
             concepts = ",".join(concepts)
             try:
                 r = requests.head(url, allow_redirects=True, timeout=10)

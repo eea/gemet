@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .factories import ForeignRelationFactory, GroupFactory, LanguageFactory
 from .factories import PropertyFactory, PropertyTypeFactory, RelationFactory

@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from django_q.tasks import async
+from django_q.tasks import async_task
 
 from gemet.thesaurus import EDIT_URL_NAMES, FOREIGN_RELATION_TYPES
 from gemet.thesaurus import PENDING, PUBLISHED, DELETED, DELETED_PENDING
@@ -527,7 +527,7 @@ class ReleaseVersionView(LoginRequiredMixin, HeaderMixin, VersionMixin,
 
         # Create exports. Skip for testing
         if 'test' not in sys.argv:
-            task = async(create_export_files)
+            task = async_task(create_export_files)
             models.AsyncTask.objects.create(
                 task=task,
                 user=self.request.user,

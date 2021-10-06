@@ -1,7 +1,7 @@
-from urllib import urlencode
-from xmlrpclib import Fault
+from urllib.parse import urlencode
+from xmlrpc.client import Fault
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from gemet.thesaurus.tests.factories import (
     TermFactory,
@@ -46,7 +46,7 @@ class TestOthers(GemetTest):
 
         self.assertEqual(
             self.app.get(url_jsonp).body,
-            'callback(' + self.app.get(url).body + ')',
+            'callback(' + str(self.app.get(url).body) + ')',
         )
 
     def test_inspire_theme_case(self):
@@ -87,4 +87,4 @@ class TestOthers(GemetTest):
             resp[0]['uri'], self.NS_ROOT + self.term.get_about_url()[1:]
         )
         self.assertEqual(resp[0]['thesaurus'], self.term.namespace.url)
-        self.assertFalse(['preferredLabel'] in resp[0].keys())
+        self.assertFalse(['preferredLabel'] in list(resp[0].keys()))

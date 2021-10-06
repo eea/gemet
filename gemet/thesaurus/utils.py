@@ -140,7 +140,7 @@ def get_version_choices():
 
 
 def exp_encrypt(exp):
-    return encodestring(compress(exp))
+    return encodestring(compress(exp.encode("ascii")))
 
 
 def exp_decrypt(exp):
@@ -156,7 +156,7 @@ def get_form_errors(errors):
 def get_new_code(namespace):
     # We cannot use an autoincrement integer field for `code` because some
     # existing production values (i.e. for Inspire Themes) are not integers.
-    return unicode(
+    return str(
         (
             Concept.objects.filter(namespace=namespace).annotate(
                 int_code=Cast('code', models.IntegerField())

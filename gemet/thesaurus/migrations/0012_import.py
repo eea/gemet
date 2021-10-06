@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('spreadsheet', models.FileField(help_text=b'Details about the supported file format can be found <a href="https://taskman.eionet.europa.eu/projects/infrastructure/wiki/Importing_new_concepts_in_GEMET">here</a>.', upload_to=b'imports/')),
+                ('spreadsheet', models.FileField(help_text=u'Details about the supported file format can be found <a href="https://taskman.eionet.europa.eu/projects/infrastructure/wiki/Importing_new_concepts_in_GEMET">here</a>.', upload_to=u'imports/')),
                 ('started_at', models.DateTimeField(null=True)),
                 ('failed_at', models.DateTimeField(null=True)),
                 ('succeeded_at', models.DateTimeField(null=True)),

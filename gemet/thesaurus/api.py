@@ -1,7 +1,6 @@
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
-from xmlrpclib import Fault
+from xmlrpc.client import Fault
+from xmlrpc.server import SimpleXMLRPCDispatcher
 from inspect import getargspec
-from exceptions import ValueError
 import json
 
 from django.http import HttpResponse
@@ -70,7 +69,7 @@ class ApiView(View):
         if defaults:
             required_args = arguments[:-len(defaults)]
             optional_args = filter(has_get_param, arguments[-len(defaults):])
-            arguments = required_args + optional_args
+            arguments = required_args + list(optional_args)
 
         kwargs = {arg: get_param(arg) for arg in arguments}
         d = json.dumps(function(**kwargs))
