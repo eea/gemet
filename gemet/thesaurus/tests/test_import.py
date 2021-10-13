@@ -63,7 +63,7 @@ class ConceptImportView(TestCase):
     def test_import_concepts_and_translations_together(self):
         num_concepts_before = Concept.objects.count()
         import_obj = Import.objects.create(
-            spreadsheet=File(open('gemet/thesaurus/tests/files/concepts.xlsx'))
+            spreadsheet=File(open('gemet/thesaurus/tests/files/concepts.xlsx', 'rb'))
         )
         url = '/import/{}/start/'.format(import_obj.pk)
         response = self.client.get(url, {"synchronous": True})
@@ -121,7 +121,7 @@ class ConceptImportView(TestCase):
         num_concepts_before = Concept.objects.count()
         # Import concepts in English first
         import_obj = Import.objects.create(
-            spreadsheet=File(open('gemet/thesaurus/tests/files/only_en.xlsx'))
+            spreadsheet=File(open('gemet/thesaurus/tests/files/only_en.xlsx', "rb"))
         )
         url = '/import/{}/start/'.format(import_obj.pk)
         response = self.client.get(url, {"synchronous": True})
@@ -135,7 +135,7 @@ class ConceptImportView(TestCase):
         # Import a separate spreadsheet only with translations
         import_obj = Import.objects.create(
             spreadsheet=File(
-                open('gemet/thesaurus/tests/files/only_translations.xlsx')
+                open('gemet/thesaurus/tests/files/only_translations.xlsx', 'rb')
             )
         )
         url = '/import/{}/start/'.format(import_obj.pk)

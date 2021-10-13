@@ -1,6 +1,6 @@
 import re
 import sys
-from base64 import encodestring, decodestring
+from base64 import encodebytes, decodebytes
 from zlib import compress, decompress
 from redis import ConnectionError
 
@@ -140,11 +140,11 @@ def get_version_choices():
 
 
 def exp_encrypt(exp):
-    return encodestring(compress(exp.encode("ascii")))
+    return encodebytes(compress(exp.encode("utf-8"))).decode("utf-8")
 
 
 def exp_decrypt(exp):
-    return decompress(decodestring(exp))
+    return decompress(decodebytes(exp.encode('utf-8'))).decode('utf-8')
 
 
 def get_form_errors(errors):

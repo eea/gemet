@@ -61,7 +61,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gemet.wsgi.application'
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -97,19 +97,18 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# LOCAL_INSTALLED_APPS = ()
-# LOCAL_MIDDLEWARE_CLASSES = ()
-# try:
-#     from local_settings import *
-#     print("DASdasd")
-#     INSTALLED_APPS += LOCAL_INSTALLED_APPS
-#     MIDDLEWARE_CLASSES += LOCAL_MIDDLEWARE_CLASSES
-# except ImportError:
-#     pass
+LOCAL_INSTALLED_APPS = ()
+LOCAL_MIDDLEWARE = ()
+try:
+    from .local_settings import *
+    INSTALLED_APPS += LOCAL_INSTALLED_APPS
+    MIDDLEWARE+= LOCAL_MIDDLEWARE
+except ImportError:
+    pass
 
-# if 'test' in sys.argv:
-#     try:
-#         from test_settings import *
-#         INSTALLED_APPS += LOCAL_INSTALLED_APPS
-#     except ImportError:
-#         pass
+if 'test' in sys.argv:
+    try:
+        from test_settings import *
+        INSTALLED_APPS += LOCAL_INSTALLED_APPS
+    except ImportError:
+        pass

@@ -13,7 +13,6 @@ The root of the project contains the following directories and files:
 
 * **apitests/** - a module used for testing the API
 * **docs/** - project documentation including: API documentation, architecture overview, database schema
-* **fabfile/** - deployment configuration
 * **LICENSE.txt** - project's license
 * **manage.py** - tool for running Django management commands
 * **README.rst** - step-by-step installation tutorial

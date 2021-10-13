@@ -46,7 +46,7 @@ class TestOthers(GemetTest):
 
         self.assertEqual(
             self.app.get(url_jsonp).body,
-            'callback(' + str(self.app.get(url).body) + ')',
+            bytes('callback(',  encoding='utf8') + self.app.get(url).body + bytes(')',  encoding='utf8'),
         )
 
     def test_inspire_theme_case(self):

@@ -280,12 +280,6 @@ Use ``requirements-dev.txt`` instead of ``requirements-dep.txt``::
 
     pip install -r requirements-dev.txt
 
-Configure deploy
-----------------
-
-* copy ``fabfile/env.ini.example`` to ``fabfile/env.ini``
-* configure staging and production settings
-* run ``fab staging deploy`` or ``fab production deploy``
 
 Running unit tests
 ------------------

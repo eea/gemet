@@ -15,7 +15,7 @@ LOCAL_INSTALLED_APPS = (
 #    'raven.contrib.django.raven_compat',
 )
 
-LOCAL_MIDDLEWARE_CLASSES = (
+LOCAL_MIDDLEWARE = (
 # The following middleware class is needed for debug_toolbar to work
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )

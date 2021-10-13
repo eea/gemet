@@ -28,11 +28,10 @@ class Version(models.Model):
     def under_work():
         return Version.objects.get(identifier="")
 
-    def __unicode__(self):
+    def __str__(self):
         if self.identifier == "":
             return 'Upcoming version'
         return self.identifier
-
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -76,9 +75,8 @@ class Namespace(models.Model):
     version = models.CharField(max_length=255)
     type_url = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.heading
-
 
 class Concept(VersionableModel, TimeTrackedModel):
     namespace = models.ForeignKey(Namespace, on_delete=models.CASCADE)
@@ -369,12 +367,11 @@ class Concept(VersionableModel, TimeTrackedModel):
                        kwargs={'concept_type': concept_type,
                                'concept_code': self.code})
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return u"{} ({})".format(self.label, self.code)
         except Exception:
             return self.code
-
 
 class Language(models.Model):
     code = models.CharField(max_length=10, primary_key=True)
@@ -388,9 +385,8 @@ class Language(models.Model):
     def rtl(self):
         return self.direction == '1'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
 
 class Property(VersionableModel):
     concept = models.ForeignKey(Concept, on_delete=models.CASCADE, related_name='properties')
@@ -406,10 +402,9 @@ class Property(VersionableModel):
     def property_type(self):
         return PropertyType.get_by_name(self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} - {1} ({2})".format(
             self.concept.code, self.name, self.language.code)
-
 
 class PropertyType(models.Model):
     name = models.CharField(max_length=40)
@@ -440,9 +435,8 @@ class PropertyType(models.Model):
         }
         return namespaces.get(self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
 
 class Relation(VersionableModel):
     source = models.ForeignKey(  # child
@@ -453,7 +447,7 @@ class Relation(VersionableModel):
     )
     property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return 's: {0}, t: {1}, rel: {2}'.format(
             self.source.code, self.target.code, self.property_type.name)
 
