@@ -64,7 +64,6 @@ class TestSearchView(GemetTest):
         RelationFactory(source=cp2, target=cp13, property_type=broader)
         RelationFactory(source=cp13, target=cp2, property_type=narrower)
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_no_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -78,7 +77,6 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content span').text(),
                          "Found 0 results for ' foo ' in English:")
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_multiple_results(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -90,11 +88,10 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.context['language'].code, 'en')
         self.assertEqual(len(resp.pyquery('.content ul > li')), 2)
         self.assertEqual(resp.pyquery('.content ul li:eq(0) a').text(),
-                         'something')
-        self.assertEqual(resp.pyquery('.content ul li:eq(1) a').text(),
                          'something else')
+        self.assertEqual(resp.pyquery('.content ul li:eq(1) a').text(),
+                         'something')
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_broader_context(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -107,14 +104,13 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content ul > li').size(), 2)
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(0) p').text(),
-            'other names: not; hiddenLabel broader context: broader 1'
+            'other names: altLabel broader context: broader 2.1; broader 2.2'
         )
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(1) p').text(),
-            'other names: altLabel broader context: broader 2.1; broader 2.2'
+            'other names: not; hiddenLabel broader context: broader 1'
         )
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_number_of_results_found(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -128,7 +124,6 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content span')[0].text,
                          "Found 2 results for '")
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_regex_search(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -142,11 +137,10 @@ class TestSearchView(GemetTest):
         self.assertEqual(resp.pyquery('.content li:eq(0) a').text(),
                          'another somefling')
         self.assertEqual(resp.pyquery('.content li:eq(1) a').text(),
-                         'something')
-        self.assertEqual(resp.pyquery('.content li:eq(2) a').text(),
                          'something else')
+        self.assertEqual(resp.pyquery('.content li:eq(2) a').text(),
+                         'something')
 
-    @unittest.skipUnless(connection.vendor == 'mysql', 'Test only for MySQL')
     def test_other_names(self):
         url = reverse('search', kwargs={'langcode': 'en'})
         resp = self.app.get(url)
@@ -159,9 +153,9 @@ class TestSearchView(GemetTest):
         self.assertEqual(len(resp.pyquery('.content li')), 2)
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(0) .py-other-names').text(),
-            'not; hiddenLabel'
+            'altLabel'
         )
         self.assertEqual(
             resp.pyquery('.content ul > li:eq(1) .py-other-names').text(),
-            'altLabel'
+            'not; hiddenLabel'
         )

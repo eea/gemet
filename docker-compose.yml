@@ -7,14 +7,12 @@ services:
       - ./docker/db.env
       - ./docker/app.env
     volumes:
-    - gemet-uat-eionet-exports:/var/local/gemet/exports
+    - gemet-exports:/var/local/gemet/exports
     command:
     - qcluster
+
   gemet:
-    build:
-      context: .
-    image: gemet:local
-    # image: eeacms/gemet:latest
+    image: eeacms/gemet:latest
     container_name: gemet.app
     ports:
     - 8888:8888
@@ -22,30 +20,28 @@ services:
       - ./docker/db.env
       - ./docker/app.env
     volumes:
-    - gemet-uat-eionet-static:/var/local/static
-    - gemet-uat-eionet-exports:/var/local/gemet/exports
-    - .:/var/local/gemet
-    entrypoint: ["/usr/bin/tail", "-f", "/dev/null"]
-  mysql:
-    image: mysql:5.7.35
-    container_name: gemet.db
-    ports:
-      - 3306:3306
-    env_file:
-      - ./docker/db.env
-    volumes:
-    - gemet-uat-eionet-data:/var/lib/mysql
-    command:
-    - --character-set-server=utf8mb4
-    - --collation-server=utf8mb4_unicode_ci
-    - --default-authentication-plugin=mysql_native_password
+    - gemet-static:/var/local/static
+    - gemet-exports:/var/local/gemet/exports
+
   redis:
     image: redis
     container_name: gemet.redis
+
+  db:
+    image: postgres:13
+    container_name: gemet.db
+    environment:
+      TZ: Europe/Copenhagen
+    env_file:
+    - ./docker/db.env
+    volumes:
+    - gemet-psqldata:/var/lib/postgresql/data
+    - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+
 volumes:
-  gemet-uat-eionet-exports:
+  gemet-exports:
     driver: local
-  gemet-uat-eionet-static:
+  gemet-static:
     driver: local
-  gemet-uat-eionet-data:
+  gemet-psqldata:
     driver: local

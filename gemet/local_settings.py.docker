@@ -41,15 +41,15 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': os.environ.get('MYSQL_ADDR', 'mysql'),
-        'NAME': os.environ.get('MYSQL_DATABASE', 'gemet'),
-        'USER': os.environ.get('MYSQL_USER', 'gemet'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'gemet'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ.get('POSTGRES_ADDR', 'db'),
+        'NAME': os.environ.get('POSTGRES_DATABASE', 'gemet'),
+        # 'NAME': 'gemet_try',
+        'USER': os.environ.get('POSTGRES_USER', 'gemet'),
+        'PASSWORD': os.environ.get('POSTGRES_USER_PASSWORD', 'gemet'),
     }
 }
 
-# sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
 
 LOGGING = {
     'version': 1,

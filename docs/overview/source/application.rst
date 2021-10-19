@@ -2,7 +2,7 @@ Application
 ===========
 
 This application has been developed using the Django web framework and it uses
-a MySQL database.
+a Postgres database.
 
 It runs in an isolated environment, using Virtualenv.
 

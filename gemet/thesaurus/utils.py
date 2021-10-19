@@ -34,7 +34,7 @@ def regex_search(query, language, heading):
         )
         .extra(
             select={
-                'value_coll': 'value COLLATE {0}'.format(language.charset),
+                'value_coll': 'value'.format(language.charset),
                 'name': 'value',
                 'id': 'concept_id',
             },
@@ -76,7 +76,6 @@ def api_search(query, language, status_values, search_mode, headings):
         CONTAIN_QUERY: ['%%' + query + '%%']
     }
     query_search = search_types.get(search_mode)
-
     return (
         Property.objects
         .filter(
@@ -86,12 +85,12 @@ def api_search(query, language, status_values, search_mode, headings):
             concept__namespace__heading__in=headings,
         )
         .extra(
-            where=['value like convert(_utf8%s using utf8)'],
+            where=['value like %s'],
             params=query_search,
         )
         .extra(
             select={
-                'value_coll': 'value COLLATE {0}'.format(language.charset),
+                'value_coll': 'value',
                 'name': 'value',
                 'id': 'concept_id',
             },
@@ -112,12 +111,12 @@ def insite_search(query, language, status_values, heading):
             concept__namespace__heading=heading,
         )
         .extra(
-            where=['value like convert(_utf8%s using utf8)'],
+            where=['value like %s'],
             params=['%%' + query + '%%'],
         )
         .extra(
             select={
-                'search_text': 'value COLLATE {0}'.format(language.charset),
+                'search_text': 'value',
                 'id': 'concept_id',
             },
             order_by=['search_text']

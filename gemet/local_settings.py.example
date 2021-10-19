@@ -38,18 +38,18 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gemet',
         'USER': 'gemet',
         'PASSWORD': 'gemet',
-        'HOST': 'mysql',
+        'HOST': 'db',
         'PORT': 3306,
         'OPTIONS': {
             'sql_mode': 'traditional',
         }
     },
     'import': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'import_db_name',
         'USER': 'username',
         'PASSWORD': 'password',
@@ -60,7 +60,6 @@ DATABASES = {
         }
     }
 }
-# sql_mode is set for DATABASES to stop a MySQL Strict Mode warning(mysql.W002)
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
 # FORCE_SCRIPT_NAME = '/gemet'

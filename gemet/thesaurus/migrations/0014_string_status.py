@@ -12,13 +12,13 @@ def drop_if_exists(apps, schema_editor):
         ]:
             with connection.cursor() as cursor:
                 status_column_exists = cursor.execute(
-                    "SHOW COLUMNS FROM thesaurus_{} LIKE 'status'".format(
+                    "SELECT column_name from information_schema.columns  where table_name = 'thesaurus_{}' and column_name LIKE 'status'".format(
                         model_name
                     ),
                 )
                 string_status_column_exists = cursor.execute(
                     (
-                        "SHOW COLUMNS FROM thesaurus_{} LIKE 'string_status'"
+                        "SELECT column_name from information_schema.columns where table_name = 'thesaurus_{}' and column_name LIKE 'string_status'"
                     ).format(
                         model_name
                     ),
