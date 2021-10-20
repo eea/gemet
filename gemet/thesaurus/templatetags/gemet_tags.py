@@ -23,8 +23,8 @@ def get_expand(concept_id, expand_list):
         expand_copy.append(str_id)
 
     return {
-        'param': exp_encrypt('-'.join(expand_copy)),
-        'status': expanded,
+        "param": exp_encrypt("-".join(expand_copy)),
+        "status": expanded,
     }
 
 
@@ -42,20 +42,22 @@ def get_children(concept_id, langcode, status_values, language_warning=False):
 def get_broader_context(concept_id, langcode, status_values):
     concept = Concept.objects.get(pk=concept_id)
     concept.status_list = status_values
-    broader_concepts = concept.get_siblings(langcode, 'broader')
-    return '; '.join([cp['name'] for cp in broader_concepts])
+    broader_concepts = concept.get_siblings(langcode, "broader")
+    return "; ".join([cp["name"] for cp in broader_concepts])
 
 
 @register.simple_tag
 def get_concept_names(concept, status_values, langcode):
-    name = Property.objects.get(name='prefLabel',
-                                status__in=status_values,
-                                concept_id=concept['id'],
-                                language=langcode).value
-    names = concept['search_text'].split(SEARCH_SEPARATOR)
+    name = Property.objects.get(
+        name="prefLabel",
+        status__in=status_values,
+        concept_id=concept["id"],
+        language=langcode,
+    ).value
+    names = concept["search_text"].split(SEARCH_SEPARATOR)
     return {
-        'concept_name': name,
-        'other_names': '; '.join([n for n in names if n and n != name])
+        "concept_name": name,
+        "other_names": "; ".join([n for n in names if n and n != name]),
     }
 
 
@@ -63,21 +65,26 @@ def get_concept_names(concept, status_values, langcode):
 def get_concept_name(concept_name, concept_id, status_values):
     if concept_name:
         return concept_name
-    prop = Concept.objects.get(pk=concept_id).properties.filter(
-        language__code=DEFAULT_LANGCODE,
-        name='prefLabel',
-        status__in=status_values,
-    ).first()
+    prop = (
+        Concept.objects.get(pk=concept_id)
+        .properties.filter(
+            language__code=DEFAULT_LANGCODE,
+            name="prefLabel",
+            status__in=status_values,
+        )
+        .first()
+    )
     if prop:
         language = Language.objects.get(code=DEFAULT_LANGCODE).name.lower()
-        return mark_safe(prop.value + ' <span>[' + language + ']</span>')
-    return ''
+        return mark_safe(prop.value + " <span>[" + language + "]</span>")
+    return ""
 
 
 @register.simple_tag
 def get_url(concept_code, langcode, namespace):
-    return reverse(EDIT_URL_NAMES[namespace],
-                   kwargs={'langcode': langcode, 'code': concept_code})
+    return reverse(
+        EDIT_URL_NAMES[namespace], kwargs={"langcode": langcode, "code": concept_code}
+    )
 
 
 @register.filter
@@ -87,7 +94,7 @@ def normalize(value, form):
 
 @register.filter
 def getattr(obj, args):
-    """ Try to get an attribute from an object.
+    """Try to get an attribute from an object.
 
     Example: {% if block|getattr:"editable,True" %}
 
@@ -95,7 +102,7 @@ def getattr(obj, args):
     to return False, pass an empty second argument:
     {% if block|getattr:"editable," %}
     """
-    (attribute, default) = args.split(',') if ',' in args else (args, None)
+    (attribute, default) = args.split(",") if "," in args else (args, None)
     try:
         return obj.__getattribute__(attribute)
     except AttributeError:
@@ -106,7 +113,7 @@ def getattr(obj, args):
 
 @register.simple_tag
 def active(request, name, **kwargs):
-    """ Return the string 'active' current request.path is same as the reverse
+    """Return the string 'active' current request.path is same as the reverse
     of name and its arguments
 
     Aruguments:
@@ -117,6 +124,6 @@ def active(request, name, **kwargs):
     path = reverse(name, kwargs=kwargs)
 
     if request.path == path:
-        return ' active '
+        return " active "
 
-    return ''
+    return ""

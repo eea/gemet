@@ -19,55 +19,55 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin.apps.SimpleAdminConfig',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_q',
-    'gemet.thesaurus',
+    "django.contrib.admin.apps.SimpleAdminConfig",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_q",
+    "gemet.thesaurus",
 )
 
 MIDDLEWARE = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 )
 
-ROOT_URLCONF = 'gemet.urls'
+ROOT_URLCONF = "gemet.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.request',
-                'django.contrib.messages.context_processors.messages',
-                'gemet.layout.layout_context_processor',
-                'gemet.thesaurus.context_processors.globals',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
+                "gemet.layout.layout_context_processor",
+                "gemet.thesaurus.context_processors.globals",
             ],
         },
     },
 ]
 
 
-WSGI_APPLICATION = 'gemet.wsgi.application'
+WSGI_APPLICATION = "gemet.wsgi.application"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = False
 
@@ -78,37 +78,39 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static/')
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "static/")
+STATIC_URL = "/static/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media/')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "..", "media/")
+MEDIA_URL = "/media/"
 
 
 # Exports / Downloads
 
-EXPORTS_ROOT = os.path.join(BASE_DIR, 'exports/')
+EXPORTS_ROOT = os.path.join(BASE_DIR, "exports/")
 
 # Authentication
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
 AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 LOCAL_INSTALLED_APPS = ()
 LOCAL_MIDDLEWARE = ()
 try:
     from .local_settings import *
+
     INSTALLED_APPS += LOCAL_INSTALLED_APPS
-    MIDDLEWARE+= LOCAL_MIDDLEWARE
+    MIDDLEWARE += LOCAL_MIDDLEWARE
 except ImportError:
     pass
 
-if 'test' in sys.argv:
+if "test" in sys.argv:
     try:
         from test_settings import *
+
         INSTALLED_APPS += LOCAL_INSTALLED_APPS
     except ImportError:
         pass

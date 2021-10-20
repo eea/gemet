@@ -12,18 +12,44 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('thesaurus', '0009_rename_change_note_field'),
+        ("thesaurus", "0009_rename_change_note_field"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AsyncTask',
+            name="AsyncTask",
             fields=[
-                ('task', models.CharField(max_length=32)),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('status', models.CharField(choices=[('queued', u'Queued'), ('finished', u'Finished'), ('failed', u'Failed'), ('started', u'Started')], default='queued', max_length=10)),
-                ('version', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='thesaurus.Version')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ("task", models.CharField(max_length=32)),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("queued", "Queued"),
+                            ("finished", "Finished"),
+                            ("failed", "Failed"),
+                            ("started", "Started"),
+                        ],
+                        default="queued",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "version",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="thesaurus.Version",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

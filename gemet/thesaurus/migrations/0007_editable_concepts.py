@@ -9,44 +9,40 @@ import gemet.thesaurus.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0006_add_version_without_identifier'),
+        ("thesaurus", "0006_add_version_without_identifier"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EditableGroup',
-            fields=[
-            ],
+            name="EditableGroup",
+            fields=[],
             options={
-                'proxy': True,
+                "proxy": True,
             },
-            bases=(gemet.thesaurus.models.EditMixin, 'thesaurus.group'),
+            bases=(gemet.thesaurus.models.EditMixin, "thesaurus.group"),
         ),
         migrations.CreateModel(
-            name='EditableSuperGroup',
-            fields=[
-            ],
+            name="EditableSuperGroup",
+            fields=[],
             options={
-                'proxy': True,
+                "proxy": True,
             },
-            bases=(gemet.thesaurus.models.EditMixin, 'thesaurus.supergroup'),
+            bases=(gemet.thesaurus.models.EditMixin, "thesaurus.supergroup"),
         ),
         migrations.CreateModel(
-            name='EditableTerm',
-            fields=[
-            ],
+            name="EditableTerm",
+            fields=[],
             options={
-                'proxy': True,
+                "proxy": True,
             },
-            bases=(gemet.thesaurus.models.EditMixin, 'thesaurus.term'),
+            bases=(gemet.thesaurus.models.EditMixin, "thesaurus.term"),
         ),
         migrations.CreateModel(
-            name='EditableTheme',
-            fields=[
-            ],
+            name="EditableTheme",
+            fields=[],
             options={
-                'proxy': True,
+                "proxy": True,
             },
-            bases=(gemet.thesaurus.models.EditMixin, 'thesaurus.theme'),
+            bases=(gemet.thesaurus.models.EditMixin, "thesaurus.theme"),
         ),
     ]

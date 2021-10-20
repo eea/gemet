@@ -15,58 +15,64 @@ from gemet.thesaurus.tests import GemetTest
 class TestGetAvailableLanguages(GemetTest):
     def setUp(self):
         self.english = LanguageFactory()
-        self.ENDPOINT_URI = 'http://www.eionet.europa.eu'
-        self.NS_ROOT = 'http://www.eionet.europa.eu/gemet/'
-        self.url = reverse('api_root', args=['getAvailableLanguages']) + '?'
+        self.ENDPOINT_URI = "http://www.eionet.europa.eu"
+        self.NS_ROOT = "http://www.eionet.europa.eu/gemet/"
+        self.url = reverse("api_root", args=["getAvailableLanguages"]) + "?"
         self.term = TermFactory()
-        self._initialize(self.term, 'prefLabel1', 'definition1', self.english)
+        self._initialize(self.term, "prefLabel1", "definition1", self.english)
 
     def _initialize(self, concept, preflabel, definition, lang):
         PropertyFactory(
-            concept=concept, name='prefLabel', value=preflabel, language=lang
+            concept=concept, name="prefLabel", value=preflabel, language=lang
         )
         PropertyFactory(
-            concept=concept, name='definition', value=definition, language=lang
+            concept=concept, name="definition", value=definition, language=lang
         )
 
     def _response_valid(self, status, content_type):
         self.assertEqual(200, status)
-        self.assertEqual(content_type, 'application/json')
+        self.assertEqual(content_type, "application/json")
 
     def test_invalid_concept_uri(self):
-        self.assertRaises(Fault, self.app.get, self.url + urlencode({
-            'concept_uri': 'BAD_CONCEPT_URI'
-        }))
+        self.assertRaises(
+            Fault,
+            self.app.get,
+            self.url + urlencode({"concept_uri": "BAD_CONCEPT_URI"}),
+        )
 
     def test_invalid_concept_code(self):
-        self.assertRaises(Fault, self.app.get, self.url + urlencode({
-            'concept_uri': self.NS_ROOT + 'concept/' + '9999'
-        }))
+        self.assertRaises(
+            Fault,
+            self.app.get,
+            self.url + urlencode({"concept_uri": self.NS_ROOT + "concept/" + "9999"}),
+        )
 
     def test_missing_concept_uri(self):
-        self.assertRaises(Fault, self.app.get, self.url )
+        self.assertRaises(Fault, self.app.get, self.url)
 
     def test_two_languages(self):
-        spanish = LanguageFactory(code='es', name='Spanish')
-        self._initialize(self.term, 'prefLabel2', 'definition2', spanish)
-        resp = self.app.get(self.url + urlencode({
-            'concept_uri': self.NS_ROOT + 'concept/' + self.term.code
-        }))
+        spanish = LanguageFactory(code="es", name="Spanish")
+        self._initialize(self.term, "prefLabel2", "definition2", spanish)
+        resp = self.app.get(
+            self.url
+            + urlencode({"concept_uri": self.NS_ROOT + "concept/" + self.term.code})
+        )
 
         self._response_valid(resp.status_int, resp.content_type)
         resp = resp.json
         self.assertEqual(2, len(resp))
-        self.assertEqual(resp, [u'en', u'es'])
+        self.assertEqual(resp, [u"en", u"es"])
 
     def test_two_namespaces(self):
-        theme = ThemeFactory(code='1')
-        spanish = LanguageFactory(code='es', name='Spanish')
-        self._initialize(theme, 'prefLabel2', 'definition2', spanish)
-        resp = self.app.get(self.url + urlencode({
-            'concept_uri': self.NS_ROOT + 'concept/' + self.term.code
-        }))
+        theme = ThemeFactory(code="1")
+        spanish = LanguageFactory(code="es", name="Spanish")
+        self._initialize(theme, "prefLabel2", "definition2", spanish)
+        resp = self.app.get(
+            self.url
+            + urlencode({"concept_uri": self.NS_ROOT + "concept/" + self.term.code})
+        )
 
         self._response_valid(resp.status_int, resp.content_type)
         resp = resp.json
         self.assertEqual(1, len(resp))
-        self.assertEqual(resp, [u'en'])
+        self.assertEqual(resp, [u"en"])

@@ -11,75 +11,85 @@ class PropertyInline(admin.TabularInline):
 
     def get_queryset(self, request):
         qs = super(PropertyInline, self).get_queryset(request)
-        return qs.filter(language_id='en')
+        return qs.filter(language_id="en")
 
 
 class SourceRelationInline(admin.TabularInline):
     model = models.Relation
     extra = 0
-    fk_name = 'source'
-    raw_id_fields = ('target',)
+    fk_name = "source"
+    raw_id_fields = ("target",)
 
 
 class TargetRelationInline(admin.TabularInline):
     model = models.Relation
     extra = 0
-    fk_name = 'target'
-    raw_id_fields = ('source',)
+    fk_name = "target"
+    raw_id_fields = ("source",)
 
 
 class ConceptAdmin(admin.ModelAdmin):
-    search_fields = ('code',)
-    list_display = ('code', 'label', 'namespace', 'status', 'version_added')
-    list_filter = ('version_added__identifier', 'status', 'namespace')
+    search_fields = ("code",)
+    list_display = ("code", "label", "namespace", "status", "version_added")
+    list_filter = ("version_added__identifier", "status", "namespace")
 
-    inlines = [
-        PropertyInline, SourceRelationInline, TargetRelationInline
-    ]
+    inlines = [PropertyInline, SourceRelationInline, TargetRelationInline]
 
 
 class RelationAdmin(admin.ModelAdmin):
-    search_fields = ('source__properties__value', 'target__properties__value')
+    search_fields = ("source__properties__value", "target__properties__value")
     list_display = (
-        'id', 'source_label', 'property_type', 'target_label', 'status',
-        'version_added_identifier'
+        "id",
+        "source_label",
+        "property_type",
+        "target_label",
+        "status",
+        "version_added_identifier",
     )
-    list_filter = ('version_added__identifier', 'status')
-    raw_id_fields = ('source', 'target')
+    list_filter = ("version_added__identifier", "status")
+    raw_id_fields = ("source", "target")
 
     def source_label(self, obj):
-        return mark_safe('<a href="{}">{}</a>'.format(
-            reverse("admin:thesaurus_concept_change", args=(obj.source.pk,)),
-            obj.source.label
-        ))
-    source_label.short_description = 'Source'
+        return mark_safe(
+            '<a href="{}">{}</a>'.format(
+                reverse("admin:thesaurus_concept_change", args=(obj.source.pk,)),
+                obj.source.label,
+            )
+        )
+
+    source_label.short_description = "Source"
 
     def target_label(self, obj):
-        return mark_safe('<a href="{}">{}</a>'.format(
-            reverse("admin:thesaurus_concept_change", args=(obj.target.pk,)),
-            obj.target.label
-        ))
-    target_label.short_description = 'Target'
+        return mark_safe(
+            '<a href="{}">{}</a>'.format(
+                reverse("admin:thesaurus_concept_change", args=(obj.target.pk,)),
+                obj.target.label,
+            )
+        )
+
+    target_label.short_description = "Target"
 
     def version_added_identifier(self, obj):
         return obj.version_added.identifier
-    version_added_identifier.short_description = 'Version'
+
+    version_added_identifier.short_description = "Version"
 
 
 class ForeignRelationAdmin(admin.ModelAdmin):
-    search_fields = ('code',)
-    list_display = ('property_type', 'concept', 'version_added', 'status',
-                    'label')
-    list_filter = ('version_added__identifier', 'status')
-    raw_id_fields = ('concept',)
+    search_fields = ("code",)
+    list_display = ("property_type", "concept", "version_added", "status", "label")
+    list_filter = ("version_added__identifier", "status")
+    raw_id_fields = ("concept",)
 
 
 class PropertyAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'value',)
-    list_display = ('name', 'value', 'concept', 'language', 'status',
-                    'version_added')
-    list_filter = ('version_added__identifier', 'status', 'language', 'name')
-    raw_id_fields = ('concept',)
+    search_fields = (
+        "name",
+        "value",
+    )
+    list_display = ("name", "value", "concept", "language", "status", "version_added")
+    list_filter = ("version_added__identifier", "status", "language", "name")
+    raw_id_fields = ("concept",)
 
 
 class GroupAdmin(ConceptAdmin):
@@ -99,42 +109,56 @@ class TermAdmin(ConceptAdmin):
 
 
 class AuthorizedUserAdmin(admin.ModelAdmin):
-    list_display = ('username', )
+    list_display = ("username",)
 
 
 class VersionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'identifier', 'publication_date', 'is_current')
+    list_display = ("id", "identifier", "publication_date", "is_current")
 
 
 class SourceAdmin(admin.ModelAdmin):
-    search_fields = ('abbr', 'url',)
-    list_display = ('abbr', 'title', 'url')
+    search_fields = (
+        "abbr",
+        "url",
+    )
+    list_display = ("abbr", "title", "url")
     list_filter = ()
 
 
 class AsyncTaskAdmin(admin.ModelAdmin):
     search_fields = ()
-    list_display = ('date', 'user', 'version', 'status')
+    list_display = ("date", "user", "version", "status")
     list_filter = ()
 
 
 class ImportAdmin(admin.ModelAdmin):
     search_fields = ()
     readonly_fields = (
-        'id', 'created_at', 'updated_at', 'started_at', 'failed_at',
-        'succeeded_at', 'logs'
+        "id",
+        "created_at",
+        "updated_at",
+        "started_at",
+        "failed_at",
+        "succeeded_at",
+        "logs",
     )
     list_display = (
-        'id', 'spreadsheet', 'admin_status', 'created_at', 'started_at',
-        'failed_at', 'succeeded_at', 'action'
+        "id",
+        "spreadsheet",
+        "admin_status",
+        "created_at",
+        "started_at",
+        "failed_at",
+        "succeeded_at",
+        "action",
     )
     list_filter = ()
 
     class Media:
-        js = ('thesaurus/js/start_import.js',)
+        js = ("thesaurus/js/start_import.js",)
 
     def action(self, obj):
-        if obj.status == 'In progress':
+        if obj.status == "In progress":
             return mark_safe('<span style="color: gray;">N/A</span>')
         return mark_safe(
             (
@@ -143,15 +167,15 @@ class ImportAdmin(admin.ModelAdmin):
             ).format(obj.pk)
         )
 
-    action.short_description = 'Action'
+    action.short_description = "Action"
 
     def admin_status(self, obj):
         status = obj.status
-        if status == 'In progress':
-            status += ' (refresh to update)'
+        if status == "In progress":
+            status += " (refresh to update)"
         return status
 
-    admin_status.short_description = 'Status'
+    admin_status.short_description = "Status"
 
 
 admin.site.register(models.Namespace)

@@ -7,9 +7,7 @@ from django.db import migrations, models, connection
 
 def drop_if_exists(apps, schema_editor):
     try:
-        for model_name in [
-            'concept', 'property', 'relation', 'foreignrelation'
-        ]:
+        for model_name in ["concept", "property", "relation", "foreignrelation"]:
             with connection.cursor() as cursor:
                 status_column_exists = cursor.execute(
                     "SELECT column_name from information_schema.columns  where table_name = 'thesaurus_{}' and column_name LIKE 'status'".format(
@@ -19,9 +17,7 @@ def drop_if_exists(apps, schema_editor):
                 string_status_column_exists = cursor.execute(
                     (
                         "SELECT column_name from information_schema.columns where table_name = 'thesaurus_{}' and column_name LIKE 'string_status'"
-                    ).format(
-                        model_name
-                    ),
+                    ).format(model_name),
                 )
                 if string_status_column_exists and status_column_exists:
                     # The database is in an inconsistent state for some reason,
@@ -30,11 +26,8 @@ def drop_if_exists(apps, schema_editor):
                     # exists.
                     cursor.execute(
                         (
-                            "ALTER TABLE thesaurus_{}"
-                            " DROP COLUMN string_status"
-                        ).format(
-                            model_name
-                        ),
+                            "ALTER TABLE thesaurus_{}" " DROP COLUMN string_status"
+                        ).format(model_name),
                     )
     except Exception:
         # During CI tests are run on SQLite and this is unecessary.
@@ -47,10 +40,10 @@ def int_to_str(apps, schema_editor):
     Relation = apps.get_model("thesaurus", "Relation")
     ForeignRelation = apps.get_model("thesaurus", "ForeignRelation")
     str_values = {
-        0: 'pending',
-        1: 'published',
-        2: 'deleted',
-        3: 'deleted_pending',
+        0: "pending",
+        1: "published",
+        2: "deleted",
+        3: "deleted_pending",
     }
     db_alias = schema_editor.connection.alias
     for Model in [Concept, Property, Relation, ForeignRelation]:
@@ -66,82 +59,110 @@ def str_to_int(apps, schema_editor):
     Relation = apps.get_model("thesaurus", "Relation")
     ForeignRelation = apps.get_model("thesaurus", "ForeignRelation")
     int_values = {
-        'pending': 0,
-        'published': 1,
-        'deleted': 2,
-        'deleted_pending': 3,
+        "pending": 0,
+        "published": 1,
+        "deleted": 2,
+        "deleted_pending": 3,
     }
     db_alias = schema_editor.connection.alias
     for Model in [Concept, Property, Relation, ForeignRelation]:
         for str_value, int_value in int_values.items():
-            Model.objects.using(db_alias).filter(
-                string_status=str_value
-            ).update(status=int_value)
+            Model.objects.using(db_alias).filter(string_status=str_value).update(
+                status=int_value
+            )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0013_timetrack_concept'),
+        ("thesaurus", "0013_timetrack_concept"),
     ]
 
     operations = [
         migrations.RunPython(drop_if_exists, migrations.RunPython.noop),
         migrations.AddField(
-            model_name='concept',
-            name='string_status',
-            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
+            model_name="concept",
+            name="string_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "pending"),
+                    ("published", "published"),
+                    ("deleted", "deleted"),
+                    ("deleted_pending", "deleted pending"),
+                ],
+                default="pending",
+                max_length=64,
+            ),
         ),
         migrations.AddField(
-            model_name='foreignrelation',
-            name='string_status',
-            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
+            model_name="foreignrelation",
+            name="string_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "pending"),
+                    ("published", "published"),
+                    ("deleted", "deleted"),
+                    ("deleted_pending", "deleted pending"),
+                ],
+                default="pending",
+                max_length=64,
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='string_status',
-            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
+            model_name="property",
+            name="string_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "pending"),
+                    ("published", "published"),
+                    ("deleted", "deleted"),
+                    ("deleted_pending", "deleted pending"),
+                ],
+                default="pending",
+                max_length=64,
+            ),
         ),
         migrations.AddField(
-            model_name='relation',
-            name='string_status',
-            field=models.CharField(choices=[(u'pending', u'pending'), (u'published', u'published'), (u'deleted', u'deleted'), (u'deleted_pending', u'deleted pending')], default=u'pending', max_length=64),
+            model_name="relation",
+            name="string_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "pending"),
+                    ("published", "published"),
+                    ("deleted", "deleted"),
+                    ("deleted_pending", "deleted pending"),
+                ],
+                default="pending",
+                max_length=64,
+            ),
         ),
         migrations.RunPython(int_to_str, str_to_int),
         migrations.RemoveField(
-            model_name='concept',
-            name='status',
+            model_name="concept",
+            name="status",
         ),
         migrations.RemoveField(
-            model_name='property',
-            name='status',
+            model_name="property",
+            name="status",
         ),
         migrations.RemoveField(
-            model_name='relation',
-            name='status',
+            model_name="relation",
+            name="status",
         ),
         migrations.RemoveField(
-            model_name='foreignrelation',
-            name='status',
+            model_name="foreignrelation",
+            name="status",
         ),
         migrations.RenameField(
-            model_name='concept',
-            old_name='string_status',
-            new_name='status'
+            model_name="concept", old_name="string_status", new_name="status"
         ),
         migrations.RenameField(
-            model_name='property',
-            old_name='string_status',
-            new_name='status'
+            model_name="property", old_name="string_status", new_name="status"
         ),
         migrations.RenameField(
-            model_name='relation',
-            old_name='string_status',
-            new_name='status'
+            model_name="relation", old_name="string_status", new_name="status"
         ),
         migrations.RenameField(
-            model_name='foreignrelation',
-            old_name='string_status',
-            new_name='status'
+            model_name="foreignrelation", old_name="string_status", new_name="status"
         ),
     ]

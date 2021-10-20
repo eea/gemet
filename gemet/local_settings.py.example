@@ -2,20 +2,20 @@
 # DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'This is an example. Replace with actual secret key.'
+SECRET_KEY = "This is an example. Replace with actual secret key."
 
 LOCAL_INSTALLED_APPS = (
-# Use debug_toolbar in development for detailed debug info.
-#    'debug_toolbar',
-# Use django_nose in development to run tests with coverage option
-#    'django_nose',
-# The raven app is needed in production in order for sentry to work
-#    'raven.contrib.django.raven_compat',
+    # Use debug_toolbar in development for detailed debug info.
+    #    'debug_toolbar',
+    # Use django_nose in development to run tests with coverage option
+    #    'django_nose',
+    # The raven app is needed in production in order for sentry to work
+    #    'raven.contrib.django.raven_compat',
 )
 
 LOCAL_MIDDLEWARE = (
-# The following middleware class is needed for debug_toolbar to work
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # The following middleware class is needed for debug_toolbar to work
+    #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 # This setting is needed for debug_toolbar
@@ -31,34 +31,34 @@ LOCAL_MIDDLEWARE = (
 # }
 
 # Remove the line below in development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gemet',
-        'USER': 'gemet',
-        'PASSWORD': 'gemet',
-        'HOST': 'db',
-        'PORT': 3306,
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-        }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "gemet",
+        "USER": "gemet",
+        "PASSWORD": "gemet",
+        "HOST": "db",
+        "PORT": 3306,
+        "OPTIONS": {
+            "sql_mode": "traditional",
+        },
     },
-    'import': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'import_db_name',
-        'USER': 'username',
-        'PASSWORD': 'password',
-        'HOST': 'db_host',
-        'PORT': 'db_port',
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-        }
-    }
+    "import": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "import_db_name",
+        "USER": "username",
+        "PASSWORD": "password",
+        "HOST": "db_host",
+        "PORT": "db_port",
+        "OPTIONS": {
+            "sql_mode": "traditional",
+        },
+    },
 }
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
@@ -75,8 +75,8 @@ DATABASES = {
 # Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
 # GEMET_RDFGZ_PATH = '/path/to/gemet.rdf.gz'
 
-ZOPE_URL = 'http://www.eionet.europa.eu'
-GEMET_URL = ZOPE_URL + '/gemet'
+ZOPE_URL = "http://www.eionet.europa.eu"
+GEMET_URL = ZOPE_URL + "/gemet"
 
 # Fill in the following settings to enable LDAP authentication
 AUTH_LDAP_SERVER_URI = ""
@@ -85,5 +85,5 @@ AUTH_LDAP_START_TLS = True
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
-    "email": "mail"
+    "email": "mail",
 }

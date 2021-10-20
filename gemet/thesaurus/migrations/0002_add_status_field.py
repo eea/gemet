@@ -29,37 +29,37 @@ def reverse_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0001_initial'),
+        ("thesaurus", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='concept',
-            name='status',
+            model_name="concept",
+            name="status",
             field=models.PositiveSmallIntegerField(
-                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
-                default=0),
+                choices=[(0, "pending"), (1, "published"), (2, "deleted")], default=0
+            ),
         ),
         migrations.AddField(
-            model_name='foreignrelation',
-            name='status',
+            model_name="foreignrelation",
+            name="status",
             field=models.PositiveSmallIntegerField(
-                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
-                default=0),
+                choices=[(0, "pending"), (1, "published"), (2, "deleted")], default=0
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='status',
+            model_name="property",
+            name="status",
             field=models.PositiveSmallIntegerField(
-                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
-                default=0),
+                choices=[(0, "pending"), (1, "published"), (2, "deleted")], default=0
+            ),
         ),
         migrations.AddField(
-            model_name='relation',
-            name='status',
+            model_name="relation",
+            name="status",
             field=models.PositiveSmallIntegerField(
-                choices=[(0, u'pending'), (1, u'published'), (2, u'deleted')],
-                default=0),
+                choices=[(0, "pending"), (1, "published"), (2, "deleted")], default=0
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

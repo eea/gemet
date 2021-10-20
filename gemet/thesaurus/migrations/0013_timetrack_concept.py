@@ -27,30 +27,30 @@ def reverse_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0012_import'),
+        ("thesaurus", "0012_import"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='concept',
-            name='created_at',
+            model_name="concept",
+            name="created_at",
             field=models.DateTimeField(
                 auto_now_add=True, default=django.utils.timezone.now
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='concept',
-            name='updated_at',
+            model_name="concept",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.RunPython(forwards_func, reverse_func),
         migrations.RemoveField(
-            model_name='concept',
-            name='date_changed',
+            model_name="concept",
+            name="date_changed",
         ),
         migrations.RemoveField(
-            model_name='concept',
-            name='date_entered',
+            model_name="concept",
+            name="date_entered",
         ),
     ]

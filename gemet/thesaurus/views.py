@@ -21,8 +21,19 @@ from django.conf import settings
 from django_q.tasks import result
 
 from gemet.thesaurus.models import (
-    Concept, DefinitionSource, Group, Language, InspireTheme, Namespace,
-    Property, SuperGroup, Term, Theme, Version, AsyncTask, Import
+    Concept,
+    DefinitionSource,
+    Group,
+    Language,
+    InspireTheme,
+    Namespace,
+    Property,
+    SuperGroup,
+    Term,
+    Theme,
+    Version,
+    AsyncTask,
+    Import,
 )
 from gemet.thesaurus.collation_charts import unicode_character_map
 from gemet.thesaurus.forms import SearchForm, ExportForm
@@ -33,7 +44,6 @@ from gemet.thesaurus import PUBLISHED, PENDING, DELETED_PENDING
 
 
 class HeaderMixin(object):
-
     def dispatch(self, request, *args, **kwargs):
         self.langcode = kwargs.pop("langcode", DEFAULT_LANGCODE)
         self.language = get_object_or_404(Language, pk=self.langcode)
@@ -41,20 +51,17 @@ class HeaderMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(HeaderMixin, self).get_context_data(**kwargs)
-        context.update({
-            'language': self.language,
-            'languages': (
-                Language.objects
-                .values('code', 'name')
-                .order_by('name')
-            ),
-            'search_form': SearchForm(),
-        })
+        context.update(
+            {
+                "language": self.language,
+                "languages": (Language.objects.values("code", "name").order_by("name")),
+                "search_form": SearchForm(),
+            }
+        )
         return context
 
 
 class VersionMixin(object):
-
     def __init__(self, *args, **kwargs):
         super(VersionMixin, self).__init__(*args, **kwargs)
         self.current_version = Version.objects.get(is_current=True)
@@ -62,17 +69,18 @@ class VersionMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(VersionMixin, self).get_context_data(**kwargs)
-        context.update({
-            'version': self.current_version,
-        })
+        context.update(
+            {
+                "version": self.current_version,
+            }
+        )
         return context
 
 
 class StatusMixin(object):
-
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            if getattr(self, 'edit_view', False):
+            if getattr(self, "edit_view", False):
                 status = [PUBLISHED, PENDING, DELETED_PENDING]
             else:
                 status = [PUBLISHED, PENDING]
@@ -91,43 +99,39 @@ class ChangesView(HeaderMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChangesView, self).get_context_data(**kwargs)
-        versions = (
-            Version.objects
-            .exclude(identifier="")
-            .order_by('-publication_date')
+        versions = Version.objects.exclude(identifier="").order_by("-publication_date")
+        context.update(
+            {
+                "versions": versions,
+            }
         )
-        context.update({
-            'versions': versions,
-        })
         return context
 
 
 class WebServicesView(HeaderMixin, TemplateView):
-    template_name = 'webservices.html'
+    template_name = "webservices.html"
 
 
 class ThemesView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
     template_name = "themes.html"
     model_cls = Theme
-    page_title = 'Themes'
-    theme_url = 'theme_concepts'
-    view_name = 'themes'
-    css_class = 'split-20'
+    page_title = "Themes"
+    theme_url = "theme_concepts"
+    view_name = "themes"
+    css_class = "split-20"
 
     def _get_themes_by_langcode(self, langcode):
         return (
             Property.objects.filter(
-                name='prefLabel',
+                name="prefLabel",
                 language__code=langcode,
                 status__in=self.status_values,
-                concept_id__in=self.model_cls.objects
-                    .filter(status__in=self.status_values)
-                    .values_list('id', flat=True)
+                concept_id__in=self.model_cls.objects.filter(
+                    status__in=self.status_values
+                ).values_list("id", flat=True),
             )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
-                   order_by=['name'])
-            .values('id', 'name', 'concept__code')
+            .extra(select={"name": "value", "id": "concept_id"}, order_by=["name"])
+            .values("id", "name", "concept__code")
         )
 
     def get_context_data(self, **kwargs):
@@ -136,41 +140,44 @@ class ThemesView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
         themes = self._get_themes_by_langcode(self.langcode)
         if not themes:
             themes = self._get_themes_by_langcode(DEFAULT_LANGCODE)
-            context.update({'language_warning': True})
+            context.update({"language_warning": True})
 
-        context.update({
-            'themes': themes,
-            'page_title': self.page_title,
-            'theme_url': self.theme_url,
-            'view_name': self.view_name,
-            'namespace': self.model_cls.NAMESPACE,
-            'css_class': self.css_class,
-        })
+        context.update(
+            {
+                "themes": themes,
+                "page_title": self.page_title,
+                "theme_url": self.theme_url,
+                "view_name": self.view_name,
+                "namespace": self.model_cls.NAMESPACE,
+                "css_class": self.css_class,
+            }
+        )
         return context
 
 
 class InspireThemesView(ThemesView):
     model_cls = InspireTheme
-    page_title = 'INSPIRE Spatial Data Themes'
-    theme_url = 'inspire_theme'
-    view_name = 'inspire_themes'
-    css_class = 'split-17'
+    page_title = "INSPIRE Spatial Data Themes"
+    theme_url = "inspire_theme"
+    view_name = "inspire_themes"
+    css_class = "split-17"
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemesView, self).get_context_data(**kwargs)
         languages = (
-            Language.objects
-            .filter(
-                properties__concept__namespace__heading=InspireTheme.NAMESPACE)
+            Language.objects.filter(
+                properties__concept__namespace__heading=InspireTheme.NAMESPACE
+            )
             .distinct()
-            .values('code', 'name')
-            .order_by('name')
+            .values("code", "name")
+            .order_by("name")
         )
-        context.update({
-            'languages': languages,
-        })
-        context['version'] = Namespace.objects.get(
-            heading=context['namespace']).version
+        context.update(
+            {
+                "languages": languages,
+            }
+        )
+        context["version"] = Namespace.objects.get(heading=context["namespace"]).version
         return context
 
 
@@ -180,17 +187,15 @@ class GroupsView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
     def _get_supergroups_by_langcode(self, langcode):
         return (
             Property.objects.filter(
-                name='prefLabel',
+                name="prefLabel",
                 language__code=langcode,
                 status__in=self.status_values,
-                concept_id__in=SuperGroup.objects
-                .filter(status__in=self.status_values)
-                .values_list('id', flat=True)
+                concept_id__in=SuperGroup.objects.filter(
+                    status__in=self.status_values
+                ).values_list("id", flat=True),
             )
-            .extra(select={'name': 'value',
-                           'id': 'concept_id'},
-                   order_by=['name'])
-            .values('id', 'name')
+            .extra(select={"name": "value", "id": "concept_id"}, order_by=["name"])
+            .values("id", "name")
         )
 
     def get_context_data(self, **kwargs):
@@ -200,13 +205,15 @@ class GroupsView(HeaderMixin, VersionMixin, StatusMixin, TemplateView):
 
         if not supergroups:
             supergroups = self._get_supergroups_by_langcode(DEFAULT_LANGCODE)
-            context.update({'language_warning': True})
+            context.update({"language_warning": True})
 
-        context.update({
-            "supergroups": supergroups,
-            "namespace": Group.NAMESPACE,
-            "status_values": self.status_values,
-        })
+        context.update(
+            {
+                "supergroups": supergroups,
+                "namespace": Group.NAMESPACE,
+                "status_values": self.status_values,
+            }
+        )
         return context
 
 
@@ -237,32 +244,32 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
     template_name = "search.html"
     form_class = SearchForm
 
-    query = ''
+    query = ""
     concepts = []
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        context.update({
-            "query": self.query,
-            "concepts": self.concepts,
-            "namespace": Term.NAMESPACE,
-            "status_values": self.status_values,
-        })
-        if 'paginator' in kwargs:
-            context.update({
-                "paginator": kwargs['paginator']
-            })
+        context.update(
+            {
+                "query": self.query,
+                "concepts": self.concepts,
+                "namespace": Term.NAMESPACE,
+                "status_values": self.status_values,
+            }
+        )
+        if "paginator" in kwargs:
+            context.update({"paginator": kwargs["paginator"]})
         return context
 
     def form_valid(self, form, **kwargs):
-        self.query = form.cleaned_data['query']
+        self.query = form.cleaned_data["query"]
         self.concepts = search_queryset(
             self.query,
             self.language,
             status_values=self.status_values,
         )
-        page = self.request.GET.get('page', 1)
+        page = self.request.GET.get("page", 1)
         paginator = Paginator(self.concepts, NR_CONCEPTS_ON_PAGE)
         self.concepts = paginator.page(page)
 
@@ -271,24 +278,24 @@ class SearchView(HeaderMixin, VersionMixin, StatusMixin, FormView):
         total_pages = len(self.concepts.paginator.page_range)
         distance_number = DISTANCE_NUMBER
 
-        context.update({
-            'visible_pages': range(
-                max(1, page_number - distance_number),
-                min(page_number + distance_number + 1, total_pages + 1)
-            )
-        })
+        context.update(
+            {
+                "visible_pages": range(
+                    max(1, page_number - distance_number),
+                    min(page_number + distance_number + 1, total_pages + 1),
+                )
+            }
+        )
         return self.render_to_response(context)
 
     def get_form_kwargs(self):
         kwargs = super(SearchView, self).get_form_kwargs()
-        if self.request.method in ('GET', ):
-            kwargs.update({
-                'data': self.request.GET
-            })
+        if self.request.method in ("GET",):
+            kwargs.update({"data": self.request.GET})
         return kwargs
 
     def get(self, request, *args, **kwargs):
-        if 'query' in request.GET:
+        if "query" in request.GET:
             form = self.get_form()
             if form.is_valid():
                 return self.form_valid(form, **kwargs)
@@ -302,54 +309,55 @@ class RelationsView(HeaderMixin, StatusMixin, VersionMixin, TemplateView):
     template_name = "relations.html"
 
     def get_context_data(self, **kwargs):
-        code = self.kwargs.get('group_code')
+        code = self.kwargs.get("group_code")
         group = get_object_or_404(Group, code=code)
         group.status_list = self.status_values
-        group.set_attributes(self.langcode, ['prefLabel'])
+        group.set_attributes(self.langcode, ["prefLabel"])
 
-        expand_text = self.request.GET.get('exp')
+        expand_text = self.request.GET.get("exp")
         if expand_text:
-            expand_text = expand_text.replace(' ', '+')
+            expand_text = expand_text.replace(" ", "+")
             expand_text = exp_decrypt(expand_text)
-            expand_list = expand_text.split('-')
+            expand_list = expand_text.split("-")
         else:
             expand_list = []
 
         context = super(RelationsView, self).get_context_data(**kwargs)
 
         if not group.name:
-            group.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
-            context.update({'language_warning': True})
+            group.set_attributes(DEFAULT_LANGCODE, ["prefLabel"])
+            context.update({"language_warning": True})
 
-        context.update({
-            'group_id': group.id,
-            'group': group,
-            'expand_list': expand_list,
-            'get_params': self.request.GET.urlencode(),
-            'namespace': Term.NAMESPACE,
-        })
+        context.update(
+            {
+                "group_id": group.id,
+                "group": group,
+                "expand_list": expand_list,
+                "get_params": self.request.GET.urlencode(),
+                "namespace": Term.NAMESPACE,
+            }
+        )
         return context
 
 
 class ConceptView(HeaderMixin, VersionMixin, StatusMixin, DetailView):
-    attributes = ['prefLabel', 'definition', 'scopeNote']
+    attributes = ["prefLabel", "definition", "scopeNote"]
     override_languages = True
 
     def get_object(self):
-        code = self.kwargs.get('code')
+        code = self.kwargs.get("code")
         concept = get_object_or_404(self.model, code=code)
         concept.status_list = self.status_values
         concept.set_siblings(self.langcode)
         concept.set_parents(self.langcode)
         concept.translations = (
-            Property.objects
-            .filter(
-                name='prefLabel',
+            Property.objects.filter(
+                name="prefLabel",
                 concept=concept,
                 status__in=self.status_values,
             )
-            .order_by('language__name')
-            .values('language__name', 'value')
+            .order_by("language__name")
+            .values("language__name", "value")
         )
         concept.set_attributes(self.langcode, self.attributes)
         concept.url = concept.namespace.url + code
@@ -361,18 +369,20 @@ class ConceptView(HeaderMixin, VersionMixin, StatusMixin, DetailView):
 
         if self.override_languages:
             languages = (
-                Language.objects
-                .filter(properties__concept=self.object,
-                        properties__value__isnull=False)
-                .values('code', 'name')
-                .order_by('name')
+                Language.objects.filter(
+                    properties__concept=self.object, properties__value__isnull=False
+                )
+                .values("code", "name")
+                .order_by("name")
                 .distinct()
             )
-            context['languages'] = languages
-        context.update({
-            "namespace": self.model.NAMESPACE,
-            "status_values": self.status_values,
-        })
+            context["languages"] = languages
+        context.update(
+            {
+                "namespace": self.model.NAMESPACE,
+                "status_values": self.status_values,
+            }
+        )
         return context
 
     def get(self, request, *args, **kwargs):
@@ -386,14 +396,14 @@ class ConceptView(HeaderMixin, VersionMixin, StatusMixin, DetailView):
 class TermView(ConceptView):
     template_name = "concept.html"
     model = Term
-    concept_type = 'concept'
-    context_object_name = 'concept'
-    attributes = ['prefLabel', 'definition', 'scopeNote', 'source', 'altLabel']
+    concept_type = "concept"
+    context_object_name = "concept"
+    attributes = ["prefLabel", "definition", "scopeNote", "source", "altLabel"]
 
     def get_object(self):
         term = super(TermView, self).get_object()
-        if not hasattr(term, 'definition'):
-            term.set_attributes(DEFAULT_LANGCODE, ['definition'])
+        if not hasattr(term, "definition"):
+            term.set_attributes(DEFAULT_LANGCODE, ["definition"])
             term.default_definition = True
         return term
 
@@ -401,39 +411,38 @@ class TermView(ConceptView):
 class InspireThemeView(ConceptView):
     template_name = "inspire_theme.html"
     model = InspireTheme
-    concept_type = 'inspire_theme'
-    context_object_name = 'inspire_theme'
+    concept_type = "inspire_theme"
+    context_object_name = "inspire_theme"
 
     def get_context_data(self, **kwargs):
         context = super(InspireThemeView, self).get_context_data(**kwargs)
-        context['version'] = Namespace.objects.get(
-            heading=context['namespace']).version
+        context["version"] = Namespace.objects.get(heading=context["namespace"]).version
         return context
 
 
 class ThemeView(ConceptView):
     template_name = "theme.html"
     model = Theme
-    concept_type = 'theme'
-    context_object_name = 'theme'
+    concept_type = "theme"
+    context_object_name = "theme"
 
 
 class GroupView(ConceptView):
     template_name = "group.html"
     model = Group
-    concept_type = 'group'
-    context_object_name = 'group'
+    concept_type = "group"
+    context_object_name = "group"
 
 
 class SuperGroupView(ConceptView):
     template_name = "supergroup.html"
     model = SuperGroup
-    concept_type = 'supergroup'
-    context_object_name = 'supergroup'
+    concept_type = "supergroup"
+    context_object_name = "supergroup"
 
 
 class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
-    context_object_name = 'concepts'
+    context_object_name = "concepts"
     paginate_by = NR_CONCEPTS_ON_PAGE
 
     def _filter_by_letter(self, properties, letters, startswith=True):
@@ -442,43 +451,37 @@ class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
             query = q_queries.pop()
             for q_query in q_queries:
                 query |= q_query
-            properties = properties.filter(query) if startswith \
-                else properties.exclude(query)
+            properties = (
+                properties.filter(query) if startswith else properties.exclude(query)
+            )
 
         return properties
 
     def _get_letters_presence(self, all_letters, theme=None):
-        letters = (
-            Property.objects
-            .filter(
-                name='prefLabel',
-                language_id=self.langcode,
-                status__in=self.status_values,
-            )
-            .extra(
-                select={'first_letter': 'SUBSTR(value, 1, 1)'}
-            )
-        )
+        letters = Property.objects.filter(
+            name="prefLabel",
+            language_id=self.langcode,
+            status__in=self.status_values,
+        ).extra(select={"first_letter": "SUBSTR(value, 1, 1)"})
         if theme:
             letters = letters.filter(
                 concept_id__in=(
-                    theme.source_relations
-                    .filter(
+                    theme.source_relations.filter(
                         status__in=self.status_values,
-                        property_type__name='themeMember',
-                    )
-                    .values_list('target_id', flat=True)
+                        property_type__name="themeMember",
+                    ).values_list("target_id", flat=True)
                 )
             )
-        unique_letters = set(letters.values_list('first_letter', flat=True))
+        unique_letters = set(letters.values_list("first_letter", flat=True))
 
         return [
             (letter_group[0], bool(set(letter_group) & unique_letters))
-            for letter_group in all_letters]
+            for letter_group in all_letters
+        ]
 
     def get_queryset(self, theme=None):
         try:
-            self.letter_index = int(self.request.GET.get('letter', '0'))
+            self.letter_index = int(self.request.GET.get("letter", "0"))
         except ValueError:
             raise Http404
 
@@ -497,24 +500,25 @@ class PaginatorView(HeaderMixin, VersionMixin, StatusMixin, ListView):
 
         self.letters = self._get_letters_presence(all_letters, theme)
 
-        all_concepts = self._filter_by_letter(self.concepts, letters,
-                                              startswith)
+        all_concepts = self._filter_by_letter(self.concepts, letters, startswith)
         return all_concepts
 
     def get_context_data(self, **kwargs):
         context = super(PaginatorView, self).get_context_data(**kwargs)
-        page_number = context['page_obj'].number
-        total_pages = len(context['page_obj'].paginator.page_range)
+        page_number = context["page_obj"].number
+        total_pages = len(context["page_obj"].paginator.page_range)
         distance_number = DISTANCE_NUMBER
 
-        context.update({
-            'letters': self.letters,
-            'letter': self.letter_index,
-            'visible_pages': range(
-                max(1, page_number - distance_number),
-                min(page_number + distance_number + 1, total_pages + 1)
-            ),
-        })
+        context.update(
+            {
+                "letters": self.letters,
+                "letter": self.letter_index,
+                "visible_pages": range(
+                    max(1, page_number - distance_number),
+                    min(page_number + distance_number + 1, total_pages + 1),
+                ),
+            }
+        )
 
         return context
 
@@ -525,23 +529,25 @@ class ThemeConceptsView(PaginatorView):
     model = Theme
 
     def get_queryset(self):
-        code = self.kwargs.get('theme_code')
+        code = self.kwargs.get("theme_code")
         self.theme = get_object_or_404(self.model, code=code)
         self.theme.status_list = self.status_values
-        self.theme.set_attributes(self.langcode, ['prefLabel'])
+        self.theme.set_attributes(self.langcode, ["prefLabel"])
         self.concepts = self.theme.get_children(self.langcode)
         return super(ThemeConceptsView, self).get_queryset(self.theme)
 
     def get_context_data(self, **kwargs):
         context = super(ThemeConceptsView, self).get_context_data(**kwargs)
-        if not hasattr(self.theme, 'prefLabel'):
-            self.theme.set_attributes(DEFAULT_LANGCODE, ['prefLabel'])
-            context.update({'language_warning': True})
-        context.update({
-            'theme': self.theme,
-            'namespace': Term.NAMESPACE,
-            'status_values': self.status_values,
-        })
+        if not hasattr(self.theme, "prefLabel"):
+            self.theme.set_attributes(DEFAULT_LANGCODE, ["prefLabel"])
+            context.update({"language_warning": True})
+        context.update(
+            {
+                "theme": self.theme,
+                "namespace": Term.NAMESPACE,
+                "status_values": self.status_values,
+            }
+        )
 
         return context
 
@@ -552,14 +558,13 @@ class AlphabeticView(PaginatorView):
     def get_queryset(self):
         self.concepts = (
             Property.objects.filter(
-                name='prefLabel',
+                name="prefLabel",
                 language__code=self.langcode,
                 status__in=self.status_values,
-                concept__namespace__heading='Concepts',
+                concept__namespace__heading="Concepts",
             )
-            .extra(select={'name': 'value', 'id': 'concept_id'},
-                   order_by=['name'])
-            .values('id', 'concept__code', 'name')
+            .extra(select={"name": "value", "id": "concept_id"}, order_by=["name"])
+            .values("id", "concept__code", "name")
         )
         return super(AlphabeticView, self).get_queryset()
 
@@ -571,27 +576,28 @@ class AlphabeticView(PaginatorView):
 
 
 class ConceptSourcesView(StatusMixin, View):
-    template_name = 'edit/bits/concept_definition_sources.html'
+    template_name = "edit/bits/concept_definition_sources.html"
 
     def get(self, request, langcode, id):
         concept = Concept.objects.get(id=id)
         concept.status_list = self.status_values
-        concept.set_attributes(langcode, ['source'])
+        concept.set_attributes(langcode, ["source"])
         definition_sources = []
-        if hasattr(concept, 'source'):
-            sources = concept.source.split(' / ')
+        if hasattr(concept, "source"):
+            sources = concept.source.split(" / ")
             for source in sources:
-                source = source.encode('utf-8').strip()
+                source = source.encode("utf-8").strip()
                 found = DefinitionSource.objects.filter(abbr=source)
                 if found.first():
                     definition_sources.append((source, True))
                 else:
-                    source = re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>',
-                                    source)
+                    source = re.sub(r"(https?://\S+)", r'<a href="\1">\1</a>', source)
                     definition_sources.append((source, False))
 
-        context = {'definition_sources': definition_sources,
-                   'language': Language.objects.get(code=langcode)}
+        context = {
+            "definition_sources": definition_sources,
+            "language": Language.objects.get(code=langcode),
+        }
 
         return render(request, self.template_name, context)
 
@@ -599,23 +605,20 @@ class ConceptSourcesView(StatusMixin, View):
 class XMLTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        return self.render_to_response(context,
-                                       content_type="text/xml; charset=utf-8")
+        return self.render_to_response(context, content_type="text/xml; charset=utf-8")
 
 
 class GemetSchemaView(XMLTemplateView):
-    template_name = 'gemet_schema.rdf'
+    template_name = "gemet_schema.rdf"
 
 
 class GemetVoidView(XMLTemplateView):
-    template_name = 'void.rdf'
+    template_name = "void.rdf"
 
     def get_context_data(self, **kwargs):
         context = super(GemetVoidView, self).get_context_data(**kwargs)
 
-        context.update({
-            'languages': Language.objects.values('code').order_by('code')
-        })
+        context.update({"languages": Language.objects.values("code").order_by("code")})
         return context
 
 
@@ -631,7 +634,7 @@ class DownloadView(HeaderMixin, FormView):
         context = super(DownloadView, self).get_context_data(**kwargs)
         show_message = False
 
-        if self.version == 'latest':
+        if self.version == "latest":
             current_version = Version.objects.get(is_current=True)
             try:
                 async_task = current_version.asynctask
@@ -646,52 +649,57 @@ class DownloadView(HeaderMixin, FormView):
 
         is_latest = False
         current_version = Version.objects.get(is_current=True)
-        if self.version == 'latest' or self.version == current_version.identifier:
+        if self.version == "latest" or self.version == current_version.identifier:
             is_latest = True
 
-        if self.version == 'latest':
+        if self.version == "latest":
             version_identifier = current_version.identifier
         else:
             version_identifier = self.version
 
-        context.update({
-            'version': self.version,
-            'show_message': show_message,
-            'is_latest': is_latest,
-            'version_identifier': version_identifier
-        })
+        context.update(
+            {
+                "version": self.version,
+                "show_message": show_message,
+                "is_latest": is_latest,
+                "version_identifier": version_identifier,
+            }
+        )
         return context
 
     def get_initial(self):
-        return {'language_names': self.language}
+        return {"language_names": self.language}
 
     def get_success_url(self):
-        return reverse('export_lang', kwargs={
-            'version': self.version,
-            'langcode': self.langcode,
-            'filename': self.filename,
-        })
+        return reverse(
+            "export_lang",
+            kwargs={
+                "version": self.version,
+                "langcode": self.langcode,
+                "filename": self.filename,
+            },
+        )
 
     def form_valid(self, form):
-        if self.request.POST['type'] == 'definitions':
-            self.filename = 'gemet-definitions.rdf'
-        elif self.request.POST['type'] == 'groups':
-            self.filename = 'gemet-groups.rdf'
+        if self.request.POST["type"] == "definitions":
+            self.filename = "gemet-definitions.rdf"
+        elif self.request.POST["type"] == "groups":
+            self.filename = "gemet-groups.rdf"
         else:
             raise Http404
-        self.langcode = form.cleaned_data['language_names'].code
+        self.langcode = form.cleaned_data["language_names"].code
         return super(DownloadView, self).form_valid(form=form)
 
 
-def download_gemet_rdf(request, version='latest'):
+def download_gemet_rdf(request, version="latest"):
     try:
-        path = os.path.join(settings.EXPORTS_ROOT, version, 'gemet.rdf.gz')
+        path = os.path.join(settings.EXPORTS_ROOT, version, "gemet.rdf.gz")
         f = open(path, "rb")
     except (IOError, AttributeError):
         raise Http404
 
-    response = StreamingHttpResponse(f, content_type='application/x-gzip')
-    response['Content-Disposition'] = 'attachment; filename="gemet.rdf.gz"'
+    response = StreamingHttpResponse(f, content_type="application/x-gzip")
+    response["Content-Disposition"] = 'attachment; filename="gemet.rdf.gz"'
     return response
 
 
@@ -701,10 +709,10 @@ def get_export_resp(filename, filepath):
     except (IOError, AttributeError):
         raise Http404
 
-    extention = filename.split('.')[-1]
+    extention = filename.split(".")[-1]
     content_types = {
-        'rdf': 'application/rdf+xml',
-        'html': "text/html; charset=utf-8",
+        "rdf": "application/rdf+xml",
+        "html": "text/html; charset=utf-8",
     }
     content_type = content_types[extention]
 
@@ -724,66 +732,77 @@ def download_export_file(request, version, filename):
 
 def redirect_old_urls(request, view_name):
     old_new_views = {
-        'index_html': 'themes',
-        'rdf': 'download',
-        'relations': 'groups',
-        'gemet-definitions.rdf': 'export_lang',
-        'gemet-groups.rdf': 'export_lang',
-        'gemet-backbone.html': 'export',
-        'gemet-backbone.rdf': 'export',
-        'gemet-definitions.html': 'export',
-        'gemet-groups.html': 'export',
-        'gemet-relations.html': 'export',
-        'gemetThesaurus': 'download',
-        'gemetThesaurus.rdf': 'export',
-        'gemet-skoscore.rdf': 'export',
+        "index_html": "themes",
+        "rdf": "download",
+        "relations": "groups",
+        "gemet-definitions.rdf": "export_lang",
+        "gemet-groups.rdf": "export_lang",
+        "gemet-backbone.html": "export",
+        "gemet-backbone.rdf": "export",
+        "gemet-definitions.html": "export",
+        "gemet-groups.html": "export",
+        "gemet-relations.html": "export",
+        "gemetThesaurus": "download",
+        "gemetThesaurus.rdf": "export",
+        "gemet-skoscore.rdf": "export",
     }
     view = old_new_views.get(view_name, view_name)
     kwargs = {}
 
-    if view in ['export', 'export_lang']:
-        kwargs.update({'filename': view_name})
-        kwargs.update({'version': 'latest'})
+    if view in ["export", "export_lang"]:
+        kwargs.update({"filename": view_name})
+        kwargs.update({"version": "latest"})
 
-    if view == 'download':
-        kwargs.update({'version': 'latest'})
+    if view == "download":
+        kwargs.update({"version": "latest"})
 
-    if view in ['themes', 'groups', 'download', 'export_lang',
-                'alphabets', 'about', 'definition_sources',
-                'changes', 'alphabetic', 'search', 'theme_concepts',
-                'inspire_themes', 'webservices']:
-        langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
-        kwargs.update({'langcode': langcode})
+    if view in [
+        "themes",
+        "groups",
+        "download",
+        "export_lang",
+        "alphabets",
+        "about",
+        "definition_sources",
+        "changes",
+        "alphabetic",
+        "search",
+        "theme_concepts",
+        "inspire_themes",
+        "webservices",
+    ]:
+        langcode = request.GET.get("langcode", DEFAULT_LANGCODE)
+        kwargs.update({"langcode": langcode})
 
-    if view_name == 'theme_concepts':
-        theme_code = request.GET.get('th')
+    if view_name == "theme_concepts":
+        theme_code = request.GET.get("th")
         if theme_code:
-            kwargs.update({'theme_code': theme_code})
+            kwargs.update({"theme_code": theme_code})
         else:
-            view = 'themes'
+            view = "themes"
 
     url = reverse(view, kwargs=kwargs)
-    letter = request.GET.get('letter')
+    letter = request.GET.get("letter")
     if letter:
-        url = '?'.join((url, urlencode({'letter': letter})))
+        url = "?".join((url, urlencode({"letter": letter})))
 
     return redirect(url, permanent=True)
 
 
 def old_concept_redirect(request):
-    langcode = request.GET.get('langcode', DEFAULT_LANGCODE)
-    ns = request.GET.get('ns')
-    cp = request.GET.get('cp')
+    langcode = request.GET.get("langcode", DEFAULT_LANGCODE)
+    ns = request.GET.get("ns")
+    cp = request.GET.get("cp")
     get_object_or_404(Concept, namespace__id=ns, code=cp)
     return redirect(NS_ID_VIEW_MAPPING.get(ns), langcode=langcode, code=cp)
 
 
 def concept_redirect(request, concept_type, concept_code):
     concept_types = {
-        'concept': Term,
-        'theme': Theme,
-        'group': Group,
-        'supergroup': SuperGroup
+        "concept": Term,
+        "theme": Theme,
+        "group": Group,
+        "supergroup": SuperGroup,
     }
     model = concept_types.get(concept_type)
     if model:
@@ -797,18 +816,17 @@ def concept_redirect(request, concept_type, concept_code):
 
 def render_rdf(request, obj):
     context = {
-        'concept': obj,
-        'base_url': settings.GEMET_URL,
-        'relations': obj.source_relations.order_by('property_type__uri'),
-        'properties': obj.properties.order_by('name')
+        "concept": obj,
+        "base_url": settings.GEMET_URL,
+        "relations": obj.source_relations.order_by("property_type__uri"),
+        "properties": obj.properties.order_by("name"),
     }
-    return render(request, 'concept.rdf', context,
-                  content_type='application/rdf+xml')
+    return render(request, "concept.rdf", context, content_type="application/rdf+xml")
 
 
 def error404(request, exception):
     language = Language.objects.get(pk=DEFAULT_LANGCODE)
-    response = render(request, '404.html', {'language': language})
+    response = render(request, "404.html", {"language": language})
     response.status_code = 404
     return response
 
@@ -816,12 +834,12 @@ def error404(request, exception):
 def error500(request):
     error_type, error_message, _ = sys.exc_info()
     if error_type == Fault:
-        context = {'error_message': error_message.faultString}
-        template = '400.html'
+        context = {"error_message": error_message.faultString}
+        template = "400.html"
         status_code = 400
     else:
         context = {}
-        template = '500.html'
+        template = "500.html"
         status_code = 500
     return render(request, template, context, status=status_code)
 

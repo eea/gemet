@@ -8,24 +8,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0011_auto_20170628_1931'),
+        ("thesaurus", "0011_auto_20170628_1931"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Import',
+            name="Import",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('spreadsheet', models.FileField(help_text=u'Details about the supported file format can be found <a href="https://taskman.eionet.europa.eu/projects/infrastructure/wiki/Importing_new_concepts_in_GEMET">here</a>.', upload_to=u'imports/')),
-                ('started_at', models.DateTimeField(null=True)),
-                ('failed_at', models.DateTimeField(null=True)),
-                ('succeeded_at', models.DateTimeField(null=True)),
-                ('logs', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "spreadsheet",
+                    models.FileField(
+                        help_text='Details about the supported file format can be found <a href="https://taskman.eionet.europa.eu/projects/infrastructure/wiki/Importing_new_concepts_in_GEMET">here</a>.',
+                        upload_to="imports/",
+                    ),
+                ),
+                ("started_at", models.DateTimeField(null=True)),
+                ("failed_at", models.DateTimeField(null=True)),
+                ("succeeded_at", models.DateTimeField(null=True)),
+                ("logs", models.TextField(blank=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

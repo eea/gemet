@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
@@ -17,51 +15,54 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
-        parser.add_argument('excel_file')
+        parser.add_argument("excel_file")
 
     def handle(self, *args, **options):
         try:
-            wb = load_workbook(filename=options['excel_file'])
+            wb = load_workbook(filename=options["excel_file"])
         except InvalidFileException:
-            raise CommandError('The file provided is not a valid excel file.')
+            raise CommandError("The file provided is not a valid excel file.")
         except IOError:
-            raise CommandError('The file provided does not exist.')
+            raise CommandError("The file provided does not exist.")
 
         sheet = wb["sources"]
-        self.language = models.Language.objects.get(code='en')
+        self.language = models.Language.objects.get(code="en")
         self.version = models.Version.under_work()
-        self.namespace = models.Namespace.objects.get(heading='Concepts')
+        self.namespace = models.Namespace.objects.get(heading="Concepts")
         self.concepts = {}
 
         self._cleanup_sources(sheet)
 
     def _cleanup_sources(self, sheet):
         for row in sheet.iter_rows(max_col=3, min_row=2):
-            _descr, status, abbr = [(cell.value or '').strip() for cell in row]
+            _descr, status, abbr = [(cell.value or "").strip() for cell in row]
 
             if not _descr:
                 # Skip empty rows
                 continue
-            to_keep = status in ['OK', 'no link']
-            self.stdout.write('Processing source {} (keep: {})'.format(abbr, to_keep))
+            to_keep = status in ["OK", "no link"]
+            self.stdout.write("Processing source {} (keep: {})".format(abbr, to_keep))
 
-            source = models.DefinitionSource.objects.filter(
-                abbr=abbr
-            ).first()
+            source = models.DefinitionSource.objects.filter(abbr=abbr).first()
             if not source:
                 # Source not found ???
-                self.stderr.write(u'Skipping source not found: {}'.format(abbr))
-            source_descr = ', '.join(filter(None, (
-                source.url,
-                source.author,
-                source.title,
-                source.publication,
-                source.place,
-                source.year,
-            )))
+                self.stderr.write(u"Skipping source not found: {}".format(abbr))
+            source_descr = ", ".join(
+                filter(
+                    None,
+                    (
+                        source.url,
+                        source.author,
+                        source.title,
+                        source.publication,
+                        source.place,
+                        source.year,
+                    ),
+                )
+            )
 
             props = models.Property.objects.filter(
-                name='source',
+                name="source",
                 status__in=[PENDING, PUBLISHED],
                 value__iexact=abbr,
                 language=self.language,
@@ -80,9 +81,8 @@ class Command(BaseCommand):
                             version_added=self.version,
                             concept_id=p.concept_id,
                             language=self.language,
-                            name='source',
+                            name="source",
                             value=source_descr,
                         )
             # Now delete it from definition_sources
-            #source.delete()
-
+            # source.delete()

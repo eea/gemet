@@ -30,29 +30,37 @@ def reverse_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0004_version'),
+        ("thesaurus", "0004_version"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='concept',
-            name='version_added',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='thesaurus.Version'),
+            model_name="concept",
+            name="version_added",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="thesaurus.Version"
+            ),
         ),
         migrations.AddField(
-            model_name='foreignrelation',
-            name='version_added',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='thesaurus.Version'),
+            model_name="foreignrelation",
+            name="version_added",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="thesaurus.Version"
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='version_added',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='thesaurus.Version'),
+            model_name="property",
+            name="version_added",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="thesaurus.Version"
+            ),
         ),
         migrations.AddField(
-            model_name='relation',
-            name='version_added',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='thesaurus.Version'),
+            model_name="relation",
+            name="version_added",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="thesaurus.Version"
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

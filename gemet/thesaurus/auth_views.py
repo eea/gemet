@@ -7,16 +7,17 @@ from gemet.thesaurus.forms import LDAPAuthenticationForm
 
 # For some reason, FORCE_SCRIPT_NAME doesn't get prepended by default
 # TODO Investigate this problem
-ROOT_URL = (settings.FORCE_SCRIPT_NAME or '') + '/'
+ROOT_URL = (settings.FORCE_SCRIPT_NAME or "") + "/"
 
 
 class LoginView(FormView):
     """
     Provides the ability to login as a user with a username and password
     """
+
     success_url = ROOT_URL
     form_class = LDAPAuthenticationForm
-    template_name = 'login.html'
+    template_name = "login.html"
 
     def form_valid(self, form):
         login(self.request, form.get_user())
@@ -33,6 +34,7 @@ class LogoutView(RedirectView):
     """
     Provides users the ability to logout
     """
+
     url = ROOT_URL
 
     def get(self, request, *args, **kwargs):

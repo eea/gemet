@@ -4,20 +4,20 @@ import os
 DEBUG = False
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 LOCAL_INSTALLED_APPS = (
-# Use debug_toolbar in development for detailed debug info.
-#    'debug_toolbar',
-# Use django_nose in development to run tests with coverage option
-#    'django_nose',
-# The raven app is needed in production in order for sentry to work
-#    'raven.contrib.django.raven_compat',
+    # Use debug_toolbar in development for detailed debug info.
+    #    'debug_toolbar',
+    # Use django_nose in development to run tests with coverage option
+    #    'django_nose',
+    # The raven app is needed in production in order for sentry to work
+    #    'raven.contrib.django.raven_compat',
 )
 
 LOCAL_MIDDLEWARE = (
-# The following middleware class is needed for debug_toolbar to work
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # The following middleware class is needed for debug_toolbar to work
+    #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 # This setting is needed for debug_toolbar
@@ -33,44 +33,44 @@ LOCAL_MIDDLEWARE = (
 # }
 
 # Remove the line below in development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ.get('POSTGRES_ADDR', 'db'),
-        'NAME': os.environ.get('POSTGRES_DATABASE', 'gemet'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": os.environ.get("POSTGRES_ADDR", "db"),
+        "NAME": os.environ.get("POSTGRES_DATABASE", "gemet"),
         # 'NAME': 'gemet_try',
-        'USER': os.environ.get('POSTGRES_USER', 'gemet'),
-        'PASSWORD': os.environ.get('POSTGRES_USER_PASSWORD', 'gemet'),
+        "USER": os.environ.get("POSTGRES_USER", "gemet"),
+        "PASSWORD": os.environ.get("POSTGRES_USER_PASSWORD", "gemet"),
     }
 }
 
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
         },
     },
 }
 
 # Use the line below in order to run django in a subpath (http://example.com/gemet)
-if 'FORCE_SCRIPT_NAME' in os.environ:
-    FORCE_SCRIPT_NAME = os.environ['FORCE_SCRIPT_NAME']
-    STATIC_URL = FORCE_SCRIPT_NAME + '/static/'
+if "FORCE_SCRIPT_NAME" in os.environ:
+    FORCE_SCRIPT_NAME = os.environ["FORCE_SCRIPT_NAME"]
+    STATIC_URL = FORCE_SCRIPT_NAME + "/static/"
 
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -82,26 +82,30 @@ if 'FORCE_SCRIPT_NAME' in os.environ:
 # ]
 #
 # Fill in the gemet.rdf.gz file path in order to serve it at http://example.com/gemet/gemet.rdf.gz
-if 'GEMET_RDFGZ_PATH' in os.environ:
-    GEMET_RDFGZ_PATH = os.environ['GEMET_RDFGZ_PATH']
+if "GEMET_RDFGZ_PATH" in os.environ:
+    GEMET_RDFGZ_PATH = os.environ["GEMET_RDFGZ_PATH"]
 
-GEMET_URL = 'http://www.eionet.europa.eu/gemet'
+GEMET_URL = "http://www.eionet.europa.eu/gemet"
 
 # Fill in the following settings to enable LDAP authentication
 AUTH_LDAP_SERVER_URI = os.environ.get(
-    'AUTH_LDAP_SERVER_URI', 'ldap://ldap3.eionet.europa.eu')
+    "AUTH_LDAP_SERVER_URI", "ldap://ldap3.eionet.europa.eu"
+)
 AUTH_LDAP_USER_DN_TEMPLATE = os.environ.get(
-    'AUTH_LDAP_USER_DN_TEMPLATE', 'uid=%(user)s,ou=Users,o=EIONET,l=Europe')
-AUTH_LDAP_START_TLS = True if os.environ.get('AUTH_LDAP_START_TLS', '') in ('True', 'true') else False
+    "AUTH_LDAP_USER_DN_TEMPLATE", "uid=%(user)s,ou=Users,o=EIONET,l=Europe"
+)
+AUTH_LDAP_START_TLS = (
+    True if os.environ.get("AUTH_LDAP_START_TLS", "") in ("True", "true") else False
+)
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
-    "email": "mail"
+    "email": "mail",
 }
 
 Q_CLUSTER = {
-    'redis': {
-        'host': os.environ.get('REDIS_HOST', 'redis'),
-        'port': int(os.environ.get('REDIS_PORT', 6379)),
+    "redis": {
+        "host": os.environ.get("REDIS_HOST", "redis"),
+        "port": int(os.environ.get("REDIS_PORT", 6379)),
     }
 }

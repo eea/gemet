@@ -3,28 +3,40 @@ from django.contrib.auth.models import User
 
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import (
-    Concept, DefinitionSource, ForeignRelation, Group, InspireTheme, Language,
-    Namespace, Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
+    Concept,
+    DefinitionSource,
+    ForeignRelation,
+    Group,
+    InspireTheme,
+    Language,
+    Namespace,
+    Property,
+    PropertyType,
+    Relation,
+    SuperGroup,
+    Term,
+    Theme,
+    Version,
 )
 
 
 class VersionFactory(factory.django.DjangoModelFactory):
-    identifier = '1.0.0'
+    identifier = "1.0.0"
     is_current = True
 
     class Meta:
         model = Version
-        django_get_or_create = ('identifier',)
+        django_get_or_create = ("identifier",)
 
 
 class LanguageFactory(factory.django.DjangoModelFactory):
-    code = 'en'
-    name = 'English'
-    charset = 'utf8_general_ci'
+    code = "en"
+    name = "English"
+    charset = "utf8_general_ci"
 
     class Meta:
         model = Language
-        django_get_or_create = ('code',)
+        django_get_or_create = ("code",)
 
 
 class ConceptFactory(factory.django.DjangoModelFactory):
@@ -34,15 +46,16 @@ class ConceptFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Concept
 
+
 class NamespaceFactory(factory.django.DjangoModelFactory):
-    heading = 'Concepts'
-    
+    heading = "Concepts"
+
     class Meta:
         model = Namespace
 
 
 class TermFactory(factory.django.DjangoModelFactory):
-    code = '1'
+    code = "1"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
@@ -51,7 +64,7 @@ class TermFactory(factory.django.DjangoModelFactory):
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
-    code = '2'
+    code = "2"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
@@ -60,7 +73,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
 
 
 class SuperGroupFactory(factory.django.DjangoModelFactory):
-    code = '3'
+    code = "3"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
@@ -69,7 +82,7 @@ class SuperGroupFactory(factory.django.DjangoModelFactory):
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):
-    code = '4'
+    code = "4"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
@@ -81,8 +94,8 @@ class PropertyFactory(factory.django.DjangoModelFactory):
     concept = factory.SubFactory(TermFactory)
     language = factory.SubFactory(LanguageFactory)
     version_added = factory.SubFactory(VersionFactory)
-    name = 'prefLabel'
-    value = 'administration'
+    name = "prefLabel"
+    value = "administration"
     status = PUBLISHED
 
     class Meta:
@@ -122,8 +135,9 @@ class DataSourceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = DefinitionSource
 
+
 class InspireThemeFactory(factory.django.DjangoModelFactory):
-    code = 'ad'
+    code = "ad"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
@@ -133,8 +147,8 @@ class InspireThemeFactory(factory.django.DjangoModelFactory):
 
 class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Sequence(lambda n: "john%03d" % n)
-    password = '123456'
+    password = "123456"
 
     class Meta:
         model = User
-        django_get_or_create = ('username',)
+        django_get_or_create = ("username",)

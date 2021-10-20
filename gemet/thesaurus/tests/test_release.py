@@ -18,40 +18,35 @@ class TestReleaseNewVersion(GemetTest):
         factories.PropertyFactory(status=DELETED_PENDING)
         factories.VersionFactory()
         factories.VersionFactory(identifier="", is_current=False)
-        self.request_kwargs = {'langcode': self.language.code}
+        self.request_kwargs = {"langcode": self.language.code}
         user = factories.UserFactory()
         self.user = user.username
 
     def test_form_versions(self):
-        url = reverse('release_version', kwargs=self.request_kwargs)
+        url = reverse("release_version", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         minor_release, middle_release, major_release = (
-            version[0] for version in
-            response.context['form'].fields['version'].choices
+            version[0] for version in response.context["form"].fields["version"].choices
         )
-        self.assertEqual('1.0.1', minor_release)
-        self.assertEqual('1.1.0', middle_release)
-        self.assertEqual('2.0.0', major_release)
+        self.assertEqual("1.0.1", minor_release)
+        self.assertEqual("1.1.0", middle_release)
+        self.assertEqual("2.0.0", major_release)
 
     def test_release_new_version(self):
-        url = reverse('release_version', kwargs=self.request_kwargs)
+        url = reverse("release_version", kwargs=self.request_kwargs)
         response = self.app.post(
-            url, user=self.user,
-            params={'version': '1.1.0', 'change_note': 'test'})
+            url, user=self.user, params={"version": "1.1.0", "change_note": "test"}
+        )
         self.assertEqual(302, response.status_code)
-        new_published_version = Version.objects.get(identifier='1.1.0')
-        old_version = Version.objects.get(identifier='1.0.0')
+        new_published_version = Version.objects.get(identifier="1.1.0")
+        old_version = Version.objects.get(identifier="1.0.0")
         self.assertTrue(new_published_version.is_current)
-        self.assertEqual('test', new_published_version.change_note)
+        self.assertEqual("test", new_published_version.change_note)
         self.assertFalse(old_version.is_current)
         self.assertEqual(0, Property.objects.filter(status=PENDING).count())
-        self.assertEqual(0, Property.objects.filter(
-            status=DELETED_PENDING
-        ).count())
+        self.assertEqual(0, Property.objects.filter(status=DELETED_PENDING).count())
         self.assertEqual(0, Concept.objects.filter(status=PENDING).count())
-        self.assertEqual(0, Concept.objects.filter(
-            status=DELETED_PENDING
-        ).count())
+        self.assertEqual(0, Concept.objects.filter(status=DELETED_PENDING).count())
 
 
 class TestReleaseNewVersionOtherConcepts(GemetTest):
@@ -69,32 +64,29 @@ class TestReleaseNewVersionOtherConcepts(GemetTest):
         factories.RelationFactory(status=DELETED_PENDING)
         factories.ForeignRelationFactory(status=PENDING)
         factories.ForeignRelationFactory(status=DELETED_PENDING)
-        self.request_kwargs = {'langcode': self.language.code}
+        self.request_kwargs = {"langcode": self.language.code}
         user = factories.UserFactory()
         self.user = user.username
 
     def test_release_new_version(self):
-        url = reverse('release_version', kwargs=self.request_kwargs)
+        url = reverse("release_version", kwargs=self.request_kwargs)
         response = self.app.post(
-            url, user=self.user,
-            params={'version': '1.1.0', 'change_note': 'test'})
+            url, user=self.user, params={"version": "1.1.0", "change_note": "test"}
+        )
         self.assertEqual(302, response.status_code)
-        new_published_version = Version.objects.get(identifier='1.1.0')
-        old_version = Version.objects.get(identifier='1.0.0')
-        self.assertEqual('test', new_published_version.change_note)
+        new_published_version = Version.objects.get(identifier="1.1.0")
+        old_version = Version.objects.get(identifier="1.0.0")
+        self.assertEqual("test", new_published_version.change_note)
         self.assertTrue(new_published_version.is_current)
         self.assertFalse(old_version.is_current)
         self.assertEqual(0, Group.objects.filter(status=PENDING).count())
         self.assertEqual(0, SuperGroup.objects.filter(status=PENDING).count())
         self.assertEqual(0, Theme.objects.filter(status=PENDING).count())
-        self.assertEqual(0, Relation.objects.filter(
-            status=DELETED_PENDING
-        ).count())
-        self.assertEqual(0, Relation.objects.filter(
-            status=PENDING).count())
-        self.assertEqual(0, ForeignRelation.objects.filter(
-            status=DELETED_PENDING
-        ).count())
+        self.assertEqual(0, Relation.objects.filter(status=DELETED_PENDING).count())
+        self.assertEqual(0, Relation.objects.filter(status=PENDING).count())
+        self.assertEqual(
+            0, ForeignRelation.objects.filter(status=DELETED_PENDING).count()
+        )
 
 
 class TestChangesLog(GemetTest):
@@ -104,34 +96,31 @@ class TestChangesLog(GemetTest):
     def setUp(self):
         self.language = factories.LanguageFactory()
         self.new_concept = factories.TermFactory(status=PENDING)
-        factories.PropertyFactory(status=PENDING,
-                                  concept=self.new_concept)
+        factories.PropertyFactory(status=PENDING, concept=self.new_concept)
         self.new_group = factories.GroupFactory(status=PENDING)
-        factories.PropertyFactory(status=PENDING,
-                                  concept=self.new_group)
+        factories.PropertyFactory(status=PENDING, concept=self.new_group)
         self.new_theme = factories.ThemeFactory(status=PENDING)
-        factories.PropertyFactory(status=PENDING,
-                                  concept=self.new_theme)
+        factories.PropertyFactory(status=PENDING, concept=self.new_theme)
         self.old_concept = factories.TermFactory(status=PUBLISHED)
         self.old_group = factories.TermFactory(status=PUBLISHED)
-        self.group_name = factories.PropertyFactory(status=PENDING,
-                                                    concept=self.old_group)
-        self.new_property = factories.PropertyFactory(status=PENDING,
-                                                      concept=self.old_concept)
+        self.group_name = factories.PropertyFactory(
+            status=PENDING, concept=self.old_group
+        )
+        self.new_property = factories.PropertyFactory(
+            status=PENDING, concept=self.old_concept
+        )
         factories.VersionFactory()
         factories.VersionFactory(identifier="", is_current=False)
-        self.request_kwargs = {'langcode': self.language.code}
+        self.request_kwargs = {"langcode": self.language.code}
         user = factories.UserFactory()
         self.user = user.username
 
     def testChangesLog(self):
-        url = reverse('change_log', kwargs=self.request_kwargs)
+        url = reverse("change_log", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
         self.assertTrue(200, response.status_code)
-        self.assertEqual(3,
-                         response.pyquery('.modified-container p').size())
-        self.assertEqual(2,
-                         response.pyquery('.modified-list.concept li').size())
+        self.assertEqual(3, response.pyquery(".modified-container p").size())
+        self.assertEqual(2, response.pyquery(".modified-list.concept li").size())
 
 
 class TestConceptChanges(GemetTest):
@@ -143,60 +132,60 @@ class TestConceptChanges(GemetTest):
         self.concept = factories.TermFactory(status=PUBLISHED)
         self.group = factories.GroupFactory(status=PUBLISHED)
         self.concept_old_name = factories.PropertyFactory(
-            status=DELETED_PENDING,
-            concept=self.concept,
-            value='old_name'
+            status=DELETED_PENDING, concept=self.concept, value="old_name"
         )
         self.concept_new_name = factories.PropertyFactory(
-            status=PENDING,
-            concept=self.concept,
-            value='new_name'
+            status=PENDING, concept=self.concept, value="new_name"
         )
         self.group_definition = factories.PropertyFactory(
             status=PENDING,
             concept=self.group,
-            name='definition',
-            value='new definition'
+            name="definition",
+            value="new definition",
         )
         self.new_relation = factories.RelationFactory(
-            status=PENDING,
-            source=self.concept,
-            target=self.group
+            status=PENDING, source=self.concept, target=self.group
         )
 
         factories.VersionFactory()
         factories.VersionFactory(identifier="", is_current=False)
-        self.request_kwargs = {'langcode': self.language.code,
-                               'id': self.concept.id}
+        self.request_kwargs = {"langcode": self.language.code, "id": self.concept.id}
         user = factories.UserFactory()
         self.user = user.username
 
     def test_concept_changes(self):
-        url = reverse('concept_changes', kwargs=self.request_kwargs)
+        url = reverse("concept_changes", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
-        self.assertEqual(self.concept_old_name.value,
-                         response.pyquery('.prefLabel.status-deleted_pending').html())
-        self.assertEqual(self.concept_new_name.value,
-                         response.pyquery('.prefLabel.status-pending').html())
+        self.assertEqual(
+            self.concept_old_name.value,
+            response.pyquery(".prefLabel.status-deleted_pending").html(),
+        )
+        self.assertEqual(
+            self.concept_new_name.value,
+            response.pyquery(".prefLabel.status-pending").html(),
+        )
 
     def test_new_relation_no_name(self):
-        url = reverse('concept_changes', kwargs=self.request_kwargs)
+        url = reverse("concept_changes", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
-        self.assertEqual('Name not available in the current language',
-                         response.pyquery('.status-pending')[1].text)
+        self.assertEqual(
+            "Name not available in the current language",
+            response.pyquery(".status-pending")[1].text,
+        )
 
     def test_new_relation_name_available(self):
-        group_name = factories.PropertyFactory(status=PENDING,
-                                               concept=self.group,
-                                               value='Group name')
-        url = reverse('concept_changes', kwargs=self.request_kwargs)
+        group_name = factories.PropertyFactory(
+            status=PENDING, concept=self.group, value="Group name"
+        )
+        url = reverse("concept_changes", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
-        self.assertEqual(group_name.value,
-                         response.pyquery('.status-pending')[1].text)
+        self.assertEqual(group_name.value, response.pyquery(".status-pending")[1].text)
 
     def test_group_changes(self):
-        self.request_kwargs['id'] = self.group.id
-        url = reverse('concept_changes', kwargs=self.request_kwargs)
+        self.request_kwargs["id"] = self.group.id
+        url = reverse("concept_changes", kwargs=self.request_kwargs)
         response = self.app.get(url, user=self.user)
-        self.assertEqual(self.group_definition.value,
-                         response.pyquery('.definition.status-pending').html())
+        self.assertEqual(
+            self.group_definition.value,
+            response.pyquery(".definition.status-pending").html(),
+        )
