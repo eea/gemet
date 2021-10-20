@@ -49,19 +49,8 @@ Debian based systems
 ~~~~~~~~~~~~~~~~~~~~
 Install these before setting up an environment::
 
-    apt-get install python-setuptools python-dev libmysqlclient-dev \
-    libldap2-dev python-virtualenv mysql-server git
-
-
-RHEL based systems
-~~~~~~~~~~~~~~~~~~
-Install Python2.7 with PUIAS: https://gist.github.com/nico4/9616638
-
-Run these commands::
-
-    curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python2.7 -
-    pip2.7 install virtualenv
-    yum install mysql-server mysql git mysql-devel
+    apt-get install python-setuptools python-dev \
+    libldap2-dev python-virtualenv git
 
 
 Product directory
@@ -112,12 +101,13 @@ be run as an unprivileged user in the product directory::
 
     # Follow instructions in local_settings.py to adapt it to your needs.
 
-6. Set up the MySQL database::
+6. Set up the Postgres database::
 
-    # Replace [user] and [password] with your MySQL credentials and [db_name]
+    # Replace [user] and [password] with your Postgres credentials and [db_name]
     # with the name of the database:
 
-    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
+    psql -U[user]
+    >> CREATE DATABASE [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
    **The database charset MUST be utf8.**
 
@@ -193,8 +183,7 @@ Data Import
 1. Considering you have a dump of the old database (``gemet.sql``), import it in a
 **separate** database::
 
-    mysql -u[user] -p[password] -e 'create database [db_name] CHARACTER SET utf8 COLLATE utf8_general_ci;'
-    mysql -u[user] -p[password] [db_name] < gemet.sql
+    psql -U[user] [db_name] < gemet.sql
 
 2. Update the ``import`` section from ``DATABASES`` dict in the local
 configuration file with the name of the database used for import
@@ -280,12 +269,6 @@ Use ``requirements-dev.txt`` instead of ``requirements-dep.txt``::
 
     pip install -r requirements-dev.txt
 
-Configure deploy
-----------------
-
-* copy ``fabfile/env.ini.example`` to ``fabfile/env.ini``
-* configure staging and production settings
-* run ``fab staging deploy`` or ``fab production deploy``
 
 Running unit tests
 ------------------
@@ -370,7 +353,7 @@ Recommended:
 
 Software
 --------
-Any recent Linux version, apache2, MySQL server, Python 2.7
+Any recent Linux version, apache2, Postgres server, Python 3.8
 
 
 Copyright and license

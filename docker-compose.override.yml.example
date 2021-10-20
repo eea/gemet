@@ -1,0 +1,9 @@
+version: '2'
+services:
+  gemet:
+    volumes:
+    - gemet-static:/var/local/static
+    - gemet-exports:/var/local/gemet/exports
+    - .:/var/local/gemet
+    entrypoint: ["/usr/bin/tail", "-f", "/dev/null"]
+

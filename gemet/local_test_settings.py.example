@@ -1,14 +1,14 @@
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_name',
-        'USER': 'username',
-        'PASSWORD': 'password',
-        'HOST': 'db_host',
-        'PORT': 'db_port',
-        'TEST': {
-            'CHARSET': 'utf8',
-            'COLLATION': 'utf8_general_ci',
-        }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "db_name",
+        "USER": "username",
+        "PASSWORD": "password",
+        "HOST": "db_host",
+        "PORT": "db_port",
+        "TEST": {
+            "CHARSET": "utf8",
+            "COLLATION": "utf8_general_ci",
+        },
     }
 }

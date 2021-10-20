@@ -4,12 +4,12 @@ set -e
 
 COMMANDS="qcluster"
 
-if [ -z "$MYSQL_ADDR" ]; then
-  MYSQL_ADDR="mysql"
+if [ -z "$POSTGRES_ADDR" ]; then
+  POSTGRES_ADDR="db"
 fi
 
-while ! nc -z $MYSQL_ADDR 3306; do
-  echo "Waiting for MySQL server at '$MYSQL_ADDR' to accept connections on port 3306..."
+while ! nc -z $POSTGRES_ADDR 5432; do
+  echo "Waiting for Postgresql server at '$POSTGRES_ADDR' to accept connections on port 5432..."
   sleep 1s
 done
 

@@ -4,7 +4,7 @@ from gemet.thesaurus.models import Concept
 
 
 class Command(BaseCommand):
-    help = 'Fix unidirectional relationships'
+    help = "Fix unidirectional relationships"
 
     def handle(self, *args, **options):
         relations = []
@@ -15,6 +15,5 @@ class Command(BaseCommand):
 
         for relation in relations:
             if not relation.reverse:
-                self.stdout.write('Creating reverse relation for {}'
-                                  .format(relation))
+                self.stdout.write("Creating reverse relation for {}".format(relation))
                 relation.create_reverse()

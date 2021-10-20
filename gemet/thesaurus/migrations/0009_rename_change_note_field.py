@@ -8,13 +8,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0008_add_authorized_user_model'),
+        ("thesaurus", "0008_add_authorized_user_model"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='version',
-            old_name='changed_note',
-            new_name='change_note',
+            model_name="version",
+            old_name="changed_note",
+            new_name="change_note",
         ),
     ]

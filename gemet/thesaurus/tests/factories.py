@@ -3,125 +3,152 @@ from django.contrib.auth.models import User
 
 from gemet.thesaurus import PUBLISHED
 from gemet.thesaurus.models import (
-    Concept, DefinitionSource, ForeignRelation, Group, InspireTheme, Language,
-    Namespace, Property, PropertyType, Relation, SuperGroup, Term, Theme, Version,
+    Concept,
+    DefinitionSource,
+    ForeignRelation,
+    Group,
+    InspireTheme,
+    Language,
+    Namespace,
+    Property,
+    PropertyType,
+    Relation,
+    SuperGroup,
+    Term,
+    Theme,
+    Version,
 )
 
 
 class VersionFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Version
-    FACTORY_DJANGO_GET_OR_CREATE = ('identifier',)
-
-    identifier = '1.0.0'
+    identifier = "1.0.0"
     is_current = True
+
+    class Meta:
+        model = Version
+        django_get_or_create = ("identifier",)
 
 
 class LanguageFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Language
-    FACTORY_DJANGO_GET_OR_CREATE = ('code',)
+    code = "en"
+    name = "English"
+    charset = "utf8_general_ci"
 
-    code = 'en'
-    name = 'English'
-    charset = 'utf8_general_ci'
+    class Meta:
+        model = Language
+        django_get_or_create = ("code",)
 
 
 class ConceptFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Concept
-
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+    class Meta:
+        model = Concept
 
 
 class NamespaceFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Namespace
+    heading = "Concepts"
 
-    heading = 'Concepts'
+    class Meta:
+        model = Namespace
 
 
 class TermFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Term
-
-    code = '1'
+    code = "1"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+    class Meta:
+        model = Term
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Group
-
-    code = '2'
+    code = "2"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+    class Meta:
+        model = Group
 
 
 class SuperGroupFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = SuperGroup
-
-    code = '3'
+    code = "3"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+    class Meta:
+        model = SuperGroup
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Theme
-
-    code = '4'
+    code = "4"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
+
+    class Meta:
+        model = Theme
 
 
 class PropertyFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Property
-
     concept = factory.SubFactory(TermFactory)
     language = factory.SubFactory(LanguageFactory)
     version_added = factory.SubFactory(VersionFactory)
-    name = 'prefLabel'
-    value = 'administration'
+    name = "prefLabel"
+    value = "administration"
     status = PUBLISHED
+
+    class Meta:
+        model = Property
 
 
 class PropertyTypeFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = PropertyType
-
     name = "themeMember"
     label = "Theme member"
 
+    class Meta:
+        model = PropertyType
+
 
 class RelationFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Relation
-
     property_type = factory.SubFactory(PropertyTypeFactory)
     source = factory.SubFactory(TermFactory)
     target = factory.SubFactory(ThemeFactory)
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
+    class Meta:
+        model = Relation
+
 
 class ForeignRelationFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = ForeignRelation
-
     property_type = factory.SubFactory(PropertyTypeFactory)
     concept = factory.SubFactory(TermFactory)
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
+    class Meta:
+        model = ForeignRelation
+
 
 class DataSourceFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = DefinitionSource
+    class Meta:
+        model = DefinitionSource
 
 
 class InspireThemeFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = InspireTheme
-
-    code = 'ad'
+    code = "ad"
     version_added = factory.SubFactory(VersionFactory)
     status = PUBLISHED
 
+    class Meta:
+        model = InspireTheme
+
 
 class UserFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = User
-    FACTORY_DJANGO_GET_OR_CREATE = ('username',)
-
     username = factory.Sequence(lambda n: "john%03d" % n)
-    password = '123456'
+    password = "123456"
+
+    class Meta:
+        model = User
+        django_get_or_create = ("username",)

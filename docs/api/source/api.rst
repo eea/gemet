@@ -259,7 +259,7 @@ WebService API methods
         ...        ]
         ...
         ...        for concept in concepts:
-        ...            for prop_uri, prop_values in concept['properties'].iteritems():
+        ...            for prop_uri, prop_values in concept['properties'].items():
         ...                result = apiTester.doXmlRpc('getAllTranslationsForConcept', concept['uri'], prop_uri)
         ...                for value in result:
         ...                    print value['language']

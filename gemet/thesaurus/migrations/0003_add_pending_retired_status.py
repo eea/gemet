@@ -8,28 +8,60 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0002_add_status_field'),
+        ("thesaurus", "0002_add_status_field"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='concept',
-            name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            model_name="concept",
+            name="status",
+            field=models.PositiveSmallIntegerField(
+                choices=[
+                    (0, "pending"),
+                    (1, "published"),
+                    (2, "deleted"),
+                    (3, "deleted pending"),
+                ],
+                default=0,
+            ),
         ),
         migrations.AlterField(
-            model_name='foreignrelation',
-            name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            model_name="foreignrelation",
+            name="status",
+            field=models.PositiveSmallIntegerField(
+                choices=[
+                    (0, "pending"),
+                    (1, "published"),
+                    (2, "deleted"),
+                    (3, "deleted pending"),
+                ],
+                default=0,
+            ),
         ),
         migrations.AlterField(
-            model_name='property',
-            name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            model_name="property",
+            name="status",
+            field=models.PositiveSmallIntegerField(
+                choices=[
+                    (0, "pending"),
+                    (1, "published"),
+                    (2, "deleted"),
+                    (3, "deleted pending"),
+                ],
+                default=0,
+            ),
         ),
         migrations.AlterField(
-            model_name='relation',
-            name='status',
-            field=models.PositiveSmallIntegerField(choices=[(0, b'pending'), (1, b'published'), (2, b'deleted'), (3, b'deleted pending')], default=0),
+            model_name="relation",
+            name="status",
+            field=models.PositiveSmallIntegerField(
+                choices=[
+                    (0, "pending"),
+                    (1, "published"),
+                    (2, "deleted"),
+                    (3, "deleted pending"),
+                ],
+                default=0,
+            ),
         ),
     ]

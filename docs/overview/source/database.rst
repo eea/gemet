@@ -16,7 +16,7 @@ table with its associated type.
 Backend
 -------
 
-The application uses a single database on a MySQL server running on localhost.
+The application uses a single database on a Postgres server running on localhost.
 Each table has a corresponding class in ``models``, and the rows in the table
 are instances of that class.
 
@@ -36,8 +36,8 @@ remodeling is that the ``value`` column in the ``Property`` table modified its
 type from ``TEXT`` to ``VARCHAR(16000)``. The new data type allowed us to index
 this column in order to speed up the queries. The length of this column has
 been computed by taking into consideration the fact that the maximum row size
-in MySQL is 65,535 bytes (shared among all columns) and an UTF-8 character uses
-up to 3 bytes.
+in Postgres (the database originally used for the application, is 65,535 bytes
+(shared among all columns) and an UTF-8 character uses up to 3 bytes.
 
 Also, the search algorithm has suffered some changes. A new property type,
 ``searchText``, was introduced; each concept has a property with

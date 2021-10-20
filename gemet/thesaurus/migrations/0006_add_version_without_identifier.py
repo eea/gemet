@@ -27,7 +27,7 @@ def reverse_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0005_add_fk_to_version'),
+        ("thesaurus", "0005_add_fk_to_version"),
     ]
 
     operations = [

@@ -8,38 +8,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0010_asynctask'),
+        ("thesaurus", "0010_asynctask"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='definitionsource',
-            name='author',
+            model_name="definitionsource",
+            name="author",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='definitionsource',
-            name='place',
+            model_name="definitionsource",
+            name="place",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='definitionsource',
-            name='publication',
+            model_name="definitionsource",
+            name="publication",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='definitionsource',
-            name='title',
+            model_name="definitionsource",
+            name="title",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='definitionsource',
-            name='url',
+            model_name="definitionsource",
+            name="url",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='definitionsource',
-            name='year',
+            model_name="definitionsource",
+            name="year",
             field=models.CharField(blank=True, max_length=10, null=True),
         ),
     ]

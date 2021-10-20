@@ -9,7 +9,7 @@ import sys
 
 
 def forwards_func(apps, schema_editor):
-    if 'test' in sys.argv:
+    if "test" in sys.argv:
         return
 
     # We get the model from the versioned app registry;
@@ -18,7 +18,7 @@ def forwards_func(apps, schema_editor):
     Version = apps.get_model("thesaurus", "Version")
     db_alias = schema_editor.connection.alias
     try:
-        latest_concept = Concept.objects.using(db_alias).latest('date_changed')
+        latest_concept = Concept.objects.using(db_alias).latest("date_changed")
         publication_date = latest_concept.date_changed
     except Concept.DoesNotExist:
         # version created for import
@@ -39,18 +39,26 @@ def reverse_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('thesaurus', '0003_add_pending_retired_status'),
+        ("thesaurus", "0003_add_pending_retired_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Version',
+            name="Version",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('identifier', models.CharField(max_length=255)),
-                ('publication_date', models.DateTimeField(blank=True, null=True)),
-                ('changed_note', models.TextField()),
-                ('is_current', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("identifier", models.CharField(max_length=255)),
+                ("publication_date", models.DateTimeField(blank=True, null=True)),
+                ("changed_note", models.TextField()),
+                ("is_current", models.BooleanField(default=False)),
             ],
         ),
         migrations.RunPython(forwards_func, reverse_func),
