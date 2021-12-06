@@ -18,7 +18,7 @@
 
   <void:Dataset rdf:about="http://www.eionet.europa.eu/gemet">
     <dcterms:title>GEneral Multilingual Environmental Thesaurus</dcterms:title>
-    <dcterms:license rdf:resource="http://creativecommons.org/licenses/by/2.5/dk/"/>
+    <dcterms:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
     <dcterms:publisher rdf:resource="http://www.eionet.europa.eu/void.rdf#EEA"/>
     <dcterms:creator rdf:resource="http://www.eionet.europa.eu/void.rdf#EEA"/>
     <dcterms:contributor rdf:resource="http://www.eionet.europa.eu/users/roug"/>

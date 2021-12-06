@@ -15,7 +15,7 @@
 
 <skos:ConceptScheme rdf:about="gemetThesaurus/">
     <rdfs:label>GEMET - Concepts, version {{ version.identifier }}, {{ version.publication_date|date:"c" }}</rdfs:label>
-    <dcterms:licence rdf:resource="http://creativecommons.org/licenses/by/2.5/dk/"/>
+    <dcterms:licence rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
 </skos:ConceptScheme>
 
 <rdf:Description rdf:about="gemetThesaurus">{% for concept in top_concepts %}
