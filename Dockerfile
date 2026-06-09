@@ -1,10 +1,10 @@
-FROM python:3.8-slim
+FROM python:3.11-slim
 
 LABEL maintainer="European Environment Agency (EEA): IDM2 S-Team"
 
 ENV PROJ_DIR=/var/local/gemet
 
-RUN runDeps="gcc python3-dev postgresql-client build-essential libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev netcat-traditional" \
+RUN runDeps="gcc python3-dev postgresql-client build-essential libldap-dev libsasl2-dev libxml2-dev libxslt1-dev netcat-traditional" \
  && apt-get update -y \
  && apt-get install -y --no-install-recommends $runDeps \
  && rm -vrf /var/lib/apt/lists/*
