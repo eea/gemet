@@ -2,7 +2,7 @@ Django==3.2.25
 beautifulsoup4==4.12.3
 bs4==0.0.2
 Jinja2==3.0.3
-MarkupSafe==2.0.1
+MarkupSafe==2.1.5
 psycopg2-binary==2.9.9
 Pygments==2.18.0
 Sphinx==4.5.0
