@@ -1,6 +1,6 @@
 from xmlrpc.client import Fault
 from xmlrpc.server import SimpleXMLRPCDispatcher
-from inspect import getargspec
+from inspect import getfullargspec as getargspec
 import json
 
 from django.http import HttpResponse
